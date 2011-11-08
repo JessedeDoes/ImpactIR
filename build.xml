@@ -6,9 +6,11 @@
      <property name="build" value="build"/>
      <property name="dist" value="dist"/>
 
+
      <target name="init">  
           <mkdir dir="${build}"/>
      </target>
+
 
      <target name="compile" depends="init"> 
           <javac encoding="utf-8" srcdir="${src}" destdir="${build}">
@@ -23,10 +25,12 @@
           </javac>
      </target>
 
+
     <target name="dist" depends="compile">
         <jar destfile="${dist}/spellingvariation.jar">
               <fileset dir= "${build}"/>
  	      <fileset dir="resources"/>
          </jar>
     </target>
+
 </project>
