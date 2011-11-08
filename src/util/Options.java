@@ -39,6 +39,7 @@ public class Options
         options.addOption("y", "lemmatizerInput", true, "Input for the lemmatizer, one word per line");    	
 	options.addOption("r", "maximumRank", true, "Maximum rank for the reverse lemmatizer");
 	options.addOption("E", "echoTrainFile", true, "Echo training set (reverse lemmatizer");
+	options.addOption("X", "forbidInsertsAndDeletes", true, "Do not save inserts and deletes in pattern output");
 
     	parseCommandLine(args);
     

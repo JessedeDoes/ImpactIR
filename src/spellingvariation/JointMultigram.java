@@ -85,7 +85,17 @@ package spellingvariation;
 		{
 			return lhs.length() > 0 && rhs.length() > 0;
 		}
-		
+	
+		public boolean isInsertion()
+		{
+			return lhs.length()==0;
+		}	
+
+		public boolean isDeletion()
+		{
+			return rhs.length()==0;
+		}
+
 		public boolean isSymmetric()
 		{
 			return rhs.equals(lhs);
