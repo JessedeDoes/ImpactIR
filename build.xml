@@ -1,0 +1,31 @@
+<?xml version="1.0"?> 
+<project name="JointMultiGramModel" default="compile" basedir="."> 
+
+     <property name="src" value="./src"/> 
+     <property name="build" value="build"/>
+     <property name="dist" value="dist"/>
+
+     <target name="init">  
+          <mkdir dir="${build}"/>
+     </target>
+
+     <target name="compile" depends="init"> 
+          <javac encoding="utf-8" srcdir="${src}" destdir="${build}">
+          <classpath>
+             <!--<pathelement path="./KShortestPath/dist/kShortest.jar"/>-->
+             <pathelement path="lib/jgrapht-jdk1.6.jar"/>
+             <pathelement path="lib/weka.jar"/>
+	     <pathelement path="lib/commons-cli-1.2.jar"/>
+             <pathelement path="lib/mysql-connector-java-3.0.17-ga-bin.jar"/>
+             <pathelement path="lib/commons-logging-1.1.1.jar"/>
+          </classpath>
+          </javac>
+     </target>
+
+    <target name="dist" depends="compile">
+        <jar destfile="${dist}/spellingvariation.jar">
+              <fileset dir= "${build}"/>
+ 	      <fileset dir="resources"/>
+         </jar>
+    </target>
+</project>
