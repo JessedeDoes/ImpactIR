@@ -333,7 +333,7 @@ public class MultigramTransducer implements java.io.Serializable
 			double p_joint = counts.get(m) / new Double(stats.totalLengthLHS); // of RHS?
 			boolean printIt = !m.isSymmetric();
 			if (Options.getOptionBoolean("forbidInsertsAndDeletes",false))
-                          printIt = !(m.isInsertion() || m.isDeletion());
+                          printIt &= !(m.isInsertion() || m.isDeletion());
 			if (printIt)
 						out.println(m + "\t" + delta[m.id] + "\t" + p_cond_lhs + "\t" + p_cond_rhs + "\t" + p_joint + "\t" + counts.get(m));
 		}

@@ -94,8 +94,14 @@ public class Lexicon implements Iterable<Lexicon.WordForm>
 				w.wordform = parts[0]; 
 				w.lemma = parts[1];
 				w.tag = parts[2];
-				w.lemmaPoS = parts[3];
-				
+
+				if (parts.length > 3)
+				{
+					w.lemmaPoS = parts[3];
+				} else
+				{
+					w.lemmaPoS = w.tag;
+				}	
 				try
 				{
 					if (parts.length > 4)
