@@ -69,6 +69,7 @@ public class Lexicon implements Iterable<Lexicon.WordForm>
 	
 	public void readFromFile(String fileName)
 	{
+		System.err.println("read lexicon from: " + fileName);
 		if (fileName.startsWith("database:"))
 		{
 			String dbName = fileName.substring("database:".length());
@@ -88,6 +89,7 @@ public class Lexicon implements Iterable<Lexicon.WordForm>
 			int ruleId = 1;
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
+				// System.err.println(s);
 				String[] parts = s.split("\t");
 				
 				WordForm w = new WordForm();

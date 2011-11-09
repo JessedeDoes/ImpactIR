@@ -90,8 +90,9 @@ public class Lemmatizer
 	};
 
 
-	List<WordMatch> lookupWordform(String w)
+	List<WordMatch> lookupWordform(String w0)
 	{
+		String w = spellingvariation.Ligatures.replaceLigatures(w0);
 		Set<Lexicon.WordForm> exactMatches = historicalLexicon.findLemmata(w);
 		Set<WordForm> modernMatches = modernLexicon.findLemmata(w);
 		if (exactMatches == null)
