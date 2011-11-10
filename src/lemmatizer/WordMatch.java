@@ -1,5 +1,6 @@
 package lemmatizer;
-import lemmatizer.Lexicon.WordForm;
+import lexicon.Lexicon;
+import lexicon.WordForm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ class WordMatchComparator implements Comparator<WordMatch>
 
 public class WordMatch
 {
-	WordForm wordform;
+	lexicon.WordForm wordform;
 	double matchScore;
 	String target;
 	String alignment = ""; 
@@ -69,6 +70,7 @@ public class WordMatch
 	Lexicon lexicon;
 	int lemmaFrequency=0;
 	int wordformFrequency=0;
+	
 	
 	public String toString()
 	{

@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
+
+import lexicon.Lexicon;
+import lexicon.WordForm;
 import util.Options;
 
 interface FoundFormHandler
@@ -48,7 +51,7 @@ public class ReverseLemmatizer implements FoundFormHandler, ParadigmExpander
 {
   private ArrayList<Rule> allRules;
   private ClassifierSet classifiers = new ClassifierSet();
-  private HashMap<String,ArrayList<Lexicon.WordForm>> lemmataSeenInTrainingData = new HashMap<String,ArrayList<Lexicon.WordForm>>();
+  private HashMap<String,ArrayList<WordForm>> lemmataSeenInTrainingData = new HashMap<String,ArrayList<WordForm>>();
   private PatternFinder patternFinder;
   protected FoundFormHandler callback = this;
   
@@ -166,7 +169,7 @@ ancêtre: commonNoun(Number=singular)=ancêtre  (45:[/]-[/] commonNoun commonNou
     {
       for (String lp: lemmataSeenInTrainingData.keySet())
       {
-         for (Lexicon.WordForm s: lemmataSeenInTrainingData.get(lp))
+         for (WordForm s: lemmataSeenInTrainingData.get(lp))
          {
            System.out.println(s.toStringTabSeparated());
          }
@@ -174,12 +177,12 @@ ancêtre: commonNoun(Number=singular)=ancêtre  (45:[/]-[/] commonNoun commonNou
     }
   }
 
-  public void expandAllTagsFor(Lexicon.WordForm w)
+  public void expandAllTagsFor(WordForm w)
   {
   	classifiers.callback = this.callback;
   	classifiers.classifyLemma(w.lemma,w. lemmaPoS);
   }
-  public void expandWordForm(Lexicon.WordForm w)
+  public void expandWordForm(WordForm w)
   {
   	classifiers.callback = this.callback;
   	classifiers.classifyLemma(w.lemma,w. lemmaPoS, w.tag);
@@ -231,7 +234,7 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
   	findInflectionPatterns(lexicon, null);
   }
   
-  public void findInflectionPatterns(Lexicon lexicon, Set<Lexicon.WordForm> heldOutSet)
+  public void findInflectionPatterns(Lexicon lexicon, Set<WordForm> heldOutSet)
   {
     HashMap<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
     HashMap<Rule, Rule> rules = new HashMap<Rule, Rule>();
@@ -239,7 +242,7 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
     try
     {
       int ruleId = 1;
-      for(Lexicon.WordForm w: lexicon) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
+      for(WordForm w: lexicon) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
       {
       	if (heldOutSet != null && heldOutSet.contains(w))
       	{
@@ -247,10 +250,10 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
       		continue;
       	}
 	// System.err.println("training on: " + w.lemma); 
-        ArrayList<Lexicon.WordForm> l = lemmataSeenInTrainingData.get(w.lemma + ":" + w.lemmaPoS);
+        ArrayList<WordForm> l = lemmataSeenInTrainingData.get(w.lemma + ":" + w.lemmaPoS);
         if (l == null)
           lemmataSeenInTrainingData.put(w.lemma + ":" + w.lemmaPoS, 
-          		( l= new ArrayList<Lexicon.WordForm>()));
+          		( l= new ArrayList<WordForm>()));
         l.add(w);
       
         Pattern r = patternFinder.findPattern(w.wordform,w.lemma);

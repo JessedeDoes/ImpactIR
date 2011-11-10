@@ -1,7 +1,8 @@
 package lemmatizer;
 import java.util.*;
-import java.util.Set;
-import java.util.HashSet;
+
+import lexicon.Lexicon;
+import lexicon.WordForm;
 
 import util.Options;
 
@@ -26,7 +27,7 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 		String wf = r.pattern.applyConverse(lemma);
 		if (wf != null)
 		{
-			Lexicon.WordForm w = new Lexicon.WordForm();
+			WordForm w = new WordForm();
 			w.lemma = lemma; w.tag=tag; w.lemmaPoS = lemmaPoS; w.wordform = wf;
 			if (rank == 0)
 				itemsTested++;
@@ -54,9 +55,9 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 	 * @param portion
 	 * @return
 	 */
-	public static Set<Lexicon.WordForm> createHeldoutSet(Lexicon lexicon, double portion)
+	public static Set<WordForm> createHeldoutSet(Lexicon lexicon, double portion)
 	{
-		 Set<Lexicon.WordForm> V  = new HashSet<Lexicon.WordForm>(); 
+		 Set<WordForm> V  = new HashSet<WordForm>(); 
 		 for (String lemma: lexicon.lemma2forms.keySet())
 		 {
 			 if (Math.random() < portion)
@@ -69,10 +70,10 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 	{
 		r.setCallback(this);
 		Lexicon all = referenceLexicon;
-		Set<Lexicon.WordForm> heldOut = createHeldoutSet(all, 0.1);
+		Set<WordForm> heldOut = createHeldoutSet(all, 0.1);
 		System.err.println("Created held-out set of size " + heldOut.size());
 		r.findInflectionPatterns(all, heldOut);
-		for (Lexicon.WordForm wf: heldOut) r.expandWordForm(wf);
+		for (WordForm wf: heldOut) r.expandWordForm(wf);
 		System.err.println("Total tested: " +  itemsTested + 
 				" correct: " + correctProposals/itemsTested + " total wrong: " + incorrectProposals);
 	}

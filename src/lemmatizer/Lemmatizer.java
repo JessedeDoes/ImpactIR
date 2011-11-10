@@ -7,10 +7,13 @@ import java.io.FileReader;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import lemmatizer.Lexicon.WordForm;
+
+import lexicon.Lexicon;
+import lexicon.WordForm;
 import util.Options;
 import java.util.Collections;
 import java.util.ArrayList;
+
 
 public class Lemmatizer
 {
@@ -63,7 +66,7 @@ public class Lemmatizer
 		public void handleMatch(String targetWord, String matchedWord,
 				String matchInfo, int cost, double p)
 		{
-			Set<Lexicon.WordForm> extraCandidates = modernLexicon.findLemmata(matchedWord);
+			Set<WordForm> extraCandidates = modernLexicon.findLemmata(matchedWord);
 			if (extraCandidates == null)
 			{
 				System.err.println("Huh? cannot find matched word in lexicon: " + matchedWord);
@@ -93,7 +96,7 @@ public class Lemmatizer
 	List<WordMatch> lookupWordform(String w0)
 	{
 		String w = spellingvariation.Ligatures.replaceLigatures(w0);
-		Set<Lexicon.WordForm> exactMatches = historicalLexicon.findLemmata(w);
+		Set<WordForm> exactMatches = historicalLexicon.findLemmata(w);
 		Set<WordForm> modernMatches = modernLexicon.findLemmata(w);
 		if (exactMatches == null)
 			exactMatches = new HashSet<WordForm>();

@@ -7,6 +7,9 @@ import util.Options;
 import java.util.HashMap;
 import java.io.*;
 
+import lexicon.Lexicon;
+import lexicon.WordForm;
+
 class Pair<X,Y>
 {
 	X first;
@@ -59,7 +62,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 	FoundFormHandler callback = null;
 	Set<Pair<Pattern,Pattern>> compatibilities = new HashSet<Pair<Pattern,Pattern>>();
 
-	private HashMap<String,ArrayList<Lexicon.WordForm>> lemmataSeenInTrainingData = new HashMap<String,ArrayList<Lexicon.WordForm>>();
+	private HashMap<String,ArrayList<WordForm>> lemmataSeenInTrainingData = new HashMap<String,ArrayList<WordForm>>();
 
 	private boolean seenLemmaInTrainingData(String lemma, String lemmaPoS)
 	{
@@ -136,7 +139,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 
 	Knutselaar knutselaar = new Knutselaar();
 
-	public void findInflectionPatterns(Lexicon lexicon, Set<Lexicon.WordForm> heldOutSet)
+	public void findInflectionPatterns(Lexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		initialExpander.findInflectionPatterns(lexicon, heldOutSet);
 		finalExpander.findInflectionPatterns(lexicon, heldOutSet);
@@ -146,7 +149,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 	{
 		Lexicon l = new Lexicon();
 		l.readFromFile(fileName);
-		findInflectionPatterns(l, new HashSet<Lexicon.WordForm>());
+		findInflectionPatterns(l, new HashSet<WordForm>());
 	}
 
 
@@ -162,7 +165,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 				if (fields.length < 2) continue;
 				String lemma = fields[0];
 				String lemmaPoS = fields[1];
-				Lexicon.WordForm w = new Lexicon.WordForm();
+				WordForm w = new WordForm();
 				w.lemma=lemma; w.lemmaPoS=lemmaPoS;
 				// to do: just add the forms from the example material when the lemma/pos combi is known
 				if (!seenLemmaInTrainingData(lemma,lemmaPoS))
@@ -177,14 +180,14 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 		}
 		for (String lp: lemmataSeenInTrainingData.keySet())
 		{
-			for (Lexicon.WordForm s: lemmataSeenInTrainingData.get(lp))
+			for (WordForm s: lemmataSeenInTrainingData.get(lp))
 			{
 				System.out.println(s.toStringTabSeparated());
 			}
 		}
 	}
 
-	public void expandAllTagsForWordform(Lexicon.WordForm w)
+	public void expandAllTagsForWordform(WordForm w)
 	{
 	  for (String tag: initialExpander.allTags())
 	  {
@@ -196,7 +199,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 	  }
 	}
 
-	public void expandWordForm(Lexicon.WordForm w)
+	public void expandWordForm(WordForm w)
 	{
 		//System.err.println("start expanding: " + w);
 		knutselaar.initialBag.clear();
