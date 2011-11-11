@@ -2,14 +2,17 @@ package spellingvariation;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-import util.Options;
+import trie.DoubleArrayTrie;
+import trie.ITrie;
 import trie.Trie;
 import trie.Trie.TrieNode;
+import util.Options;
 
-
+/*
 class RuleInfo // this is silly, just echos jointmultigram
 {
 	int multigramId;
@@ -26,7 +29,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 		this.lhs = lhs;
 		this.rhs = rhs;
 		this.p_cond_rhs = probability;
-		cost = (int) (-MemorylessMatcher.costScale * Math.log(probability)); // log is ln in java
+		cost = (int) (-DatrieMatcher.costScale * Math.log(probability)); // log is ln in java
 		if (cost < 0)
 		{
 			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  probability,lhs,rhs);
@@ -44,7 +47,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 		this.joint_probability = pcombi;
 		this.p_cond_lhs= p_cond_lhs;
 
-		cost = (int) (-MemorylessMatcher.costScale * Math.log( p_cond_rhs));
+		cost = (int) (-DatrieMatcher.costScale * Math.log( p_cond_rhs));
 		if (cost < 0)
 		{
 			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  p_cond_rhs,lhs,rhs);
@@ -54,22 +57,23 @@ class RuleInfo // this is silly, just echos jointmultigram
 		// TODO Auto-generated constructor stub
 	}
 }
+*/
 
-class MatchState implements Comparable<MatchState>
+class SearchState implements Comparable<SearchState>
 {
-	TrieNode lexnode;
+	Object lexnode;
 	int position;
 	int cost;
-	MatchState parentState;
+	SearchState parentState;
 	RuleInfo rule;
 
-	MatchState(Trie.TrieNode  n, int p)
+	SearchState(Object lexNode, int p)
 	{
-		lexnode = n; position = p;
+		lexnode = lexNode; position = p;
 		parentState = null; rule = null;
 	}
 
-	public int compareTo(MatchState other)
+	public int compareTo(SearchState other)
 	{
 		return cost - other.cost;
 	}
@@ -80,7 +84,7 @@ class MatchState implements Comparable<MatchState>
  * a set of weighted patterns
  * <p>Typical usage</p>
  * <pre style='font-size:9pt'>
- * MemorylessMatcher matcher = new MemorylessMatcher("some_pattern_filename");
+ * DatrieMatcherer matcher = new DatrieMatcherer("some_pattern_filename");
  * Trie lexicon = new Trie();
  * lexicon.loadWordlist("some_wordlist_filename");
  * ....
@@ -89,7 +93,7 @@ class MatchState implements Comparable<MatchState>
  * Because there are possibly many different matches, 
  * you need to implement a callback to get at the matches:
  * <pre style='font-size:9pt'>
- * MemorylessMatcher.Callback myCallback = new Callback()
+ * DatrieMatcherer.Callback myCallback = new Callback()
  * {
  *  public void handleMatch(String targetWord, String matchedWord, String matchInfo, int cost, double p)
  *  {
@@ -99,7 +103,7 @@ class MatchState implements Comparable<MatchState>
  * matcher.callback = myCallback;
  * </pre> 
  */
-public class MemorylessMatcher
+public class DatrieMatcher
 {
 	protected static final double costScale = 100.0;
 	static final int BONUS=0;
@@ -115,11 +119,11 @@ public class MemorylessMatcher
 	boolean allowInsertions = true;
 	boolean VERBOSE = true;
 	String targetWord = null;
-	Trie lextrie;
+	ITrie<Object> lexiconTrie;
 	Trie ruletrie = new Trie();
-	Vector<MatchState> activeItems = new Vector<MatchState>();
+	Vector<SearchState> activeItems = new Vector<SearchState>();
 
-	java.util.PriorityQueue<MatchState> queue = new java.util.PriorityQueue<MatchState>();
+	java.util.PriorityQueue<SearchState> queue = new java.util.PriorityQueue<SearchState>();
 
 	/**
 	 * You need to override this callback class  to retrieve the matching candidates.
@@ -192,7 +196,7 @@ public class MemorylessMatcher
 		this.MAX_PENALTY_INCREMENT=x;
 	}
 	
-	public MemorylessMatcher(String ruleFileName)
+	public DatrieMatcher(String ruleFileName)
 	{
 		init();
 		try
@@ -207,13 +211,13 @@ public class MemorylessMatcher
 		}
 	}
 
-	public MemorylessMatcher(MultigramSet set) // not used and unsafe
+	public DatrieMatcher(MultigramSet set) // not used and unsafe
 	{
 		init();
 		getRulesFromMultigramSet(set);
 	}
 
-	public MemorylessMatcher()
+	public DatrieMatcher()
 	{
 
 	}
@@ -339,9 +343,9 @@ public class MemorylessMatcher
 		return cost + r.cost;
 	}
 
-	MatchState findItem(TrieNode lexnode, int pos)
+	SearchState findItem(Object lexnode, int pos)
 	{
-		Vector<MatchState>  items = (Vector<MatchState>) lexnode.data;
+		Vector<SearchState>  items = (Vector<SearchState>) lexiconTrie.getNodeData(lexnode);
 		if (items == null)
 		{
 			return null;
@@ -354,13 +358,13 @@ public class MemorylessMatcher
 		return null;
 	}
 
-	void additem(TrieNode lexnode, MatchState  item)
+	void additem(Object lexnode, SearchState  item)
 	{
-		Vector<MatchState> items = (Vector<MatchState>) lexnode.data;
+		Vector<SearchState> items = (Vector<SearchState>) lexiconTrie.getNodeData(lexnode);
 		if (items == null)
 		{
-			items = new  Vector<MatchState>();
-			lexnode.data = items;
+			items = new  Vector<SearchState>();
+			lexiconTrie.setNodeData(lexnode, items);
 		}
 		items.addElement(item);
 		activeItems.addElement(item);
@@ -368,9 +372,9 @@ public class MemorylessMatcher
 
 	// rule=null betekent echo karakter[pos] naar output
 
-	void tryNewItem(MatchState item, TrieNode lexnode, int pos, int newCost, RuleInfo rule)
+	void tryNewItem(SearchState item, Object lexnode, int pos, int newCost, RuleInfo rule)
 	{
-		MatchState nextitem;
+		SearchState nextitem;
 
 		if ((nextitem = findItem(lexnode, pos)) != null) // dit zou toch  zo af en toe moeten voorkomen??
 		{	
@@ -393,7 +397,7 @@ public class MemorylessMatcher
 			{
 				//System.err.printf("new item at pos %d, cost %d (%d), character '%c' !!!\n", pos, newCost, item.cost, targetWord[pos-1]);
 			}
-			nextitem = new MatchState(lexnode, pos);
+			nextitem = new SearchState(lexnode, pos);
 			nextitem.cost = newCost;
 			queue.offer(nextitem);
 
@@ -406,7 +410,7 @@ public class MemorylessMatcher
 
 	// try to match the left hand sides of rules in the lexicon
 
-	void lhsRecursion(MatchState item, TrieNode lhsNode,  TrieNode  lexnode, int pos, int cost)
+	void lhsRecursion(SearchState item, TrieNode lhsNode,  Object  lexnode, int pos, int cost)
 	{
 		if (lhsNode.isFinal) // pas op halve zool lexnode hoeft niet final te zijn
 		{
@@ -429,22 +433,22 @@ public class MemorylessMatcher
 		for (int i=0; i < k; i++)
 		{
 			Trie.Transition t = lhsNode.transition(i);
-			TrieNode nextNodeInLexicon;
-			if ((nextNodeInLexicon = lexnode.delta(t.character)) != null)
+			Object nextNodeInLexicon;
+			if ((nextNodeInLexicon = lexiconTrie.delta(lexnode,t.character)) != null)
 			{
 				lhsRecursion(item, t.node, nextNodeInLexicon, pos, cost);
 			}
 		}
 	}
 
-	void relaxTransitions(MatchState item)
+	void relaxTransitions(SearchState item)
 	{
 		TrieNode rhsNode = ruletrie.root;
 		int positionInWord = item.position;
-		TrieNode nextlexnode;
+		Object nextlexnode;
 
 		if ((positionInWord < targetWord.length())
-				&& (nextlexnode = item.lexnode.delta(targetWord.charAt(positionInWord))) != null)
+				&& (nextlexnode = lexiconTrie.delta(item.lexnode, targetWord.charAt(positionInWord))) != null)
 		{
 			tryNewItem(item, nextlexnode, positionInWord + 1, item.cost - BONUS, null);
 		}
@@ -465,10 +469,10 @@ public class MemorylessMatcher
 	}
 
 
-	void outputSuggestion(MatchState item)
+	void outputSuggestion(SearchState item)
 	{
 		String matchedWord = "", matchInfo= "";
-		MatchState theItem = item;
+		SearchState theItem = item;
 
 		while (theItem != null)
 		{
@@ -499,11 +503,12 @@ public class MemorylessMatcher
 		//fprintf(stdout,"Number of items produced: %d\n",  activeItems.size);
 		for (int i=0; i < activeItems.size(); i++)
 		{
-			MatchState item = activeItems.get(i);
-			Vector<MatchState> items = (Vector<MatchState>) item.lexnode.data;  
+			SearchState item = activeItems.get(i);
+			Vector<SearchState> items = (Vector<SearchState>) 
+					lexiconTrie.getNodeData(item.lexnode);  
 			if (items != null)
 			{
-				item.lexnode.data = null;
+				lexiconTrie.setNodeData(item.lexnode,null);  
 			}
 		}
 		activeItems.clear();
@@ -518,15 +523,15 @@ public class MemorylessMatcher
 		</ol>
 	 */
 
-	synchronized public boolean matchWordToLexicon(Trie lexicon, String  target)
+	synchronized public boolean matchWordToLexicon(ITrie<Object> lexicon, String  target)
 	{
-		this.lextrie = lexicon;
+		this.lexiconTrie = lexicon;
 		this.targetWord = target;
 		if (this.addWordBoundaries)
 			this.targetWord = Alphabet.initialBoundaryString + this.targetWord + Alphabet.finalBoundaryString;
 		//this.queue =  fh_makekeyheap();
 
-		MatchState startitem = new MatchState(lextrie.root, 0);
+		SearchState startitem = new SearchState(lexiconTrie.getStartState(), 0);
 		activeItems.addElement(startitem);
 		startitem.cost = 0;
 		//startitem.heapEl = fh_insertkey(queue, 0, (Object) startitem);
@@ -543,7 +548,7 @@ public class MemorylessMatcher
 		while (!stop) // queue empty of 'te duur'
 		{
 			//Item  item = (Item) fh_extractmin(queue);
-			MatchState item = queue.poll();
+			SearchState item = queue.poll();
 			if (item == null) break;
 
 			//System.err.printf("######\nextracted item has pos %d of %d, cost %d\n", item.pos, L, item.cost);
@@ -554,7 +559,7 @@ public class MemorylessMatcher
 			else
 				bestCost = item.cost;
 
-			if (item.lexnode.isFinal && item.position == L)
+			if (lexiconTrie.isFinal(item.lexnode) && item.position == L)
 			{
 				// output suggestie
 
@@ -584,7 +589,7 @@ public class MemorylessMatcher
 
 	public static void usage()
 	{
-		System.err.println("Usage: java spellingvariation.MemorylessMatcher <pattern file> <word list> [<input file>]");
+		System.err.println("Usage: java spellingvariation.DatrieMatcherer <pattern file> <word list> [<input file>]");
 	}
 
 	class TestCallback extends Callback
@@ -606,9 +611,9 @@ public class MemorylessMatcher
 		}
 	}
 
-	public void  test(Trie lexicon, BufferedReader in)
+	public void  test(ITrie<Object> lexicon, BufferedReader in)
 	{
-		this.lextrie = lexicon;
+		this.lexiconTrie = lexicon;
 		TestCallback cb = new TestCallback();
 		this.callback = cb;
 
@@ -644,11 +649,16 @@ public class MemorylessMatcher
 			usage();
 			System.exit(1);
 		}
-		MemorylessMatcher matcher = new MemorylessMatcher(Options.getOption("patternInput"));
-		Trie lexicon = new Trie();
-		lexicon.loadWordlist(Options.getOption("lexicon"), 
-				false, 
-				Options.getOptionBoolean("addWordBoundaries", false));
+		DatrieMatcher matcher = new DatrieMatcher(Options.getOption("patternInput"));
+		ITrie<Object> lexicon = null;
+		try 
+		{
+			lexicon = DoubleArrayTrie.loadTrie(Options.getOption("lexicon"));
+		} catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		
 		boolean found= false;
 		java.io.BufferedReader stdin;
 
@@ -668,13 +678,15 @@ public class MemorylessMatcher
 			stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
 
 		String cmd = Options.getOption("command");
+		
 		if (cmd != null && cmd.equals("test"))
 		{
 			System.err.println("testing on labeled input");
 			matcher.test(lexicon, stdin);
 			System.exit(0);
 		}
-		MemorylessMatcher.Callback c = new MemorylessMatcher.Callback ()
+		
+		DatrieMatcher.Callback c = new DatrieMatcher.Callback ()
 		{
 			public void handleMatch(String targetWord, String matchedWord, String matchInfo, int cost, double p)
 			{

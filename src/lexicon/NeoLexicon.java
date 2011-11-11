@@ -1,7 +1,11 @@
 package lexicon;
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,7 +45,7 @@ public class NeoLexicon implements ILexicon
 			setup();
 		}
 		graphDb = new EmbeddedGraphDatabase( DB_PATH );
-		registerShutdownHook( graphDb );
+		registerShutdownHook(graphDb);
 		nodeIndex = graphDb.index().forNodes( "nodes" );
 	}
 
@@ -150,7 +154,7 @@ public class NeoLexicon implements ILexicon
 				System.err.println(nItems + ": " + w);
 				addWordform(w);
 				nItems++;
-				if (nItems % 10000 == 0)
+				if (nItems % 50000 == 0)
 				{
 					System.err.println("new transaction...");
 					tx.success();
@@ -260,7 +264,7 @@ public class NeoLexicon implements ILexicon
 		}
 		System.err.println("found items: "  + nodes.size());
 		return nodes;
-    }
+	}
 	
 	@Override
 	public Set<WordForm> findForms(String lemma, String tag) 
@@ -275,26 +279,53 @@ public class NeoLexicon implements ILexicon
 		// TODO Auto-generated method stub
 		System.err.println("start query for:" + wordform);
 		Set<WordForm> wordforms = new HashSet<WordForm>();
-		
-		IndexHits<Node> hits = nodeIndex.query("wordform", wordform);
-		for (Node n: hits)
+		try
 		{
-			String wf = (String) n.getProperty("wordform");
-			for (Relationship r: n.getRelationships())
+			IndexHits<Node> hits = nodeIndex.get("wordform", wordform);
+			for (Node n: hits)
 			{
-				Node wordformNode = r.getOtherNode(n);
-				String lemma = (String) wordformNode.getProperty("lemma");
-				String pos = (String) wordformNode.getProperty("lemmaPoS");
-				System.err.println(wf + "\t" + lemma);
-				WordForm w = new WordForm();
-				w.wordform = wf;
-				w.lemma = lemma;
-				w.lemmaPoS = pos;
-				wordforms.add(w);
+				String wf = (String) n.getProperty("wordform");
+				for (Relationship r: n.getRelationships())
+				{
+					Node wordformNode = r.getOtherNode(n);
+					String lemma = (String) wordformNode.getProperty("lemma");
+					String pos = (String) wordformNode.getProperty("lemmaPoS");
+					System.err.println(wf + "\t" + lemma);
+					WordForm w = new WordForm();
+					w.wordform = wf;
+					w.lemma = lemma;
+					w.lemmaPoS = pos;
+					wordforms.add(w);
+				}
 			}
+		} catch (Exception e)
+		{
+
 		}
 		System.err.println("found items: "  + wordforms.size());
 		return wordforms;
+	}
+
+	public void lookupLemmataFromFile(String fileName)
+	{
+		Reader reader;
+		//int s = System.ge
+		try
+		{
+			reader = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
+			BufferedReader input = new BufferedReader(reader);
+			String s;
+			while ((s = input.readLine()) != null)
+			{
+				s = s.split("\\s+")[0];
+				// System.err.println(s);
+				findLemmata(s);
+			}
+		} catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -306,7 +337,7 @@ public class NeoLexicon implements ILexicon
 
 	public static void main(String[] args)
 	{
-		boolean create = false;
+		boolean create = true;
 		String arg0 = null;
 		String arg1 = null;
 		String arg2 = null;

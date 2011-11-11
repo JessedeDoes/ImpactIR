@@ -2,9 +2,11 @@ package lemmatizer;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
-import util.Trie;
+
+import trie.Trie;
 import util.Options;
 import java.io.IOException;
+
 /**
  * <p>
  * Keep a distribution of (inflectional) classes for each node in a suffix / prefix trie.
@@ -18,8 +20,8 @@ import java.io.IOException;
  */
 public class SuffixGuesser implements Classifier
 {
-  util.Trie suffixTrie = new Trie();
-  util.Trie prefixTrie = new Trie();
+  trie.Trie suffixTrie = new Trie();
+  trie.Trie prefixTrie = new Trie();
   boolean useVarianceForSmoothing = false;
   Set<String> allClasses = new HashSet<String>();
   

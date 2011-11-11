@@ -4,9 +4,11 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import util.Trie;
 import java.io.FileReader;
 import java.util.*;
+
+import trie.Trie;
+
 
 
 /**

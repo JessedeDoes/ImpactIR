@@ -5,9 +5,10 @@ import java.io.FileReader;
 import java.util.Hashtable;
 import java.util.Vector;
 
+
 import spellingvariation.History.State;
-import util.Trie;
-import util.Trie.TrieNode;
+import trie.Trie;
+import trie.Trie.TrieNode;
 
 
 /**

@@ -21,7 +21,7 @@ Slightly changed for use in IMPACT spelling variation and lemmatization modules:
 1) Make use of tail pool optional
 2) Faster read/write for the base and check arrays
  */
-package datrie;
+package trie;
 
 /*
  import org.sd.io.DataHelper;
@@ -54,7 +54,7 @@ import util.Pair;
  * 
  * @author Spence Koehler
  */
-public class DoubleArrayTrie
+public class DoubleArrayTrie implements ITrie<Object>
 {
 
 	static final int SIZE_INC = 1000023;
@@ -68,12 +68,12 @@ public class DoubleArrayTrie
 	/**
 	 * Load a double array trie that has been dumped to a file.
 	 */
-	
+
 	public static final DoubleArrayTrie loadTrie(String filename)
 			throws IOException
-	{
+			{
 		return loadTrie(new File(filename));
-	}
+			}
 
 	public static final DoubleArrayTrie loadTrie(File file) throws IOException
 	{
@@ -101,20 +101,20 @@ public class DoubleArrayTrie
 
 	public static final DoubleArrayTrie loadTrie(DataInput dataIn)
 			throws IOException
-	{
+			{
 		final DoubleArrayTrie result = new DoubleArrayTrie(false);
 		result.read(dataIn);
 		return result;
-	}
+			}
 
 	private Map<Integer, String> tailPool;
 	// for transition from state 's' to 't' over input character 'c'
 	private int[] base; // base[s] + c = t
 	private int[] check; // check[base[s] + c] = s
-	
+
 	// to encode an arbitrary  FSA, we need an extra array link s.t.link[base[s]+c]=t
-  private int[] link;
-  
+	private int[] link;
+	private Object[] nodeData;
 	private int maxDepth;
 	private int numWords;
 	private long numEncodedChars;
@@ -125,8 +125,9 @@ public class DoubleArrayTrie
 
 		base = new int[SIZE_INC + 1];
 		check = new int[SIZE_INC + 1];
-    if (useLinkArray)
-    	link = new int[SIZE_INC+1];
+		//nodeData = new Object[SIZE_INC + 1];
+		if (useLinkArray)
+			link = new int[SIZE_INC+1];
 		for (int i = 1; i <= SIZE_INC; ++i)
 		{
 			check[i - 1] = -i;
@@ -215,7 +216,7 @@ public class DoubleArrayTrie
 
 		return true;
 	}
-	
+
 	public void buildFromExistingFSA(Iterable<Pair<Integer,Pair<int[], int[]>>> it)
 	{
 		for (Pair<Integer,Pair<int[], int[]>> P: it)
@@ -307,28 +308,28 @@ public class DoubleArrayTrie
 		{
 			for (int v : base)
 				dataOut.writeInt(v);
-			for (int v : check)
-				dataOut.writeInt(v);
+					for (int v : check)
+						dataOut.writeInt(v);
 		}
 		System.err.println("Finished writing base and check arrays\n");
-		dataOut.writeInt(tailPool.size());
-		for (Map.Entry<Integer, String> entry : tailPool.entrySet())
-		{
-			final int index = entry.getKey();
-			final String tail = entry.getValue();
+							dataOut.writeInt(tailPool.size());
+							for (Map.Entry<Integer, String> entry : tailPool.entrySet())
+							{
+								final int index = entry.getKey();
+								final String tail = entry.getValue();
 
-			dataOut.writeInt(index);
-			// dataOut.writeChars(tail);
-			writeString(dataOut, tail);
-		}
+								dataOut.writeInt(index);
+								// dataOut.writeChars(tail);
+								writeString(dataOut, tail);
+							}
 	}
-/**
- * Rather ugly, but much faster than the repeated writeInt
- * <p>
- * @param dataOut
- * @param theArray
- * @throws IOException
- */
+	/**
+	 * Rather ugly, but much faster than the repeated writeInt
+	 * <p>
+	 * @param dataOut
+	 * @param theArray
+	 * @throws IOException
+	 */
 	private void writeIntArray(DataOutput dataOut, int[] theArray) throws IOException
 	{
 		byte [] dataBytes = new byte[4*theArray.length];
@@ -345,7 +346,7 @@ public class DoubleArrayTrie
 			if (negative) z += 128;
 			dataBytes[4*i+3] = (byte) (z);
 			//System.err.printf("%d als %d,%d,%d,%d\n", x,
-					//dataBytes[4*i], dataBytes[4*i+1], dataBytes[4*i+2], dataBytes[4*i+3] );
+			//dataBytes[4*i], dataBytes[4*i+1], dataBytes[4*i+2], dataBytes[4*i+3] );
 			int  u = getInt(dataBytes,i);
 			if (u != xOrg)
 			{
@@ -359,7 +360,7 @@ public class DoubleArrayTrie
 
 	public static void writeString(DataOutput dataOutput, String string)
 			throws IOException
-	{
+			{
 		if (string == null)
 		{
 			writeBytes(dataOutput, null);
@@ -368,11 +369,11 @@ public class DoubleArrayTrie
 			final byte[] bytes = string.getBytes();
 			writeBytes(dataOutput, bytes);
 		}
-	}
+			}
 
 	public static final void writeBytes(DataOutput dataOutput, byte[] bytes)
 			throws IOException
-	{
+			{
 		if (bytes == null)
 		{
 			dataOutput.writeInt(-1);
@@ -381,7 +382,7 @@ public class DoubleArrayTrie
 			dataOutput.writeInt(bytes.length);
 			dataOutput.write(bytes);
 		}
-	}
+			}
 
 	public static String readString(DataInput dataInput) throws IOException
 	{
@@ -418,25 +419,25 @@ public class DoubleArrayTrie
 	private int getInt(byte[] bytes, int j)  // this is little endian
 	{
 		int sign=1;
-	
+
 		int[] thebytes = new int[4];
 		thebytes[0] = bytes[4 * j];
 		thebytes[1] = bytes[4 * j+1];
 		thebytes[2] = bytes[4 * j+2];
 		thebytes[3] = bytes[4 * j+3];
-		
+
 		for (int i=0; i < 4; i++) // unfortunately, there are no unsigned bytes in java
 		{
 			if (thebytes[i] < 0) thebytes[i] += 256;
 		}
-		 if (thebytes[3] > 127)
-		 {
-			 sign=-1;
-			 thebytes[3] -= 128;
-		 }
-			return sign *  (thebytes[0] + (thebytes[1] << 8) + (thebytes[2] << 16) + (thebytes[3] << 24));
+		if (thebytes[3] > 127)
+		{
+			sign=-1;
+			thebytes[3] -= 128;
+		}
+		return sign *  (thebytes[0] + (thebytes[1] << 8) + (thebytes[2] << 16) + (thebytes[3] << 24));
 	}
-	
+
 	public void read(DataInput dataIn) throws IOException
 	{
 		// read maxDepth and numWords
@@ -448,7 +449,7 @@ public class DoubleArrayTrie
 		final int size = dataIn.readInt();
 		this.base = new int[size];
 		this.check = new int[size];
-		
+		this.nodeData = new Object[size];
 		if (lowLevel)
 		{
 			readIntArray(dataIn, base, size);
@@ -472,24 +473,33 @@ public class DoubleArrayTrie
 		}
 		System.err.println("Finished reading tail pool\n");
 	}
+	public void setNodeData(int i, Object o)
+	{
+		nodeData[i] = o;
+	}
+
+	public Object getObjectData(int i)
+	{
+		return nodeData[i];
+	}
 
 	private void readIntArray(DataInput dataIn, int[] theArray,  int size)
 			throws IOException
-	{
+			{
 		byte[] baseBytes = new byte[4 * (size+1)];
 		dataIn.readFully(baseBytes,0,4*size);
 		for (int i = 0; i < size; ++i)
 			theArray[i] = getInt(baseBytes,i);
 		baseBytes = null;
-	}
+			}
 
 	public String toString()
 	{
 		final StringBuilder result = new StringBuilder();
 
 		result.append("trie[numWords=").append(numWords).append(",maxDepth=")
-				.append(maxDepth).append(",numChars=").append(numEncodedChars).append(
-						",daSize=").append(base.length).append(",poolSize=").append(
+		.append(maxDepth).append(",numChars=").append(numEncodedChars).append(
+				",daSize=").append(base.length).append(",poolSize=").append(
 						tailPool.size()).append(']');
 
 		return result.toString();
@@ -518,7 +528,7 @@ public class DoubleArrayTrie
 	 * @return true if the string is a complete entry in this trie; otherwise,
 	 *         false;
 	 */
-	
+
 	private final boolean search(String string, boolean acceptPrefix)
 	{
 		string = string + "#";
@@ -567,7 +577,7 @@ public class DoubleArrayTrie
 	{
 		if (useLinkArray)
 			return getNextStateUsingLinkArray(state,c);
-		
+
 		int result = -1;
 
 		if (state < base.length && base[state] >= 0)
@@ -593,7 +603,7 @@ public class DoubleArrayTrie
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Create a base for 'state' with initial input 'c'.
 	 */
@@ -714,12 +724,12 @@ public class DoubleArrayTrie
 		while (index < stringLen)
 		{
 			state = makeBranch(state,c);
-		  index++;
-		  if (index < stringLen)
-			  c = string.charAt(index);
+			index++;
+			if (index < stringLen)
+				c = string.charAt(index);
 		}
 	}
-	
+
 	private void relocateOrGrow(int state, int[] newChars)
 	{
 		int b = findFreeCell(newChars);
@@ -954,7 +964,7 @@ public class DoubleArrayTrie
 		for (Integer c : chars)
 			result[index++] = c;
 
-		return result;
+				return result;
 	}
 
 	private final int[] addChar(int[] chars, int extra)
@@ -964,9 +974,9 @@ public class DoubleArrayTrie
 		int index = 0;
 		for (int c : chars)
 			result[index++] = c;
-		result[index] = extra;
+				result[index] = extra;
 
-		return result;
+				return result;
 	}
 
 	public static void main(String[] args) throws IOException
@@ -975,9 +985,11 @@ public class DoubleArrayTrie
 		// args1+: files with input words (1 per line)
 
 		final String outputDatFile = args[0];
+
 		DoubleArrayTrie trie = new DoubleArrayTrie();
 
-		// load trie
+		// construct trie
+
 		for (int i = 1; i < args.length; ++i)
 		{
 			final String inputWordsFile = args[i];
@@ -1023,5 +1035,64 @@ public class DoubleArrayTrie
 		}
 
 		System.err.println("done.");
+	}
+
+
+	// methods for ITrie interface
+
+
+	@Override
+	public Integer delta(Object state, int c) 
+	{
+		// TODO Auto-generated method stub
+		return getNextState((Integer) state,c);
+	}
+
+	@Override
+	public Integer getStartState() 
+	{
+		// TODO Auto-generated method stub
+		return 1;
+	}
+
+	@Override
+	public boolean isFinal(Object state) 
+	{
+		// TODO Auto-generated method stub
+		//return false;
+		int s = (Integer) state;
+		if (isFailState(s)) return false;
+		int z = getNextState(s, '#');
+		return !isFailState(z); 
+	}
+
+	private boolean isFailState(int s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setNodeData(Object node, Object data) 
+	{
+		// TODO Auto-generated method stub
+		nodeData[(Integer)  node] = data;
+
+	}
+
+	@Override
+	public void loadWordlist(String fileName) 
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Object getNodeData(Object node) 
+	{
+		// TODO Auto-generated method stub
+		int i = (Integer) node;
+		if (i < 0)
+			return null;
+		return nodeData[i];
 	}
 }

@@ -4,11 +4,12 @@ import org.jgrapht.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.alg.*;
 
+
+import trie.Trie;
+import trie.Trie.*;
 import util.ShortestPath;
-import util.Trie;
 import util.ShortestPath.BasicState;
 import util.ShortestPath.MatchState;
-import util.Trie.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

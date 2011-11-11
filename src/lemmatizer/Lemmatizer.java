@@ -1,6 +1,6 @@
 package lemmatizer;
 import spellingvariation.MemorylessMatcher;
-import util.Trie;
+import trie.Trie;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,6 +13,7 @@ import lexicon.WordForm;
 import util.Options;
 import java.util.Collections;
 import java.util.ArrayList;
+
 
 
 public class Lemmatizer
