@@ -7,7 +7,7 @@ import util.Options;
 import java.util.HashMap;
 import java.io.*;
 
-import lexicon.Lexicon;
+import lexicon.InMemoryLexicon;
 import lexicon.WordForm;
 
 class Pair<X,Y>
@@ -139,7 +139,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 
 	Knutselaar knutselaar = new Knutselaar();
 
-	public void findInflectionPatterns(Lexicon lexicon, Set<WordForm> heldOutSet)
+	public void findInflectionPatterns(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		initialExpander.findInflectionPatterns(lexicon, heldOutSet);
 		finalExpander.findInflectionPatterns(lexicon, heldOutSet);
@@ -147,7 +147,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 
 	public void findInflectionPatterns(String fileName)
 	{
-		Lexicon l = new Lexicon();
+		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(fileName);
 		findInflectionPatterns(l, new HashSet<WordForm>());
 	}

@@ -1,14 +1,20 @@
 package lemmatizer;
+import spellingvariation.DatrieMatcher;
 import spellingvariation.MemorylessMatcher;
+import trie.DoubleArrayTrie;
+import trie.ITrie;
 import trie.Trie;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
-import lexicon.Lexicon;
+import lexicon.ILexicon;
+import lexicon.InMemoryLexicon;
+import lexicon.NeoLexicon;
 import lexicon.WordForm;
 import util.Options;
 import java.util.Collections;
@@ -18,39 +24,44 @@ import java.util.ArrayList;
 
 public class Lemmatizer
 {
-	MemorylessMatcher  matcher;
-	Lexicon historicalLexicon;
-	Lexicon modernLexicon;
-	Trie lexiconTrie;
+	DatrieMatcher  matcher;
+	ILexicon historicalLexicon;
+	ILexicon modernLexicon;
+	ITrie<Object> lexiconTrie = null;
 	boolean useMatcher = true;
 
-	public Lemmatizer(String patternFilename, Lexicon m, Lexicon h)
+	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
 		this.historicalLexicon = h;
 		this.modernLexicon = m;
-		this.matcher = new MemorylessMatcher(patternFilename);
+		this.matcher = new DatrieMatcher(patternFilename);
 		matcher.setMaxPenaltyIncrement(10000);
 		matcher.setMaxSuggestions(5);
-		this.lexiconTrie = modernLexicon.createTrie(matcher.addWordBoundaries);
+		this.lexiconTrie = trie;
 	}
 
 	public Lemmatizer(String patternFilename, 
 			String modernLexiconFilename,
-			String historicalLexiconFilename)
+			String historicalLexiconFilename,
+			String trieFilename)
 	{
-		this.modernLexicon = new Lexicon();
-		this.modernLexicon.readFromFile(modernLexiconFilename);
-		this.historicalLexicon = new Lexicon();
-		this.historicalLexicon.readFromFile(historicalLexiconFilename);
+		this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
+		this.historicalLexicon = new NeoLexicon(historicalLexiconFilename, false);
 
 		System.err.println("finished reading lexicon text files");
-		this.matcher = new MemorylessMatcher(patternFilename);
-		this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
-		System.err.println("created trie from modern lexicon content");
+		this.matcher = new DatrieMatcher(patternFilename);
+		//this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
+		try {
+			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.err.println("created trie from modern lexicon content");
 		//this.matcher..
 	}
 
-	class candidateCollector extends MemorylessMatcher.Callback
+	class candidateCollector extends DatrieMatcher.Callback
 	{
 		List<WordMatch> candidates;
 		
@@ -145,7 +156,8 @@ public class Lemmatizer
 		Lemmatizer sll = new Lemmatizer(
 				Options.getOption("patternInput"),
 				Options.getOption("modernLexicon"), 
-				Options.getOption("historicalLexicon"));
+				Options.getOption("historicalLexicon"), 
+				Options.getOption("lexiconTrie"));
 		try
 		{
 			LemmatizationTest test = new LemmatizationTest();

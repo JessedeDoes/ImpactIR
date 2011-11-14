@@ -141,9 +141,9 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		return new WordFormIterator();
 	}
 
-	public Lexicon createInMemoryLexicon()
+	public InMemoryLexicon createInMemoryLexicon()
 	{
-		Lexicon l = new Lexicon();
+		InMemoryLexicon l = new InMemoryLexicon();
 		Iterator<WordForm> i = iterator();
 		while (i.hasNext())
 		{

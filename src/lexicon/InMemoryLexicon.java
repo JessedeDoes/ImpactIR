@@ -20,7 +20,7 @@ import trie.Trie;
  *
  */
 
-public class Lexicon implements Iterable<WordForm>
+public class InMemoryLexicon implements Iterable<WordForm>, ILexicon
 {
 	public HashMap<String, Set<WordForm>> lemma2forms = new HashMap<String, Set<WordForm>>();
 	public HashMap<String, Set<WordForm>> form2lemmata = new HashMap<String, Set<WordForm>>();
@@ -50,37 +50,7 @@ public class Lexicon implements Iterable<WordForm>
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
 				// System.err.println(s);
-				String[] parts = s.split("\t");
-				
-				WordForm w = new WordForm();
-				w.wordform = parts[0]; 
-				w.lemma = parts[1];
-				w.tag = parts[2];
-
-				if (parts.length > 3)
-				{
-					w.lemmaPoS = parts[3];
-				} else
-				{
-					w.lemmaPoS = w.tag;
-				}	
-				try
-				{
-					if (parts.length > 4)
-					{
-						w.lemmaFrequency = Integer.parseInt(parts[4]);
-						if (w.lemmaFrequency > 10000)
-						{
-							System.err.println(s);
-							System.exit(1);
-						}
-					}
-					if (parts.length > 5)
-						w.wordformFrequency = Integer.parseInt(parts[5]);
-				} catch (Exception e)
-				{
-					//e.printStackTrace();
-				}
+				WordForm w = LexiconUtils.getWordformFromLine(s);
 				if (w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
 					continue;
 				addWordform(w);
@@ -91,10 +61,6 @@ public class Lexicon implements Iterable<WordForm>
 			e.printStackTrace();
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see lemmatizer.ILexicon#addWordform(lemmatizer.Lexicon.WordForm)
-	 */
 
 	public void addWordform(WordForm w)
 	{

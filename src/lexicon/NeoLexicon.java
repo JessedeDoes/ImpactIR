@@ -21,15 +21,23 @@ import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.impl.annotations.Documented;
 
-public class NeoLexicon implements ILexicon
+public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 {
 	// START SNIPPET: createReltype
+	
+	static int NODETYPE_WORDFORM = 0;
+	static int NODETYPE_LEMMA = 1;	
+	
+	
 	private static enum RelTypes implements RelationshipType
 	{
 		KNOWS,
 		LEMMA_WORDFORM,
 		LEMMA_WORDFORM_CI
-	}
+	};
+	
+	//static enum NodeTypes ();
+	//public static enum NodeTypes ();
 	// END SNIPPET: createReltype
 
 	private  String DB_PATH = "c:/Temp/NeoTest";
@@ -66,31 +74,6 @@ public class NeoLexicon implements ILexicon
 		// START SNIPPET: shutdownServer
 		graphDb.shutdown();
 		// END SNIPPET: shutdownServer
-	}
-
-	private void clearDatabase() 
-	{
-		Transaction tx;
-		tx = graphDb.beginTx();
-		try
-		{
-			// START SNIPPET: removingData
-			// let's remove the data
-			for ( Node node : graphDb.getAllNodes() )
-			{
-				for ( Relationship rel : node.getRelationships() )
-				{
-					rel.delete();
-				}
-				node.delete();
-			}
-			// END SNIPPET: removingData
-			tx.success();
-		}
-		finally
-		{
-			tx.finish();
-		}
 	}
 
 	// START SNIPPET: shutdownHook
@@ -141,7 +124,48 @@ public class NeoLexicon implements ILexicon
 		}
 	}
 
+	
+	// gedoe met transacties toevoegen
+	public void readWordsFromFile(String fileName)
+	{
+		if (fileName.startsWith("database:"))
+		{
+			this.slurpDB(fileName.substring("database:".length()));
+			return;
+		}
+		int nItems=0;
+		Transaction tx = graphDb.beginTx();
+		try
+		{
+			Reader reader = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
+			BufferedReader b = new BufferedReader(reader) ; // UTF?
 
+			String s;
+			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
+			{
+				// System.err.println(s);
+				WordForm w = LexiconUtils.getWordformFromLine(s);
+				if (w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
+					continue;
+				addWordform(w);
+				nItems++;
+				if (nItems % 50000 == 0)
+				{
+					System.err.println("new transaction... " + nItems);
+					tx.success();
+					tx.finish();
+					tx =  graphDb.beginTx();
+				}
+			}
+			tx.success();
+		} catch (Exception e)
+		{
+			//System.err.println("s = " + s);
+			e.printStackTrace();
+		}
+		tx.finish();
+	}
+	
 	public void slurpDB(String dbName)
 	{
 		int nItems=0;
@@ -159,6 +183,7 @@ public class NeoLexicon implements ILexicon
 					System.err.println("new transaction...");
 					tx.success();
 					tx.finish();
+					
 					tx =  graphDb.beginTx();
 				}
 			}
@@ -169,7 +194,7 @@ public class NeoLexicon implements ILexicon
 			tx.finish();
 		}
 		System.err.println("items added: "  + nItems);
-		graphDb.shutdown();
+		//graphDb.shutdown();
 	}
 
 
@@ -201,6 +226,7 @@ public class NeoLexicon implements ILexicon
 		try
 		{
 			Node wordformNode = graphDb.createNode();
+			wordformNode.setProperty("type", NODETYPE_WORDFORM);
 			Node lemmaNode = findLemmaNode(w.lemma,w.lemmaPoS);
 
 			if (lemmaNode == null)
@@ -231,6 +257,7 @@ public class NeoLexicon implements ILexicon
 		lemmaNode.setProperty("lemma", lemma);
 		lemmaNode.setProperty("lemma_lowercase", lemma.toLowerCase());
 		lemmaNode.setProperty("lemmaPoS", lemmaPoS);
+		lemmaNode.setProperty("type", NODETYPE_LEMMA);
 		nodeIndex.add(lemmaNode, "lemma", lemma);
 		nodeIndex.add(lemmaNode, "lemmaLowercase",  lemma.toLowerCase());
 		return lemmaNode;
@@ -328,11 +355,117 @@ public class NeoLexicon implements ILexicon
 		}
 	}
 
+	public WordForm getWordFormFromNode(Node x)
+	{
+		try
+		{
+			int type = (Integer) x.getProperty("type");
+			if (type == NODETYPE_WORDFORM)
+			{
+				WordForm w = new WordForm();
+				w.wordform = (String) x.getProperty("wordform");
+				w.tag = (String) x.getProperty("tag");
+				// and retrieve lemma...
+				for (Relationship r: x.getRelationships())
+				{
+					Node l = r.getOtherNode(x);
+					w.lemma = (String) l.getProperty("lemma");
+					w.lemmaPoS = (String) l.getProperty("lemmaPoS");
+				}
+				return w;
+			} else
+			{
+				return null;
+			}
+		} catch (Exception e)
+		{
+			return null;
+		}
+	}
+	
+	class WordformIterator implements Iterator<WordForm>
+	{
+		Iterator<Node> nodeIterator;
+		Node currentNode;
+		WordForm nextWord = null;
+		
+		public WordformIterator()
+		{
+			nodeIterator = graphDb.getAllNodes().iterator();
+		}
+		
+		public boolean hasNext()
+		{
+			if (nextWord != null)
+				return true;
+			if (!nodeIterator.hasNext())
+				return false;
+			while (true)
+			{
+				if (nodeIterator.hasNext())
+				{
+					currentNode = nodeIterator.next();
+					//System.err.println(currentNode);
+					nextWord = getWordFormFromNode(currentNode);
+					if (nextWord != null)
+						return true;
+						
+				} else
+				{
+					return false;
+				}
+			}
+		}
+		
+		public WordForm next()
+		{
+		    if (hasNext())
+		    {
+		    	WordForm n = nextWord;
+		    	nextWord = null;
+		    	return n;
+		    } else
+		    	return null;
+		}
+
+		@Override
+		public void remove() 
+		{
+			// TODO Auto-generated method stub
+			
+		}
+	}
 	@Override
 	public Iterator<WordForm> iterator() 
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return new WordformIterator();
+	//return null;
+	}
+
+	private void clearDatabase() 
+	{
+		Transaction tx;
+		tx = graphDb.beginTx();
+		try
+		{
+			// START SNIPPET: removingData
+			// let's remove the data
+			for ( Node node : graphDb.getAllNodes() )
+			{
+				for ( Relationship rel : node.getRelationships() )
+				{
+					rel.delete();
+				}
+				node.delete();
+			}
+			// END SNIPPET: removingData
+			tx.success();
+		}
+		finally
+		{
+			tx.finish();
+		}
 	}
 
 	public static void main(String[] args)
@@ -353,6 +486,11 @@ public class NeoLexicon implements ILexicon
 		{
 			NeoLexicon l = new NeoLexicon(arg0, true);
 			l.slurpDB(arg1);
+			int k=0;
+			for (WordForm w: l)
+			{
+				System.err.println(k++ + "= " + w);
+			}
 		} else
 		{
 			NeoLexicon l = new NeoLexicon(arg0, false);

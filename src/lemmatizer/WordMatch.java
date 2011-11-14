@@ -1,5 +1,5 @@
 package lemmatizer;
-import lexicon.Lexicon;
+import lexicon.InMemoryLexicon;
 import lexicon.WordForm;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class WordMatch
 	String target;
 	String alignment = ""; 
 	MatchType type;
-	Lexicon lexicon;
+	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;
 	int wordformFrequency=0;
 	

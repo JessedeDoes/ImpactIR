@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
-import lexicon.Lexicon;
+import lexicon.InMemoryLexicon;
 import lexicon.WordForm;
 import util.Options;
 
@@ -224,17 +224,17 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
 
   public void findInflectionPatterns(String fileName)
   {
-    Lexicon l = new Lexicon();
+    InMemoryLexicon l = new InMemoryLexicon();
     l.readFromFile(fileName);
     findInflectionPatterns(l, null);
   }
   
-  public void findInflectionPatterns(Lexicon lexicon)
+  public void findInflectionPatterns(InMemoryLexicon lexicon)
   {
   	findInflectionPatterns(lexicon, null);
   }
   
-  public void findInflectionPatterns(Lexicon lexicon, Set<WordForm> heldOutSet)
+  public void findInflectionPatterns(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
   {
     HashMap<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
     HashMap<Rule, Rule> rules = new HashMap<Rule, Rule>();

@@ -37,9 +37,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -992,27 +994,10 @@ public class DoubleArrayTrie implements ITrie<Object>
 
 		for (int i = 1; i < args.length; ++i)
 		{
-			final String inputWordsFile = args[i];
-			System.err.println("loading '" + inputWordsFile + "'...");
-
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(inputWordsFile), "UTF-8"));
-			String line = null;
-			while ((line = reader.readLine()) != null)
-			{
-				//System.err.println(line);
-				trie.add(line.trim());
-			}
-			reader.close();
-
-			System.err.println("\t" + trie);
+			trie.readWordsFromFile(args[i]);
 		}
 
-		System.err.println("Writing trie to '" + outputDatFile + "'");
-		final DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(
-				outputDatFile));
-		trie.dump(dataOut);
-		dataOut.close();
+		trie.saveToFile(outputDatFile);
 
 		trie = DoubleArrayTrie.loadTrie(outputDatFile);
 		// verify trie
@@ -1035,6 +1020,33 @@ public class DoubleArrayTrie implements ITrie<Object>
 		}
 
 		System.err.println("done.");
+	}
+
+	public void saveToFile(final String outputDatFile) throws FileNotFoundException, IOException 
+	{
+		System.err.println("Writing trie to '" + outputDatFile + "'");
+		final DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(
+				outputDatFile));
+		this.dump(dataOut);
+		dataOut.close();
+	}
+
+	public void readWordsFromFile(String inputWordsFile) throws UnsupportedEncodingException, FileNotFoundException,
+			IOException 
+	{
+		System.err.println("add words from '" + inputWordsFile + "'...");
+
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(inputWordsFile), "UTF-8"));
+		String line = null;
+		while ((line = reader.readLine()) != null)
+		{
+			//System.err.println(line);
+			this.add(line.trim());
+		}
+		reader.close();
+
+		System.err.println("\t" + this);
 	}
 
 
@@ -1066,9 +1078,16 @@ public class DoubleArrayTrie implements ITrie<Object>
 		return !isFailState(z); 
 	}
 
+ 	public boolean isFailState(Object state) 
+	{
+                // TODO Auto-generated method stub
+		int s = (Integer) state;
+                return s == -1;
+        }
+
 	private boolean isFailState(int s) {
 		// TODO Auto-generated method stub
-		return false;
+  		return s == -1;
 	}
 
 	@Override

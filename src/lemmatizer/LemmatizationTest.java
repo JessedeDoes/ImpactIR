@@ -63,7 +63,8 @@ public class LemmatizationTest
 		Lemmatizer simpleLemmatizer = new Lemmatizer(
 				Options.getOption("patternInput"),
 				Options.getOption("modernLexicon"), 
-				Options.getOption("historicalLexicon"));
+				Options.getOption("historicalLexicon"),
+				Options.getOption("lexiconTrie"));
 		
 		try
 		{

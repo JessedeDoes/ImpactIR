@@ -278,6 +278,7 @@ public class DatrieMatcher
 					{
 						left=lhsrhs[0]; right=lhsrhs[1];
 					}
+					
 					RuleInfo rule = new RuleInfo(left, right, 
 							Double.parseDouble(tokens[1]),
 							Double.parseDouble(tokens[2]),
@@ -434,8 +435,9 @@ public class DatrieMatcher
 		{
 			Trie.Transition t = lhsNode.transition(i);
 			Object nextNodeInLexicon;
-			if ((nextNodeInLexicon = lexiconTrie.delta(lexnode,t.character)) != null)
+			if (!lexiconTrie.isFailState(nextNodeInLexicon = lexiconTrie.delta(lexnode,t.character)))
 			{
+				System.err.println(lexnode + " " + nextNodeInLexicon + " "  + t.character);
 				lhsRecursion(item, t.node, nextNodeInLexicon, pos, cost);
 			}
 		}
@@ -448,7 +450,7 @@ public class DatrieMatcher
 		Object nextlexnode;
 
 		if ((positionInWord < targetWord.length())
-				&& (nextlexnode = lexiconTrie.delta(item.lexnode, targetWord.charAt(positionInWord))) != null)
+				&& !lexiconTrie.isFailState(nextlexnode = lexiconTrie.delta(item.lexnode, targetWord.charAt(positionInWord))))
 		{
 			tryNewItem(item, nextlexnode, positionInWord + 1, item.cost - BONUS, null);
 		}
@@ -624,7 +626,7 @@ public class DatrieMatcher
 			while ((s=in.readLine()) != null)
 			{
 				String[] parts = s.split("\\t");
-				String lemma=parts[0];  String modern = parts[1]; String historical = parts[2];
+				String lemma = parts[0];  String modern = parts[1]; String historical = parts[2];
 				cb.reference = modern;
 				boolean found = this.matchWordToLexicon(lexicon, historical);
 				cb.itemsTested++;

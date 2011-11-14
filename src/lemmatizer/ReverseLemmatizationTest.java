@@ -1,14 +1,14 @@
 package lemmatizer;
 import java.util.*;
 
-import lexicon.Lexicon;
+import lexicon.InMemoryLexicon;
 import lexicon.WordForm;
 
 import util.Options;
 
 public class ReverseLemmatizationTest implements FoundFormHandler
 {
-	Lexicon referenceLexicon  = new Lexicon();
+	InMemoryLexicon referenceLexicon  = new InMemoryLexicon();
 	int  itemsTested = 0;
 	double correctProposals=0;
 	double incorrectProposals=0;
@@ -55,7 +55,7 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 	 * @param portion
 	 * @return
 	 */
-	public static Set<WordForm> createHeldoutSet(Lexicon lexicon, double portion)
+	public static Set<WordForm> createHeldoutSet(InMemoryLexicon lexicon, double portion)
 	{
 		 Set<WordForm> V  = new HashSet<WordForm>(); 
 		 for (String lemma: lexicon.lemma2forms.keySet())
@@ -69,7 +69,7 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 	public void runTest(ParadigmExpander r)
 	{
 		r.setCallback(this);
-		Lexicon all = referenceLexicon;
+		InMemoryLexicon all = referenceLexicon;
 		Set<WordForm> heldOut = createHeldoutSet(all, 0.1);
 		System.err.println("Created held-out set of size " + heldOut.size());
 		r.findInflectionPatterns(all, heldOut);
