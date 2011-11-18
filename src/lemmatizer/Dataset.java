@@ -1,8 +1,8 @@
 package lemmatizer;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.Vector;
-import java.util.Iterator;
-import java.util.HashMap;
+//import java.util.Iterator;
+//import java.util.HashMap;
 import java.util.Collections;
 
 public class Dataset
@@ -37,9 +37,9 @@ public class Dataset
 
   public static void main(String[] args)
   {
-    Dataset d = new Dataset("testje");
-    Feature p1 = new Feature("prefix" + 1) { public  String getValue(String s) { return s.substring(0,1); } };
-    Feature p2 = new Feature("prefix" + 2) { public  String getValue(String s) { return s.substring(0,2); } };
+    //Dataset d = new Dataset("testje");
+    //Feature p1 = new Feature("prefix" + 1) { public  String getValue(String s) { return s.substring(0,1); } };
+    //Feature p2 = new Feature("prefix" + 2) { public  String getValue(String s) { return s.substring(0,2); } };
     //d.addFeature(p1);
     //d.addFeature(p2);
     //d.addItem("hond","ja");

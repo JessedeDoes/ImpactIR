@@ -80,6 +80,10 @@ public class Alignment
 	
 	protected class AlignmentGraph extends SimpleDirectedWeightedGraph<Alignment.Position, Transition>
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		public AlignmentGraph(EdgeFactory<Position, Transition> ef) 
 		{
 			super((EdgeFactory<Position, Transition>) ef);
@@ -102,8 +106,8 @@ public class Alignment
 			for (Object o: p.getEdgeList())
 			{
 				Transition edge = (Transition) o;
-				Position source = (Position) fullGraph.getEdgeSource(edge);
-				Position target = (Position) fullGraph.getEdgeTarget(edge);
+				Position source = fullGraph.getEdgeSource(edge);
+				Position target = fullGraph.getEdgeTarget(edge);
 				restrictedGraph.addVertex(source); // TODO what if already in graph??
 				restrictedGraph.addVertex(target); // TODO what if already in graph??
 				Transition e = restrictedGraph.getEdge(source, target);
@@ -222,8 +226,8 @@ public class Alignment
 		{
 			DijkstraShortestPath<Position, Transition> D = 
 				new DijkstraShortestPath<Position, Transition>(fullGraph, getVertexAt(0,0), getVertexAt(m,n));
-			GraphPath p = D.getPath(); 
-			pathList = new ArrayList();
+			GraphPath<Position, Transition> p = D.getPath(); 
+			pathList = new ArrayList<GraphPath<Position, Transition>>();
 			pathList.add(p);
 		}
 		
@@ -236,7 +240,7 @@ public class Alignment
 			for (Object o: p.getEdgeList())
 			{
 				Transition edge = (Transition) o;
-				positions[i++] = (Position) fullGraph.getEdgeSource(edge);
+				positions[i++] = fullGraph.getEdgeSource(edge);
 			}
 			positions[i] = (Position) p.getEndVertex();
 			condensedPathList.add(positions);

@@ -11,6 +11,7 @@ public class Options
 	static Properties properties = new Properties();
 	static org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
 	org.apache.commons.cli.GnuParser parser = new org.apache.commons.cli.GnuParser();
+	CommandLine commandLine = null;
 
 	public Options(String[] args)
 	{
@@ -41,6 +42,7 @@ public class Options
 		options.addOption("E", "echoTrainFile", true, "Echo training set (reverse lemmatizer");
 		options.addOption("X", "forbidInsertsAndDeletes", true, "Do not save inserts and deletes in pattern output");
 		options.addOption("T", "lexiconTrie", true, "Compiled Trie for Modern Lexicon");
+		options.addOption("z", "targetDirectory", true, "Base directory for compiled lexicon data");
 
 
 		parseCommandLine(args);
@@ -53,17 +55,17 @@ public class Options
 	{
 		try
 		{
-			CommandLine cl = parser.parse(options, arguments, properties);
-			if (cl.hasOption("h"))
+			commandLine = parser.parse(options, arguments, properties);
+			if (commandLine.hasOption("h"))
 			{
 				usage();
 				System.exit(0);
 			}
-			if (cl.hasOption("f"))
+			if (commandLine.hasOption("f"))
 			{
-				properties.load(new FileReader(cl.getOptionValue("f")));	
+				properties.load(new FileReader(commandLine.getOptionValue("f")));	
 			}
-			for (Option o:cl.getOptions())
+			for (Option o:commandLine.getOptions())
 			{
 				String name=o.getLongOpt();
 				String value = o.getValue();
@@ -153,6 +155,10 @@ public class Options
 		formatter.printHelp(topClass, options);
 	}
 
+	public String[] getArgs()
+	{
+		return commandLine.getArgs();
+	}
 	public static void main(String[] args)
 	{
 		new Options(args);

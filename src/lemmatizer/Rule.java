@@ -1,10 +1,5 @@
 package lemmatizer;
-import java.io.*;
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Properties;
 
 class Rule
 {

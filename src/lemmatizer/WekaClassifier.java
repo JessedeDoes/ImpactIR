@@ -1,7 +1,10 @@
 package lemmatizer;
-import weka.core.*;
-import weka.classifiers.*;
 import java.io.FileWriter;
+
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
 
 public class WekaClassifier implements Classifier
 {
@@ -10,7 +13,7 @@ public class WekaClassifier implements Classifier
   String name;
   weka.classifiers.Classifier wekaClassifier;
   FastVector wekaAttributes = new FastVector();
-  Class classifierClass;
+  Class<?> classifierClass;
 
   public WekaClassifier(String classifierType)
   {
@@ -22,6 +25,7 @@ public class WekaClassifier implements Classifier
       e.printStackTrace();
     }
   }
+  
   public void setType(String t)
   {
   	 try

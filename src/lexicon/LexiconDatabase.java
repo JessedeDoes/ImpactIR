@@ -2,20 +2,27 @@ package lexicon;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.*;
+//import java.util.zip.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
+//import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import util.Resource;
 
 
 public class LexiconDatabase extends util.Database  implements Iterable<WordForm> 
 {
-	Connection connection = null;
-
+	//Connection connection = null;
+	boolean onlyVerified = false;
+	boolean useSimpleWordformsOnly = false;
+	
+	static String q1 = Resource.getStringFromFile("sql/createSimple.sql");
+	
+			  		
 	public LexiconDatabase(Properties props)
 	{
 		super(props);
@@ -37,7 +44,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	{
 		try 
 		{
-			this.connection = (new ConnectorSimple()).connect(mysqlurl, mysqluser, mysqlpasswd);
+			connection = (new ConnectorSimple()).connect(mysqlurl, mysqluser, mysqlpasswd);
 			System.err.println("Connection: " + this.connection);
 		} catch (Exception e)
 		{
@@ -46,24 +53,52 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		}
 	}
 
+	public void createSimpleAnalyzedWordformTable()
+	{
+		String[] parts = q1.split(";");
+		for (String q: parts)
+		{
+			System.err.println(q);
+			this.runQuery(q);
+		}
+	}
 	class WordFormIterator implements Iterator<WordForm>
 	{
 		ResultSet rs;
-		String postAdbQuery = "select distinct modern_lemma, wordform, '', '' from AttestatieLexicon.lexiconSplit";
+		//String postAdbQuery = "select distinct modern_lemma, wordform, '', '' from AttestatieLexicon.lexiconSplit";
 		
 		
-		String ldbQuery = 
+		String analyzedWordformTable = useSimpleWordformsOnly ? "simple_analyzed_wordforms" : 
+			"analyzed_wordforms";
+		
+		String extractWordformsQuery = 
 			"select modern_lemma, wordform, lemma_part_of_speech, '' from lemmata, analyzed_wordforms a, wordforms" +
 			" where lemmata.lemma_id = a.lemma_id and a.wordform_id = " +
 			" wordforms.wordform_id";
-		String adbQuery = "";
-		String query = ldbQuery; // + " and verified_by is not null"; // geattesteerd deel voor het historisch lexicon?
+		
+		String query = extractWordformsQuery + 
+				(onlyVerified? " and verified_by is not null" : ""); // geattesteerd deel voor het historisch lexicon?
 		
 		PreparedStatement stmt = null;
 
 
+		private void initializeQuery()
+		{
+			analyzedWordformTable = useSimpleWordformsOnly ? "simple_analyzed_wordforms" : 
+				"analyzed_wordforms";
+			extractWordformsQuery = 
+					"select modern_lemma, wordform, lemma_part_of_speech, '' from lemmata, " 
+					+ analyzedWordformTable 
+					+ " a, wordforms" +
+					" where lemmata.lemma_id = a.lemma_id and a.wordform_id = " +
+					" wordforms.wordform_id";
+			query = extractWordformsQuery + 
+					(onlyVerified? " and verified_by is not null" : "");
+		}
+		
 		public WordFormIterator()
 		{
+			initializeQuery();
 			try
 			{
 				System.err.println(connection);
@@ -80,6 +115,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 				
 			}
 		}
+		
 		@Override
 		public boolean hasNext()
 		{
@@ -101,13 +137,13 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 			{
 				if (rs.next())
 				{
-					int nofcolumns = rs.getMetaData().getColumnCount();
+					//int nofcolumns = rs.getMetaData().getColumnCount();
 					WordForm w = new WordForm();
 					try
 					{
 						w.lemma = new String(rs.getBytes(1), "UTF-8");
 						w.wordform = new String(rs.getBytes(2), "UTF-8");
-						w.lemmaPoS =  new String(rs.getBytes(3), "UTF-8");
+						w.lemmaPoS = new String(rs.getBytes(3), "UTF-8");
 						w.tag = w.lemmaPoS;
 					} catch (Exception e)
 					{
@@ -155,6 +191,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public static void main(String[] args) throws Exception
 	{
+		System.err.println(q1);
 		System.err.println("load database...");
 		String arg0 = null;
 		if (args.length < 1)
@@ -162,6 +199,8 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		else
 			arg0 = args[0];
 		LexiconDatabase l = new LexiconDatabase(arg0);
+		l.createSimpleAnalyzedWordformTable();
+		l.useSimpleWordformsOnly = true;
 		System.err.println("database loaded");
 		int k=0;
 		OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");

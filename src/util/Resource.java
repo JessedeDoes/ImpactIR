@@ -7,6 +7,7 @@ public class Resource
 
 	/** Creates a new instance of Resource **/
 	
+	public static String resourceFolder = "resources";
 	public Resource()
 	{
 
@@ -17,7 +18,7 @@ public class Resource
 		try 
 		{
 			// first try to read file from local file system
-			File file = new File(s);
+			File file = new File(resourceFolder + "/"+ s);
 			if (file.exists())
 			{
 				return new FileReader(file);
@@ -40,5 +41,25 @@ public class Resource
 	public static Reader openResourceFile(String s)
 	{
 		return new  Resource().openFile(s);
+	}
+	
+	public static String getStringFromFile(String fileName)
+	{
+		String r="";
+		
+		try
+		{
+			BufferedReader reader = new BufferedReader((new Resource()).openFile(fileName));
+			String s;
+		
+			while ((s = reader.readLine()) != null)
+			{
+				r += s + "\n";
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return r;
 	}
 }

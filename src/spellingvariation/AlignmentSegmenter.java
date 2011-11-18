@@ -1,15 +1,16 @@
 package spellingvariation;
 
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.alg.*;
-
-import spellingvariation.Alignment.Position;
-import spellingvariation.Alignment.AlignmentGraph;
-import spellingvariation.Alignment.Transition;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 import java.util.List;
 import java.util.Vector;
+
+import org.jgrapht.EdgeFactory;
+import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
+
+import spellingvariation.Alignment.AlignmentGraph;
+import spellingvariation.Alignment.Position;
 /**
  * 
  * @author jesse
@@ -149,8 +150,7 @@ public class AlignmentSegmenter
 					e = segmentation.addEdge(from, to);
 				//.setEdgeWeight(e,fullGraph.getEdgeWeight(edge));
 					e.multigramId = n.multigramId;
-					if (false) System.err.println("Yep transition from "
-						+ from + " to " + to + " on " + multigramTrie.getMultigramById(e.multigramId));
+					//if (false) System.err.println("Yep transition from " + from + " to " + to + " on " + multigramTrie.getMultigramById(e.multigramId));
 				}
 			}
 			findSegmentationsFrom(to);

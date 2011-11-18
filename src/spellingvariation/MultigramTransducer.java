@@ -72,7 +72,7 @@ public class MultigramTransducer implements java.io.Serializable
 		// 1: bootstrap from the singleton case
 		this.baseTransducer = new UnigramTransducer();
 		this.baseTransducer.estimateParameters(d);
-		//this.baseTransducer.dumpAlignments(d);
+		this.baseTransducer.dumpAlignments(d);
 		// 2: set initial multigram scores from the singleton transducer
 		// also produces pruned alignment graphs for all candidate pairs
 		multigramSet.order = MODEL_ORDER; 
@@ -747,7 +747,7 @@ public class MultigramTransducer implements java.io.Serializable
 
 	public void FrenchG2PTest(Dataset d)
 	{	
-	  this.MAX_ALIGNMENTS = 5;
+	  	this.MAX_ALIGNMENTS = 5;
 		this.MODEL_ORDER = 4;
 		this.multigramPruner = new FrenchG2PMultigramPruner();
 		this.estimateParameters(d);
@@ -757,7 +757,7 @@ public class MultigramTransducer implements java.io.Serializable
 	public void FrenchTest(Dataset d)
 	{
 		//patternsets/frenchG2P.graphemes
-	  this.MAX_ALIGNMENTS = 5;
+	  	this.MAX_ALIGNMENTS = 5;
 		this.MODEL_ORDER = 4;
 		this.multigramPruner = new LHSConstrainedMultigramPruner("patternsets/frenchG2P.graphemes");
 		this.estimateParameters(d);

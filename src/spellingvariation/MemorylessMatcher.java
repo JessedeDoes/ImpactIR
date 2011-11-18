@@ -2,6 +2,7 @@ package spellingvariation;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.Reader;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
@@ -9,51 +10,6 @@ import util.Options;
 import trie.Trie;
 import trie.Trie.TrieNode;
 
-
-class RuleInfo // this is silly, just echos jointmultigram
-{
-	int multigramId;
-	String lhs;
-	String rhs;
-	double p_cond_rhs; // is p(multigram) | right hand side (rhs = usually historical)
-	double joint_probability;  //
-	double p_cond_lhs; // is p(multigram) | left hand side;
-
-	int cost;
-
-	RuleInfo(String lhs, String rhs, double probability)
-	{
-		this.lhs = lhs;
-		this.rhs = rhs;
-		this.p_cond_rhs = probability;
-		cost = (int) (-MemorylessMatcher.costScale * Math.log(probability)); // log is ln in java
-		if (cost < 0)
-		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  probability,lhs,rhs);
-			System.exit(1);
-		}
-		if (cost == 0) cost = 1;
-	}
-
-	public RuleInfo(String lhs, String rhs, double pcombi,
-			double p_cond_lhs, double p_cond_rhs)
-	{
-		this.lhs = lhs;
-		this.rhs = rhs;
-		this.p_cond_rhs = p_cond_rhs;
-		this.joint_probability = pcombi;
-		this.p_cond_lhs= p_cond_lhs;
-
-		cost = (int) (-MemorylessMatcher.costScale * Math.log( p_cond_rhs));
-		if (cost < 0)
-		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  p_cond_rhs,lhs,rhs);
-			System.exit(1);
-		}
-		if (cost == 0) cost = 1;
-		// TODO Auto-generated constructor stub
-	}
-}
 
 class MatchState implements Comparable<MatchState>
 {
@@ -526,6 +482,10 @@ public class MemorylessMatcher
 			this.targetWord = Alphabet.initialBoundaryString + this.targetWord + Alphabet.finalBoundaryString;
 		//this.queue =  fh_makekeyheap();
 
+		if (lexicon.contains(targetWord))
+			System.err.println("letterlijke match: " + targetWord);
+		else
+			System.err.println(targetWord + " zit er niet in");
 		MatchState startitem = new MatchState(lextrie.root, 0);
 		activeItems.addElement(startitem);
 		startitem.cost = 0;
@@ -650,7 +610,7 @@ public class MemorylessMatcher
 				false, 
 				Options.getOptionBoolean("addWordBoundaries", false));
 		boolean found= false;
-		java.io.BufferedReader stdin;
+		java.io.BufferedReader stdin = null;
 
 		String testFile="";
 
@@ -658,15 +618,25 @@ public class MemorylessMatcher
 		{
 			try
 			{
-				stdin = new BufferedReader(new FileReader(testFile));
+				 Reader reader = new InputStreamReader(
+				new FileInputStream(Options.getOption("testFile")), "UTF-8");
+            	            stdin  = new BufferedReader(reader);
+
 			} catch (Exception e)
 			{
 				e.printStackTrace();
 				stdin = null;
 			}
 		} else
-			stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
-
+ 		{
+			try
+			{
+				stdin = new BufferedReader(new java.io.InputStreamReader(System.in, "UTF-8"));
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 		String cmd = Options.getOption("command");
 		if (cmd != null && cmd.equals("test"))
 		{

@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 
 public class Database
 {
-	Connection connection = null;
+	public Connection connection = null;
 	static boolean PREPEND_COLUMN_NAMES = false;
 	public String mysqlhost = "impactdb.inl.loc";
 	public String mysqlport = "3306";
@@ -44,7 +44,7 @@ public class Database
 		System.err.println(mysqlurl);
 		init();
 	}
-	
+
 	public Database()
 	{
 		init();
@@ -113,8 +113,7 @@ public class Database
 		}
 	}
 
-	public Vector<Vector<String>> SimpleSearch(String tableName, 
-			Vector<String> whereclauses, int start, int nof) throws Exception
+	public Vector<Vector<String>> SimpleSearch(String tableName,  Vector<String> whereclauses, int start, int nof) throws Exception
 	{
 		PreparedStatement stmt = null;
 		String where = "";
@@ -210,9 +209,7 @@ public class Database
 		return types;
 	}
 
-	public Vector<Vector<String>> SimpleSelect(String tableName, 
-			Vector<String> selected_fields, 
-			Vector<String> whereclauses, int start, int nof) throws Exception
+	public Vector<Vector<String>> SimpleSelect(String tableName, Vector<String> selected_fields, Vector<String> whereclauses, int start, int nof) throws Exception
 	{
 		PreparedStatement stmt = null;
 		String where = "";
@@ -310,7 +307,7 @@ public class Database
 		} 
 
 		while (rs.next()) // mis je nu de eerste??
-				{
+		{
 			Vector<String> row = new Vector<String>();
 			for (int i=1; i <= nofcolumns; i++)
 			{
@@ -319,12 +316,12 @@ public class Database
 					String s = new String(rs.getBytes(i), "UTF-8");
 					row.addElement(s);
 				} catch (Exception e)
-		    {
+				{
 					row.addElement("NULL");
 				}
 			}
 			types.addElement(row);
-				}
+		}
 		return types;
 	}
 
@@ -373,7 +370,7 @@ public class Database
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int nofRows (String table_name) throws Exception
 	{
 		try
@@ -408,7 +405,7 @@ public class Database
 				Connection connection = DriverManager.getConnection(url, user, password);
 
 				// Allow large packets
-				
+
 				//Statement stmt = connection.createStatement();
 				//stmt.execute("SET SESSION `max_allowed_packet`= 1000000000;");
 				//stmt.close();

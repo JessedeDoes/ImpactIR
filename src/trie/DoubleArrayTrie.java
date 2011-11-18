@@ -47,9 +47,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+//import java.util.Iterator;
 import util.Pair;
-
+import util.Options;
 /**
  * Double-array trie implementation.
  * <p>
@@ -87,9 +87,9 @@ public class DoubleArrayTrie implements ITrie<Object>
 			System.err.println("loading trie from '" + file.getAbsolutePath()
 					+ "'... " + new Date());
 			dataIn = new DataInputStream(new FileInputStream(file));
-			final long startTime = System.currentTimeMillis();
+			//final long startTime = System.currentTimeMillis();
 			result = loadTrie(dataIn);
-			final long endTime = System.currentTimeMillis();
+			//final long endTime = System.currentTimeMillis();
 			System.err.println("loaded trie from '" + file + "' " + new Date());
 			// + MathUtil.timeString(endTime - startTime, false));
 		} finally
@@ -985,9 +985,9 @@ public class DoubleArrayTrie implements ITrie<Object>
 	{
 		// arg0: output trie dat file.
 		// args1+: files with input words (1 per line)
-
+		args = (new Options(args)).getArgs();
 		final String outputDatFile = args[0];
-
+		boolean addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", false);
 		DoubleArrayTrie trie = new DoubleArrayTrie();
 
 		// construct trie
@@ -1011,7 +1011,9 @@ public class DoubleArrayTrie implements ITrie<Object>
 			String line = null;
 			while ((line = reader.readLine()) != null)
 			{
-				if (!trie.contains(line.trim()))
+				String s = line.trim();
+				if (addWordBoundaries) s = "^" + s + "$";
+				if (!trie.contains(s))
 				{
 					System.err.println("\tlost '" + line + "'!");
 				}
@@ -1036,13 +1038,16 @@ public class DoubleArrayTrie implements ITrie<Object>
 	{
 		System.err.println("add words from '" + inputWordsFile + "'...");
 
+		boolean addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", false);
+
 		final BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(inputWordsFile), "UTF-8"));
 		String line = null;
 		while ((line = reader.readLine()) != null)
 		{
 			//System.err.println(line);
-			this.add(line.trim());
+			String t = line.trim();
+			this.add(addWordBoundaries? "^" + t + "$": t);
 		}
 		reader.close();
 

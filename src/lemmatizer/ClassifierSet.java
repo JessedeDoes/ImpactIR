@@ -1,12 +1,12 @@
 package lemmatizer;
 import java.io.*;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import weka.classifiers.*;
-import weka.classifiers.functions.*;
-import weka.core.Instance;
+//import weka.classifiers.*;
+//import weka.classifiers.functions.*;
+//import weka.core.Instance;
 import java.util.Properties;
 
 /**
@@ -20,7 +20,7 @@ class ClassifierSet
   HashMap<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
   String classifierType = "trees.J48";
   String classifierClassName = "WekaClassifier";// "trees.J48"; // "functions.SMO";
-  Class classifierClass = null;
+  Class<?> classifierClass = null;
   FeatureSet features = new SimpleFeatureSet();
   ArrayList<String> tagsSorted = null;
   protected FoundFormHandler callback = null;
@@ -75,7 +75,7 @@ class ClassifierSet
       classifiersPerTag.put(tag,c);
       c.train(d, MAX_ITEMS_USED);
     }
-    tagsSorted = new ArrayList(datasetsPerTag.keySet());
+    tagsSorted = new ArrayList<String>(datasetsPerTag.keySet());
     Collections.sort(tagsSorted);
   }
 /**
@@ -161,7 +161,7 @@ class ClassifierSet
       p.setProperty("class",classifierType);
       for (String tag: datasetsPerTag.keySet())
       {
-        Dataset d = datasetsPerTag.get(tag);
+        //Dataset d = datasetsPerTag.get(tag);
         Classifier c = classifiersPerTag.get(tag);
         String fileName = String.format("%s/M%d.model", dirName, k); 
         p.setProperty(String.format("M%d.model",k), tag);

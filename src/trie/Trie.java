@@ -1,9 +1,13 @@
 package trie;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.io.*;
-
-import spellingvariation.History.Transition;
 
 /**
  * An extremely simple implementation of a Trie
@@ -72,6 +76,10 @@ public class Trie implements java.io.Serializable
 	
 	public class Transition implements Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		public int character;
 		public transient TrieNode node; 
 		protected int targetIndex;
@@ -146,7 +154,7 @@ public class Trie implements java.io.Serializable
 	
 	public void loadWordlist(String filename, boolean assumeOrdered, boolean addWordBoundaries)
 	{
-		String previousWord = null;
+		//String previousWord = null;
 		int nWords = 0;
 
 		java.io.BufferedReader wordlist;
@@ -175,11 +183,16 @@ public class Trie implements java.io.Serializable
 
 		this.root.reset();
 		this.root.number(0);
-		System.err.printf("this trie has %d nodes\n", this.root.nodesBelow);
+		System.err.printf("this trie has %d nodes and %d words\n", 
+				this.root.nodesBelow, nWords);
 	}
 
 	public  class TrieNode implements Serializable
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		Vector<Transition> transitions;
 		int nodesBelow = 0;
 		boolean closed;
@@ -289,7 +302,7 @@ public class Trie implements java.io.Serializable
 			return next.putWord(w,p+1);
 		}
 
-		void reviseLastTransition(Hashtable pool)
+		void reviseLastTransition(Hashtable<TrieNode, TrieNode> pool)
 		{
 			Transition t;
 			TrieNode tr, next;
@@ -304,7 +317,7 @@ public class Trie implements java.io.Serializable
 			next = t.node;
 			if (next != null) 
 				next.reviseLastTransition(pool);
-			tr  = (TrieNode) pool.get(next); //Huh
+			tr  = pool.get(next); //Huh
 			NofTreeNodes++;
 			if (tr != null)
 			{
@@ -313,12 +326,6 @@ public class Trie implements java.io.Serializable
 					System.exit(1);
 				}
 
-				if (false)
-				{
-					System.err.printf("RETRIEVED NODE\n");
-					//tr.print();
-					//next.print();
-				}
 
 				tr.closed= true;
 				t.node = tr;
@@ -359,7 +366,7 @@ public class Trie implements java.io.Serializable
 		 * @param pool
 		 */
 		
-		void putWordSmartly(int[] w,  int p, Hashtable pool)
+		void putWordSmartly(int[] w,  int p, Hashtable<TrieNode, TrieNode> pool)
 		{
 			if (p == w.length) 
 			{

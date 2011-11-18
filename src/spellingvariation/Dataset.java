@@ -125,7 +125,7 @@ public class Dataset implements Iterable<Dataitem>
 					c.lambda = d;
 					c.item = item;
 				}
-				items.addElement(item);
+				addItem(item);
 			}
 			return 0;
 		} catch (Exception e)
@@ -133,6 +133,9 @@ public class Dataset implements Iterable<Dataitem>
 			e.printStackTrace();
 			return 1;
 		}
+	}
+	public void addItem(Dataitem item) {
+		items.addElement(item);
 	}
 	
 	class SegmentationGraphIterator implements Iterator<SegmentationGraph> 

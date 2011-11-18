@@ -19,6 +19,7 @@ class Pair<X,Y>
 	{
 		try
 		{
+			@SuppressWarnings("unchecked")
 			Pair<X,Y> p = (Pair<X,Y>) other;
 			return p.first.equals(first) && p.second.equals(second);
 		} catch (Exception e)
@@ -98,7 +99,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler//
 			currentBag.add(new ScoredRule(r,p,rank));
 		}
 
-		private String reverse(String s)
+		String reverse(String s)
 		{
 			return new StringBuffer(s).reverse().toString();
 		}

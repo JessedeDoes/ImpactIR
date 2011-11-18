@@ -1,9 +1,9 @@
 package lemmatizer;
 import spellingvariation.DatrieMatcher;
-import spellingvariation.MemorylessMatcher;
+//import spellingvariation.MemorylessMatcher;
 import trie.DoubleArrayTrie;
 import trie.ITrie;
-import trie.Trie;
+//import trie.Trie;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import lexicon.ILexicon;
-import lexicon.InMemoryLexicon;
+//import lexicon.InMemoryLexicon;
 import lexicon.NeoLexicon;
 import lexicon.WordForm;
 import util.Options;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class Lemmatizer
 {
 	DatrieMatcher  matcher;
-	ILexicon historicalLexicon;
-	ILexicon modernLexicon;
+	ILexicon historicalLexicon = null;
+	ILexicon modernLexicon = null;
 	ITrie<Object> lexiconTrie = null;
 	boolean useMatcher = true;
 
@@ -45,14 +45,27 @@ public class Lemmatizer
 			String historicalLexiconFilename,
 			String trieFilename)
 	{
-		this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
-		this.historicalLexicon = new NeoLexicon(historicalLexiconFilename, false);
+		try
+		{
+			this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
+		} catch (Exception e)
+		{
+			
+		}
+		try
+		{
+			this.historicalLexicon = new NeoLexicon(historicalLexiconFilename, false);
+		} catch (Exception e)
+		{
+		}
 
 		System.err.println("finished reading lexicon text files");
 		this.matcher = new DatrieMatcher(patternFilename);
 		//this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
-		try {
+		try 
+  		{
 			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
+			System.err.println("loaded lexicon from " + trieFilename);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,7 +91,7 @@ public class Lemmatizer
 		public void handleMatch(String targetWord, String matchedWord,
 				String matchInfo, int cost, double p)
 		{
-			Set<WordForm> extraCandidates = modernLexicon.findLemmata(matchedWord);
+			Set<WordForm> extraCandidates = (modernLexicon==null)? new HashSet<WordForm>(): modernLexicon.findLemmata(matchedWord);
 			if (extraCandidates == null)
 			{
 				System.err.println("Huh? cannot find matched word in lexicon: " + matchedWord);
@@ -108,8 +121,8 @@ public class Lemmatizer
 	List<WordMatch> lookupWordform(String w0)
 	{
 		String w = spellingvariation.Ligatures.replaceLigatures(w0);
-		Set<WordForm> exactMatches = historicalLexicon.findLemmata(w);
-		Set<WordForm> modernMatches = modernLexicon.findLemmata(w);
+		Set<WordForm> exactMatches = (historicalLexicon == null)? new HashSet<WordForm>() :historicalLexicon.findLemmata(w);
+		Set<WordForm> modernMatches = (modernLexicon == null)? new HashSet<WordForm>(): modernLexicon.findLemmata(w);
 		if (exactMatches == null)
 			exactMatches = new HashSet<WordForm>();
 		if (modernMatches == null)
@@ -176,7 +189,7 @@ public class Lemmatizer
 				else
 				{     
 					//System.out.println(""  + w + " ");
-					ArrayList<WordMatch> asList = new ArrayList(s);
+					ArrayList<WordMatch> asList = new ArrayList<WordMatch>(s);
 					Collections.sort(asList, new WordMatchComparator());
 					WordMatch bestMatch = asList.get(0);
 					test.incrementCount(bestMatch.type);

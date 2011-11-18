@@ -12,52 +12,6 @@ import trie.Trie;
 import trie.Trie.TrieNode;
 import util.Options;
 
-/*
-class RuleInfo // this is silly, just echos jointmultigram
-{
-	int multigramId;
-	String lhs;
-	String rhs;
-	double p_cond_rhs; // is p(multigram) | right hand side (rhs = usually historical)
-	double joint_probability;  //
-	double p_cond_lhs; // is p(multigram) | left hand side;
-
-	int cost;
-
-	RuleInfo(String lhs, String rhs, double probability)
-	{
-		this.lhs = lhs;
-		this.rhs = rhs;
-		this.p_cond_rhs = probability;
-		cost = (int) (-DatrieMatcher.costScale * Math.log(probability)); // log is ln in java
-		if (cost < 0)
-		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  probability,lhs,rhs);
-			System.exit(1);
-		}
-		if (cost == 0) cost = 1;
-	}
-
-	public RuleInfo(String lhs, String rhs, double pcombi,
-			double p_cond_lhs, double p_cond_rhs)
-	{
-		this.lhs = lhs;
-		this.rhs = rhs;
-		this.p_cond_rhs = p_cond_rhs;
-		this.joint_probability = pcombi;
-		this.p_cond_lhs= p_cond_lhs;
-
-		cost = (int) (-DatrieMatcher.costScale * Math.log( p_cond_rhs));
-		if (cost < 0)
-		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  p_cond_rhs,lhs,rhs);
-			System.exit(1);
-		}
-		if (cost == 0) cost = 1;
-		// TODO Auto-generated constructor stub
-	}
-}
-*/
 
 class SearchState implements Comparable<SearchState>
 {
@@ -178,7 +132,7 @@ public class DatrieMatcher
 				this.MAX_SUGGESTIONS = Integer.parseInt(maxSuggestions);
 			String maxPenalty = Options.getOption("maximumPenalty");
 			if (maxPenalty != null)
-				this.MAX_PENALTY = Integer.parseInt(maxPenalty);
+				DatrieMatcher.MAX_PENALTY = Integer.parseInt(maxPenalty);
 			addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", addWordBoundaries);
 		} catch (Exception e)
 		{
@@ -255,51 +209,15 @@ public class DatrieMatcher
 	 * @param f
 	 * @return
 	 */
+
+
 	protected boolean readRules(BufferedReader f)
 	{
-		String tokens[];
-		String s;
-		try
-		{
-			while ((s = f.readLine()) != null) // 	this is silly 
-			{
-				tokens = s.split("\t");
-				try
-				{
-					String[] lhsrhs = tokens[0].split("→"); // TODO replace this with something safer!
-					String left,right;
-					if (tokens[0].startsWith("→"))
-					{
-						left=""; right = lhsrhs[1];
-					} else if (tokens[0].endsWith("→"))
-					{
-						left = lhsrhs[0]; right="";
-					} else
-					{
-						left=lhsrhs[0]; right=lhsrhs[1];
-					}
-					
-					RuleInfo rule = new RuleInfo(left, right, 
-							Double.parseDouble(tokens[1]),
-							Double.parseDouble(tokens[2]),
-							Double.parseDouble(tokens[3])
-					);
-					storeRule(rule);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-					System.err.println(tokens[0]);
-				}
-			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		// System.err.printf( "XXX %d\n", ruletrie.root.nofTransitions());
+		for (RuleInfo r:RuleInfo.readRules(f))
+			storeRule(r);
 		return true;
 	}
-
+	
 	protected void getRulesFromMultigramSet(MultigramSet set)
 	{
 		for (JointMultigram m: set)
@@ -346,6 +264,7 @@ public class DatrieMatcher
 
 	SearchState findItem(Object lexnode, int pos)
 	{
+		@SuppressWarnings("unchecked")
 		Vector<SearchState>  items = (Vector<SearchState>) lexiconTrie.getNodeData(lexnode);
 		if (items == null)
 		{
@@ -361,6 +280,7 @@ public class DatrieMatcher
 
 	void additem(Object lexnode, SearchState  item)
 	{
+		@SuppressWarnings("unchecked")
 		Vector<SearchState> items = (Vector<SearchState>) lexiconTrie.getNodeData(lexnode);
 		if (items == null)
 		{
@@ -437,7 +357,7 @@ public class DatrieMatcher
 			Object nextNodeInLexicon;
 			if (!lexiconTrie.isFailState(nextNodeInLexicon = lexiconTrie.delta(lexnode,t.character)))
 			{
-				System.err.println(lexnode + " " + nextNodeInLexicon + " "  + t.character);
+				//System.err.println(lexnode + " " + nextNodeInLexicon + " "  + t.character);
 				lhsRecursion(item, t.node, nextNodeInLexicon, pos, cost);
 			}
 		}
@@ -506,6 +426,7 @@ public class DatrieMatcher
 		for (int i=0; i < activeItems.size(); i++)
 		{
 			SearchState item = activeItems.get(i);
+			@SuppressWarnings("unchecked")
 			Vector<SearchState> items = (Vector<SearchState>) 
 					lexiconTrie.getNodeData(item.lexnode);  
 			if (items != null)
@@ -532,7 +453,7 @@ public class DatrieMatcher
 		if (this.addWordBoundaries)
 			this.targetWord = Alphabet.initialBoundaryString + this.targetWord + Alphabet.finalBoundaryString;
 		//this.queue =  fh_makekeyheap();
-
+		//System.err.println("match word to lexicon: " + this.targetWord);
 		SearchState startitem = new SearchState(lexiconTrie.getStartState(), 0);
 		activeItems.addElement(startitem);
 		startitem.cost = 0;
@@ -553,7 +474,7 @@ public class DatrieMatcher
 			SearchState item = queue.poll();
 			if (item == null) break;
 
-			//System.err.printf("######\nextracted item has pos %d of %d, cost %d\n", item.pos, L, item.cost);
+			//System.err.printf("######\nextracted item has pos %d of %d, cost %d\n", item.position, L, item.cost);
 			//if (item == startitem) { System.err.printf("Hola: weer startitem, DIT KAN NIET\n"); }
 			int penaltyIncrement = 0;
 			if (found)
@@ -626,7 +547,9 @@ public class DatrieMatcher
 			while ((s=in.readLine()) != null)
 			{
 				String[] parts = s.split("\\t");
-				String lemma = parts[0];  String modern = parts[1]; String historical = parts[2];
+				//String lemma = parts[0];  
+				String modern = parts[1]; 
+				String historical = parts[2];
 				cb.reference = modern;
 				boolean found = this.matchWordToLexicon(lexicon, historical);
 				cb.itemsTested++;
@@ -645,7 +568,7 @@ public class DatrieMatcher
 
 	public static void main(String[] args)
 	{
-		Options o = new Options(args);
+		new Options(args);
 		if (args.length < 2)
 		{
 			usage();
@@ -694,7 +617,8 @@ public class DatrieMatcher
 			{
 				System.out.printf("%s -> %s %s %e\n" ,targetWord, matchedWord, matchInfo, p);
 			}
-			void noMatch(String targetWord)
+			@SuppressWarnings("unused")
+			public void noMatch(String targetWord)
 			{
 
 			}

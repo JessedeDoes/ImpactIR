@@ -1,12 +1,9 @@
 package lemmatizer;
-import lexicon.InMemoryLexicon;
-import lexicon.WordForm;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import lexicon.InMemoryLexicon;
 
 enum MatchType 
 {

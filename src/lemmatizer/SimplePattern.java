@@ -1,10 +1,4 @@
 package lemmatizer;
-import java.io.*;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Properties;
 
 /**
 * A simple pattern consists of a suffix substitution and a prefix substitution

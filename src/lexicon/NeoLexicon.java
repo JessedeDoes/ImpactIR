@@ -19,11 +19,11 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.neo4j.kernel.impl.annotations.Documented;
+
 
 public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 {
-	// START SNIPPET: createReltype
+	
 	
 	static int NODETYPE_WORDFORM = 0;
 	static int NODETYPE_LEMMA = 1;	
@@ -36,10 +36,6 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		LEMMA_WORDFORM_CI
 	};
 	
-	//static enum NodeTypes ();
-	//public static enum NodeTypes ();
-	// END SNIPPET: createReltype
-
 	private  String DB_PATH = "c:/Temp/NeoTest";
 	GraphDatabaseService graphDb = null;
 	private Index<Node> nodeIndex = null;
@@ -57,33 +53,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		nodeIndex = graphDb.index().forNodes( "nodes" );
 	}
 
-	public void helloWorldExample()
-	{
 
-		// START SNIPPET: startDb
-		//setup();
-		//graphDb = new EmbeddedGraphDatabase( DB_PATH );
-
-		registerShutdownHook( graphDb );
-		// END SNIPPET: startDb
-
-
-		clearDatabase();
-
-		System.out.println( "Shutting down database ..." );
-		// START SNIPPET: shutdownServer
-		graphDb.shutdown();
-		// END SNIPPET: shutdownServer
-	}
-
-	// START SNIPPET: shutdownHook
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{
-		// Registers a shutdown hook for the Neo4j instance so that it
-		// shuts down nicely when the VM exits (even if you "Ctrl-C" the
-		// running example before it's completed)
-		Runtime.getRuntime()
-		.addShutdownHook( new Thread()
+		Runtime.getRuntime().addShutdownHook( new Thread()
 		{
 			@Override
 			public void run()
@@ -92,7 +65,6 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			}
 		} );
 	}
-	// END SNIPPET: shutdownHook
 
 	/**
 	 * Make sure the DB directory doesn't exist.
@@ -125,7 +97,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	}
 
 	
-	// gedoe met transacties toevoegen
+/**
+ * 
+ * @param fileName
+ */
 	public void readWordsFromFile(String fileName)
 	{
 		if (fileName.startsWith("database:"))
@@ -219,10 +194,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		}
 	}
 	@Override
-
 	public void addWordform(WordForm w) 
 	{
-		// faster if the transaction is on  a set of wordforms?
 		try
 		{
 			Node wordformNode = graphDb.createNode();
@@ -233,8 +206,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			{
 				lemmaNode = this.addLemma(w.lemma, w.lemmaPoS);
 			}
-			Relationship relationship = 
-					wordformNode.createRelationshipTo( lemmaNode, RelTypes.LEMMA_WORDFORM);
+			
+			wordformNode.createRelationshipTo( lemmaNode, RelTypes.LEMMA_WORDFORM);
 
 			wordformNode.setProperty( "wordform", w.wordform);
 			wordformNode.setProperty( "tag", w.tag);
@@ -242,7 +215,6 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			nodeIndex.add(wordformNode, "wordform", w.wordform);
 			nodeIndex.add(wordformNode, "wordformLowercase",  w.wordform.toLowerCase());
 			
-			// relationship.setProperty( "message", "brave Neo4j " );
 		}
 		finally
 		{
@@ -272,43 +244,72 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		return null;
 	}
 
-	private Set<Node> findWordFormsByLemma(String lemmaQuery)
+	private Set<Node> findWordFormNodesByLemma(String lemmaQuery)
 	{
-		System.err.println("start query for:" + lemmaQuery);
+		//System.err.println("start query for:" + lemmaQuery);
 		Set<Node> nodes = new HashSet<Node>();
 		
 		IndexHits<Node> hits = nodeIndex.query("lemma", lemmaQuery);
 		for (Node n: hits)
 		{
-			String lemma = (String) n.getProperty("lemma");
+			//String lemma = (String) n.getProperty("lemma");
 			for (Relationship r: n.getRelationships())
 			{
 				Node wordformNode = r.getOtherNode(n);
-				String wordform = (String) wordformNode.getProperty("wordform");
-				System.err.println(wordform + "\t" + lemma);
+				// String wordform = (String) wordformNode.getProperty("wordform");
+				//System.err.println(wordform + "\t" + lemma);
 				nodes.add(wordformNode);
 			}
 		}
-		System.err.println("found items: "  + nodes.size());
+		//System.err.println("found items: "  + nodes.size());
 		return nodes;
 	}
 	
 	@Override
 	public Set<WordForm> findForms(String lemma, String tag) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		
+		Set<WordForm> s0 = findWordFormsByLemma(lemma);
+		Set<WordForm> s1 = new HashSet<WordForm>();
+		
+		for (WordForm w: s0)
+			if (w.lemmaPoS.equalsIgnoreCase(tag))
+				s1.add(w);
+				
+		return s1;
 	}
 
 	@Override
-	public Set<WordForm> findLemmata(String wordform) 
+  	public Set<WordForm> findLemmata(String wordform)
 	{
-		// TODO Auto-generated method stub
-		System.err.println("start query for:" + wordform);
+		return findLemmata(wordform,false);
+	}
+
+	public void lookupWord(String word)
+	{
+		Set<WordForm> lookup1 = findLemmata(word,true);
+		Set<WordForm> s = findWordFormsByLemma(word);
+		System.out.println("as wordform: ");
+		System.out.println("\t" + lookup1);
+		System.out.println("as lemma: ");
+                System.out.println("\t" + s);
+	}
+
+
+	public Set<WordForm> findWordFormsByLemma(String word) 
+	{
+		Set<Node> lookup2 = findWordFormNodesByLemma(word);
+		Set<WordForm> s = new HashSet<WordForm>();
+		for (Node n: lookup2) s.add(getWordFormFromNode(n));
+		return s;
+	}
+
+	public Set<WordForm> findLemmata(String wordform, boolean query) 
+	{
 		Set<WordForm> wordforms = new HashSet<WordForm>();
 		try
 		{
-			IndexHits<Node> hits = nodeIndex.get("wordform", wordform);
+			IndexHits<Node> hits = query? nodeIndex.query("wordform", wordform) : nodeIndex.get("wordform", wordform);
 			for (Node n: hits)
 			{
 				String wf = (String) n.getProperty("wordform");
@@ -317,7 +318,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 					Node wordformNode = r.getOtherNode(n);
 					String lemma = (String) wordformNode.getProperty("lemma");
 					String pos = (String) wordformNode.getProperty("lemmaPoS");
-					System.err.println(wf + "\t" + lemma);
+					//System.err.println(wf + "\t" + lemma);
 					WordForm w = new WordForm();
 					w.wordform = wf;
 					w.lemma = lemma;
@@ -329,7 +330,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 
 		}
-		System.err.println("found items: "  + wordforms.size());
+		//System.err.println("found items: "  + wordforms.size());
 		return wordforms;
 	}
 
@@ -438,19 +439,15 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	@Override
 	public Iterator<WordForm> iterator() 
 	{
-		// TODO Auto-generated method stub
 		return new WordformIterator();
-	//return null;
 	}
 
-	private void clearDatabase() 
+	void clearDatabase() 
 	{
 		Transaction tx;
 		tx = graphDb.beginTx();
 		try
 		{
-			// START SNIPPET: removingData
-			// let's remove the data
 			for ( Node node : graphDb.getAllNodes() )
 			{
 				for ( Relationship rel : node.getRelationships() )
@@ -459,7 +456,6 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				}
 				node.delete();
 			}
-			// END SNIPPET: removingData
 			tx.success();
 		}
 		finally
@@ -485,7 +481,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		if (create)
 		{
 			NeoLexicon l = new NeoLexicon(arg0, true);
-			l.slurpDB(arg1);
+			l.readWordsFromFile(arg1);
 			int k=0;
 			for (WordForm w: l)
 			{

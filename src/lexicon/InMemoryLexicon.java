@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import java.io.FileReader;
+//import java.io.FileReader;
 import java.util.*;
 
 import trie.Trie;
@@ -46,7 +46,6 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon
 			Reader reader = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
 			BufferedReader b = new BufferedReader(reader) ; // UTF?
 			
-			int ruleId = 1;
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
 				// System.err.println(s);

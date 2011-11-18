@@ -2,7 +2,7 @@ package lemmatizer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
+//import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -29,7 +29,7 @@ import util.Options;
  * 2) list of possible lemmata, separated by (|)
  * 3) frequency [optional]
  * <p>
- * @author taalbank
+ * @author jesse
  *
  */
 public class LemmatizationTest
@@ -105,6 +105,7 @@ public class LemmatizationTest
 					System.err.println("skipping " + line);
 					continue;
 				}
+				@SuppressWarnings("unused")
 				int frequency=-1;
 				
 				if (parts.length >2)
@@ -117,6 +118,7 @@ public class LemmatizationTest
 						e.printStackTrace();
 					}
 				}
+				
 				List<WordMatch> s = simpleLemmatizer.lookupWordform(w);
 				if (s==null || s.size()==0)
 				{
@@ -126,7 +128,7 @@ public class LemmatizationTest
 				else
 				{     
 					//System.out.println(""  + w + " ");
-					ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList(s);
+					ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(s);
 					Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
 					List<WordMatch> wordMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
 					
