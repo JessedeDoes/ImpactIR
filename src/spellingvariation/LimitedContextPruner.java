@@ -1,8 +1,4 @@
 package spellingvariation;
-import lemmatizer.SimplePatternFinder;
-import lemmatizer.SimplePattern;
-import lemmatizer.Pattern;
-import java.util.HashMap;
 
 /**
  * A very simple attempt to arrive at a "reasonable" set of OCR patterns.

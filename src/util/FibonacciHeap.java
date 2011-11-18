@@ -362,7 +362,7 @@ public class FibonacciHeap {
     }
 
     // create a new stack and put root on it
-    Stack stack = new Stack();
+    Stack<Node> stack = new Stack<Node>();
     stack.push(m_min);
 
     StringBuffer buf = new StringBuffer(512);
@@ -370,7 +370,7 @@ public class FibonacciHeap {
 
     // do a simple breadth-first traversal on the tree
     while (!stack.empty()) {
-      Node curr = (Node) stack.pop();
+      Node curr = stack.pop();
       buf.append(curr);
       buf.append(", ");
 
@@ -681,10 +681,14 @@ public class FibonacciHeap {
      *
      * @return string representing this object
      */
-    public String toString() {
-      if (true) {
+    public String toString() 
+    {
+      boolean onlyMKey = true;
+      if (onlyMKey) 
+      {
         return Double.toString(m_key);
-      } else {
+      } else 
+      {
         StringBuffer buf = new StringBuffer();
         buf.append("Node=[parent = ");
 

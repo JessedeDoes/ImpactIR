@@ -14,8 +14,8 @@ public class JavaSparseArray{
 	/**The dimension of the matrix*/
   	private int dimension;
   	
-	private int m;
-  	private int n;
+	//private int m;
+  	// private int n;
    	
   	/**Constructor for the class
   	  */
@@ -68,7 +68,8 @@ public class JavaSparseArray{
 	  @param int i, int j, double v
 	  */
 	  public void setElementAt(int i, int j, double v){
-	  	double element = 0.0;
+	  	@SuppressWarnings("unused")
+		double element = 0.0;
 		boolean test = true;
 		double[] value = Avalue[i];
 		int[] index = Aindex[i];
@@ -89,7 +90,8 @@ public class JavaSparseArray{
 	  */
 	  public void removeElementAt(int i, int j){
 	  	int stop = 0;
-	  	double element = 0.0;
+	  	@SuppressWarnings("unused")
+		double element = 0.0;
 		boolean test = true;
 		double[] value = Avalue[i];
 		int[] index = Aindex[i];
@@ -115,7 +117,8 @@ public class JavaSparseArray{
 	  */
 	  public void addElementAt(int i, int j, double v){
 	  	int stop = 0;
-	  	double element = 0.0;
+	  	@SuppressWarnings("unused")
+		double element = 0.0;
 		boolean test = true;
 		double[] value = Avalue[i];
 		int[] index = Aindex[i];
@@ -145,8 +148,8 @@ public class JavaSparseArray{
   	  	double x = 0.00;
   	  	double[] value;
   	  	int[] index;
-  	  	int k = 0;
-  	  	int vlength = 0;
+  	  	//int k = 0;
+  	  	//int vlength = 0;
   	  	double[] c = new double[b.length];
   	  	int alength = Avalue.length;
   	  	for(int i=0;i<alength;i++){
@@ -174,7 +177,7 @@ public class JavaSparseArray{
 		for(int i = 0;i<alength;i++){
 			valuerow = Avalue[i];
 			indexrow = Aindex[i];
-			double val = bvalue[i];
+			//double val = bvalue[i];
 			int vrow = valuerow.length;
 			for(int j = vrow-1;j>0;--j){
 				cvalue[indexrow[j]] += value*valuerow[j];
@@ -200,6 +203,7 @@ public class JavaSparseArray{
 		int index = 0;
 		int jcol = 0;
 		int jpos = 0;
+		@SuppressWarnings("unused")
 		int nonzero = 0;
 		double[] avalue;
 		int[] aindex;
@@ -252,6 +256,7 @@ public class JavaSparseArray{
 		double[][] Bvalue = B.getValueArray();
 		int[][] Cindex = new int[dimension][1];
 		double[][] Cvalue = new double[dimension][1];
+		@SuppressWarnings("unused")
 		int nonzero = 0;
 		int num = 0;
 		for(int i = 0;i<dimension;i++){
@@ -308,11 +313,11 @@ public class JavaSparseArray{
 		int[] tempIndex = new int[dimension];
 		int[] temp = new int[dimension];
 		int len = -1;
-		int index = 0;
+		//int index = 0;
 		int jcol = 0;
 		int jpos = 0;
-		int nonzero = 0;
-		int num = 0;
+		//int nonzero = 0;
+		//int num = 0;
 		for(int i = 0;i<temp.length;i++){temp[i] = -1;}
 		for(int i = 0;i<dimension;i++){
 			int[] aindex = Aindex[i];

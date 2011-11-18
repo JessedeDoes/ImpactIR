@@ -5,7 +5,6 @@ package spellingvariation;
  * This is just the usual string edit distance procedure
  */
 
-import java.io.*;
 
 public class ZeroOrderAligner
 {

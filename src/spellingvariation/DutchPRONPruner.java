@@ -1,6 +1,5 @@
 package spellingvariation;
 
-import java.util.HashMap;
 
 /**
  * A very simple attempt to arrive at a "reasonable" set of OCR patterns.

@@ -1,26 +1,16 @@
 package spellingvariation;
 
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.alg.*;
-
-
-import trie.Trie;
-import trie.Trie.*;
-import util.ShortestPath;
-import util.ShortestPath.BasicState;
-import util.ShortestPath.MatchState;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import spellingvariation.History.State;
-import spellingvariation.TransducerWithMemory.ScoredState;
-
 import java.util.Vector;
+
+import trie.Trie.TrieNode;
+import util.ShortestPath;
+import util.ShortestPath.BasicState;
+import util.ShortestPath.MatchState;
 
 interface StateMap<B,S>
 {
@@ -285,10 +275,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 			}
 		}
 		
-		private void printWalk()
-		{
-			
-		}
+	
 		public void printAll()
 		{
 			for (int i=0; i < length; i++)

@@ -1,11 +1,5 @@
 package spellingvariation;
 
-import java.util.List;
-
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
-import spellingvariation.Alignment.Position;
 import util.Matrix;
 
 class Util
@@ -479,7 +473,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		//dump_params(delta,safestrlen( (char *) A),safestrlen( (char *)B));
 	}
 
-	private void dumpParameterTable(String filename)
+	void dumpParameterTable(String filename)
 	{
 		double [][] x = delta;
 		int m = inputAlphabet.size-1;

@@ -226,6 +226,7 @@ public class Minimizer
 	public float lineMinimization(float p[], float xi[],
 			Function<float[], Float> func)
 	{
+		@SuppressWarnings("unused")
 		float xx, xmin, fx, fb, fa, bx, ax;
 		float fret;
 		int n = p.length - 1;
@@ -321,7 +322,10 @@ public class Minimizer
 				return fret;
 			}
 			if (iter == ITMAX)
+			{
 				NRutil.nrerror("powell exceeding maximum iterations " + iter);
+				break;
+			}
 			for (j = 1; j <= n; j++)
 			{ // Construct the extrapolated point and
 				// the average direction moved. Save
@@ -347,8 +351,9 @@ public class Minimizer
 					}
 				}
 			}
-			return fret;
+		// dit staat binnen de loop, klopt dus niet!
 		} // Back for another iteration.
+		return fret; // hier komt ie dus alleen bij max iteration error!
 	}
 
 	/**

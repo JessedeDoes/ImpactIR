@@ -109,8 +109,7 @@ public class FrenchG2PMultigramPruner implements MultigramPruner
     String sLower = s.toLowerCase();
     if (s.length() == 1 || s.length() == 0) return true;
     if (s.length() == 2 && sLower.charAt(0) == sLower.charAt(1)) return true;
-    boolean allVowels = true;
-    int l = s.length();
+  
     for (int i=0; i < extraGraphemes.length; i++)
     {
     	if (sLower.equals(extraGraphemes[i]))  return true;

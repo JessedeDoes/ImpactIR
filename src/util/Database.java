@@ -1,15 +1,12 @@
 package util;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
+import java.util.Vector;
 
 public class Database
 {
@@ -87,31 +84,7 @@ public class Database
 	}
 
 
-	private boolean query(String s) throws Exception
-	{
-		Statement stmt = null;
-		try
-		{
-			stmt = this.connection.createStatement();
-			return stmt.execute(s);
-		}
-		catch (Exception e)
-		{
-			//logger.error("Fout bij uitvoeren query", e);
-			throw new Exception("database");
-		}
-		finally
-		{
-			try
-			{ 
-				if (stmt != null) stmt.close();
-			} catch (SQLException e)
-			{
-				//logger.error("Fout bij sluiten db statement", e);
-				throw new Exception("database");
-			}
-		}
-	}
+
 
 	public Vector<Vector<String>> SimpleSearch(String tableName,  Vector<String> whereclauses, int start, int nof) throws Exception
 	{
@@ -361,9 +334,9 @@ public class Database
 		{
 			PreparedStatement stmt = null;
 			stmt = this.connection.prepareStatement(sql);
-			System.err.println(stmt);
+			//System.err.println(stmt);
 			boolean u = stmt.execute();
-			System.err.println("run query " + u);
+			//System.err.println("run query " + u);
 			stmt.close();
 		} catch (Exception e)
 		{

@@ -95,14 +95,14 @@ public class Alignment
 	public AlignmentGraph constructRestrictedGraph()
 	{
 		restrictedGraph = new AlignmentGraph(edgeFactory);
-		for (GraphPath p: pathList)
+		for (GraphPath<Position,Transition> p: pathList)
 		{
 			//Position[] positions = new Position[p.getEdgeList().size()+1];
 			if (Double.isInfinite(p.getWeight())) // or otherwise too small
 			{
 				 // break; // TODO zoek uit waarom dit NIET kan
 			}
-			int i=0;
+			//int i=0;
 			for (Object o: p.getEdgeList())
 			{
 				Transition edge = (Transition) o;
@@ -233,7 +233,7 @@ public class Alignment
 		
 		// System.err.println(x + ", " + y + ": " + pathList.get(0).getWeight() + "-" + pathList.get(pathList.size()-1).getWeight());
 
-		for (GraphPath p: pathList)
+		for (GraphPath<Position,Transition> p: pathList)
 		{
 			Position[] positions = new Position[p.getEdgeList().size()+1];
 			int i=0;
@@ -247,7 +247,16 @@ public class Alignment
 			//System.err.println(p.getEdgeList().size() + " " +  p.getWeight());
 		}
 		constructRestrictedGraph();
-		if (false)
+	
+		//printSummary();
+		vertexMatrix = null;
+		fullGraph = null;
+		pathList = null;
+	}
+
+	@SuppressWarnings("unused")
+	private void printSummary() 
+	{
 		{
 			System.err.println("Full graph has " 
 					+ fullGraph.vertexSet().size() + " vertices and "
@@ -256,8 +265,5 @@ public class Alignment
 					+ restrictedGraph.vertexSet().size() + " vertices and "
 					+ restrictedGraph.edgeSet().size() + " edges.");
 		}
-		vertexMatrix = null;
-		fullGraph = null;
-		pathList = null;
 	}
 }

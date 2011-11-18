@@ -1,14 +1,13 @@
 package spellingvariation;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.Reader;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Vector;
 
-import util.Options;
 import trie.Trie;
 import trie.Trie.TrieNode;
+import util.Options;
 
 
 class MatchState implements Comparable<MatchState>
@@ -130,7 +129,7 @@ public class MemorylessMatcher
 				this.MAX_SUGGESTIONS = Integer.parseInt(maxSuggestions);
 			String maxPenalty = Options.getOption("maximumPenalty");
 			if (maxPenalty != null)
-				this.MAX_PENALTY = Integer.parseInt(maxPenalty);
+				MemorylessMatcher.MAX_PENALTY = Integer.parseInt(maxPenalty);
 			addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", addWordBoundaries);
 		} catch (Exception e)
 		{
@@ -297,6 +296,7 @@ public class MemorylessMatcher
 
 	MatchState findItem(TrieNode lexnode, int pos)
 	{
+		@SuppressWarnings("unchecked")
 		Vector<MatchState>  items = (Vector<MatchState>) lexnode.data;
 		if (items == null)
 		{
@@ -312,6 +312,7 @@ public class MemorylessMatcher
 
 	void additem(TrieNode lexnode, MatchState  item)
 	{
+		@SuppressWarnings("unchecked")
 		Vector<MatchState> items = (Vector<MatchState>) lexnode.data;
 		if (items == null)
 		{
@@ -456,6 +457,7 @@ public class MemorylessMatcher
 		for (int i=0; i < activeItems.size(); i++)
 		{
 			MatchState item = activeItems.get(i);
+			@SuppressWarnings("unchecked")
 			Vector<MatchState> items = (Vector<MatchState>) item.lexnode.data;  
 			if (items != null)
 			{
@@ -579,7 +581,8 @@ public class MemorylessMatcher
 			while ((s=in.readLine()) != null)
 			{
 				String[] parts = s.split("\\t");
-				String lemma=parts[0];  String modern = parts[1]; String historical = parts[2];
+				//String lemma=parts[0];  
+				String modern = parts[1]; String historical = parts[2];
 				cb.reference = modern;
 				boolean found = this.matchWordToLexicon(lexicon, historical);
 				cb.itemsTested++;
@@ -598,7 +601,7 @@ public class MemorylessMatcher
 
 	public static void main(String[] args)
 	{
-		Options o = new Options(args);
+		new Options(args);
 		if (args.length < 2)
 		{
 			usage();
@@ -612,9 +615,9 @@ public class MemorylessMatcher
 		boolean found= false;
 		java.io.BufferedReader stdin = null;
 
-		String testFile="";
+		
 
-		if ((testFile = Options.getOption("testFile")) != null)
+		if ((Options.getOption("testFile")) != null)
 		{
 			try
 			{
@@ -650,6 +653,7 @@ public class MemorylessMatcher
 			{
 				System.out.printf("%s -> %s %s %e\n" ,targetWord, matchedWord, matchInfo, p);
 			}
+			@SuppressWarnings("unused")
 			void noMatch(String targetWord)
 			{
 

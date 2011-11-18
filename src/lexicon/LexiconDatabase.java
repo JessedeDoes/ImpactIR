@@ -20,8 +20,8 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	boolean onlyVerified = false;
 	boolean useSimpleWordformsOnly = false;
 	
-	static String q1 = Resource.getStringFromFile("sql/createSimple.sql");
-	
+	static String createSimpleWordformTableSQL = Resource.getStringFromFile("sql/createSimple.sql");
+	static String createViewsSQL = Resource.getStringFromFile("sql/createViews.sql");
 			  		
 	public LexiconDatabase(Properties props)
 	{
@@ -30,6 +30,14 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public LexiconDatabase(String dbName)
 	{
+		this.mysqldbname = dbName;
+		mysqlurl = "jdbc:mysql://" + mysqlhost + ":" + mysqlport + "/" + mysqldbname;
+		init();
+	}
+	
+	public  LexiconDatabase(String hostName, String dbName)
+	{
+		this.mysqlhost = hostName;
 		this.mysqldbname = dbName;
 		mysqlurl = "jdbc:mysql://" + mysqlhost + ":" + mysqlport + "/" + mysqldbname;
 		init();
@@ -55,13 +63,25 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public void createSimpleAnalyzedWordformTable()
 	{
-		String[] parts = q1.split(";");
+		String[] parts = createSimpleWordformTableSQL.split(";");
 		for (String q: parts)
 		{
 			System.err.println(q);
 			this.runQuery(q);
 		}
 	}
+	
+	public void createViews()
+	{
+		String[] parts = createViewsSQL.split(";");
+		for (String q: parts)
+		{
+			q = q.replace("EE3_5", this.mysqldbname);
+			System.err.println("<QUERY>\n" +  q + "\n</QUERY>");
+			this.runQuery(q);
+		}
+	}
+	
 	class WordFormIterator implements Iterator<WordForm>
 	{
 		ResultSet rs;
@@ -191,7 +211,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public static void main(String[] args) throws Exception
 	{
-		System.err.println(q1);
+		System.err.println(createSimpleWordformTableSQL);
 		System.err.println("load database...");
 		String arg0 = null;
 		if (args.length < 1)

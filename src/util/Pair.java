@@ -9,7 +9,8 @@ public class Pair<X,Y>
         {
                 try
                 {
-                        Pair<X,Y> p = (Pair<X,Y>) other;
+                        @SuppressWarnings("unchecked")
+						Pair<X,Y> p = (Pair<X,Y>) other;
                         return p.first.equals(first) && p.second.equals(second);
                 } catch (Exception e)
                 {

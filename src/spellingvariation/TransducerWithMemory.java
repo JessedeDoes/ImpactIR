@@ -9,7 +9,7 @@ import java.util.Vector;
 
 import spellingvariation.AlignmentSegmenter.SegmentationGraph;
 import spellingvariation.Alignment.Position;
-import util.ShortestPath.MatchState;
+
 
 /**
  * This follows Bisani and Ney 2008
@@ -138,6 +138,7 @@ public class TransducerWithMemory implements java.io.Serializable
 		Vector<Vector<ScoredState>> stateLists = new Vector<Vector<ScoredState>>();
 
 		//System.err.println("bloep");
+		@SuppressWarnings("unused")
 		int graphSize = 0;
 		// make next variable global
 
@@ -348,7 +349,7 @@ public class TransducerWithMemory implements java.io.Serializable
 	{
 		Vector<Vector<ScoredState>> alphas = forwardEvaluation(g);
 		Vector<Vector<ScoredState>> betas = backwardEvaluation(g,alphas);
-		Vector<Alignment.Position> forwardVector = g.getForwardVector();
+		//Vector<Alignment.Position> forwardVector = g.getForwardVector();
 
 		connectAlphaBeta(g, alphas, betas);
 
@@ -359,7 +360,7 @@ public class TransducerWithMemory implements java.io.Serializable
 
 		for (int i=0; i < g.getForwardVector().size(); i++)
 		{
-			Position p = forwardVector.get(i);
+			//Position p = forwardVector.get(i);
 			Vector<ScoredState> alpha_i = alphas.get(i);
 			for (ScoredState sNs: alpha_i)
 			{
@@ -528,6 +529,7 @@ public class TransducerWithMemory implements java.io.Serializable
 		}
 		
 		double logLikelihood = 0;
+		@SuppressWarnings("unused")
 		double heldoutLogLikelihood = 0;
 		
 		System.err.println("Smoothing info: % unseen evidence: " + (unseenEvidence / totalHeldoutEvidence) + " .. " + totalHeldoutEvidence );

@@ -42,7 +42,7 @@ public class MultigramTransducer implements java.io.Serializable
 	//protected int nMultigrams;
 	protected transient Dataset dataset;
 	protected transient UnigramTransducer baseTransducer;
-	private transient Semiring semiring = new Semiring.Reals(); // not used
+	//private transient Semiring semiring = new Semiring.Reals(); // not used
 	protected MultigramSet multigramSet = new MultigramSet();
 	protected transient MultigramPruner multigramPruner = null;
 	double[] delta;
@@ -168,7 +168,7 @@ public class MultigramTransducer implements java.io.Serializable
 				JointMultigram m = multigramSet.getMultigramById(t.multigramId);
 				if (m.groupId >= 0)
 				{
-					JointMultigram a = multigramSet.getMultigramById(m.groupId);
+					// JointMultigram a = multigramSet.getMultigramById(m.groupId);
 					// System.err.println("abstracting away: " + m + " for " + a + " :  " + a.id);
 					t.multigramId = m.groupId;
 					m.active = false;
@@ -262,7 +262,7 @@ public class MultigramTransducer implements java.io.Serializable
 			String segmentation = "";
 			for (AlignmentSegmenter.Transition t: g.edgeSet())
 			{
-				JointMultigram m = multigramSet.getMultigramById(t.multigramId);
+				//JointMultigram m = multigramSet.getMultigramById(t.multigramId);
 				// double d = Math.exp(m.lhs.length() + m.rhs.length());
 				double d = weightOf(t.multigramId);
 				//System.err.println("weight for "  + m +  " = " + d);
@@ -282,8 +282,7 @@ public class MultigramTransducer implements java.io.Serializable
 	
 	public void bestMatchStatistics(PrintStream out)
 	{
-		HashMap<JointMultigram, List<AlignmentSegmenter.Transition>> occurrences =
-			 new HashMap<JointMultigram, List<AlignmentSegmenter.Transition>>();
+		//HashMap<JointMultigram, List<AlignmentSegmenter.Transition>> occurrences = new HashMap<JointMultigram, List<AlignmentSegmenter.Transition>>();
 		final HashMap<JointMultigram, Integer> counts =
 			 new HashMap<JointMultigram, Integer>();
 		MultigramSet.Statistics stats= multigramSet.statistics(dataset,true);
@@ -296,7 +295,7 @@ public class MultigramTransducer implements java.io.Serializable
 			
 			for (AlignmentSegmenter.Transition t: g.edgeSet())
 			{
-				JointMultigram m = multigramSet.getMultigramById(t.multigramId);
+				// JointMultigram m = multigramSet.getMultigramById(t.multigramId);
 				// double d = Math.exp(m.lhs.length() + m.rhs.length());
 				double d = weightOf(t.multigramId);
 				//System.err.println("weight for "  + m +  " = " + d);
@@ -312,6 +311,7 @@ public class MultigramTransducer implements java.io.Serializable
 					counts.put(m,1);
 			}
 		}
+		@SuppressWarnings("unused")
 		double N = 0;
 		for (JointMultigram m: counts.keySet())
 		{
@@ -484,8 +484,8 @@ public class MultigramTransducer implements java.io.Serializable
 					Position prevNode = backward? gxy.getEdgeTarget(t) : gxy.getEdgeSource(t);
 					double prevWeight = alpha[prevNode.index];
 					alpha[p.index] += prevWeight * delta[t.multigramId];
-					double x= alpha[p.index];
-					double y=1.0;
+					//double x= alpha[p.index];
+					//double y=1.0;
 					// now where to store the alpha?
 				}
 				// now check all incoming egdes
@@ -548,16 +548,17 @@ public class MultigramTransducer implements java.io.Serializable
 
 		maximizationStep(Γ, Γ_stop); // i.e. just dump normalized Γ into delta
 		double logLikelihood = 0;
+		@SuppressWarnings("unused")
 		double heldoutLogLikelihood = 0;
 		
 		// Set the lambdas and pick best matches..
 		for (Dataitem item: dataset)
 		{
 			double norm = 0;
-			Alphabet.CodedString ct =  item.coded_target;
+			//Alphabet.CodedString ct =  item.coded_target;
 			for (Candidate cand: item.candidates)
 			{
-				Alphabet.CodedString cwf = cand.coded_wordform;
+				//Alphabet.CodedString cwf = cand.coded_wordform;
 				cand.lambda = jointProbability(cand.segmentationGraph); // dit doe je dus eigenlijk dubbel
 				if (dataset.has_frequency)
 					cand.lambda = cand.lambda * cand.frequency;
@@ -648,8 +649,8 @@ public class MultigramTransducer implements java.io.Serializable
 	 */
 	private void computeConditionalProbabilities() // this is stupid and needs to be fixed immediately!
 	{
-		java.util.HashMap<String,Double> lhsMap = new java.util.HashMap<String,Double> (); 
-		java.util.HashMap<String,Double> rhsMap = new java.util.HashMap<String,Double> (); 
+		// java.util.HashMap<String,Double> lhsMap = new java.util.HashMap<String,Double> (); 
+		// java.util.HashMap<String,Double> rhsMap = new java.util.HashMap<String,Double> (); 
 		MultigramSet.Statistics stats = multigramSet.statistics(dataset, false);
 
 		this.deltaConditional = new double[delta.length];
@@ -806,7 +807,7 @@ public class MultigramTransducer implements java.io.Serializable
 	public static void main(String [] argv)
 	{
 		int argc = argv.length; 
-		Options o = new Options(argv);
+		new Options(argv);
 		if (argc < 1)
 		{
 			usage();

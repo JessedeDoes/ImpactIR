@@ -26,10 +26,10 @@ public class Smoothing
 	
 	public void collectCounts(MultigramSet set)
 	{
-		for (JointMultigram s: set)
-		{
+		//for (JointMultigram s: set)
+		//{
 			
-		}
+		//}
 	}
 }
 

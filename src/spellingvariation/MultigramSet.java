@@ -47,10 +47,10 @@ public class MultigramSet implements java.io.Serializable,
 	Alphabet outputAlphabet;
 	Vector<JointMultigram> multigramVector = new Vector<JointMultigram>();
 	UnigramTransducer.CodePair[] symbolPairs;
-	private int nSymbolPairs;
+	int nSymbolPairs;
 	private Map<String, Vector<JointMultigram>> rhsToMultigrams = new HashMap<String, Vector<JointMultigram>>();
-	private Map<String,Double> lhsFrequencies = new HashMap<String,Double>();
-	private Map<String,Double> rhsFrequencies = new HashMap<String,Double>();
+	//private Map<String,Double> lhsFrequencies = new HashMap<String,Double>();
+	//private Map<String,Double> rhsFrequencies = new HashMap<String,Double>();
 
 	
 	transient CodeToStringPairMapping codeToStringPairMapping = null; // not the one implemented by this set, but the one used to build the set

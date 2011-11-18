@@ -1,12 +1,11 @@
 package spellingvariation;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Vector;
-import spellingvariation.AlignmentSegmenter.SegmentationGraph;
+
 import spellingvariation.Alignment.Position;
-import spellingvariation.MatcherWithMemory.ScoredState;
+import spellingvariation.AlignmentSegmenter.SegmentationGraph;
 
 /**
  * This class does the score keeping for histories and implements the state model interface.
@@ -189,7 +188,7 @@ public class History implements Iterable<History.State>,
 		System.err.println("histories inserted, start polishing .. ");
 		makeStateModel(); // moet dit niet NA het opschonen van de begintoestanden?
 		int index=0;
-		Vector<Transition> fromStart = new Vector<Transition>();
+		//Vector<Transition> fromStart = new Vector<Transition>();
 		
 		// TODO dit klopt weer niet
 		
@@ -201,7 +200,7 @@ public class History implements Iterable<History.State>,
 			s.index = index++;
 		}
 		size = allStates.size();
-		closed = true;
+		setClosed(true);
 	}
 
 	public void cleanupProlongations()
@@ -431,7 +430,6 @@ public class History implements Iterable<History.State>,
 
 		public State stateTransition(int c)
 		{
-			Vector<Transition> v =  getStateTransitions();
 			for (Transition t: getStateTransitions()) // depends on model order!!
 			{
 				if (t.symbol == c) return t.target;
@@ -636,7 +634,7 @@ public class History implements Iterable<History.State>,
 		{
 			if (downlink >= 0 && History.this.lowerOrderHistory != null)
 			{
-				State downlink =  History.this.lowerOrderHistory.allStates.get(this.downlink);
+				//State downlink =  History.this.lowerOrderHistory.allStates.get(this.downlink);
 				//System.err.println("Downlink: " + this.getEnclosingHistory().MODEL_ORDER + "  --> " + lowerOrderHistory.MODEL_ORDER);
 				return History.this.lowerOrderHistory.allStates.get(this.downlink);
 			}
@@ -811,5 +809,13 @@ public class History implements Iterable<History.State>,
 				}
 			}
 		}
+	}
+
+	public boolean isClosed() {
+		return closed;
+	}
+
+	public void setClosed(boolean closed) {
+		this.closed = closed;
 	}
 }
