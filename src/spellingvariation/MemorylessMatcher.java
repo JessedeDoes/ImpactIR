@@ -3,11 +3,16 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import trie.Trie;
 import trie.Trie.TrieNode;
 import util.Options;
+import util.StringUtils;
 
 
 class MatchState implements Comparable<MatchState>
@@ -484,10 +489,7 @@ public class MemorylessMatcher
 			this.targetWord = Alphabet.initialBoundaryString + this.targetWord + Alphabet.finalBoundaryString;
 		//this.queue =  fh_makekeyheap();
 
-		if (lexicon.contains(targetWord))
-			System.err.println("letterlijke match: " + targetWord);
-		else
-			System.err.println(targetWord + " zit er niet in");
+		
 		MatchState startitem = new MatchState(lextrie.root, 0);
 		activeItems.addElement(startitem);
 		startitem.cost = 0;
@@ -549,25 +551,110 @@ public class MemorylessMatcher
 		System.err.println("Usage: java spellingvariation.MemorylessMatcher <pattern file> <word list> [<input file>]");
 	}
 
+	class Match
+	{
+		String target;
+		String match;
+		String reference;
+		String patterns;
+		boolean correct;
+		boolean referenceInLexicon;
+		double score;
+		
+		public Match(String target, String match,String reference, 
+				boolean correct, boolean referenceInLexicon, double score, String patterns)
+		{
+			this.target=target;
+			this.match=match;
+			this.reference=reference;
+			this.correct=correct;
+			this.referenceInLexicon = referenceInLexicon;
+			this.score=score;
+			this.patterns = patterns;
+		}
+		
+		String asXML()
+		{
+			return String.format("<match value='%s' correct='%s' OOV='%s' score='%f' appliedPatterns='%s'/>", 
+					esc(match), new Boolean(correct).toString(), 
+					new Boolean(!referenceInLexicon).toString(), score, esc(patterns));
+		}
+	}
+	
 	class TestCallback extends Callback
 	{
 		int itemsTested=0;
 		int noMatch = 0;
 		int correctMatches = 0;
 		String reference="";
+		String currentId="";
+		boolean referenceInLexicon = false;
+		int nItemsinLexicon = 0;
+		List<String> targets = new ArrayList<String>();
+		Map<String,String> id2target = new HashMap<String,String>();
+		Map<String,String> id2reference = new HashMap<String,String>();
+		Map<String,List<Match>> matches = new HashMap<String,List<Match>>();
+		
+		public void addMatch(Match match) // dit is allemaal fout....
+		{
+			List<Match> soFar = matches.get(currentId);
+			if (soFar == null)
+			{
+				soFar = new ArrayList<Match>();
+				matches.put(currentId, soFar);
+			}
+			soFar.add(match);
+		}
+		
 		public void handleMatch(String targetWord, String matchedWord, String matchInfo, int cost, double p)
 		{
+			Match match = new Match(targetWord, matchedWord, reference, matchedWord.equals(reference),
+					referenceInLexicon, p, matchInfo);
+			addMatch(match);
 			if (matchedWord.equals(reference))
 			{
 				correctMatches++;
 			} else
 			{
-				System.err.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
+				//System.err.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
 			}
-			System.out.printf("%s -> %s %s %e %d\n" ,targetWord, matchedWord, matchInfo, p, cost);
+			//System.out.printf("%s -> %s %s %e %d\n" ,targetWord, matchedWord, matchInfo, p, cost);
 		}
+		
+		public void dumpResults()
+		{
+			System.out.println("<results>");
+			for (String h: targets)
+			{
+				boolean found=false;
+				List<Match> matchList = matches.get(h);
+				String mXML="";
+				if (matchList != null)
+				{
+					for (Match m: matchList)
+					{
+						mXML += m.asXML();
+						found |= m.correct;
+					}
+				}
+				String z = String.format("<matching target='%s' reference='%s' found='%s'>%s</matching>",  
+						esc(this.id2target.get(h)) , 
+						esc(id2reference.get(h)), 
+						new Boolean(found).toString(),
+						mXML );
+				System.out.println(z);
+			}
+			System.out.println("</results>");
+		}
+		
+	
 	}
 
+	public static String esc(String s)
+	{
+		return StringUtils.xmlSingleQuotedEscape(s);
+	}
+	
 	public void  test(Trie lexicon, BufferedReader in)
 	{
 		this.lextrie = lexicon;
@@ -576,22 +663,46 @@ public class MemorylessMatcher
 
 		try
 		{
-
 			String s;
+			int k=1;
 			while ((s=in.readLine()) != null)
 			{
 				String[] parts = s.split("\\t");
 				//String lemma=parts[0];  
-				String modern = parts[1]; String historical = parts[2];
+				String id = parts[0]; String modern = parts[1]; String historical = parts[2];
+				
 				cb.reference = modern;
-				boolean found = this.matchWordToLexicon(lexicon, historical);
+				cb.currentId = String.format("%06d",k);
+				cb.targets.add(cb.currentId);
+				cb.referenceInLexicon = lexicon.contains(modern, this.addWordBoundaries);
+				if (cb.referenceInLexicon) cb.nItemsinLexicon++;
+				cb.id2reference.put(cb.currentId, cb.reference);
+				cb.id2target.put(cb.currentId, historical);
+				
 				cb.itemsTested++;
+				boolean found = this.matchWordToLexicon(lexicon, historical);
 				if (!found)
 				{
 					cb.noMatch++;
 				}
+				k++;
 			}
-			System.err.println("Items tested: " + cb.itemsTested + " correct:  " + cb.correctMatches + " no match: " +cb.noMatch);
+			cb.dumpResults();
+			double recallOverall = cb.correctMatches / (double) cb.itemsTested;
+			double modernLexiconCoverage = 0;
+			double recallInVocabulary = 0;
+			try
+			{ 
+				recallInVocabulary = cb.correctMatches / (double) cb.nItemsinLexicon;
+				modernLexiconCoverage = cb.nItemsinLexicon / (double) cb.itemsTested;
+			} catch (Exception e)
+			{
+				
+			}
+			System.err.println("Items tested: " + cb.itemsTested + "; correct matches:  " + cb.correctMatches + "; no match at all: " + cb.noMatch);
+			System.err.println("Coverage of modern lexicon on modern equivalents: "  + modernLexiconCoverage);
+			System.err.println("Overall recall: " + recallOverall);
+			System.err.println("Recall of words in modern lexicon: " + recallInVocabulary);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -621,9 +732,9 @@ public class MemorylessMatcher
 		{
 			try
 			{
-				 Reader reader = new InputStreamReader(
-				new FileInputStream(Options.getOption("testFile")), "UTF-8");
-            	            stdin  = new BufferedReader(reader);
+				Reader reader = new InputStreamReader(
+						new FileInputStream(Options.getOption("testFile")), "UTF-8");
+				stdin  = new BufferedReader(reader);
 
 			} catch (Exception e)
 			{
@@ -631,7 +742,7 @@ public class MemorylessMatcher
 				stdin = null;
 			}
 		} else
- 		{
+		{
 			try
 			{
 				stdin = new BufferedReader(new java.io.InputStreamReader(System.in, "UTF-8"));

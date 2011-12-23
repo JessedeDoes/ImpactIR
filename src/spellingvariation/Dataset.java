@@ -130,6 +130,9 @@ public class Dataset implements Iterable<Dataitem>
 			return 0;
 		} catch (Exception e)
 		{
+			String currentDirectory = System.getProperty("user.dir");
+			System.err.println("Unable to read file " + filename);
+			System.err.println("Current directory: " + currentDirectory);
 			e.printStackTrace();
 			return 1;
 		}

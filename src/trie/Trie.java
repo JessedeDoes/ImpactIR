@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import spellingvariation.Alphabet;
+
 /**
  * An extremely simple implementation of a Trie
  * Later on we may want to switch to something like hash-tries for performance.
@@ -150,6 +152,12 @@ public class Trie implements java.io.Serializable
 	public boolean contains(String s)
 	{
 		return root.findNode(s) != null; 
+	}
+	
+	public boolean contains(String s, boolean addWordBoundaries)
+	{
+		String x = !addWordBoundaries?s:Alphabet.initialBoundaryString + s + Alphabet.finalBoundaryString;
+		return root.findNode(x) != null; 
 	}
 	
 	public void loadWordlist(String filename, boolean assumeOrdered, boolean addWordBoundaries)

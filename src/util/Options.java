@@ -43,11 +43,17 @@ public class Options
 		options.addOption("X", "forbidInsertsAndDeletes", true, "Do not save inserts and deletes in pattern output");
 		options.addOption("T", "lexiconTrie", true, "Compiled Trie for Modern Lexicon");
 		options.addOption("z", "targetDirectory", true, "Base directory for compiled lexicon data");
+		options.addOption("r", "pruner", true, "Java class used for determining which multigrams are acceptable patterns");
 
 
 		parseCommandLine(args);
 
 		//System.err.println(options);
+		// properties.list(System.out);
+	}
+
+	public static void list()
+	{
 		properties.list(System.out);
 	}
 
