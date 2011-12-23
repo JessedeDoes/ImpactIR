@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 
-<project name="JointMultiGramModel" default="compile" basedir="."> 
+<project name="JointMultiGramModel" default="dist" basedir="."> 
 
      <property name="src" value="./src"/> 
      <property name="build" value="build"/>

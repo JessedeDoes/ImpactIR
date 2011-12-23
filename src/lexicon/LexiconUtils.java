@@ -38,6 +38,7 @@ public class LexiconUtils
 		DoubleArrayTrie dat = new DoubleArrayTrie();
 		int k=0;
 		SortedSet<String> words = new TreeSet<String>();
+		
 		for (WordForm w: modernLexicon)
 		{
 			if (k % 10000 == 0) 
