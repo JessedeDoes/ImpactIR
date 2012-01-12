@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<project name="irEval" default="ir.evaluation" basedir=".">
+
+	<property name="neodir" value="lib/neo"/>
+	<property name="libdir" value="lib"/>
+	
+	<path id="java.class.path">
+		<fileset dir="${neodir}">
+			<include name="*.jar"/>
+		</fileset>
+
+        <pathelement path="lib/jgrapht-jdk1.6.jar"/>
+        <pathelement path="lib/weka.jar"/>
+   		<pathelement path="lib/commons-cli-1.2.jar"/>
+        <pathelement path="lib/mysql-connector-java-3.0.17-ga-bin.jar"/>
+        <pathelement path="lib/commons-logging-1.1.1.jar"/>
+	</path>
+
+	<target name="lexicon.prepare">
+		<java classname="">
+		 	<classpath refid="java.class.path"/>
+		</java>
+	</target>	
+
+	<target name="ir.evaluation">
+		<java classname="lemmatizer.LemmatizationTest" error="lemmatization.stderror.txt">
+			<arg value="-d"/>
+			<arg value="${word.list}"/>
+			<arg value="-s"/>
+			<arg value="evaluation.xsl"/>
+			<arg value="-o"/>
+			<arg value="${evaluation.report}.xml"/>
+			<arg value="-m"/>
+			<arg value="${metadataFile}"/>
+                        <arg value="-c"/>
+			<arg value="${compareTo}"/>
+			<arg value="-p"/>
+			<arg value="${periodization}"/>
+	       		<arg value="${groundtruth.location}"/>
+	       		<arg value="${ocr.destination}"/>
+	       		<classpath refid="java.class.path"/>
+	</java>
+	</target>
+</project>
