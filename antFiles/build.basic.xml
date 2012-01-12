@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 
+
 <project name="irEval" default="ir.evaluation" basedir=".">
 
 	<property name="neodir" value="lib/neo"/>
@@ -9,7 +10,6 @@
 		<fileset dir="${neodir}">
 			<include name="*.jar"/>
 		</fileset>
-
  	        <pathelement path="lib/jgrapht-jdk1.6.jar"/>
                 <pathelement path="lib/weka.jar"/>
    		<pathelement path="lib/commons-cli-1.2.jar"/>
@@ -18,7 +18,6 @@
 	</path>
 
 	<!-- basic requirements -->
-
 
 	<target name="lexicon.prepare">
 		<java classname="lexicon.prepareLexicon">
@@ -30,24 +29,20 @@
 			<arg value="${historical.lexicon}"/>
 		 	<classpath refid="java.class.path"/>
 		</java>
-	</target>	
+	</target>
 
 	<target name="ir.evaluation" depends="lexicon.prepare">
 		<java classname="lemmatizer.LemmatizationTest" error="lemmatization.stderror.txt">
-			<arg value="-d"/>
-			<arg value="${word.list}"/>
-			<arg value="-s"/>
-			<arg value="evaluation.xsl"/>
-			<arg value="-o"/>
-			<arg value="${evaluation.report}.xml"/>
-			<arg value="-m"/>
-			<arg value="${metadataFile}"/>
-                        <arg value="-c"/>
-			<arg value="${compareTo}"/>
-			<arg value="-p"/>
-			<arg value="${periodization}"/>
-	       		<arg value="${groundtruth.location}"/>
-	       		<arg value="${ocr.destination}"/>
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="{$historical.compiled.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="${pattern.input}"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
 	       		<classpath refid="java.class.path"/>
 	</java>
 	</target>
