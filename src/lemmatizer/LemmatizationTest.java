@@ -80,6 +80,7 @@ public class LemmatizationTest
 			int numSuggestions = 0;
 			double sumOfRanks=0;
 			boolean englishBehaviour = false;
+			
 			while ((line = input.readLine()) != null)
 			{
 				String[] parts = line.split("\\t");
@@ -170,5 +171,11 @@ public class LemmatizationTest
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args)
+	{
+		new Options(args);	
+		(new LemmatizationTest()).runTest();	
 	}
 }
