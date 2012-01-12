@@ -20,6 +20,10 @@
 	<!-- basic requirements -->
 
 	<target name="irset.extract">
+		<java classname="lexicon.DumpTabSeparated">
+			<arg value=""/>
+		 	<classpath refid="java.class.path"/>
+		</java>
 	</target>
 
 	<target name="lexicon.prepare">
@@ -32,6 +36,8 @@
 			<arg value="${historical.lexicon}"/>
 			<arg value="--databaseHost"/>
 			<arg value="${database.host}"/>
+			<arg value="--addWordBoundaries"/>
+			<arg value="true"/>
 		 	<classpath refid="java.class.path"/>
 		</java>
 	</target>

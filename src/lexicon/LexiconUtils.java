@@ -54,6 +54,7 @@ public class LexiconUtils
 			dat.add(addWordBoundaries? "^" + w + "$": w);
 
 			dat.add(w);
+			k++;
 		}
 		
 		try 

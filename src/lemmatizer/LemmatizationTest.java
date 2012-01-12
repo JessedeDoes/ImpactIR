@@ -119,8 +119,8 @@ public class LemmatizationTest
 						e.printStackTrace();
 					}
 				}
-				
-				List<WordMatch> s = simpleLemmatizer.lookupWordform(w);
+				// case sensitive or not?
+				List<WordMatch> s = simpleLemmatizer.lookupWordform(w.toLowerCase());
 				if (s==null || s.size()==0)
 				{
 					out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
@@ -140,6 +140,7 @@ public class LemmatizationTest
 					String candidateList = "";
 					int k=1;
 					HashSet<String> seenLemmata = new HashSet<String>();
+					
 					for (WordMatch wf: wordMatchList)
 					{
 						candidateList += "\t" + wf + "\n";
