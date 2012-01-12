@@ -19,6 +19,9 @@
 
 	<!-- basic requirements -->
 
+	<target name="irset.extract">
+	</target>
+
 	<target name="lexicon.prepare">
 		<java classname="lexicon.prepareLexicon">
 			<arg value="--targetDirectory"/>
@@ -27,11 +30,13 @@
 			<arg value="${modern.lexicon}"/>
 			<arg value="--historicalLexicon"/>
 			<arg value="${historical.lexicon}"/>
+			<arg value="--databaseHost"/>
+			<arg value="${database.host}"/>
 		 	<classpath refid="java.class.path"/>
 		</java>
 	</target>
 
-	<target name="ir.evaluation" depends="lexicon.prepare">
+	<target name="ir.evaluation">
 		<java classname="lemmatizer.LemmatizationTest" error="lemmatization.stderror.txt">
 			<arg value="--lemmatizerInput"/>
 			<arg value="${lemmatizer.input}"/>

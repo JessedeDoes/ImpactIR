@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import util.Options;
 import util.Resource;
 
 
@@ -31,7 +32,8 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	public LexiconDatabase(String dbName)
 	{
 		this.mysqldbname = dbName;
-		mysqlurl = "jdbc:mysql://" + mysqlhost + ":" + mysqlport + "/" + mysqldbname;
+		String xHost = Options.getOption("databaseHost", mysqlhost);
+		mysqlurl = "jdbc:mysql://" + xHost + ":" + mysqlport + "/" + mysqldbname;
 		init();
 	}
 	
@@ -50,6 +52,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public void init()
 	{
+	
 		try 
 		{
 			connection = (new ConnectorSimple()).connect(mysqlurl, mysqluser, mysqlpasswd);
@@ -219,7 +222,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		else
 			arg0 = args[0];
 		LexiconDatabase l = new LexiconDatabase(arg0);
-		l.createSimpleAnalyzedWordformTable();
+		//l.createSimpleAnalyzedWordformTable();
 		l.useSimpleWordformsOnly = true;
 		System.err.println("database loaded");
 		int k=0;

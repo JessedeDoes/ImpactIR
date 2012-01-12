@@ -148,6 +148,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		try
 		{
 			LexiconDatabase l = new LexiconDatabase(dbName);
+			l.useSimpleWordformsOnly = true;
 			for (WordForm w:l)
 			{
 				System.err.println(nItems + ": " + w);
