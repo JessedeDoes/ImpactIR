@@ -3,31 +3,29 @@
 
 <project name="irEval" default="ir.evaluation" basedir=".">
 
-	<property name="neodir" value="lib/neo"/>
-	<property name="libdir" value="lib"/>
+	<property name="neodir" value="../lib/neo"/>
+	<property name="libdir" value="../lib"/>
+
+	<property name="lexicon.datadir" value="UNK"/>
+	<property name="lexicon.compiled.dir" value="${lexicon.datadir}/${language}"/>
 
 	<path id="java.class.path">
 		<fileset dir="${neodir}">
 			<include name="*.jar"/>
 		</fileset>
- 	        <pathelement path="lib/jgrapht-jdk1.6.jar"/>
-                <pathelement path="lib/weka.jar"/>
-   		<pathelement path="lib/commons-cli-1.2.jar"/>
-        	<pathelement path="lib/mysql-connector-java-3.0.17-ga-bin.jar"/>
-        	<pathelement path="lib/commons-logging-1.1.1.jar"/>
+		<pathelement path="../dist/spellingvariation.jar"/>
+ 	        <pathelement path="${libdir}/jgrapht-jdk1.6.jar"/>
+                <pathelement path="${libdir}/weka.jar"/>
+   		<pathelement path="${libdir}/commons-cli-1.2.jar"/>
+        	<pathelement path="${libdir}/mysql-connector-java-3.0.17-ga-bin.jar"/>
+        	<pathelement path="${libdir}/commons-logging-1.1.1.jar"/>
 	</path>
 
 	<!-- basic requirements -->
 
-	<target name="irset.extract">
-		<java classname="lexicon.DumpTabSeparated">
-			<arg value=""/>
-		 	<classpath refid="java.class.path"/>
-		</java>
-	</target>
 
 	<target name="lexicon.prepare">
-		<java classname="lexicon.prepareLexicon">
+		<java classname="lexicon.PrepareLexicon">
 			<arg value="--targetDirectory"/>
 			<arg value="${lexicon.compiled.dir}"/>
 			<arg value="--modernLexicon"/>
@@ -43,18 +41,28 @@
 	</target>
 
 	<target name="ir.evaluation">
-		<java classname="lemmatizer.LemmatizationTest" error="lemmatization.stderror.txt">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}" error="lemmatization.stderror.txt">
 			<arg value="--lemmatizerInput"/>
 			<arg value="${lemmatizer.input}"/>
 			<arg value="--modernLexicon"/>
 			<arg value="${modern.compiled.lexicon}"/>
 			<arg value="--historicalLexicon"/>
-			<arg value="{$historical.compiled.lexicon}"/>
+			<arg value="${historical.compiled.lexicon}"/>
 			<arg value="--patternInput"/>
 			<arg value="${pattern.input}"/>
                         <arg value="--lexiconTrie"/>
 			<arg value="${lexicon.trie}"/>
 	       		<classpath refid="java.class.path"/>
 	</java>
+	</target>
+
+	<target name="evaluationset.export">
+		<exec executable="mysql" output="${evaluation.set.exported}" input="${export.query}">
+			<arg value="-h"/>	
+			<arg value="${database.host}"/>
+			<arg value="-pimpact"/>
+			<arg value="-uimpact"/>
+			<arg value="${evaluation.database}"/>
+		</exec>
 	</target>
 </project>

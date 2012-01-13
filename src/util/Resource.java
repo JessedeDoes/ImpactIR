@@ -24,8 +24,8 @@ public class Resource
 				return new FileReader(file);
 			}
 			// next try for files included in jar
-			java.net.URL url = getClass().getClassLoader().getResource(s);
-			System.err.println(url);
+			java.net.URL url = getClass().getClassLoader().getResource(resourceFolder + "/" + s);
+			System.err.println("jar url " + url);
 			// or URL from web
 			if (url == null) url = new java.net.URL(s);
 			java.net.URLConnection site = url.openConnection();

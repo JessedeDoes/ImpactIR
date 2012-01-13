@@ -27,7 +27,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	
 	static int NODETYPE_WORDFORM = 0;
 	static int NODETYPE_LEMMA = 1;	
-	
+	boolean caseSensitiveLookup=false;	
 	
 	private static enum RelTypes implements RelationshipType
 	{
@@ -308,9 +308,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	public Set<WordForm> findLemmata(String wordform, boolean query) 
 	{
 		Set<WordForm> wordforms = new HashSet<WordForm>();
+		String property = caseSensitiveLookup?"wordform":"wordformLowercase";
 		try
 		{
-			IndexHits<Node> hits = query? nodeIndex.query("wordform", wordform) : nodeIndex.get("wordform", wordform);
+			IndexHits<Node> hits = query? nodeIndex.query(property, wordform) : nodeIndex.get(property, wordform);
 			for (Node n: hits)
 			{
 				String wf = (String) n.getProperty("wordform");

@@ -1,21 +1,33 @@
 <?xml version="1.0"?>
 
-<project name="dutch_ir_evaluation" default="ocr.with.internal.and.external.dictionary" basedir=".">
-	
-	<property name="images.location" value="C:/OCRSets/KBOCRSet"/>
-	<property name="groundtruth.location" value="${images.location}/GroundTruth"/>
-	<property name="ocr.destination" value="${images.location}/OCR.internal_external"/>
-	<property name="evaluation.report" value="Log/dutch/dutch_internal_external.log"/>	
-	
-	<property name="bin.dir" value="./bin"/>
-	<property name="dictionary.data" value="./dict/test.dat"/>
-	<property name="dictionary.dll" value="./bin/ExternalDictionaryDLL.DLL"/>
-	<property name="text.type" value="Normal"/>
-	<property name="text.type.2" value="Normal"/>
-	<property name="language" value="Dutch"/>
-	<property name="word.list" value="dict/DBNL.topje.tf"/>
-	<property name="metadataFile" value="${images.location}/ocrSetKB.csv"/>
-	<property name="compareTo" value="../Log/dutch/dutch_internal.log.xml"/>
+<project name="dutch_ir_evaluation" default="ir.evaluation" basedir=".">
+
+	<import file="platform.xml"/>
+	<property name="language" value="Dutch"/>	
+        <property name="language.dir" value="${evaluation.datadir}/${language}"/>
+
+<!-- for exporting the evaluation set(s) -->
+
+	<property name="evaluation.database" value="LexiconTool_NL_IR"/>
+	<property name="export.query" value="${language.dir}/source/dumpIRCorpusje.sql"/>
+	<property name="evaluation.set.exported" value="${language.dir}/dutchIRSet.txt"/>
+
+<!-- needed for preparing lexicon data -->
+
+        <property name="modern.lexicon" value="${language.dir}/Lexicon/wnt.revlem.out"/>
+
+        <property name="database.host" value="impactdb.inl.loc"/>
+        <property name="historical.lexicon" value="database:EE3_5"/>
+
+<!-- needed for the actual lemmatization test -->
+
+        <property name="lemmatizer.input" value="${language.dir}/dutchIRSet.nogroups.nonames.txt"/>
+       <property name="lemmatizer.output" value="${language.dir}/dutchIRSet.nogroups.nonames.txt.out"/>
+        <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
+        <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/HistoricalLexicon"/>
+        <property name="pattern.input" value="${language.dir}/multigrams.cleaner"/>
+        <property name="lexicon.trie" value="${lexicon.datadir}/${language}/modernWords.datrie"/>
 
         <import file="build.basic.xml"/>
+
 </project>
