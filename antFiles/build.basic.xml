@@ -23,6 +23,9 @@
 
 	<!-- basic requirements -->
 
+	<!-- nog een target maken voor aanmaken van de simple analyzed wordforms! 
+ java lexicon.CreateSimpleAnalyzedWordforms svowdb02 BulgarianLexicon111111 etc
+	-->
 
 	<target name="lexicon.prepare">
 		<java classname="lexicon.PrepareLexicon">
@@ -52,6 +55,17 @@
 			<arg value="${pattern.input}"/>
                         <arg value="--lexiconTrie"/>
 			<arg value="${lexicon.trie}"/>
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="maximumSuggestions"/> <arg value="2"/>
+			<arg value="addWordBoundaries"/> <arg value="true"/>
+			<arg value="maximumPenalty"/> <arg value="3000"/>
+			<arg value="maximumPenaltyIncrement"/> <arg value="200"/> <!-- # not used yet -->
+
 	       		<classpath refid="java.class.path"/>
 	</java>
 	</target>

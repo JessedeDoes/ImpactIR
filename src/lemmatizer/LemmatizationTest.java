@@ -85,6 +85,8 @@ public class LemmatizationTest
 			{
 				String[] parts = line.split("\\t");
 				w = parts[0];
+				if (util.SimpleTokenizer.isPunctuationOrWhite(w)) // skip this
+					continue;
 				String correctLemmata = "";
 				Set<String> possibleLemmata = new HashSet<String>();
 				boolean unfinishedLetter = false;
@@ -116,7 +118,7 @@ public class LemmatizationTest
 						frequency = Integer.parseInt(parts[2]);
 					} catch (Exception e)
 					{
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 				}
 				// case sensitive or not?
@@ -146,7 +148,8 @@ public class LemmatizationTest
 						candidateList += "\t" + wf + "\n";
 						String lcLemma = wf.wordform.lemma.toLowerCase();
 						numSuggestions++;
-						if (possibleLemmata.contains(lcLemma) && !seenLemmata.contains(lcLemma))
+						boolean germanWildCard = possibleLemmata.contains("*****") || possibleLemmata.contains("*****");
+						if (germanWildCard || (possibleLemmata.contains(lcLemma) && !seenLemmata.contains(lcLemma)))
 						{
 							numCorrectSuggestions++; 
 							sumOfRanks += k;
