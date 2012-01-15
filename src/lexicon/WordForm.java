@@ -1,11 +1,20 @@
 package lexicon;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class WordForm
 {
+	@XmlElement
 	public String lemma = "";
+	@XmlElement
 	public String wordform = "";
 	public String tag = "nil";
+	@XmlElement
 	public String lemmaPoS = "nil";
 	
 	public int wordformFrequency = 0;

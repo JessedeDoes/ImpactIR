@@ -4,7 +4,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import lexicon.InMemoryLexicon;
-
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 enum MatchType 
 {
 	HistoricalExact, 
@@ -57,12 +61,16 @@ class WordMatchComparator implements Comparator<WordMatch>
 	}
 }
 
+@XmlRootElement
 public class WordMatch
 {
+	@XmlElement
 	lexicon.WordForm wordform;
 	double matchScore;
 	String target;
-	String alignment = ""; 
+	@XmlElement
+	String alignment = "";
+	
 	MatchType type;
 	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;

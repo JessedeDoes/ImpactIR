@@ -15,11 +15,14 @@
 			<include name="*.jar"/>
 		</fileset>
 		<pathelement path="../dist/spellingvariation.jar"/>
- 	        <pathelement path="${libdir}/jgrapht-jdk1.6.jar"/>
-                <pathelement path="${libdir}/weka.jar"/>
+ 	    <pathelement path="${libdir}/jgrapht-jdk1.6.jar"/>
+        <pathelement path="${libdir}/weka.jar"/>
    		<pathelement path="${libdir}/commons-cli-1.2.jar"/>
-        	<pathelement path="${libdir}/mysql-connector-java-3.0.17-ga-bin.jar"/>
-        	<pathelement path="${libdir}/commons-logging-1.1.1.jar"/>
+       	<pathelement path="${libdir}/mysql-connector-java-3.0.17-ga-bin.jar"/>
+        <pathelement path="${libdir}/commons-logging-1.1.1.jar"/>
+		<pathelement path="${libdir}/jaxb-api-2.1.jar"/>
+       	<pathelement path="${libdir}/jaxb-impl-2.1.7.jar"/>
+        <pathelement path="${libdir}/jaxb-xjc-2.1.7.jar"/>
 	</path>
 
 	<!-- basic requirements -->

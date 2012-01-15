@@ -9,31 +9,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class IRLexiconEvaluation 
 {
+
 	public List<Item> items = new ArrayList<Item>();
 	
-	public int averageRank =0;
+	@XmlElement
+	//public int averageRank =0;
 	public int nCorrectSuggestions = 0;
+	@XmlElement
 	public int nHistoricalExact = 0;
+	@XmlElement
 	public int nModernExact = 0;
+	@XmlElement
 	public int nHypothetical = 0;
-
+	@XmlElement
 	public int nSuggestions=0;
+	@XmlElement
 	public int sumOfRanks=0;
+	@XmlElement
 	public int nItemsWithACorrectSuggestion = 0;
 	
-	double avgRank = 0; 
-	double recall = 0;
-	double historicalLexiconCoverage=0;
-	double hypotheticalLexiconCoverage=0;
-	double modernLexiconCoverage = 0;
+	public double avgRank = 0; 
+	public double recall = 0;
+	public double historicalLexiconCoverage=0;
+	public double hypotheticalLexiconCoverage=0;
+	public double modernLexiconCoverage = 0;
+	
+	PrintStream report=System.out;
 	
 	Map<MatchType, Integer> typeHash = new HashMap<MatchType, Integer> ();
-
-
 	
-	public void incrementCount(MatchType m)
+	private void incrementCount(MatchType m)
 	{
 		Integer z = typeHash.get(m);
 		if (z == null)
@@ -50,6 +64,7 @@ public class IRLexiconEvaluation
 		}
 	}
 	
+	@XmlRootElement
 	public static class Item
 	{
 		public String partOfSpeech;
@@ -120,7 +135,7 @@ public class IRLexiconEvaluation
 		HashSet<String> seenLemmata = new HashSet<String>();
 		boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
 		
-		
+		// loop over the unsimplified match list to find out about coverage
 		for (WordMatch wordMatch: unsimplifiedMatches)
 		{
 			//candidateList += "\t" + wf + "\n";
@@ -137,6 +152,8 @@ public class IRLexiconEvaluation
 				//incrementCount(wordMatch.type);
 			}
 		}
+		
+		// to check the average rank of correct matches, we need the simplified list
 		
 		for (WordMatch wordMatch: wordMatchList)
 		{
@@ -169,9 +186,37 @@ public class IRLexiconEvaluation
 			nItemsWithACorrectSuggestion++;
 	}
 	
-	
+	  public void marshal()
+      {
+              try
+              {
+                      JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {
+                                      IRLexiconEvaluation.class,
+                                      Item.class,
+                                      WordMatch.class,
+                                      lexicon.WordForm.class});
+
+
+                      Marshaller marshaller=jaxbContext.createMarshaller();
+                      marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                      marshaller.setProperty( Marshaller.JAXB_ENCODING,"UTF-8");
+                      marshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+
+                      report.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                      /*
+                      report.println("<?xml-stylesheet type=\"text/xsl\" href=\"" + stylesheetLocation
+                                      + "\"?>");
+	*/
+                      marshaller.marshal( this, report);
+              } catch (Exception e)
+              {
+                      e.printStackTrace();
+              }
+      }
+
 	public int size()
 	{
 		return items.size();
 	}
+	
 }

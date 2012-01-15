@@ -36,7 +36,7 @@ public class LemmatizationTest
 {
 	Lemmatizer lemmatizer;
 	Map<MatchType, Integer> typeHash = new HashMap<MatchType, Integer> ();
-	
+	boolean plainTextOutput = false;
 	public void incrementCount(MatchType m)
 	{
 		Integer z = typeHash.get(m);
@@ -133,13 +133,20 @@ public class LemmatizationTest
 					//System.out.println(""  + w + " ");
 					report.matchItem(item, matches);
 					
-					out.write(w + " := " + item.matches.get(0) + " reference "  + 
+					if (plainTextOutput)
+					{
+						out.write(w + " := " + item.matches.get(0) + " reference "  + 
 								item.lemma + " foundACorrectLemma + " + item.hasCorrectMatch + "\n");
-					out.write("\t" + item.matchesAsString() + "\n");
+						out.write("\t" + item.matchesAsString() + "\n");
+					}
 				
 				}
 			}
 			report.print(System.err);
+			if (!plainTextOutput)
+			{
+				report.marshal();
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
