@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class IRLexiconEvaluation 
 {
 
+	@XmlElement(name="item")
 	public List<Item> items = new ArrayList<Item>();
 	
 	@XmlElement
@@ -37,7 +38,7 @@ public class IRLexiconEvaluation
 	@XmlElement
 	public int nItemsWithACorrectSuggestion = 0;
 	
-	public double avgRank = 0; 
+	public double averageRankOfFirstCorrectSuggestion = 0; 
 	public double recall = 0;
 	public double historicalLexiconCoverage=0;
 	public double hypotheticalLexiconCoverage=0;
@@ -71,6 +72,7 @@ public class IRLexiconEvaluation
 		public String lemma;
 		public Set<String> lemmata;
 		public String wordForm;
+		@XmlElement(name="match")
 		public List<WordMatch> matches;
 		public int rankOfCorrectSuggestion;
 		public boolean hasCorrectMatch = false;
@@ -104,7 +106,7 @@ public class IRLexiconEvaluation
 	{
 		double N = items.size();
 		
-		avgRank = sumOfRanks / (double) nItemsWithACorrectSuggestion;
+		this.averageRankOfFirstCorrectSuggestion = sumOfRanks / (double) nItemsWithACorrectSuggestion;
 		recall = nItemsWithACorrectSuggestion / N;
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
@@ -115,7 +117,7 @@ public class IRLexiconEvaluation
 	{
 		calculate();
 		p.println("####\nItems " + items.size() + ", recall:" + recall);
-		p.println("Average rank of first correct suggestion: " + avgRank  +  " total # suggestions " + nSuggestions);
+		p.println("Average rank of first correct suggestion: " + this.averageRankOfFirstCorrectSuggestion  +  " total # suggestions " + nSuggestions);
 		p.println("\nHistorical lexicon coverage: " + historicalLexiconCoverage);
 		p.println("Modern lexicon coverage: " + modernLexiconCoverage);
 		p.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);

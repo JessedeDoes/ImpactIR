@@ -69,9 +69,11 @@ public class WordMatch
 	double matchScore;
 	String target;
 	@XmlElement
-	String alignment = "";
+	public String alignment = "";
 	
+	@XmlElement
 	MatchType type;
+	
 	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;
 	int wordformFrequency=0;

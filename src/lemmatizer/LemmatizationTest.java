@@ -125,7 +125,8 @@ public class LemmatizationTest
 				item.matches = matches;
 				if (matches==null || matches.size()==0)
 				{
-					out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
+					if (this.plainTextOutput)
+						out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
 					incrementCount(MatchType.None);
 				}
 				else
