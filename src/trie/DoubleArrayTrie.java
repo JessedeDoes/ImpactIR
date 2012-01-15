@@ -800,9 +800,10 @@ public class DoubleArrayTrie implements ITrie<Object>
 		final int[] newBase = new int[maxInd + 1];
 		final int[] newCheck = new int[maxInd + 1];
 
-		for (int i = 0; i < newBase.length; ++i)
+		//System.err.println("maxInd=" + maxInd + "  newBase.length = " + newBase.length + " base.length= " + base.length);
+		for (int i = 0; i < newBase.length && i < base.length; i++)
 			newBase[i] = base[i];
-		for (int i = 0; i < newCheck.length; ++i)
+		for (int i = 0; i < newCheck.length && i < check.length; i++)
 			newCheck[i] = check[i];
 
 		// properly hook-up wrap around

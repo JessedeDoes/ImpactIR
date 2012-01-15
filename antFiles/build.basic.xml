@@ -43,8 +43,10 @@
 		</java>
 	</target>
 
+	<property name="maximum.suggestions" value="2"/>
+
 	<target name="ir.evaluation">
-		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}" error="lemmatization.stderror.txt">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}" error="${lemmatizer.input}.log">
 			<arg value="--lemmatizerInput"/>
 			<arg value="${lemmatizer.input}"/>
 			<arg value="--modernLexicon"/>
@@ -55,16 +57,18 @@
 			<arg value="${pattern.input}"/>
                         <arg value="--lexiconTrie"/>
 			<arg value="${lexicon.trie}"/>
+
 <!-- vermoeiende settings voor matching -->
 
 			<arg value="--allowDeletions"/> <arg value="true"/>
 			<arg value="--allowInsertions"/> <arg value="true"/>
 			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
-			<arg value="minimumConfidence"/> <arg value="1e-4"/>
-			<arg value="maximumSuggestions"/> <arg value="2"/>
-			<arg value="addWordBoundaries"/> <arg value="true"/>
-			<arg value="maximumPenalty"/> <arg value="3000"/>
-			<arg value="maximumPenaltyIncrement"/> <arg value="200"/> <!-- # not used yet -->
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+
+<!-- # not used yet -->
 
 	       		<classpath refid="java.class.path"/>
 	</java>

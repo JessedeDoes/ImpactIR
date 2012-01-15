@@ -13,7 +13,7 @@ public class SimpleTokenizer
     
 	static Pattern prePunctuationPattern = Pattern.compile("(^|\\s)\\p{P}+");
 	static Pattern postPunctuationPattern = Pattern.compile("\\p{P}+($|\\s)");
-
+	static Pattern letterPattern = Pattern.compile(".*\\p{L}.*");
 	static Pattern leadingBlanks = Pattern.compile("^\\s+");
 	static Pattern trailingBlanks = Pattern.compile("\\s+$");
 	
@@ -63,8 +63,8 @@ public class SimpleTokenizer
 	
 	public static boolean isPunctuationOrWhite(String t)
 	{
-		Matcher m = AtMostPunctuationPattern.matcher(t);
-		return m.matches();
+		Matcher m = letterPattern.matcher(t);
+		return !(m.matches());
 		//return t.equals("-") || t.equals(".") || t.equals(",") || t.equals("?") || t.equals("!");
 	}
 	
