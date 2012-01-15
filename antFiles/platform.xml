@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
 <project name="platform" default="ocr.with.internal.and.external.dictionary" basedir=".">
- 	<property name="lexicon.datadir" value="/datalokaal/Scratch/Lexicon"/>
-	<property name="evaluation.datadir" value="/mnt/Projecten/Impact/OCRIREvaluatie/IREval/Data"/>
+	<property name="lexicon.datadir" value="C:/IREval/Lexicon"/>
+	<property name="evaluation.datadir" value="C:/IREval/Data"/>
 </project>
