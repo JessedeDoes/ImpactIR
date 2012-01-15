@@ -65,7 +65,7 @@ public class LemmatizationTest
 				Options.getOption("modernLexicon"), 
 				Options.getOption("historicalLexicon"),
 				Options.getOption("lexiconTrie"));
-		
+		IRLexiconEvaluation report = new IRLexiconEvaluation();
 		try
 		{
 			OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");
@@ -74,11 +74,7 @@ public class LemmatizationTest
 			Reader reader = new InputStreamReader(new FileInputStream(Options.getOption("lemmatizerInput")), "UTF-8");
 			BufferedReader input = new BufferedReader(reader);
 			String w; String line;
-			int numItems =0;
-			int numCorrectSuggestions = 0;
-			int numItemsWithACorrectSuggestion = 0;
-			int numSuggestions = 0;
-			double sumOfRanks=0;
+	
 			boolean englishBehaviour = false;
 			
 			while ((line = input.readLine()) != null)
@@ -109,6 +105,7 @@ public class LemmatizationTest
 					continue;
 				}
 				@SuppressWarnings("unused")
+				/*
 				int frequency=-1;
 				
 				if (parts.length >2)
@@ -121,9 +118,12 @@ public class LemmatizationTest
 						//e.printStackTrace();
 					}
 				}
+				*/
 				// case sensitive or not?
-				List<WordMatch> s = simpleLemmatizer.lookupWordform(w.toLowerCase());
-				if (s==null || s.size()==0)
+				IRLexiconEvaluation.Item item = report.addItem(w, possibleLemmata);
+				List<WordMatch> matches = simpleLemmatizer.lookupWordform(w.toLowerCase());
+				item.matches = matches;
+				if (matches==null || matches.size()==0)
 				{
 					out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
 					incrementCount(MatchType.None);
@@ -131,46 +131,15 @@ public class LemmatizationTest
 				else
 				{     
 					//System.out.println(""  + w + " ");
-					ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(s);
-					Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
-					List<WordMatch> wordMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
+					report.matchItem(item, matches);
 					
-					incrementCount(wordMatchList.get(0).type);
-					
-					
-					boolean foundSomething = false;
-					String candidateList = "";
-					int k=1;
-					HashSet<String> seenLemmata = new HashSet<String>();
-					
-					for (WordMatch wf: wordMatchList)
-					{
-						candidateList += "\t" + wf + "\n";
-						String lcLemma = wf.wordform.lemma.toLowerCase();
-						numSuggestions++;
-						boolean germanWildCard = possibleLemmata.contains("*****") || possibleLemmata.contains("*****");
-						if (germanWildCard || (possibleLemmata.contains(lcLemma) && !seenLemmata.contains(lcLemma)))
-						{
-							numCorrectSuggestions++; 
-							sumOfRanks += k;
-							foundSomething = true;			
-						}
-						seenLemmata.add(lcLemma);
-						k++;
-					}
-					if (foundSomething)
-						numItemsWithACorrectSuggestion++;
-					out.write(w  + " --> " + wordMatchList.get(0) + " reference: " + correctLemmata + 
-							"  foundACorrectLemma " + foundSomething + "\n");
-					out.write(candidateList + "\n");
+					out.write(w + " --> " + item.matches.get(0) + " reference "  + 
+								item.lemma + " foundACorrectLemma + " + item.hasCorrectMatch + "\n");
+					out.write(item.matchesAsString());
+				
 				}
-				numItems++;
 			}
-			double avgRank = sumOfRanks / numCorrectSuggestions;
-			double recall = numItemsWithACorrectSuggestion / (double) numItems;
-			System.err.printf("Items %d, Of which %d had a correct suggestion and %s did not (recall %f)\nTotal correct suggestions %d average rank: %f, total suggestions %d\n" , 
-					numItems, numItemsWithACorrectSuggestion, numItems - numItemsWithACorrectSuggestion, recall, numCorrectSuggestions, avgRank, numSuggestions);
-			matchTypeStatistics();
+			report.calculate();
 		} catch (Exception e)
 		{
 			e.printStackTrace();

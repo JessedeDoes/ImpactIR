@@ -67,7 +67,7 @@ public class WordMatch
 	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;
 	int wordformFrequency=0;
-	
+	boolean correct = false;
 	
 	public String toString()
 	{
