@@ -127,6 +127,7 @@ public class LemmatizationTest
 				{
 					if (this.plainTextOutput)
 						out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
+					System.err.println("no match for item " + item.n);
 					incrementCount(MatchType.None);
 				}
 				else

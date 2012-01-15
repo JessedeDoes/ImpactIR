@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -68,6 +69,8 @@ public class IRLexiconEvaluation
 	@XmlRootElement
 	public static class Item
 	{
+		@XmlAttribute(name="n")
+		public int n;
 		public String partOfSpeech;
 		public String lemma;
 		public Set<String> lemmata;
@@ -95,6 +98,7 @@ public class IRLexiconEvaluation
 	public Item addItem(String wordform, Set<String> lemmata)
 	{
 		Item n = new Item();
+		n.n = items.size();
 		n.wordForm = wordform;
 		n.lemmata = lemmata;
 		n.lemma = util.StringUtils.join(lemmata, "|");
