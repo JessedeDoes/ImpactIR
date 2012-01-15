@@ -222,7 +222,7 @@ public class IRLexiconEvaluation
       }
 
 	@XmlElement(name="nItems")
-	public int size()
+	public int getSize()
 	{
 		return items.size();
 	}
