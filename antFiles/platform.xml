@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 
-<project name="platform" default="ocr.with.internal.and.external.dictionary" basedir=".">
-	<property name="lexicon.datadir" value="C:/IREval/Lexicon"/>
-	<property name="evaluation.datadir" value="C:/IREval/Data"/>
+<project name="platform_placeholder" default="ocr.with.internal.and.external.dictionary" basedir=".">
+	<include file="../local/platform.xml"/>
 </project>
