@@ -214,14 +214,10 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 
 	public static void main(String[] args) throws Exception
 	{
-		System.err.println(createSimpleWordformTableSQL);
+		//System.err.println(createSimpleWordformTableSQL);
 		System.err.println("load database...");
-		String arg0 = null;
-		if (args.length < 1)
-			arg0 = "SpanishLexiconV3";
-		else
-			arg0 = args[0];
-		LexiconDatabase l = new LexiconDatabase(arg0);
+	
+		LexiconDatabase l = new LexiconDatabase(args[0], args[1]);
 		//l.createSimpleAnalyzedWordformTable();
 		l.useSimpleWordformsOnly = true;
 		System.err.println("database loaded");

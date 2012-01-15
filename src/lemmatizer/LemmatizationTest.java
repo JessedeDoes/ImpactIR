@@ -71,7 +71,8 @@ public class LemmatizationTest
 			OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");
 			// format for the reference file: word, lemmata.
 			// there is no part of speech?? never mind....
-			Reader reader = new InputStreamReader(new FileInputStream(Options.getOption("lemmatizerInput")), "UTF-8");
+			String inputFile = Options.getOption("lemmatizerInput");
+			Reader reader = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
 			BufferedReader input = new BufferedReader(reader);
 			String w; String line;
 	
