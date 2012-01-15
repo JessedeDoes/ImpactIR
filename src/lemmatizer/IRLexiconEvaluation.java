@@ -1,5 +1,6 @@
 package lemmatizer;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,11 +94,16 @@ public class IRLexiconEvaluation
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
 		hypotheticalLexiconCoverage = this.nHypothetical / N;
-		System.err.println("####\nItems " + items.size() + ", recall:" + recall);
-		System.err.println("Average rank of first correct suggestion: " + avgRank  +  " total # suggestions " + nSuggestions);
-		System.err.println("\nHistorical lexicon coverage: " + historicalLexiconCoverage);
-		System.err.println("Modern lexicon coverage: " + modernLexiconCoverage);
-		System.err.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);
+	}
+
+	public void print(PrintStream p) 
+	{
+		calculate();
+		p.println("####\nItems " + items.size() + ", recall:" + recall);
+		p.println("Average rank of first correct suggestion: " + avgRank  +  " total # suggestions " + nSuggestions);
+		p.println("\nHistorical lexicon coverage: " + historicalLexiconCoverage);
+		p.println("Modern lexicon coverage: " + modernLexiconCoverage);
+		p.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);
 	}
 	
 	public void matchItem(Item item, List<WordMatch> unsimplifiedMatches)

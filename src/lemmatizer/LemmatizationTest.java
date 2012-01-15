@@ -139,7 +139,7 @@ public class LemmatizationTest
 				
 				}
 			}
-			report.calculate();
+			report.print(System.err);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
