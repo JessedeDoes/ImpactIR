@@ -68,7 +68,7 @@ public class IRLexiconEvaluation
 			List<String> l = new ArrayList<String>();
 			for (WordMatch w: matches)
 			{
-				l.add(w.wordform.toString());
+				l.add(w.toString());
 			}
 			return util.StringUtils.join(l, " || ");
 		}
@@ -93,8 +93,8 @@ public class IRLexiconEvaluation
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
 		hypotheticalLexiconCoverage = this.nHypothetical / N;
-		System.err.println("Items " + items.size() + ", recall:" + recall);
-		System.err.println("Average rank of first correct suggestion: + " + avgRank  +  " total # suggestions " + nSuggestions);
+		System.err.println("####\nItems " + items.size() + ", recall:" + recall);
+		System.err.println("Average rank of first correct suggestion: " + avgRank  +  " total # suggestions " + nSuggestions);
 		System.err.println("\nHistorical lexicon coverage: " + historicalLexiconCoverage);
 		System.err.println("Modern lexicon coverage: " + modernLexiconCoverage);
 		System.err.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);

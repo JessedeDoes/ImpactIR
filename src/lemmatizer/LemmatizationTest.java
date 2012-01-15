@@ -135,7 +135,7 @@ public class LemmatizationTest
 					
 					out.write(w + " --> " + item.matches.get(0) + " reference "  + 
 								item.lemma + " foundACorrectLemma + " + item.hasCorrectMatch + "\n");
-					out.write(item.matchesAsString());
+					out.write(item.matchesAsString() + "\n");
 				
 				}
 			}

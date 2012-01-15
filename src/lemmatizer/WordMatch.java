@@ -72,7 +72,8 @@ public class WordMatch
 	public String toString()
 	{
 		if (type == MatchType.ModernWithPatterns)
-			return "{" + wordform + ", " + type + ", " + String.format("%2.2e", matchScore) + ", " + alignment + "}";
+			//return "{" + wordform + ", " + type + ", " + String.format("%2.2e", matchScore) + ", " + alignment + "}";
+			return "{" + wordform + ", " + type + ", " + alignment + "}";
 		else
 			return "{" + wordform + ", " + type + "}";
 	}
