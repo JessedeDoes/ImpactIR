@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<project name="german_ir_evaluation" default="ir.evaluation" basedir=".">
+
+	<import file="platform.xml"/>
+	<property name="language" value="German"/>	
+	<property name="period" value="all"/>
+	<property name="maximum.suggestions" value="5"/>
+        <property name="language.dir" value="${evaluation.datadir}/${language}"/>
+
+<!-- for exporting the evaluation set(s) -->
+
+	<property name="evaluation.database" value="UNK"/>
+	<property name="export.query" value="${language.dir}/source/dumpIRCorpusje.sql"/>
+	<property name="evaluation.set.exported" value="${language.dir}/UNK.txt"/>
+
+<!-- needed for preparaton of lexicon data -->
+
+        <property name="modern.lexicon" value="${language.dir}/ModernLexicon.txt"/>
+        <property name="database.host" value="svowdb02"/>
+        <property name="historical.lexicon" value="database:GermanCoreLexicon"/>
+<!--
+	<property name="historical.lexicon" value="${language.dir}/HistoricalLexicon.txt"/>
+-->
+<!-- needed for the actual lemmatization test -->
+
+        <property name="lemmatizer.input" value="${language.dir}/${language}IRSet.${period}.txt"/>
+        <property name="lemmatizer.output" value="${language.dir}/${language}IRSet.${period}.txt.out"/>
+        <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
+        <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/HistoricalLexicon"/>
+        <property name="pattern.input" value="${language.dir}/patterns.txt"/>
+        <property name="lexicon.trie" value="${lexicon.datadir}/${language}/modernWords.datrie"/>
+
+        <import file="build.basic.xml"/>
+</project>

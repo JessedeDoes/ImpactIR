@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<project name="german_ir_evaluation_16" default="ir.evaluation" basedir=".">
+
+	<property name="language" value="German"/>	
+	<property name="period" value="16"/>
+        <import file="build.german.xml"/>
+</project>

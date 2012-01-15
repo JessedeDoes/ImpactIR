@@ -1,0 +1,4 @@
+<target name="lexicon.prepare">
+<target name="ir.evaluation">
+<target name="ir.evaluation.without.historical.lexicon">
+<target name="evaluationset.export">

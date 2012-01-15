@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<project name="czech_ir_evaluation" default="ir.evaluation" basedir=".">
+
+	<import file="platform.xml"/>
+	<property name="language" value="Czech"/>	
+	<property name="period" value="all"/>
+
+       <property name="lexicon.compiled.dir" value="${lexicon.datadir}/${language}/${period}"/>
+
+        <property name="language.dir" value="${evaluation.datadir}/${language}"/>
+
+<!-- for exporting the evaluation set(s) -->
+
+	<property name="evaluation.database" value="LexiconTool_Czech_${period}"/>
+	<property name="export.query" value="${language.dir}/source/dumpIRCorpusje.sql"/>
+	<property name="evaluation.set.exported" value="${language.dir}/${language}IRSet.${period}.txt"/>
+
+<!-- needed for preparaton of lexicon data -->
+
+        <property name="modern.lexicon" value="${language.dir}/ModernLexicon.utf8.txt"/>
+        <property name="database.host" value="svowdb02"/>
+        <property name="historical.lexicon" value="${language.dir}/CzechIRLexicon_${period}.utf8.txt"/>
+<!--
+	<property name="historical.lexicon" value="${language.dir}/HistoricalLexicon.txt"/>
+-->
+<!-- needed for the actual lemmatization test -->
+
+        <property name="lemmatizer.input" value="${language.dir}/${language}IRSet.${period}.txt"/>
+        <property name="lemmatizer.output" value="${language.dir}/${language}IRSet.${period}.txt.out"/>
+        <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
+        <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/${period}/HistoricalLexicon"/>
+        <property name="pattern.input" value="${language.dir}/patterns.txt"/> <!-- should be period-dependent -->
+        <property name="lexicon.trie" value="${lexicon.datadir}/${language}/${period}/modernWords.datrie"/>
+
+        <import file="build.basic.xml"/>
+</project>

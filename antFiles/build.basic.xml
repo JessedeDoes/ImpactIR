@@ -8,6 +8,7 @@
 
 	<property name="lexicon.datadir" value="UNK"/>
 	<property name="lexicon.compiled.dir" value="${lexicon.datadir}/${language}"/>
+	<property name="empty.lexicon" value="${lexicon.datadir}/EmptyLexicon"/>
 
 	<path id="java.class.path">
 		<fileset dir="${neodir}">
@@ -72,6 +73,36 @@
 
 	       		<classpath refid="java.class.path"/>
 	</java>
+        </target>
+
+	<target name="ir.evaluation.without.historical.lexicon">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}.nohistorical" error="${lemmatizer.input}.nohistorical.log">
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${empty.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="${pattern.input}"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
+
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+
+<!-- # not used yet -->
+
+	       		<classpath refid="java.class.path"/>
+	</java>
+
 	</target>
 
 	<target name="evaluationset.export">
