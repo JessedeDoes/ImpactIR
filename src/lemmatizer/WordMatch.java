@@ -7,6 +7,7 @@ import lexicon.InMemoryLexicon;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 enum MatchType 
@@ -77,7 +78,9 @@ public class WordMatch
 	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;
 	int wordformFrequency=0;
-	boolean correct = false;
+	@XmlAttribute(name="correct")
+	
+	public boolean correct = false;
 	
 	public String toString()
 	{
