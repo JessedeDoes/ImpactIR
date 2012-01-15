@@ -101,7 +101,7 @@ public class LemmatizationTest
 					}
 					correctLemmata = parts[1];
 				}
-				if (possibleLemmata.size() == 0)
+				if (possibleLemmata.size() == 0) // skip unlemmatized tokens
 					continue;
 				if (englishBehaviour && unfinishedLetter)
 				{
@@ -115,7 +115,7 @@ public class LemmatizationTest
 				{
 					try
 					{
-						frequency = Integer.parseInt(parts[2]);
+						frequency = Integer.parseInt(parts[2]); // this is nonsense
 					} catch (Exception e)
 					{
 						//e.printStackTrace();
