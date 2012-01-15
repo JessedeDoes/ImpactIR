@@ -119,10 +119,15 @@ public class IRLexiconEvaluation
 			nSuggestions++;
 			
 			boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
-			if (germanWildCard || (item.lemmata.contains(lcLemma) && !seenLemmata.contains(lcLemma)))
+			
+			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 			{
-				nCorrectSuggestions++; 
-				sumOfRanks += k;
+				if (!seenLemmata.contains(lcLemma))
+				{
+					nCorrectSuggestions++; 
+					sumOfRanks += k;
+				}
+				
 				wordMatch.correct = true;
 				item.hasCorrectMatch = true;
 				
@@ -133,7 +138,7 @@ public class IRLexiconEvaluation
 				if (wordMatch.type==MatchType.ModernWithPatterns)
 					item.inHypotheticalLexicon = true;
 				
-				incrementCount(wordMatch.type);
+				//incrementCount(wordMatch.type);
 			}
 			seenLemmata.add(lcLemma);
 			k++;
