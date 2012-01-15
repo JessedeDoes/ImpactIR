@@ -100,26 +100,43 @@ public class IRLexiconEvaluation
 		System.err.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);
 	}
 	
-	public void matchItem(Item item, List<WordMatch> matches)
+	public void matchItem(Item item, List<WordMatch> unsimplifiedMatches)
 	{
-		ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(matches);
+		ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(unsimplifiedMatches);
 		Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
 		List<WordMatch> wordMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
+		
 		item.matches = wordMatchList;
 		
 		//incrementCount(wordMatchList.get(0).type); // this is wrong: should increase count for 'correct' match...
 		
 		int k=1;
 		HashSet<String> seenLemmata = new HashSet<String>();
+		boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
+		
+		
+		for (WordMatch wordMatch: unsimplifiedMatches)
+		{
+			//candidateList += "\t" + wf + "\n";
+			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
+			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
+			{
+				
+				if (wordMatch.type==MatchType.HistoricalExact)
+					item.inHistoricalLexicon = true;
+				if (wordMatch.type==MatchType.ModernExact)
+					item.inModernLexicon = true;
+				if (wordMatch.type==MatchType.ModernWithPatterns)
+					item.inHypotheticalLexicon = true;		
+				//incrementCount(wordMatch.type);
+			}
+		}
 		
 		for (WordMatch wordMatch: wordMatchList)
 		{
 			//candidateList += "\t" + wf + "\n";
 			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
 			nSuggestions++;
-			
-			boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
-			
 			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 			{
 				if (!seenLemmata.contains(lcLemma))
@@ -130,19 +147,11 @@ public class IRLexiconEvaluation
 				
 				wordMatch.correct = true;
 				item.hasCorrectMatch = true;
-				
-				if (wordMatch.type==MatchType.HistoricalExact)
-					item.inHistoricalLexicon = true;
-				if (wordMatch.type==MatchType.ModernExact)
-					item.inModernLexicon = true;
-				if (wordMatch.type==MatchType.ModernWithPatterns)
-					item.inHypotheticalLexicon = true;
-				
-				//incrementCount(wordMatch.type);
 			}
 			seenLemmata.add(lcLemma);
 			k++;
 		}
+		
 		if (item.inHistoricalLexicon)
 			this.nHistoricalExact++;
 		if (item.inModernLexicon)
