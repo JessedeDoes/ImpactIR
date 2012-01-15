@@ -172,13 +172,14 @@ public class IRLexiconEvaluation
 				{
 					nCorrectSuggestions++; 
 					sumOfRanks += k;
+					item.rankOfCorrectSuggestion = k;
 				}
 				
 				wordMatch.correct = true;
 				item.hasCorrectMatch = true;
 			}
 			seenLemmata.add(lcLemma);
-			k++;
+			wordMatch.rank=k++;
 		}
 		
 		if (item.inHistoricalLexicon)
@@ -220,6 +221,7 @@ public class IRLexiconEvaluation
               }
       }
 
+	@XmlElement(name="nItems")
 	public int size()
 	{
 		return items.size();

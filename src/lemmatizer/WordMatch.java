@@ -79,8 +79,10 @@ public class WordMatch
 	int lemmaFrequency=0;
 	int wordformFrequency=0;
 	@XmlAttribute(name="correct")
-	
+
 	public boolean correct = false;
+	@XmlAttribute(name="rank")
+	int rank=0;
 	
 	public String toString()
 	{
