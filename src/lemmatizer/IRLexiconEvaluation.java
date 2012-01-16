@@ -40,6 +40,7 @@ public class IRLexiconEvaluation
 	public int nItemsWithACorrectSuggestion = 0;
 	public int nItemsWithLemmaInModernLexicon = 0;
 	public int nItemsWithLemmaInHistoricalLexicon = 0;
+	
 	public int nItemsWithLemmaInHistoricalLexiconWithCorrectMatch=0;
 	public int nItemsWithLemmaInModernLexiconWithCorrectMatch=0;
 	public double recallOnItemsWithLemmaInModernLexicon=0;
@@ -49,6 +50,8 @@ public class IRLexiconEvaluation
 	public double historicalLexiconCoverage=0;
 	public double hypotheticalLexiconCoverage=0;
 	public double modernLexiconCoverage = 0;
+	public double historicalLexiconLemmaCoverage=0;
+	public double modernLexiconLemmaCoverage=0;
 	
 	PrintStream report=System.out;
 	
@@ -130,6 +133,9 @@ public class IRLexiconEvaluation
 		if (this.nItemsWithLemmaInModernLexicon > 0)
 			this.recallOnItemsWithLemmaInModernLexicon = this.nItemsWithLemmaInModernLexiconWithCorrectMatch 
 			/ (double) this.nItemsWithLemmaInModernLexicon;
+		
+		this.historicalLexiconLemmaCoverage = this.nItemsWithLemmaInHistoricalLexicon / N;
+		this.modernLexiconLemmaCoverage = this.nItemsWithLemmaInModernLexicon / N;
 	}
 
 	public void print(PrintStream p) 
