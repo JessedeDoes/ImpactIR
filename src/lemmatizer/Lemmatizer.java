@@ -125,7 +125,7 @@ public class Lemmatizer
 	
 	public boolean historicalLexiconHasLemma(String lemma)
 	{
-		Set<WordForm> w = modernLexicon.findForms(lemma, "*");
+		Set<WordForm> w = historicalLexicon.findForms(lemma, "*");
 		return (w != null && w.size() > 0);
 	}
 	
