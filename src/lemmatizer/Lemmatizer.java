@@ -119,12 +119,16 @@ public class Lemmatizer
 
 	public boolean modernLexiconHasLemma(String lemma)
 	{
+		if (lemma.contains("*"))
+			return false;
 		Set<WordForm> w = modernLexicon.findForms(lemma, "*");
 		return (w != null && w.size() > 0);
 	}
 	
 	public boolean historicalLexiconHasLemma(String lemma)
 	{
+		if (lemma.contains("*"))
+			return false;
 		Set<WordForm> w = historicalLexicon.findForms(lemma, "*");
 		return (w != null && w.size() > 0);
 	}
