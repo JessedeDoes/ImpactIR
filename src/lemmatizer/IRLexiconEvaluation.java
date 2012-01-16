@@ -38,7 +38,12 @@ public class IRLexiconEvaluation
 	public int sumOfRanks=0;
 	@XmlElement
 	public int nItemsWithACorrectSuggestion = 0;
-	
+	public int nItemsWithLemmaInModernLexicon = 0;
+	public int nItemsWithLemmaInHistoricalLexicon = 0;
+	public int nItemsWithLemmaInHistoricalLexiconWithCorrectMatch=0;
+	public int nItemsWithLemmaInModernLexiconWithCorrectMatch=0;
+	public double recallOnItemsWithLemmaInModernLexicon=0;
+	public double recallOnItemsWithLemmaInHistoricalLexicon=0;
 	public double averageRankOfFirstCorrectSuggestion = 0; 
 	public double recall = 0;
 	public double historicalLexiconCoverage=0;
@@ -79,7 +84,8 @@ public class IRLexiconEvaluation
 		public List<WordMatch> matches;
 		public int rankOfCorrectSuggestion;
 		public boolean hasCorrectMatch = false;
-		
+		public boolean lemmaInHistoricalLexicon=false;
+		public boolean lemmaInModernLexicon = false;
 		boolean inModernLexicon=false;
 		boolean inHistoricalLexicon=false;
 		boolean inHypotheticalLexicon=false; 
@@ -112,9 +118,18 @@ public class IRLexiconEvaluation
 		
 		this.averageRankOfFirstCorrectSuggestion = sumOfRanks / (double) nItemsWithACorrectSuggestion;
 		recall = nItemsWithACorrectSuggestion / N;
+		
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
 		hypotheticalLexiconCoverage = this.nHypothetical / N;
+		
+		if (this.nItemsWithLemmaInHistoricalLexicon > 0)
+			this.recallOnItemsWithLemmaInHistoricalLexicon = this.nItemsWithLemmaInHistoricalLexiconWithCorrectMatch 
+			/ (double) this.nItemsWithLemmaInHistoricalLexicon;
+		
+		if (this.nItemsWithLemmaInModernLexicon > 0)
+			this.recallOnItemsWithLemmaInModernLexicon = this.nItemsWithLemmaInModernLexiconWithCorrectMatch 
+			/ (double) this.nItemsWithLemmaInModernLexicon;
 	}
 
 	public void print(PrintStream p) 
@@ -191,6 +206,19 @@ public class IRLexiconEvaluation
 		
 		if (item.hasCorrectMatch)
 			nItemsWithACorrectSuggestion++;
+		
+		if (item.lemmaInHistoricalLexicon)
+		{
+			nItemsWithLemmaInHistoricalLexicon++;
+			if (item.hasCorrectMatch)
+				nItemsWithLemmaInHistoricalLexiconWithCorrectMatch++;
+		}
+		if (item.lemmaInModernLexicon)
+		{
+			nItemsWithLemmaInModernLexicon++;
+			if (item.hasCorrectMatch)
+				nItemsWithLemmaInModernLexiconWithCorrectMatch++;
+		}
 	}
 	
 	  public void marshal()

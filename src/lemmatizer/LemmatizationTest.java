@@ -87,6 +87,8 @@ public class LemmatizationTest
 				String correctLemmata = "";
 				Set<String> possibleLemmata = new HashSet<String>();
 				boolean unfinishedLetter = false;
+				boolean lemmaInModernLexicon = false;
+				boolean lemmaInHistoricalLexicon = false;
 				if (parts.length > 1)
 				{
 					for (String l: parts[1].split("\\|"))
@@ -94,6 +96,10 @@ public class LemmatizationTest
 						if (l.toLowerCase().matches("^[efgijkrutw].*"))
 							unfinishedLetter = true;
 						possibleLemmata.add(l.toLowerCase());
+						if (simpleLemmatizer.historicalLexiconHasLemma(l))
+							lemmaInHistoricalLexicon=true;
+						if (simpleLemmatizer.modernLexiconHasLemma(l))
+							lemmaInModernLexicon=true;
 						//System.err.println("<" + l + ">");
 					}
 					correctLemmata = parts[1];
@@ -122,8 +128,13 @@ public class LemmatizationTest
 				*/
 				// case sensitive or not?
 				IRLexiconEvaluation.Item item = report.addItem(w, possibleLemmata);
+				
+				item.lemmaInHistoricalLexicon = lemmaInHistoricalLexicon;
+				item.lemmaInModernLexicon = lemmaInModernLexicon;
+				
 				List<WordMatch> matches = simpleLemmatizer.lookupWordform(w.toLowerCase());
 				item.matches = matches;
+				
 				if (matches==null || matches.size()==0)
 				{
 					if (this.plainTextOutput)

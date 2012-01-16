@@ -117,7 +117,18 @@ public class Lemmatizer
 		}
 	};
 
-
+	public boolean modernLexiconHasLemma(String lemma)
+	{
+		Set<WordForm> w = modernLexicon.findForms(lemma, "*");
+		return (w != null && w.size() > 0);
+	}
+	
+	public boolean historicalLexiconHasLemma(String lemma)
+	{
+		Set<WordForm> w = modernLexicon.findForms(lemma, "*");
+		return (w != null && w.size() > 0);
+	}
+	
 	List<WordMatch> lookupWordform(String w0)
 	{
 		String w = spellingvariation.Ligatures.replaceLigatures(w0);

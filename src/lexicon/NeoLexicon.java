@@ -250,7 +250,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		//System.err.println("start query for:" + lemmaQuery);
 		Set<Node> nodes = new HashSet<Node>();
 		
-		IndexHits<Node> hits = nodeIndex.query("lemma", lemmaQuery);
+		IndexHits<Node> hits = nodeIndex.query("lemmaLowercase", lemmaQuery.toLowerCase());
+		
 		for (Node n: hits)
 		{
 			//String lemma = (String) n.getProperty("lemma");
@@ -274,7 +275,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		Set<WordForm> s1 = new HashSet<WordForm>();
 		
 		for (WordForm w: s0)
-			if (w.lemmaPoS.equalsIgnoreCase(tag))
+			if (w.lemmaPoS.equalsIgnoreCase(tag) || tag.equals("*"))
 				s1.add(w);
 				
 		return s1;
