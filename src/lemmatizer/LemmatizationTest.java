@@ -98,7 +98,7 @@ public class LemmatizationTest
 						possibleLemmata.add(l.toLowerCase());
 						if (simpleLemmatizer.historicalLexiconHasLemma(l))
 							lemmaInHistoricalLexicon=true;
-						if (simpleLemmatizer.modernLexiconHasLemma(l))
+						if (simpleLemmatizer.modernLexiconHasLemma(l) || l.contains("*****")) // german wildcard again
 							lemmaInModernLexicon=true;
 						//System.err.println("<" + l + ">");
 					}
@@ -142,6 +142,7 @@ public class LemmatizationTest
 					System.err.println("no match for item " + item.n);
 					incrementCount(MatchType.None);
 				}
+				
 				else
 				{     
 					//System.out.println(""  + w + " ");
