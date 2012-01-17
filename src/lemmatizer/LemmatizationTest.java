@@ -112,20 +112,7 @@ public class LemmatizationTest
 					continue;
 				}
 				@SuppressWarnings("unused")
-				/*
-				int frequency=-1;
 				
-				if (parts.length >2)
-				{
-					try
-					{
-						frequency = Integer.parseInt(parts[2]); // this is nonsense
-					} catch (Exception e)
-					{
-						//e.printStackTrace();
-					}
-				}
-				*/
 				// case sensitive or not?
 				IRLexiconEvaluation.Item item = report.addItem(w, possibleLemmata);
 				
