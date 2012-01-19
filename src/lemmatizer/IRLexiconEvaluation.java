@@ -151,7 +151,7 @@ public class IRLexiconEvaluation
 		}
 	}
 
-	public double averagePrecision(String lemmaQuery)
+	public double averagePrecision(String lemmaQuery) 
 	{
 		lemmaQuery = lemmaQuery.toLowerCase();
 		List<Item> queryResults = lemma2item.get(lemmaQuery);
