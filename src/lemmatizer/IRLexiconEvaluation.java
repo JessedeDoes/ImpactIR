@@ -60,6 +60,8 @@ public class IRLexiconEvaluation
 	Map<String, List<Item>> lemma2item = new  HashMap<String, List<Item>>();
 	Map<String, Integer> lemmaFrequency = new HashMap<String, Integer>();
 
+	private boolean precisionComputationPrepared = false;
+	
 	private void incrementCount(MatchType m)
 	{
 		Integer z = typeHash.get(m);
@@ -77,12 +79,42 @@ public class IRLexiconEvaluation
 		}
 	}
 
+	@XmlElement
+	public double getMeanAveragePrecision()
+	{
+		prepareForPrecision();
+		Set<String> queries = new HashSet<String>();
+		queries.addAll(lemmaFrequency.keySet());
+		queries.addAll(lemma2item.keySet());
+		return computeAveragePrecision(queries);
+	}
+	
 	public double computeAveragePrecision(Set<String> lemmaQueries)
 	{
 		/*
 		 * Precompute hit lists and true lemma frequencies
 		 */
+		
+		prepareForPrecision();
+
 		double d=0;
+		
+		for (String q: lemmaQueries)
+		{
+			d += averagePrecision(q);
+		}
+		return d / (double) lemmaQueries.size();
+	}
+
+	/*
+	 * make hashes 
+	 * from lemma to tokens with that assigned lemma by matcher
+	 * from lemma to number of tokens with that lemma as "true" lemma
+	 */
+	private void prepareForPrecision() 
+	{
+		if (precisionComputationPrepared)
+			return;
 		for (Item i: items)
 		{
 			String lemma = i.lemma.toLowerCase();
@@ -108,12 +140,7 @@ public class IRLexiconEvaluation
 			List<Item> l = lemma2item.get(lemma);
 			Collections.sort(l, new ItemComparator(lemma));
 		}
-
-		for (String q: lemmaQueries)
-		{
-			d += averagePrecision(q);
-		}
-		return d / (double) lemmaQueries.size();
+		precisionComputationPrepared = true;
 	}
 	/*
 	 * 
@@ -169,6 +196,7 @@ public class IRLexiconEvaluation
 			d += (positives / k) * dR;
 			k++;
 		}
+		System.err.println("precision for " + lemmaQuery + ": " + d);
 		return d;
 	}
 

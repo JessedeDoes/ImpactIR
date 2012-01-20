@@ -33,6 +33,13 @@
      </target>
 
 
+    <target name="jar">
+        <jar destfile="${dist}/spellingvariation.jar">
+              <fileset dir= "${build}"/>
+              <fileset dir="resources"/>
+         </jar>
+    </target>
+
     <target name="dist" depends="compile">
         <jar destfile="${dist}/spellingvariation.jar">
               <fileset dir= "${build}"/>

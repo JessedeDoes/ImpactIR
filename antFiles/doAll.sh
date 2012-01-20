@@ -8,13 +8,13 @@ for f in build.bulgarian.xml\
 	build.english.xml\
 	build.french.xml\
 	build.german.16.xml\
-	build.german.17.xml\
-	build.german.18.xml\
-	build.german.19.xml\
-	build.german.xml\
+ 	build.german.17.xml\
+ 	build.german.18.xml\
+ 	build.german.19.xml\
 	build.polish.xml\
+	build.polish.2.xml\
 	build.slovene.xml\
-	build.spanish.xml ;
+	build.spanish.xml;
 do
   echo $f;
   ant -f $f ir.evaluation;

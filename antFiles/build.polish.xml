@@ -6,6 +6,8 @@
 	<property name="language" value="Polish"/>	
         <property name="language.dir" value="${evaluation.datadir}/${language}"/>
 
+        <property name="period" value="all"/>
+
 <!-- for exporting the evaluation set(s) -->
 
 	<property name="evaluation.database" value="UNK"/>

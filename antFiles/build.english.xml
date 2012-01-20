@@ -27,7 +27,7 @@
         <property name="lemmatizer.output" value="${language.dir}/${language}IRSet.txt.out"/>
         <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
         <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/HistoricalLexicon"/>
-        <property name="pattern.input" value="${language.dir}/patterns.txt"/>
+        <property name="pattern.input" value="${language.dir}/test.multigrams.out"/>
         <property name="lexicon.trie" value="${lexicon.datadir}/${language}/modernWords.datrie"/>
 
         <import file="build.basic.xml"/>
