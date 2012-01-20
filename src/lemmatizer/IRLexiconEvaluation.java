@@ -326,18 +326,20 @@ public class IRLexiconEvaluation
 		}
 
 		// to check the average rank of correct matches, we need the simplified list
-
+		
 		for (WordMatch wordMatch: simplifiedMatchList)
 		{
 			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
 			this.totalNumberOfSuggestions++;
 			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 			{
+				if (!item.hasCorrectMatch)
+					sumOfReciprocalRanks += 1 / (double) k;
+				
 				if (!seenLemmata.contains(lcLemma)) // first correct suggestion
 				{
 					nCorrectSuggestions++; 
 					sumOfRanks += k;
-					sumOfReciprocalRanks += 1 / (double) k;
 					item.rankOfCorrectSuggestion = k;
 				}
 

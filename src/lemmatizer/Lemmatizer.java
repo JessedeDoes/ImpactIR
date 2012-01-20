@@ -29,7 +29,8 @@ public class Lemmatizer
 	ILexicon modernLexicon = null;
 	ITrie<Object> lexiconTrie = null;
 	boolean useMatcher = true;
-
+	boolean modernWordformAsLemma = false;
+	
 	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
 		this.historicalLexicon = h;
