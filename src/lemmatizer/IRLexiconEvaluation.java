@@ -46,6 +46,7 @@ public class IRLexiconEvaluation
 
 	public int nItemsWithLemmaInHistoricalLexiconWithCorrectMatch=0;
 	public int nItemsWithLemmaInModernLexiconWithCorrectMatch=0;
+	public int nHistoricalFalseFriends = 0;
 	public double recallOnItemsWithLemmaInModernLexicon=0;
 	public double recallOnItemsWithLemmaInHistoricalLexicon=0;
 	public double averageRankOfFirstCorrectSuggestion = 0; 
@@ -302,7 +303,7 @@ public class IRLexiconEvaluation
 		HashSet<String> seenLemmata = new HashSet<String>();
 		boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
 
-		// loop over the unsimplified match list to find out about coverage
+		// loop over the unsimplified match list to find out about coverage of different lexica
 		for (WordMatch wordMatch: unsimplifiedMatches)
 		{
 			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
@@ -326,7 +327,7 @@ public class IRLexiconEvaluation
 			this.totalNumberOfSuggestions++;
 			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 			{
-				if (!seenLemmata.contains(lcLemma))
+				if (!seenLemmata.contains(lcLemma)) // first correct suggestion
 				{
 					nCorrectSuggestions++; 
 					sumOfRanks += k;
