@@ -50,6 +50,7 @@ public class IRLexiconEvaluation
 	public double recallOnItemsWithLemmaInModernLexicon=0;
 	public double recallOnItemsWithLemmaInHistoricalLexicon=0;
 	public double averageRankOfFirstCorrectSuggestion = 0; 
+	public double sumOfReciprocalRanks = 0;
 
 	public double recall = 0;
 	public double unrankedPrecision = 0;
@@ -335,6 +336,7 @@ public class IRLexiconEvaluation
 				{
 					nCorrectSuggestions++; 
 					sumOfRanks += k;
+					sumOfReciprocalRanks += 1/ (double) k;
 					item.rankOfCorrectSuggestion = k;
 				}
 
