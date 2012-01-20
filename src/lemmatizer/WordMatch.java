@@ -72,7 +72,7 @@ public class WordMatch
 	@XmlElement
 	public String alignment = "";
 	
-	@XmlElement
+	@XmlAttribute(name="type")
 	MatchType type;
 	
 	InMemoryLexicon lexicon;
@@ -110,6 +110,11 @@ public class WordMatch
 		}
 	}
 	
+	/*
+	 * remove assignments with identical lemma and part of speech, or
+	 * simply with identical lemma (case insensitive)
+	 */
+	
 	public static List<WordMatch> simplify(List<WordMatch> set, boolean usePartOfSpeech)
 	{
 		List<WordMatch> simple = new ArrayList<WordMatch>();
@@ -118,7 +123,7 @@ public class WordMatch
 			boolean found = false;
 			for (WordMatch wm1: simple)
 			{
-				if (wm1.wordform.lemma.equals(wm.wordform.lemma) && 
+				if (wm1.wordform.lemma.equalsIgnoreCase(wm.wordform.lemma) && 
 						(!usePartOfSpeech || wm1.wordform.lemmaPoS.equals(wm.wordform.lemmaPoS)))
 				{
 					wm1.lemmaFrequency += wm.lemmaFrequency;

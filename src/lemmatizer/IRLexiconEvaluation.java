@@ -34,7 +34,9 @@ public class IRLexiconEvaluation
 	@XmlElement
 	public int nHypothetical = 0;
 	@XmlElement
-	public int nSuggestions=0;
+	public int totalNumberOfSuggestions=0;
+	@XmlElement
+	public double averageNumberOfSuggestions = 0;
 	@XmlElement
 	public int sumOfRanks=0;
 	@XmlElement
@@ -47,7 +49,9 @@ public class IRLexiconEvaluation
 	public double recallOnItemsWithLemmaInModernLexicon=0;
 	public double recallOnItemsWithLemmaInHistoricalLexicon=0;
 	public double averageRankOfFirstCorrectSuggestion = 0; 
+
 	public double recall = 0;
+	public double unrankedPrecision = 0;
 	public double historicalLexiconCoverage=0;
 	public double hypotheticalLexiconCoverage=0;
 	public double modernLexiconCoverage = 0;
@@ -140,6 +144,9 @@ public class IRLexiconEvaluation
 			List<Item> l = lemma2item.get(lemma);
 			Collections.sort(l, new ItemComparator(lemma));
 		}
+		
+		System.err.println("Total distinct TRUE lemmata " + lemmaFrequency.keySet().size());
+		System.err.println("Total distinct assigned lemmata " + lemma2item.keySet().size());
 		precisionComputationPrepared = true;
 	}
 	/*
@@ -182,6 +189,9 @@ public class IRLexiconEvaluation
 	{
 		lemmaQuery = lemmaQuery.toLowerCase();
 		List<Item> queryResults = lemma2item.get(lemmaQuery);
+		if (queryResults == null)
+			return 0;
+		
 		double d = 0;
 		if (!lemmaFrequency.containsKey(lemmaQuery)) // no true hits, return 0
 			return d;
@@ -192,8 +202,10 @@ public class IRLexiconEvaluation
 		for (Item i: queryResults)
 		{
 			if (i.lemma.equalsIgnoreCase(lemmaQuery))
+			{
 				positives++;
-			d += (positives / k) * dR;
+				d += (positives / k) * dR;
+			}
 			k++;
 		}
 		System.err.println("precision for " + lemmaQuery + ": " + d);
@@ -247,7 +259,11 @@ public class IRLexiconEvaluation
 
 		this.averageRankOfFirstCorrectSuggestion = sumOfRanks / (double) nItemsWithACorrectSuggestion;
 		recall = nItemsWithACorrectSuggestion / N;
-
+		unrankedPrecision = 
+				this.nItemsWithACorrectSuggestion / (double) this.totalNumberOfSuggestions;
+		this.averageNumberOfSuggestions = this.totalNumberOfSuggestions / N;
+		
+		
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
 		hypotheticalLexiconCoverage = this.nHypothetical / N;
@@ -268,7 +284,7 @@ public class IRLexiconEvaluation
 	{
 		calculate();
 		p.println("####\nItems " + items.size() + ", recall:" + recall);
-		p.println("Average rank of first correct suggestion: " + this.averageRankOfFirstCorrectSuggestion  +  " total # suggestions " + nSuggestions);
+		p.println("Average rank of first correct suggestion: " + this.averageRankOfFirstCorrectSuggestion  +  " total # suggestions " + this.totalNumberOfSuggestions);
 		p.println("\nHistorical lexicon coverage: " + historicalLexiconCoverage);
 		p.println("Modern lexicon coverage: " + modernLexiconCoverage);
 		p.println("Hypothetical lexicon coverage: " + hypotheticalLexiconCoverage);
@@ -278,9 +294,9 @@ public class IRLexiconEvaluation
 	{
 		ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(unsimplifiedMatches);
 		Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
-		List<WordMatch> wordMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
+		List<WordMatch> simplifiedMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
 
-		item.matches = wordMatchList;
+		item.matches = simplifiedMatchList;
 
 		int k=1;
 		HashSet<String> seenLemmata = new HashSet<String>();
@@ -304,10 +320,10 @@ public class IRLexiconEvaluation
 
 		// to check the average rank of correct matches, we need the simplified list
 
-		for (WordMatch wordMatch: wordMatchList)
+		for (WordMatch wordMatch: simplifiedMatchList)
 		{
 			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
-			nSuggestions++;
+			this.totalNumberOfSuggestions++;
 			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 			{
 				if (!seenLemmata.contains(lcLemma))
