@@ -53,6 +53,7 @@ public class IRLexiconEvaluation
 
 	public double recall = 0;
 	public double unrankedPrecision = 0;
+	public double F1 = 0;
 	public double historicalLexiconCoverage=0;
 	public double hypotheticalLexiconCoverage=0;
 	public double modernLexiconCoverage = 0;
@@ -262,6 +263,9 @@ public class IRLexiconEvaluation
 		recall = nItemsWithACorrectSuggestion / N;
 		unrankedPrecision = 
 				this.nItemsWithACorrectSuggestion / (double) this.totalNumberOfSuggestions;
+
+		this.F1 = 2 * (unrankedPrecision * recall ) / (unrankedPrecision + recall);
+
 		this.averageNumberOfSuggestions = this.totalNumberOfSuggestions / N;
 		
 		
