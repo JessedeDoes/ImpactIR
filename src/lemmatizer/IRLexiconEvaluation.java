@@ -50,7 +50,8 @@ public class IRLexiconEvaluation
 	public double recallOnItemsWithLemmaInModernLexicon=0;
 	public double recallOnItemsWithLemmaInHistoricalLexicon=0;
 	public double averageRankOfFirstCorrectSuggestion = 0; 
-	public double sumOfReciprocalRanks = 0;
+	private double sumOfReciprocalRanks = 0;
+	public double averageReciprocalRank = 0;
 
 	public double recall = 0;
 	public double unrankedPrecision = 0;
@@ -268,7 +269,7 @@ public class IRLexiconEvaluation
 		this.F1 = 2 * (unrankedPrecision * recall ) / (unrankedPrecision + recall);
 
 		this.averageNumberOfSuggestions = this.totalNumberOfSuggestions / N;
-		
+		this.averageReciprocalRank = this.sumOfReciprocalRanks / N;
 		
 		historicalLexiconCoverage = this.nHistoricalExact / N;
 		modernLexiconCoverage = this.nModernExact / N;
@@ -336,7 +337,7 @@ public class IRLexiconEvaluation
 				{
 					nCorrectSuggestions++; 
 					sumOfRanks += k;
-					sumOfReciprocalRanks += 1/ (double) k;
+					sumOfReciprocalRanks += 1 / (double) k;
 					item.rankOfCorrectSuggestion = k;
 				}
 
