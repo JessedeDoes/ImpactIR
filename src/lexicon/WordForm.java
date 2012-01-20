@@ -17,6 +17,7 @@ public class WordForm
 	@XmlElement
 	public String lemmaPoS = "nil";
 	
+	String modernWordform = "";
 	public int wordformFrequency = 0;
 	public int lemmaFrequency = 0;
 
