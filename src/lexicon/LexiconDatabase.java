@@ -242,7 +242,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");
 		for (WordForm w: l)
 		{
-			out.write(w.wordform + "\t" + w.lemma + "\t" + w.lemmaPoS + "\t" + w.lemmaPoS + "\n");
+			out.write(w.wordform + "\t" + w.lemma + "\t" + w.lemmaPoS + "\t" + w.lemmaPoS + "\t" + w.modernWordform + "\n");
 			k++;
 		}
 		out.flush();
