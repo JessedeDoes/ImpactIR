@@ -245,6 +245,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 			out.write(w.wordform + "\t" + w.lemma + "\t" + w.lemmaPoS + "\t" + w.lemmaPoS + "\n");
 			k++;
 		}
+		out.flush();
 		System.err.println("#wordforms; " + k);
 		//java.io.PrintWriter out = new java.io.PrintWriter(System.out);
 	}
