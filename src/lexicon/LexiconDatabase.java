@@ -20,7 +20,8 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	//Connection connection = null;
 	boolean onlyVerified = false;
 	boolean useSimpleWordformsOnly = false;
-	boolean dumpWithFrequenciesAndDerivations = false;
+	boolean dumpWithFrequenciesAndDerivations = true;
+	
 	static String createSimpleWordformTableSQL = Resource.getStringFromFile("sql/createSimple.sql");
 	static String createViewsSQL = Resource.getStringFromFile("sql/createViews.sql");
 	static String prepareLexiconDumpSQL = Resource.getStringFromFile("sql/prepareLexiconDump.sql");  		
@@ -117,6 +118,12 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 					" wordforms.wordform_id";
 			query = extractWordformsQuery + 
 					(onlyVerified? " and verified_by is not null" : "");
+			if (LexiconDatabase.this.dumpWithFrequenciesAndDerivations)
+			{
+				LexiconDatabase.this.runQueries(LexiconDatabase.this.prepareLexiconDumpSQL);
+				query = "select  lemma, wordform, lemma_part_of_speech, wordform_frequency, lemma_frequency, normalized_form " +
+						"from wordforms_with_frequency left join derivations on derivations.analyzed_wordform_id = wordforms_with_frequency.analyzed_wordform_id;";
+			}
 		}
 		
 		public WordFormIterator()
@@ -168,6 +175,15 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 						w.wordform = new String(rs.getBytes(2), "UTF-8");
 						w.lemmaPoS = new String(rs.getBytes(3), "UTF-8");
 						w.tag = w.lemmaPoS;
+						if (LexiconDatabase.this.dumpWithFrequenciesAndDerivations)
+						{
+							String wf = new String(rs.getBytes(4), "UTF-8");
+							String lf = new String(rs.getBytes(5), "UTF-8");
+							String normalized = new String(rs.getBytes(6), "UTF-8");
+							w.wordformFrequency = new Integer(wf);
+							w.lemmaFrequency = new Integer(lf);
+							w.modernWordform = normalized;
+						}
 					} catch (Exception e)
 					{
 						e.printStackTrace();
@@ -220,6 +236,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 		LexiconDatabase l = new LexiconDatabase(args[0], args[1]);
 		//l.createSimpleAnalyzedWordformTable();
 		l.useSimpleWordformsOnly = true;
+		l.dumpWithFrequenciesAndDerivations = true;
 		System.err.println("database loaded");
 		int k=0;
 		OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");

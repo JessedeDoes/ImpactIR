@@ -343,6 +343,16 @@ public class Database
 			e.printStackTrace();
 		}
 	}
+	
+	public void runQueries(String sql)
+	{
+		for (String s:sql.split(";"))
+		{
+			s = s.trim();
+			if (s.length() > 0)
+				runQuery(s);
+		}
+	}
 
 	public int nofRows (String table_name) throws Exception
 	{
