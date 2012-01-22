@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 enum MatchType 
 {
 	HistoricalExact, 
@@ -69,9 +70,10 @@ public class WordMatch
 	lexicon.WordForm wordform;
 	double matchScore;
 	String target;
-	@XmlElement
+	@XmlTransient
 	public String alignment = "";
-	
+	@XmlElement
+	public String getAlignment() { return alignment.replace("->", "/"); }
 	@XmlAttribute(name="type")
 	MatchType type;
 	

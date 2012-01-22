@@ -20,10 +20,10 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	//Connection connection = null;
 	boolean onlyVerified = false;
 	boolean useSimpleWordformsOnly = false;
-	
+	boolean dumpWithFrequenciesAndDerivations = false;
 	static String createSimpleWordformTableSQL = Resource.getStringFromFile("sql/createSimple.sql");
 	static String createViewsSQL = Resource.getStringFromFile("sql/createViews.sql");
-			  		
+	static String prepareLexiconDumpSQL = Resource.getStringFromFile("sql/prepareLexiconDump.sql");  		
 	public LexiconDatabase(Properties props)
 	{
 		super(props);
