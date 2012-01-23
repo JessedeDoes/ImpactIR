@@ -46,6 +46,8 @@ public class Lemmatizer
 			String historicalLexiconFilename,
 			String trieFilename)
 	{
+		this.modernWordformAsLemma = Options.getOptionBoolean("modernWordformAsLemma", 
+				false);
 		try
 		{
 			this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
@@ -138,7 +140,8 @@ public class Lemmatizer
 	{
 		String w = spellingvariation.Ligatures.replaceLigatures(w0);
 		Set<WordForm> exactMatches = (historicalLexicon == null)? new HashSet<WordForm>() :historicalLexicon.findLemmata(w);
-		Set<WordForm> modernMatches = (modernLexicon == null)? new HashSet<WordForm>(): modernLexicon.findLemmata(w);
+		Set<WordForm> modernMatches = (modernLexicon == null)? 
+				new HashSet<WordForm>(): modernLexicon.findLemmata(w);
 		if (exactMatches == null)
 			exactMatches = new HashSet<WordForm>();
 		if (modernMatches == null)
@@ -169,6 +172,19 @@ public class Lemmatizer
 		{
 			matcher.setCallback(new candidateCollector(matches));
 			matcher.matchWordToLexicon(lexiconTrie, w.toLowerCase());
+		}
+		if (modernWordformAsLemma) // the German situation: only modern word form annotated
+		{
+			for (WordMatch wm: matches)
+			{
+				if (wm.type == MatchType.ModernExact || wm.type == MatchType.ModernWithPatterns)
+				{
+					wm.wordform.lemma = wm.wordform.wordform;
+				} else
+				{
+					wm.wordform.lemma = wm.wordform.modernWordform;
+				}
+			}
 		}
 		return matches;
 	}

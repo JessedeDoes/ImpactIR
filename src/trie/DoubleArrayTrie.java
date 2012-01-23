@@ -73,9 +73,17 @@ public class DoubleArrayTrie implements ITrie<Object>
 
 	public static final DoubleArrayTrie loadTrie(String filename)
 			throws IOException
-			{
+	{
+		try
+		{ 
+			File f = new File(filename);
+		} catch (Exception e)
+		{
+			System.err.println("unable to open File " + filename);
+			e.printStackTrace();
+		}
 		return loadTrie(new File(filename));
-			}
+	}
 
 	public static final DoubleArrayTrie loadTrie(File file) throws IOException
 	{

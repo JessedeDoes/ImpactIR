@@ -1,5 +1,6 @@
 package util;
 import java.io.*;
+import java.util.Enumeration;
 
 public class Resource
 
@@ -24,6 +25,18 @@ public class Resource
 				return new FileReader(file);
 			}
 			// next try for files included in jar
+			try
+			{
+				Reader r = new InputStreamReader(
+						this.getClass().getResourceAsStream("/"+ s));  
+				if (r != null)
+					return r;
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			} 
+			ClassLoader loader = getClass().getClassLoader();
+			//Enumeration<java.net.URL> urls = loader.getResources(arg0);
 			java.net.URL url = getClass().getClassLoader().getResource(resourceFolder + "/" + s);
 			System.err.println("jar url " + url);
 			// or URL from web

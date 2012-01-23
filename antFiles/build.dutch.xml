@@ -15,14 +15,13 @@
 <!-- needed for preparing lexicon data -->
 
         <property name="modern.lexicon" value="${language.dir}/Lexicon/wnt.revlem.out"/>
-
         <property name="database.host" value="impactdb.inl.loc"/>
         <property name="historical.lexicon" value="database:EE3_5"/>
 
 <!-- needed for the actual lemmatization test -->
 
         <property name="lemmatizer.input" value="${language.dir}/dutchIRSet.nogroups.nonames.txt"/>
-       <property name="lemmatizer.output" value="${language.dir}/dutchIRSet.nogroups.nonames.txt.out"/>
+        <property name="lemmatizer.output" value="${language.dir}/dutchIRSet.nogroups.nonames.txt.out"/>
         <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
         <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/HistoricalLexicon"/>
         <property name="pattern.input" value="${language.dir}/multigrams.cleaner"/>

@@ -180,17 +180,17 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 			try
 			{
-				String wf = (String) n.getProperty("wordform");
-				//System.err.println(wf);
-				for (Relationship r: n.getRelationships())
+				String wf = (String) getProperty(n, "wordform");
+				// System.err.println(wf);
+				if (wf != null)
 				{
-					Node lemmaNode = r.getOtherNode(n);
-					String lemma = (String) lemmaNode.getProperty("lemma");
-					System.err.println(wf + "\t" + lemma);
+					lexicon.WordForm w = getWordFormFromNode(n);
+					System.out.println(w);
+					System.out.flush();
 				}
 			} catch (Exception e)
 			{
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}
@@ -212,10 +212,12 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 
 			wordformNode.setProperty( "wordform", w.wordform);
 			wordformNode.setProperty( "tag", w.tag);
-			
+			if (w.modernWordform != null)
+				wordformNode.setProperty("modernWordform", w.modernWordform);
+			wordformNode.setProperty("wordformFrequency", w.wordformFrequency);
+			wordformNode.setProperty("lemmaFrequency", w.lemmaFrequency);
 			nodeIndex.add(wordformNode, "wordform", w.wordform);
 			nodeIndex.add(wordformNode, "wordformLowercase",  w.wordform.toLowerCase());
-			
 		}
 		finally
 		{
@@ -312,22 +314,12 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		String property = caseSensitiveLookup?"wordform":"wordformLowercase";
 		try
 		{
-			IndexHits<Node> hits = query? nodeIndex.query(property, wordform) : nodeIndex.get(property, wordform);
+			IndexHits<Node> hits = query? 
+				nodeIndex.query(property, wordform) : 
+				nodeIndex.get(property, wordform);
 			for (Node n: hits)
 			{
-				String wf = (String) n.getProperty("wordform");
-				for (Relationship r: n.getRelationships())
-				{
-					Node wordformNode = r.getOtherNode(n);
-					String lemma = (String) wordformNode.getProperty("lemma");
-					String pos = (String) wordformNode.getProperty("lemmaPoS");
-					//System.err.println(wf + "\t" + lemma);
-					WordForm w = new WordForm();
-					w.wordform = wf;
-					w.lemma = lemma;
-					w.lemmaPoS = pos;
-					wordforms.add(w);
-				}
+				wordforms.add(this.getWordFormFromNode(n));
 			}
 		} catch (Exception e)
 		{
@@ -336,6 +328,19 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		//System.err.println("found items: "  + wordforms.size());
 		return wordforms;
 	}
+
+	private Object getProperty(Node n, String propertyName)
+	{
+		try
+		{
+			return n.getProperty(propertyName);
+		} catch (Exception e)
+		{
+			return null;
+		}
+	}
+
+
 
 	public void lookupLemmataFromFile(String fileName)
 	{
@@ -369,6 +374,12 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				WordForm w = new WordForm();
 				w.wordform = (String) x.getProperty("wordform");
 				w.tag = (String) x.getProperty("tag");
+				String modernForm = (String) getProperty(x, "modernWordform");
+				Integer lemmaFrequency = (Integer) getProperty(x, "lemmaFrequency");
+				Integer wordformFrequency = (Integer) getProperty(x, "wordformFrequency");
+				w.modernWordform = modernForm;
+				w.lemmaFrequency = lemmaFrequency;
+				w.wordformFrequency = wordformFrequency;
 				// and retrieve lemma...
 				for (Relationship r: x.getRelationships())
 				{

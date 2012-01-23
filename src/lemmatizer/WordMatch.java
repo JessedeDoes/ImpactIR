@@ -68,7 +68,8 @@ public class WordMatch
 {
 	@XmlElement
 	lexicon.WordForm wordform;
-	double matchScore;
+	@XmlElement
+	public double matchScore;
 	String target;
 	@XmlTransient
 	public String alignment = "";

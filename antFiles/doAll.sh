@@ -18,5 +18,6 @@ for f in build.bulgarian.xml\
 do
   echo $f;
   ant -f $f ir.evaluation;
-  ant -f $f ir.evaluation.without.historical.lexicon
+  ant -f $f ir.evaluation.without.historical.lexicon;
+  ant -f $f ir.evaluation.without.patterns
 done

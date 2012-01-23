@@ -21,6 +21,7 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 	boolean onlyVerified = false;
 	boolean useSimpleWordformsOnly = false;
 	boolean dumpWithFrequenciesAndDerivations = true;
+	boolean noDerivations = true;
 	
 	static String createSimpleWordformTableSQL = Resource.getStringFromFile("sql/createSimple.sql");
 	static String createViewsSQL = Resource.getStringFromFile("sql/createViews.sql");
@@ -121,6 +122,11 @@ public class LexiconDatabase extends util.Database  implements Iterable<WordForm
 			if (LexiconDatabase.this.dumpWithFrequenciesAndDerivations)
 			{
 				LexiconDatabase.this.runQueries(LexiconDatabase.this.prepareLexiconDumpSQL);
+				if (LexiconDatabase.this.noDerivations)
+				{
+					query = "select  modern_lemma, wordform, lemma_part_of_speech, wordform_frequency, lemma_frequency, \"\" " +
+							"from wordforms_with_frequency;";
+				} else 
 				query = "select  modern_lemma, wordform, lemma_part_of_speech, wordform_frequency, lemma_frequency, normalized_form " +
 						"from wordforms_with_frequency left join derivations on derivations.analyzed_wordform_id = wordforms_with_frequency.analyzed_wordform_id;";
 			}

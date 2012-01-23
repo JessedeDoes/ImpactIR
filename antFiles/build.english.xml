@@ -14,10 +14,15 @@
 
 <!-- needed for preparaton of lexicon data -->
 
-        <property name="modern.lexicon" value="${language.dir}/ModernAndHistoricalLexicon.txt"/>
-        <property name="database.host" value="svowdb02"/>
 <!--
-        <property name="historical.lexicon" value="database:SpanishLexiconWithoutEvaluation"/>
+        <property name="modern.lexicon" value="${language.dir}/ModernAndHistoricalLexicon.txt"/>
+-->
+
+	<property name="modern.lexicon" value="database:Lexicon_OED"/>
+        <property name="database.host" value="svowdb02"/>
+       
+<!--
+        <property name="historical.lexicon" value="database:Lexicon_OED"/>
 -->
 	<property name="historical.lexicon" value="${language.dir}/Empty.txt"/>
 

@@ -25,6 +25,8 @@
         <pathelement path="${libdir}/jaxb-xjc-2.1.7.jar"/>
 	</path>
 
+	<property name="modern.wordform.as.lemma" value="false"/>
+
 	<!-- basic requirements -->
 
 	<!-- nog een target maken voor aanmaken van de simple analyzed wordforms! 
@@ -71,6 +73,37 @@
 			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
 			<arg value="--addWordBoundaries"/> <arg value="true"/>
 			<arg value="--maximumPenalty"/> <arg value="3000"/>
+			<arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
+
+<!-- # not used yet -->
+
+	       		<classpath refid="java.class.path"/>
+	</java>
+        </target>
+
+	<target name="ir.evaluation.without.patterns">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}.nopatterns" error="${lemmatizer.input}.nopatterns.log">
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${historical.compiled.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="empty.txt"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
+
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+			<arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
 
 <!-- # not used yet -->
 
@@ -100,6 +133,8 @@
 			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
 			<arg value="--addWordBoundaries"/> <arg value="true"/>
 			<arg value="--maximumPenalty"/> <arg value="3000"/>
+
+			 <arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
 
 <!-- # not used yet -->
 

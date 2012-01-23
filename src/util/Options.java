@@ -46,6 +46,8 @@ public class Options
 		options.addOption("r", "pruner", true, "Java class used for determining which multigrams are acceptable patterns");
 		options.addOption("H", "databaseHost", true, 
 				"Host for lexicon database");
+		options.addOption("w", "modernWordformAsLemma", true, 
+				"match modern word form instead of lemma");
 
 
 		parseCommandLine(args);
