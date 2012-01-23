@@ -277,8 +277,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		Set<WordForm> s1 = new HashSet<WordForm>();
 		
 		for (WordForm w: s0)
-			if (w.lemmaPoS.equalsIgnoreCase(tag) || tag.equals("*"))
+		{
+			if (tag.equals("*") || w.lemmaPoS.equalsIgnoreCase(tag))
 				s1.add(w);
+		}
 				
 		return s1;
 	}
