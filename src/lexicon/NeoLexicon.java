@@ -381,9 +381,9 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				String modernForm = (String) getProperty(x, "modernWordform");
 				Integer lemmaFrequency = (Integer) getProperty(x, "lemmaFrequency");
 				Integer wordformFrequency = (Integer) getProperty(x, "wordformFrequency");
-				w.modernWordform = modernForm;
-				w.lemmaFrequency = lemmaFrequency;
-				w.wordformFrequency = wordformFrequency;
+				w.modernWordform = (modernForm != null) ? modernForm : "";
+				w.lemmaFrequency = (lemmaFrequency != null) ? lemmaFrequency : 0;
+				w.wordformFrequency = (wordformFrequency != null) ? wordformFrequency: 0;
 				// and retrieve lemma...
 				for (Relationship r: x.getRelationships())
 				{
