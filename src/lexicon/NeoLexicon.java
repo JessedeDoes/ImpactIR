@@ -394,6 +394,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				return w;
 			} else
 			{
+				System.err.println("Boe! Non wordform node retrieved by wordform query?? : " + 
+							(String) x.getProperty("wordform"));
 				return null;
 			}
 		} catch (Exception e)
