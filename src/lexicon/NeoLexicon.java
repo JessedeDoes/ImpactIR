@@ -398,6 +398,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			}
 		} catch (Exception e)
 		{
+			e.printStackTrace();
 			return null;
 		}
 	}
