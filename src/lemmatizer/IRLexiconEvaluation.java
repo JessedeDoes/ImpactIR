@@ -93,7 +93,7 @@ public class IRLexiconEvaluation
 		prepareForPrecision();
 		Set<String> queries = new HashSet<String>();
 		queries.addAll(lemmaFrequency.keySet());
-		queries.addAll(lemma2item.keySet());
+		// queries.addAll(lemma2item.keySet()); // dit benadeelt nogal de optie met veel kandidaten
 		return computeAveragePrecision(queries);
 	}
 	
