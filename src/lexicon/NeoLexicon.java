@@ -321,7 +321,9 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				nodeIndex.get(property, wordform);
 			for (Node n: hits)
 			{
-				wordforms.add(this.getWordFormFromNode(n));
+				WordForm w = this.getWordFormFromNode(n);
+				if (w != null)
+					wordforms.add(w);
 			}
 		} catch (Exception e)
 		{
