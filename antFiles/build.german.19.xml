@@ -4,5 +4,5 @@
 
 	<property name="language" value="German"/>	
 	<property name="period" value="19"/>
-        <import file="build.german.xml"/>
+        <import file="build.german.wordforms.xml"/>
 </project>

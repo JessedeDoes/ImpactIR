@@ -285,6 +285,11 @@ public class IRLexiconEvaluation
 
 		this.historicalLexiconLemmaCoverage = this.nItemsWithLemmaInHistoricalLexicon / N;
 		this.modernLexiconLemmaCoverage = this.nItemsWithLemmaInModernLexicon / N;
+		
+		if (this.recall < this.modernLexiconLemmaCoverage * this.recallOnItemsWithLemmaInModernLexicon)
+		{
+			System.err.println("RAMP.... KLOPT NIET.....");
+		}
 	}
 
 	public void print(PrintStream p) 
@@ -307,7 +312,8 @@ public class IRLexiconEvaluation
 
 		int k=1;
 		HashSet<String> seenLemmata = new HashSet<String>();
-		boolean germanWildCard = item.lemmata.contains("*****") || item.lemmata.contains("*****");
+		boolean germanWildCard = 
+				item.lemmata.contains("*****") || item.lemmata.contains("*****");
 
 		// loop over the unsimplified match list to find out about coverage of different lexica
 		for (WordMatch wordMatch: unsimplifiedMatches)

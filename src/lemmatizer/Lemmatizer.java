@@ -124,7 +124,9 @@ public class Lemmatizer
 	{
 		if (lemma.contains("*"))
 			return false;
-		Set<WordForm> w = modernLexicon.findForms(lemma, "*");
+		boolean wordformAsLemma = Options.getOptionBoolean("modernWordformAsLemma", false);	
+		Set<WordForm> w = wordformAsLemma? 
+				modernLexicon.findLemmata(lemma) : modernLexicon.findForms(lemma, "*");
 		return (w != null && w.size() > 0);
 	}
 	
@@ -132,7 +134,10 @@ public class Lemmatizer
 	{
 		if (lemma.contains("*"))
 			return false;
-		Set<WordForm> w = historicalLexicon.findForms(lemma, "*");
+		boolean wordformAsLemma = Options.getOptionBoolean("modernWordformAsLemma", false);	
+		Set<WordForm> w = wordformAsLemma? 
+				historicalLexicon.searchByModernWordform(lemma) : historicalLexicon.findForms(lemma, "*");
+				
 		return (w != null && w.size() > 0);
 	}
 	

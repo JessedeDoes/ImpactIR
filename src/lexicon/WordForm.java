@@ -23,11 +23,16 @@ public class WordForm
 
 	public String toString()
 	{
-               if (wordformFrequency > 0 || lemmaFrequency > 0)
-               {
-                   return "{" + lemma + "," + wordform + "," + tag + ", f(w)=" + wordformFrequency + ", f(l)=" + lemmaFrequency + "}";
-               } else
-		return "{" + lemma + "," + wordform + "," + tag + "}";
+		String mPart = 
+				(modernWordform != null && modernWordform.length() > 0)?
+						(", modern: " + modernWordform) 
+						:"";
+		if (wordformFrequency > 0 || lemmaFrequency > 0)
+		{
+			return "{" + lemma + "," + wordform + mPart +  ", " +
+					tag + ", f(w)=" + wordformFrequency + ", f(l)=" + lemmaFrequency + "}";
+		} else
+			return "{" + lemma + "," + wordform + mPart + "," + tag + "}";
 	}
 	
 	public String toStringTabSeparated()

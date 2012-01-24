@@ -169,4 +169,10 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon
 		// TODO Auto-generated method stub
 		return wordforms.iterator();
 	}
+
+	@Override
+	public Set<WordForm> searchByModernWordform(String wordform) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

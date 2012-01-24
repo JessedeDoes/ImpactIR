@@ -213,7 +213,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			wordformNode.setProperty( "wordform", w.wordform);
 			wordformNode.setProperty( "tag", w.tag);
 			if (w.modernWordform != null)
+			{
 				wordformNode.setProperty("modernWordform", w.modernWordform);
+				nodeIndex.add(wordformNode,"modernWordform", w.modernWordform);
+			}
 			wordformNode.setProperty("wordformFrequency", w.wordformFrequency);
 			wordformNode.setProperty("lemmaFrequency", w.lemmaFrequency);
 			nodeIndex.add(wordformNode, "wordform", w.wordform);
@@ -291,6 +294,30 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		return findLemmata(wordform,false);
 	}
 
+	@Override
+	public Set<WordForm> searchByModernWordform(String wordform) 
+	{
+		Set<WordForm> wordforms = new HashSet<WordForm>();
+		if (wordform == null || wordform.length() == 0)
+			return wordforms;
+		String property = "modernWordform";
+		try
+		{
+			IndexHits<Node> hits =
+				nodeIndex.get(property, wordform);
+			for (Node n: hits)
+			{
+				WordForm w = this.getWordFormFromNode(n);
+				if (w != null)
+					wordforms.add(w);
+			}
+		} catch (Exception e)
+		{
+
+		}
+		//System.err.println("found items: "  + wordforms.size());
+		return wordforms;
+	}
 	public void lookupWord(String word)
 	{
 		Set<WordForm> lookup1 = findLemmata(word,true);
@@ -394,8 +421,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				return w;
 			} else
 			{
-				System.err.println("Boe! Non wordform node retrieved by wordform query?? : " + 
-							(String) x.getProperty("wordform"));
+				//System.err.println("Boe! Non wordform node retrieved by wordform query?? : " + 
+				//			(String) x.getProperty("wordform"));
 				return null;
 			}
 		} catch (Exception e)
@@ -515,4 +542,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			l.findLemmata(arg2);
 		}
 	}
+
+
+
 }
