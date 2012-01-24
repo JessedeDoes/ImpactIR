@@ -106,7 +106,7 @@ public class Lemmatizer
 					x.wordform = w;
 					x.alignment = matchInfo;
 					x.matchScore = p;
-					x.wordformFrequency =w.wordformFrequency;
+					x.wordformFrequency = w.wordformFrequency;
 					x.lemmaFrequency = w.lemmaFrequency;
 					
 					if (p==1.0)
