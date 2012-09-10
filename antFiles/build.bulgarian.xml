@@ -5,6 +5,7 @@
 	<import file="platform.xml"/>
 	<property name="language" value="Bulgarian"/>	
         <property name="language.dir" value="${evaluation.datadir}/${language}"/>
+        <property name="maximum.suggestions" value="5"/>
 
 <!-- for exporting the evaluation set(s) -->
 
@@ -28,7 +29,7 @@
         <property name="lemmatizer.output" value="${language.dir}/${language}IRSet.txt.out"/>
         <property name="modern.compiled.lexicon" value="${lexicon.datadir}/${language}/ModernLexicon"/>
         <property name="historical.compiled.lexicon" value="${lexicon.datadir}/${language}/HistoricalLexicon"/>
-        <property name="pattern.input" value="${language.dir}/patterns.withWeights.txt"/>
+        <property name="pattern.input" value="${language.dir}/patterns.withweights.txt"/>
         <property name="lexicon.trie" value="${lexicon.datadir}/${language}/modernWords.datrie"/>
 
         <import file="build.basic.xml"/>

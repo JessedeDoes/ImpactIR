@@ -304,58 +304,60 @@ public class IRLexiconEvaluation
 
 	public void matchItem(Item item, List<WordMatch> unsimplifiedMatches)
 	{
-		ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(unsimplifiedMatches);
-		Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
-		List<WordMatch> simplifiedMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
-
-		item.matches = simplifiedMatchList;
-
-		int k=1;
-		HashSet<String> seenLemmata = new HashSet<String>();
-		boolean germanWildCard = 
-				item.lemmata.contains("*****") || item.lemmata.contains("*****");
-
-		// loop over the unsimplified match list to find out about coverage of different lexica
-		for (WordMatch wordMatch: unsimplifiedMatches)
+		if (unsimplifiedMatches != null)
 		{
-			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
-			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
-			{
+			ArrayList<WordMatch> wordMatchListUnsimplified = new ArrayList<WordMatch>(unsimplifiedMatches);
+			Collections.sort(wordMatchListUnsimplified, new WordMatchComparator());
+			List<WordMatch> simplifiedMatchList = WordMatch.simplify(wordMatchListUnsimplified, false);
 
-				if (wordMatch.type==MatchType.HistoricalExact)
-					item.inHistoricalLexicon = true;
-				if (wordMatch.type==MatchType.ModernExact)
-					item.inModernLexicon = true;
-				if (wordMatch.type==MatchType.ModernWithPatterns)
-					item.inHypotheticalLexicon = true;		
-			}
-		}
+			item.matches = simplifiedMatchList;
 
-		// to check the average rank of correct matches, we need the simplified list
-		
-		for (WordMatch wordMatch: simplifiedMatchList)
-		{
-			String lcLemma = wordMatch.wordform.lemma.toLowerCase();
-			this.totalNumberOfSuggestions++;
-			if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
+			int k=1;
+			HashSet<String> seenLemmata = new HashSet<String>();
+			boolean germanWildCard = 
+					item.lemmata.contains("*****") || item.lemmata.contains("*****");
+
+			// loop over the unsimplified match list to find out about coverage of different lexica
+			for (WordMatch wordMatch: unsimplifiedMatches)
 			{
-				if (!item.hasCorrectMatch)
-					sumOfReciprocalRanks += 1 / (double) k;
-				
-				if (!seenLemmata.contains(lcLemma)) // first correct suggestion
+				String lcLemma = wordMatch.wordform.lemma.toLowerCase();
+				if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
 				{
-					nCorrectSuggestions++; 
-					sumOfRanks += k;
-					item.rankOfCorrectSuggestion = k;
+
+					if (wordMatch.type==MatchType.HistoricalExact)
+						item.inHistoricalLexicon = true;
+					if (wordMatch.type==MatchType.ModernExact)
+						item.inModernLexicon = true;
+					if (wordMatch.type==MatchType.ModernWithPatterns)
+						item.inHypotheticalLexicon = true;		
 				}
-
-				wordMatch.correct = true;
-				item.hasCorrectMatch = true;
 			}
-			seenLemmata.add(lcLemma);
-			wordMatch.rank=k++;
-		}
 
+			// to check the average rank of correct matches, we need the simplified list
+
+			for (WordMatch wordMatch: simplifiedMatchList)
+			{
+				String lcLemma = wordMatch.wordform.lemma.toLowerCase();
+				this.totalNumberOfSuggestions++;
+				if (germanWildCard || item.lemmata.contains(lcLemma)) //  && !seenLemmata.contains(lcLemma)))
+				{
+					if (!item.hasCorrectMatch)
+						sumOfReciprocalRanks += 1 / (double) k;
+
+					if (!seenLemmata.contains(lcLemma)) // first correct suggestion
+					{
+						nCorrectSuggestions++; 
+						sumOfRanks += k;
+						item.rankOfCorrectSuggestion = k;
+					}
+
+					wordMatch.correct = true;
+					item.hasCorrectMatch = true;
+				}
+				seenLemmata.add(lcLemma);
+				wordMatch.rank=k++;
+			}
+		}
 		if (item.inHistoricalLexicon)
 			this.nHistoricalExact++;
 		if (item.inModernLexicon)
@@ -372,6 +374,7 @@ public class IRLexiconEvaluation
 			if (item.hasCorrectMatch)
 				nItemsWithLemmaInHistoricalLexiconWithCorrectMatch++;
 		}
+		
 		if (item.lemmaInModernLexicon)
 		{
 			nItemsWithLemmaInModernLexicon++;

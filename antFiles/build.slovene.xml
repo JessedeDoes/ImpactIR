@@ -16,10 +16,10 @@
 
         <property name="modern.lexicon" value="${language.dir}/ModernPlusMultextLexicon.txt"/>
         <property name="database.host" value="svowdb02"/>
+        <property name="historical.lexicon" value="database:LexiconTool_Goo2"/>
 <!--
-        <property name="historical.lexicon" value="database:SpanishLexiconWithoutEvaluation"/>
--->
 	<property name="historical.lexicon" value="${language.dir}/HistoricalLexicon.txt"/>
+-->
 
 <!-- needed for the actual lemmatization test -->
 

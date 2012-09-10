@@ -121,7 +121,9 @@ public class LemmatizationTest
 				
 				List<WordMatch> matches = simpleLemmatizer.lookupWordform(w.toLowerCase());
 				item.matches = matches;
+				report.matchItem(item, matches);
 				
+				/*
 				if (matches==null || matches.size()==0)
 				{
 					if (this.plainTextOutput)
@@ -143,6 +145,7 @@ public class LemmatizationTest
 					}
 				
 				}
+				*/
 			}
 			report.print(System.err);
 			if (!plainTextOutput)

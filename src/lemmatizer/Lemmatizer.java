@@ -141,7 +141,7 @@ public class Lemmatizer
 		return (w != null && w.size() > 0);
 	}
 	
-	List<WordMatch> lookupWordform(String w0)
+	public List<WordMatch> lookupWordform(String w0)
 	{
 		String w = spellingvariation.Ligatures.replaceLigatures(w0);
 		Set<WordForm> exactMatches = (historicalLexicon == null)? new HashSet<WordForm>() :historicalLexicon.findLemmata(w);
