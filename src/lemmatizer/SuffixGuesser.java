@@ -3,6 +3,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import lemmatizer.reverse.ReverseLemmatizationTest;
+import lemmatizer.reverse.ReverseLemmatizer;
+
+import classifier.Classifier;
+import classifier.Dataset;
+import classifier.Distribution;
+import classifier.FeatureSet;
+import classifier.Instance;
+
 import trie.Trie;
 import util.Options;
 
@@ -106,14 +115,14 @@ public class SuffixGuesser implements Classifier
 	}
 
 	//@Override
-	public String classifyItem(Item i)
+	public String classifyInstance(Instance i)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	//@Override
-	public Distribution distributionForItem(Item i)
+	public Distribution distributionForInstance(Instance i)
 	{
 		String s = i.values.get(0);
 		return distributionForString(s);
@@ -144,10 +153,10 @@ public class SuffixGuesser implements Classifier
 
 		double s = d0.size();
 		double Pavg =0;
-		for (Distribution.Item i: d0.items) Pavg += i.p; Pavg /= s;
+		for (Distribution.Outcome i: d0.outcomes) Pavg += i.p; Pavg /= s;
 
 				double theta0 = 0;
-				for (Distribution.Item i: d0.items) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
+				for (Distribution.Outcome i: d0.outcomes) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
 
 						System.err.println("theta0 =  " + theta0);
 						//System.exit(0);
@@ -209,10 +218,16 @@ public class SuffixGuesser implements Classifier
 	}
 
 	//@Override
+	public void load(String filename)
+	{
+		// TODO Auto-generated method stub
+
+	}
+	//@Override
 	public void train(Dataset d)
 	{
 		d.features.finalize();
-		for (Item  i: d.items)
+		for (Instance  i: d.instances)
 		{
 			String s = i.values.get(0); // Vieze truc;
 			String cls = i.classLabel;

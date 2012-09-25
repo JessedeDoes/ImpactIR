@@ -13,7 +13,7 @@
 		<fileset dir="${neodir}">
 			<include name="*.jar"/>
 		</fileset>
-
+        <pathelement path="lib/liblinear-1.91.jar"/>
         <pathelement path="lib/jgrapht-jdk1.6.jar"/>
         <pathelement path="lib/weka.jar"/>
    		<pathelement path="lib/commons-cli-1.2.jar"/>

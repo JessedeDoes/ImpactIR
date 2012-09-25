@@ -6,14 +6,17 @@ import trie.ITrie;
 //import trie.Trie;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
 import lexicon.ILexicon;
 //import lexicon.InMemoryLexicon;
+import lexicon.LexiconDatabase;
 import lexicon.NeoLexicon;
 import lexicon.WordForm;
 import util.Options;
@@ -25,8 +28,8 @@ import java.util.ArrayList;
 public class Lemmatizer
 {
 	DatrieMatcher  matcher;
-	ILexicon historicalLexicon = null;
-	ILexicon modernLexicon = null;
+	public ILexicon historicalLexicon = null;
+	public ILexicon modernLexicon = null;
 	ITrie<Object> lexiconTrie = null;
 	boolean useMatcher = true;
 	boolean modernWordformAsLemma = false;
@@ -53,28 +56,38 @@ public class Lemmatizer
 			this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
 		} catch (Exception e)
 		{
-			
+			e.printStackTrace();
 		}
 		try
 		{
-			this.historicalLexicon = new NeoLexicon(historicalLexiconFilename, false);
+			File f = new File(historicalLexiconFilename);
+			if (f.exists())
+			{
+				this.historicalLexicon =
+						new NeoLexicon(historicalLexiconFilename, false);
+			} else
+			{
+				this.historicalLexicon = new LexiconDatabase("svowim02", "EE3_5");
+			}
 		} catch (Exception e)
 		{
+			e.printStackTrace();
 		}
 
 		System.err.println("finished reading lexicon text files");
 		this.matcher = new DatrieMatcher(patternFilename);
-		//this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
+		// this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
 		try 
   		{
 			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
 			System.err.println("loaded lexicon from " + trieFilename);
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//System.err.println("created trie from modern lexicon content");
-		//this.matcher..
+		//this.matcher ..
 	}
 
 	class candidateCollector extends DatrieMatcher.Callback
@@ -194,6 +207,30 @@ public class Lemmatizer
 		return matches;
 	}
 
+	public void destroy()
+	{
+		destroyLexicon(this.modernLexicon);
+		destroyLexicon(this.historicalLexicon);
+	}
+	
+	public void destroyLexicon(ILexicon l)
+	{
+		if (l == null)
+			return;
+		try 
+		{
+			Class c = l.getClass();
+			System.err.println("CLASS: "  + c);
+			Method m = l.getClass().getDeclaredMethod("destroy");
+			if (m != null)
+				m.invoke(l,null);
+		} catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
 	public static void main(String []args)
 	{
 		new Options(args);

@@ -16,6 +16,8 @@ public class WordForm
 	public String tag = "nil";
 	@XmlElement
 	public String lemmaPoS = "nil";
+	@XmlElement
+	public String lemmaID = "nil";
 	
 	public String modernWordform = "";
 	public int wordformFrequency = 0;
@@ -46,7 +48,11 @@ public class WordForm
 		{
 			WordForm wf = (WordForm) other;
 			return lemma.equals(wf.lemma) && wordform.equals(wf.wordform)
-					&& tag.equals(wf.tag) && lemmaPoS.equals(wf.lemmaPoS);
+					&& tag.equals(wf.tag) && lemmaPoS.equals(wf.lemmaPoS)
+					&& lemmaID.equals(wf.lemmaID);
+			
+			// OK dit gaat dus fout met de tellertjes...
+			// 
 		} catch (Exception e)
 		{
 			return false;

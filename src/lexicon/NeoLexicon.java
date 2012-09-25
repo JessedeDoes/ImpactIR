@@ -53,7 +53,12 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		nodeIndex = graphDb.index().forNodes( "nodes" );
 	}
 
-
+	public void destroy()
+	{
+		System.err.println("Shutting down " + DB_PATH);
+		this.graphDb.shutdown();
+	}
+	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{
 		Runtime.getRuntime().addShutdownHook( new Thread()
@@ -201,8 +206,9 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 			Node wordformNode = graphDb.createNode();
 			wordformNode.setProperty("type", NODETYPE_WORDFORM);
-			Node lemmaNode = findLemmaNode(w.lemma,w.lemmaPoS);
-
+			
+			Node lemmaNode = findLemmaNode(w.lemma, w.lemmaPoS, w.lemmaID);
+			
 			if (lemmaNode == null)
 			{
 				lemmaNode = this.addLemma(w.lemma, w.lemmaPoS);
@@ -212,6 +218,8 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 
 			wordformNode.setProperty( "wordform", w.wordform);
 			wordformNode.setProperty( "tag", w.tag);
+			wordformNode.setProperty( "lemmaID" , w.lemmaID);
+			
 			if (w.modernWordform != null)
 			{
 				wordformNode.setProperty("modernWordform", w.modernWordform);
@@ -241,9 +249,16 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		return lemmaNode;
 	}
 
-	private Node findLemmaNode(String lemma, String lemmaPoS) 
+	private Node findLemmaNode(String lemma, String lemmaPoS, String lemmaID) 
 	{
 		// TODO Auto-generated method stub
+		if (lemmaID != null && lemmaID.length() > 0)
+		{
+			IndexHits<Node> hits = nodeIndex.get("lemmaID", lemmaID);
+			if (hits.size() > 0)
+				return hits.getSingle();
+			return null;
+		}
 		IndexHits<Node> hits = nodeIndex.get("lemma", lemma);
 		if (hits.size() > 0)
 			return hits.getSingle();
@@ -403,6 +418,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			if (type == NODETYPE_WORDFORM)
 			{
 				WordForm w = new WordForm();
+				w.lemmaID = (String) x.getProperty("lemmaID");
 				w.wordform = (String) x.getProperty("wordform");
 				w.tag = (String) x.getProperty("tag");
 				String modernForm = (String) getProperty(x, "modernWordform");
@@ -411,6 +427,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				w.modernWordform = (modernForm != null) ? modernForm : "";
 				w.lemmaFrequency = (lemmaFrequency != null) ? lemmaFrequency : 0;
 				w.wordformFrequency = (wordformFrequency != null) ? wordformFrequency: 0;
+				
 				// and retrieve lemma...
 				for (Relationship r: x.getRelationships())
 				{
@@ -539,7 +556,10 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 			NeoLexicon l = new NeoLexicon(arg0, false);
 			//l.dumpDB();
-			l.findLemmata(arg2);
+			for (WordForm w: l.findLemmata(arg2))
+			{
+				System.out.println(w);
+			}
 		}
 	}
 

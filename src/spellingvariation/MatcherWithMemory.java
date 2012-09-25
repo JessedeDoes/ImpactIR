@@ -312,7 +312,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 
 	/**
 	 * TODO prune the beam (we are doing full Viterbi now, which will be too slow once we add smoothing)
-	 * @param s
+	 * @param label
 	 */
 	
 	public void pruneStateList(LinkedList<ScoredState<State>> list, double delta)

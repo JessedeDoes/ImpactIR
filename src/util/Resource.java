@@ -9,6 +9,11 @@ public class Resource
 	/** Creates a new instance of Resource **/
 	
 	public static String resourceFolder = "resources";
+	public static String yetAnotherFolder = 
+			"N:/Impact/ImpactIR/OCRIRevaluatie/IREval/workspace/ImpactIR/resources";
+	
+	String[] foldersToTry = {resourceFolder, yetAnotherFolder};
+	
 	public Resource()
 	{
 
@@ -19,10 +24,13 @@ public class Resource
 		try 
 		{
 			// first try to read file from local file system
-			File file = new File(resourceFolder + "/"+ s);
-			if (file.exists())
+			for (String f: foldersToTry)
 			{
-				return new FileReader(file);
+				File file = new File(f + "/"+ s);
+				if (file.exists())
+				{
+					return new FileReader(file);
+				}
 			}
 			// next try for files included in jar
 			try

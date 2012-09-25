@@ -9,6 +9,7 @@ insert into lemma_frequency
 
 create temporary table wordforms_with_frequency
 select
+  persistent_id,
   modern_lemma,
   wordform,
   lemma_part_of_speech,

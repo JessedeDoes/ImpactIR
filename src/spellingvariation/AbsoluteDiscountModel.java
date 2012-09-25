@@ -38,7 +38,7 @@ java.io.Serializable
    * depends on higher order, as in Kneser-Ney smoothing and in smoothing of log-linear (ME) models
    * with gaussian prior
    * 
-   * @param s state
+   * @param label state
    * @param c observed symbol
    */
   

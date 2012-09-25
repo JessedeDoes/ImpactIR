@@ -1,5 +1,5 @@
 package lemmatizer;
-class Example
+public class Example
 {
   String lemma;
   String wordform;

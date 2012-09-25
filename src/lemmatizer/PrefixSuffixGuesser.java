@@ -7,6 +7,11 @@ import util.Options;
 import java.util.HashMap;
 import java.io.*;
 
+import classifier.FeatureSet;
+
+import lemmatizer.reverse.ParadigmExpander;
+import lemmatizer.reverse.ReverseLemmatizationTest;
+import lemmatizer.reverse.ReverseLemmatizer;
 import lexicon.InMemoryLexicon;
 import lexicon.WordForm;
 
@@ -54,7 +59,7 @@ class ScoredRule
  * @author jesse
  *
  */
-public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler// we should define an interface for the reverse lemmatizer..
+public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
 {
 	// and the classifier sets????
 	ReverseLemmatizer initialExpander = null;

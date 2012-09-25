@@ -16,6 +16,7 @@
 		</fileset>
 		<pathelement path="../dist/spellingvariation.jar"/>
  	    <pathelement path="${libdir}/jgrapht-jdk1.6.jar"/>
+	<pathelement path="${libdir}/xercesImpl.jar"/>
         <pathelement path="${libdir}/weka.jar"/>
    		<pathelement path="${libdir}/commons-cli-1.2.jar"/>
        	<pathelement path="${libdir}/mysql-connector-java-3.0.17-ga-bin.jar"/>

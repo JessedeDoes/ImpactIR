@@ -1,11 +1,21 @@
 package util;
 
-public class Pair<X,Y>
+import java.io.Serializable;
+
+
+public class Pair<X,Y> implements Serializable
 {
         public X first;
         public Y second;
 
-        public boolean equals(Object other)
+        public Pair(X x, Y y) 
+        {
+        	first = x;
+        	second = y;
+			// TODO Auto-generated constructor stub
+		}
+
+		public boolean equals(Object other)
         {
                 try
                 {

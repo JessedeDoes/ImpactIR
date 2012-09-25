@@ -1,14 +1,14 @@
 package lemmatizer;
 import java.util.ArrayList;
 
-class Rule
+public class Rule
 {
-  Pattern pattern;
-  String lemmaPoS;
+  public Pattern pattern;
+  public String lemmaPoS;
   String PoS;
-  int count=0;
-  int id;
-  ArrayList<Example> examples = new ArrayList<Example>();
+  public int count=0;
+  public int id;
+  public ArrayList<Example> examples = new ArrayList<Example>();
 
   public Rule()
   {

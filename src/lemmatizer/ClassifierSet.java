@@ -9,11 +9,19 @@ import java.util.Collections;
 //import weka.core.Instance;
 import java.util.Properties;
 
+import classifier.Classifier;
+import classifier.Dataset;
+import classifier.Distribution;
+import classifier.FeatureSet;
+import classifier.Instance;
+
+
+
 /**
 * One classifier per tag in the paradigm to generate candidate word forms
 */
 
-class ClassifierSet
+public class ClassifierSet
 {
   HashMap<String, Dataset> datasetsPerTag = new HashMap<String,Dataset>();
   HashMap<String, Classifier> classifiersPerTag = new HashMap<String,Classifier>();
@@ -22,8 +30,8 @@ class ClassifierSet
   String classifierClassName = "WekaClassifier";// "trees.J48"; // "functions.SMO";
   Class<?> classifierClass = null;
   FeatureSet features = new SimpleFeatureSet();
-  ArrayList<String> tagsSorted = null;
-  protected FoundFormHandler callback = null;
+  public ArrayList<String> tagsSorted = null;
+  public FoundFormHandler callback = null;
 
   int MAX_ITEMS_USED = 10000; // we unfortunately need this because of weka limitations
   double MIN_PROBABILITY = 10;
@@ -105,9 +113,9 @@ class ClassifierSet
   		System.err.println("Error: no classifier trained for "  + tag);
   		return;
   	}
-  	Item testItem = features.makeTestItem(lemma);
+  	Instance testItem = features.makeTestInstance(lemma);
 
-  	Distribution outcomes = classifier.distributionForItem(testItem);
+  	Distribution outcomes = classifier.distributionForInstance(testItem);
   	outcomes.sort();
   	double cumulativeP = 0;
 
@@ -116,7 +124,7 @@ class ClassifierSet
   		// Problem: the pattern suggested by the classifier need not be applicable to the given lemma
   		// TODO: solve this by using a different classifier (or pruning the decision trees)
 
-  		String classId = outcomes.get(rank).s;
+  		String classId = outcomes.get(rank).label;
   		double p = outcomes.get(rank).p;
   		Rule r = ruleID2Rule.get(classId);
   		cumulativeP += p;
@@ -148,7 +156,7 @@ class ClassifierSet
     }
     ruleID2Rule.put(ruleID,rule);
     datasetsPerTag.put(pos,d);
-    d.addItem(lemma,ruleID);
+    d.addInstance(lemma,ruleID);
   }
 
   public void saveToDirectory(String dirName)

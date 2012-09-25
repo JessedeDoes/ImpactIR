@@ -1,10 +1,13 @@
 package util;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -84,7 +87,37 @@ public class Database
 	}
 
 
-
+	public boolean tableExists(String tablename)
+	{
+		try
+		{
+		 DatabaseMetaData meta = connection.getMetaData();
+	      ResultSet res = meta.getTables(null, null, null, 
+	         new String[] {"TABLE"});
+	      boolean found = false;
+	      
+	      while (res.next()) 
+	      {
+	    	 String name = res.getString("TABLE_NAME");
+	    	 if (name.equalsIgnoreCase(tablename))
+	    		 found = true;
+	    	 /*
+	         System.err.println(
+	            "   "+res.getString("TABLE_CAT") 
+	           + ", "+res.getString("TABLE_SCHEM")
+	           + ", "+res.getString("TABLE_NAME")
+	           + ", "+res.getString("TABLE_TYPE")
+	           + ", "+res.getString("REMARKS")); 
+	         */
+	      }
+	      res.close();
+	      return found;
+		} catch (Exception e)
+		{
+			
+		}
+		return false;
+	}
 
 	public Vector<Vector<String>> SimpleSearch(String tableName,  Vector<String> whereclauses, int start, int nof) throws Exception
 	{
@@ -182,6 +215,79 @@ public class Database
 		return types;
 	}
 
+	public static class MapFetcher
+	{
+		ResultSet rs;
+		int nofcolumns;
+		Vector<String> fields;
+		
+		public MapFetcher(Connection connection, String query)
+		{
+			try
+			{
+				PreparedStatement stmt = connection.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				ResultSet rs = stmt.executeQuery();
+				init(rs);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		public void init(ResultSet rs)
+		{
+			this.rs=rs;
+			//System.err.println(rs);
+			try
+			{
+				nofcolumns = rs.getMetaData().getColumnCount();
+
+				fields = new Vector<String>();
+				for (int i=1; i <= nofcolumns; i++)
+				{
+					fields.addElement(rs.getMetaData().getColumnName(i));
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		public MapFetcher(ResultSet rs)
+		{
+			init(rs);
+		}
+		
+		public Map<String,String> fetchMap()
+		{
+			try 
+			{
+				if (rs.next()) // mis je nu de eerste??
+				{
+					Map<String,String> m = new HashMap<String,String>();
+					
+					for (int i=1; i <= nofcolumns; i++)
+					{
+						try
+						{
+							String s = new String(rs.getBytes(i), "UTF-8");
+							m.put(fields.get(i-1), s);
+						} catch (Exception e)
+						{
+							
+						}
+					}
+					return m;
+				}
+			} catch (SQLException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	
 	public Vector<Vector<String>> SimpleSelect(String tableName, Vector<String> selected_fields, Vector<String> whereclauses, int start, int nof) throws Exception
 	{
 		PreparedStatement stmt = null;
