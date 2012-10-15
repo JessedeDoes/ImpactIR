@@ -2,7 +2,6 @@ package impact.ee.tagger.ner;
 
 import impact.ee.classifier.Classifier;
 import impact.ee.classifier.Dataset;
-import impact.ee.classifier.Feature;
 import impact.ee.classifier.FeatureSet;
 import impact.ee.tagger.Context;
 
@@ -21,7 +20,7 @@ public class NEClassifier
     
     public NEClassifier()
     {
-    	
+    	features = new FeatureSet();
     }
     
     public void train(ChunkedCorpus corpus)
@@ -39,18 +38,5 @@ public class NEClassifier
     	}
     	features.finalize();
     	classifier.train(d);
-    }
-    
-    public Feature promoteTaggerFeature(Feature f)
-    {
-    	Feature f1 = new Feature()
-    	{
-    		public String getValue(Object o)
-    		{
-    			return getValue(((Chunk) o).context);
-    		}
-    	};
-    	f1.name = "chunked_" + f.name;
-    	return f1;
     }
 }
