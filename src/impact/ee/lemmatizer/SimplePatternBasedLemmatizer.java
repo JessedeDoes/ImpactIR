@@ -82,7 +82,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
-		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.6);
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.1);
 		train(l,heldout);
 		for (WordForm wf: heldout)
 		{
@@ -101,14 +101,33 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		} else if (!wf.wordform.equals(wf.lemma))
 		{
 			String guessedLemma = r.pattern.apply(wf.wordform);
-			System.err.println("First choice:" + wf + " /  " +  answer +  " / " + r.PoS + " /  " + guessedLemma);
-			if (!guessedLemma.equals(wf.lemma))
+			if (guessedLemma != null)
+				System.err.println("First choice:" + wf + " /  " +  answer +  " / " + r.PoS + " /  " + guessedLemma);
+			if (guessedLemma == null || !guessedLemma.equals(wf.lemma))
 			{
 				boolean foundPoSMatch = false;
 				boolean foundTagMatch = false;
 				for (Outcome o: outcomes.outcomes)
 				{
-					
+					Rule r1 =  this.ruleID2Rule.get(o.label);
+					if (r1 == null)
+					{
+						System.err.println("Vreemd hoor!!!" + o.label);
+						continue;
+					}
+					String guess = r1.pattern.apply(wf.wordform);
+					if (guess == null)
+						continue;
+					if (r1.PoS.equals(wf.tag) && !foundTagMatch)
+					{
+						foundTagMatch = true;
+						System.err.println("guess with complete tag information:"  + guess);
+					} 
+					if (r1.PoS.startsWith(wf.lemmaPoS) && !foundPoSMatch)
+					{
+						foundPoSMatch = true;
+						System.err.println("guess with main PoS information:"  + guess + " / " + r1.PoS);
+					}
 				}
 			}
 		}

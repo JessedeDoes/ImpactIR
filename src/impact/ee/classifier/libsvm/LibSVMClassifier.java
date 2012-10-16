@@ -98,7 +98,8 @@ public class LibSVMClassifier implements Classifier, Serializable
 		Distribution d = new Distribution();
 		for (int j=0; j < nr_class; j++)
 		{
-			String label = this.inverseLabelMap.get(j);
+			double J = j;
+			String label = this.inverseLabelMap.get(J);
 			d.addOutcome(label, prob_estimates[j]);
 		}
 		d.sort();
@@ -276,6 +277,9 @@ public class LibSVMClassifier implements Classifier, Serializable
 		//k = 0;
 		m = instance.stochasticValues.size();
 		for (int j=0; j < m; j++)
+			
+			
+			
 		{
 			Distribution d = instance.stochasticValues.get(j);
 			if (d != null)
