@@ -25,19 +25,19 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	Classifier classifierWithPoS = new LibSVMClassifier();
 	Classifier classifierWithoutPoS = new LibSVMClassifier();
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
 	private Map<String,ArrayList<WordForm>> lemmataSeenInTrainingData = new HashMap<String,ArrayList<WordForm>>();
-	
+
 	private ArrayList<Rule> allRules;
 	int ruleId = 1;
-	
+
 	private transient PatternFinder patternFinder = new SimplePatternFinder();
-	
+
 	FeatureSet features = new SimpleFeatureSet();
 
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
@@ -68,7 +68,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		{
 			e.printStackTrace();
 		}
-		allRules = new ArrayList<Rule>(rules.keySet());
+		// allRules = new ArrayList<Rule>(rules.keySet());
 		// Collections.sort(allRules, new RuleFrequencyComparator());
 		try
 		{
@@ -87,28 +87,36 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		{
 			String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
 			Rule r = this.ruleID2Rule.get(answer);
-			String guessedLemma = r.pattern.apply(wf.wordform);
-			System.err.println(wf + " /  " +  answer +  " /  " + guessedLemma);
+			if (r == null)
+			{
+				System.err.println("HUH?" + answer);
+			} else if (!wf.wordform.equals(wf.lemma))
+			{
+				String guessedLemma = r.pattern.apply(wf.wordform);
+				System.err.println(wf + " /  " +  answer +  " / " + r.PoS + " /  " + guessedLemma);
+			}
 		}
 	}
-	
+
 	private Rule findRule(WordForm w, Pattern p) 
 	{
 		Rule rule = new Rule(p, w.tag, w.lemmaPoS);
-		{
-			Rule theRule = rules.get(rule);
+		Rule theRule = rules.get(rule);
 
-			if (theRule == null)
-			{
-				rule.id = ruleId++;
-				rules.put(rule,rule);
-				ruleID2Rule.put("rule." + rule.id, rule);
-				theRule=rule;
-			}
-			theRule.count++;
-			theRule.examples.add(new Example(w.wordform,w.lemma));
+		if (theRule == null)
+		{
+			rule.id = ruleId++;
+			rules.put(rule,rule);
+			ruleID2Rule.put("rule." + rule.id, rule);
+			theRule=rule;
+		} else
+		{
+
 		}
-		return rule;
+		theRule.count++;
+		theRule.examples.add(new Example(w.wordform,w.lemma));
+
+		return theRule;
 	}
 
 	private Pattern findPattern(WordForm w) 
@@ -123,7 +131,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		}
 		return p;
 	}
-	
+
 	public void saveToFile(String fileName)
 	{
 		try 
@@ -135,12 +143,12 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static SimplePatternBasedLemmatizer loadFromFile(String fileName)
 	{
 		return new Serialize<SimplePatternBasedLemmatizer>().loadFromFile(fileName);
 	}
-	
+
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
