@@ -5,6 +5,7 @@ import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.util.Serialize;
 import impact.ee.lemmatizer.reverse.*;
+import impact.ee.classifier.Distribution.Outcome;
 import java.io.IOException;
 import java.util.*;
 
@@ -81,19 +82,34 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
-		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.3);
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.6);
 		train(l,heldout);
 		for (WordForm wf: heldout)
 		{
-			String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
-			Rule r = this.ruleID2Rule.get(answer);
-			if (r == null)
+			testWordform(wf);
+		}
+	}
+
+	private void testWordform(WordForm wf) 
+	{
+		String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
+		Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
+		Rule r = this.ruleID2Rule.get(answer);
+		if (r == null)
+		{
+			System.err.println("HUH?" + answer);
+		} else if (!wf.wordform.equals(wf.lemma))
+		{
+			String guessedLemma = r.pattern.apply(wf.wordform);
+			System.err.println("First choice:" + wf + " /  " +  answer +  " / " + r.PoS + " /  " + guessedLemma);
+			if (!guessedLemma.equals(wf.lemma))
 			{
-				System.err.println("HUH?" + answer);
-			} else if (!wf.wordform.equals(wf.lemma))
-			{
-				String guessedLemma = r.pattern.apply(wf.wordform);
-				System.err.println(wf + " /  " +  answer +  " / " + r.PoS + " /  " + guessedLemma);
+				boolean foundPoSMatch = false;
+				boolean foundTagMatch = false;
+				for (Outcome o: outcomes.outcomes)
+				{
+					
+				}
 			}
 		}
 	}
