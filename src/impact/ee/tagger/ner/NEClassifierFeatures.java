@@ -5,7 +5,6 @@ import impact.ee.classifier.FeatureSet;
 
 public class NEClassifierFeatures 
 {
-
 	public Feature promoteTaggerFeature(Feature f)
 	{
 		Feature f1 = new Feature()
@@ -19,32 +18,16 @@ public class NEClassifierFeatures
 		return f1;
 	}
 	
-	public static class WordInFeature extends Feature
-	{
-		int k;
-		public WordInFeature(int k)
-		{
-			this.k = k;
-			this.name = "wordIn" + k;
-		}
-		
-		public String getValue(Object o)
-		{
-			Chunk c = (Chunk) o;
-			if (k < c.length)
-			{
-				return c.context.getAttributeAt("word", k);
-			}
-			return null;
-		}
-	}
-	
-	
-	public void addBasicFeatures(FeatureSet f)
+	public static void addBasicFeatures(FeatureSet f)
 	{
 		for (int i=0; i < 10; i++)
 		{
 			f.addFeature(new WordInFeature(i));
+		}
+		for (int i=0; i < 2; i++)
+		{
+			f.addFeature(new WordBeforeFeature(i));
+			f.addFeature(new WordAfterFeature(i));
 		}
 	}
 }

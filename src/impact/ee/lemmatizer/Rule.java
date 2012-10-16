@@ -1,6 +1,11 @@
 package impact.ee.lemmatizer;
 import java.util.ArrayList;
 
+/**
+ * The main difference between Rule and Pattern is that Rule includes PoS information
+ * @author Gebruiker
+ *
+ */
 public class Rule
 {
 	public Pattern pattern;

@@ -23,7 +23,7 @@ public class Serialize<T>
 			out.writeObject(o);
 			out.close();
 			fileOut.close();
-		}catch(IOException i)
+		} catch(IOException i)
 		{
 			i.printStackTrace();
 		}

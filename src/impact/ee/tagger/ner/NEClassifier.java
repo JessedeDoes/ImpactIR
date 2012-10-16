@@ -17,10 +17,10 @@ public class NEClassifier
     Classifier classifier = null;
     FeatureSet features = null;
     
-    
     public NEClassifier()
     {
     	features = new FeatureSet();
+    	NEClassifierFeatures.addBasicFeatures(features);
     }
     
     public void train(ChunkedCorpus corpus)
@@ -30,7 +30,7 @@ public class NEClassifier
 		
     	for (Context context: corpus.enumerate())
     	{
-    		Chunk chunk = corpus.getCurrentChunk();
+    		Chunk chunk = corpus.getCurrentChunk(); 
     		if (chunk != null)
     		{
 				d.addInstance(chunk, chunk.label);
@@ -39,4 +39,22 @@ public class NEClassifier
     	features.finalize();
     	classifier.train(d);
     }
+    
+    public void test(ChunkedCorpus testCorpus)
+	{
+		int nItems=0; int nErrors=0;
+		int nPoSErrors=0;
+		int nUnknownItems=0; int nUnknownErrors=0;
+		long startTime =  System.currentTimeMillis();
+		
+		for (Context c: testCorpus.enumerate())
+		{
+			Chunk chunk = testCorpus.getCurrentChunk(); 
+    		if (chunk != null)
+    		{
+    			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+    			String outcome = classifier.classifyInstance(instance);
+    		}
+		}
+	}
 }
