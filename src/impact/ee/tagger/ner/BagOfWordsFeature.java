@@ -32,7 +32,8 @@ public class BagOfWordsFeature extends ExistentialFeature
 				//System.err.println(value);
 				d.incrementCount(value);
 			}
-		}		
+		}	
+		d.computeProbabilities();
 		//System.err.println(d);
 		return d;
 	}
