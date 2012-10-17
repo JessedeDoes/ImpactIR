@@ -12,8 +12,7 @@ import impact.ee.util.Options;
 
 /**
  * This class just implements the bare skeleton for a NE classifier.<br>
- * In end, we hope to use some non-local features classification,
- * The relevance of which is less obvious in segmentation...
+ * In end, we hope to use some non-local features classification,  which are probably less relevant in segmentation...
  * 
  * @author Gebruiker
  *
