@@ -15,6 +15,6 @@ public class WordAfterFeature extends Feature
 	public String getValue(Object o)
 	{
 		Chunk c = (Chunk) o;
-		return c.context.getAttributeAt("word", k + c.length);
+		return c.context.getAttributeAt("word", k -1 + c.length);
 	}
 }

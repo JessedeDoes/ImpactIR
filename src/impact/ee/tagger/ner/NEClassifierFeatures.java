@@ -24,9 +24,12 @@ public class NEClassifierFeatures
 		{
 			f.addFeature(new WordInFeature(i));
 		}
-		for (int i=0; i < 2; i++)
+		for (int i=-1; i >= -2; i--)
 		{
 			f.addFeature(new WordBeforeFeature(i));
+		}
+		for (int i= 1; i <=2; i++ )
+		{
 			f.addFeature(new WordAfterFeature(i));
 		}
 	}
