@@ -58,20 +58,7 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 	/**
 	 * this should return something when the corpus is positioned at the start of the entity
 	 */
-	@Override
-	public Chunk getCurrentChunk() 
-	{
-		if (lookahead == null)
-		{
-			lookahead = next();
-			hasLookahead = true;
-		}
-		if (lookahead != null)
-		{
-			return this.getChunkFromContext(lookahead);
-		}
-		return null;
-	}
+
 	
 	@Override
 	public boolean hasNext() 
@@ -82,17 +69,7 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 	@Override
 	public Context next() 
 	{
-		// TODO Auto-generated method stub
-		if (hasLookahead)
-		{
-			hasLookahead = false;
-			return lookahead;
-		}
-		if (!bio.hasNext())
-			return null;
-		lookahead = bio.next();
-		hasLookahead = true;
-		return lookahead;
+		return bio.next();
 	}
 	@Override
 	public void remove() 

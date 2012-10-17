@@ -5,6 +5,8 @@ import impact.ee.tagger.Corpus;
 
 public interface ChunkedCorpus extends Corpus
 {
+	/*
 	public Chunk getCurrentChunk();
+	*/
 	public Chunk getChunkFromContext(Context context);
 }
