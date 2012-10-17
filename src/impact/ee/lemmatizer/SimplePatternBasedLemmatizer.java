@@ -1,6 +1,8 @@
 package impact.ee.lemmatizer;
 import impact.ee.classifier.*;
 import impact.ee.classifier.libsvm.LibSVMClassifier;
+import impact.ee.classifier.svmlight.SVMLightClassifier;
+import impact.ee.classifier.svmlight.SVMLightClassifier.TrainingMethod;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.util.Serialize;
@@ -27,8 +29,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Classifier classifierWithPoS = new LibSVMClassifier();
-	Classifier classifierWithoutPoS = new LibSVMClassifier();
+	Classifier classifierWithPoS = new SVMLightClassifier();
+	Classifier classifierWithoutPoS = new SVMLightClassifier();
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
@@ -41,6 +43,14 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 
 	FeatureSet features = new SimpleFeatureSet();
 
+	public SimplePatternBasedLemmatizer()
+	{
+		if (classifierWithoutPoS.getClass().getName().contains("SVMLight"))
+		{
+			((SVMLightClassifier) classifierWithoutPoS).trainingMethod = TrainingMethod.ONE_VS_ALL_EXTERNAL;
+		}
+	}
+	
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		Dataset trainingSet = new Dataset("lemmatizer");

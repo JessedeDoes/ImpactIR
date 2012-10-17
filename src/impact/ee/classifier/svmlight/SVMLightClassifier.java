@@ -145,11 +145,8 @@ public class SVMLightClassifier implements Classifier, Serializable
 	
 	public Distribution getDistribution(Instance instance)
 	{
-		if (trainingMethod == TrainingMethod.ALL_VS_ALL)
-		{
-			return null;
-			
-		}
+		if (trainingMethod == TrainingMethod.ALL_VS_ALL) return null;
+		
 		LabeledFeatureVector lfv = makeLabeledFeatureVector(instance,false);
 		lfv.setLabel(-666);
 		Distribution distribution = new Distribution();
