@@ -16,6 +16,11 @@ public class Distribution implements java.io.Serializable
 	double N=0;
 	boolean existential = false;
 
+	public void setExistential(boolean b)
+	{
+		existential = b;
+	}
+	
 	public class Outcome implements java.io.Serializable
 	{
 		/**

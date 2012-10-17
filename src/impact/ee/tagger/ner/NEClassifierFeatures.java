@@ -2,6 +2,7 @@ package impact.ee.tagger.ner;
 
 import impact.ee.classifier.Feature;
 import impact.ee.classifier.FeatureSet;
+import impact.ee.tagger.features.WordShapeClassifier;
 
 public class NEClassifierFeatures 
 {
@@ -32,5 +33,7 @@ public class NEClassifierFeatures
 		{
 			f.addFeature(new WordAfterFeature(i));
 		}
+		f.addStochasticFeature(new BagOfWordsFeature(2));
+		f.addFeature(new ChunkShapeFeature(WordShapeClassifier.WORDSHAPECHRIS1));
 	}
 }

@@ -202,7 +202,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 
 		TrainingParameters tp = new TrainingParameters();
 		tp.getKernelParameters().kernel_type = KernelParam.LINEAR; 
-		// tp.getLearningParameters().svm_c = 100.0; // ? is this the C parameter
+		tp.getLearningParameters().svm_c = 1.0; // ? is this the C parameter ?
 		
 		// Switch on some debugging output
 		tp.getLearningParameters().verbosity = 0; // kan beter uit om gezever te vermijden?
