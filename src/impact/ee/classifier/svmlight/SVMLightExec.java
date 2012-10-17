@@ -35,7 +35,7 @@ public class SVMLightExec
 	{
 		try 
 		{
-			ProcessBuilder pb  = new ProcessBuilder(learner, "-z", "-c",  (parameterC + ""), "m", 
+			ProcessBuilder pb  = new ProcessBuilder(learner, "-z", "m", "-c",  (parameterC + ""),
 					trainingFile.getCanonicalPath(), modelDirectory.getCanonicalPath());
 
 			Map<String, String> env = pb.environment();
