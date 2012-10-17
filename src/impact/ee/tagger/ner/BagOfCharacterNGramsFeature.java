@@ -24,7 +24,7 @@ public class BagOfCharacterNGramsFeature extends ExistentialFeature
 		Distribution d = new Distribution();
 		d.setExistential(true);
 		
-		String s = " " + c.getText() + " "; // better than just c.getText()
+		String s = c.getText();
 		for (int i=0; i < s.length(); i++)
 		{
 			for (int j=i+minLength; j < s.length() && j-i <= maxLength; j++)
