@@ -93,7 +93,7 @@ public class NEClassifier implements java.io.Serializable
 		public static void main(String[] args)
 		{
 			NEClassifier nec = new Serialize<NEClassifier>().loadFromFile(args[0]);
-			BIOCorpus bio = new BIOCorpus(args[0]);
+			BIOCorpus bio = new BIOCorpus(args[1]);
 			nec.test(bio);
 		}
 	}
