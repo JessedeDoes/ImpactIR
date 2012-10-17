@@ -3,8 +3,8 @@ package impact.ee.tagger.ner;
 import impact.ee.classifier.Distribution;
 import impact.ee.classifier.ExistentialFeature;
 import impact.ee.util.StringUtils;
-
 import java.util.*;
+
 public class BagOfWordsFeature extends ExistentialFeature 
 {
 	private static final long serialVersionUID = 1L;
@@ -24,13 +24,13 @@ public class BagOfWordsFeature extends ExistentialFeature
 		for (int i=0; i < c.length; i++)
 		{
 			ArrayList<String> w = new ArrayList<String>();
-			for (int j=i; j < c.length && j-i < k; j++)
+			for (int j=i; j-i < c.length && j-i < k; j++)
 			{
 				w.add(c.context.getAttributeAt("word", j));
 				d.incrementCount(StringUtils.join(w, "_"));
 			}
-		}
-		
+		}		
+		System.err.println(d);
 		return d;
 	}
 }
