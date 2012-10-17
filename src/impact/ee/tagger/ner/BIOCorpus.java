@@ -29,14 +29,38 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 		// TODO Auto-generated method stub
 		return this;
 	}
+	
+	public Chunk getChunkFromContext(Context context)
+	{
+		String t0 = context.getAttributeAt("tag", 0);
+		if (t0.startsWith("B-"))
+		{
+			String[] parts = t0.split("-");
+			Chunk c = new Chunk();
+			c.length = 1;
+			c.label = parts[1];
+			c.context = context;
+			for (int i=1; i < Chunk.MAX_LENGTH; i++) // this is rather awful.
+			{
+				String t = context.getAttributeAt("tag", i);
+				if (t.startsWith("I-"))
+				{
+					c.length++;
+				} else
+				{
+					break;
+				}
+			}
+			return c;
+		}
+		return null;
+	}
 	/**
 	 * this should return something when the corpus is positioned at the start of the entity
 	 */
 	@Override
 	public Chunk getCurrentChunk() 
 	{
-		// TODO Auto-generated method stub
-		//if (lookahead.)
 		if (lookahead == null)
 		{
 			lookahead = next();
@@ -44,30 +68,11 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 		}
 		if (lookahead != null)
 		{
-			String t0 = lookahead.getAttributeAt("tag", 0);
-			if (t0.startsWith("B-"))
-			{
-				String[] parts = t0.split("-");
-				Chunk c = new Chunk();
-				c.length=1;
-				c.label = parts[1];
-				c.context = lookahead;
-				for (int i=1; i < Chunk.MAX_LENGTH; i++) // this is rather awful.
-				{
-					String t = lookahead.getAttributeAt("tag", i);
-					if (t.startsWith("I-"))
-					{
-						c.length++;
-					} else
-					{
-						break;
-					}
-				}
-				return c;
-			}
+			return this.getChunkFromContext(lookahead);
 		}
 		return null;
 	}
+	
 	@Override
 	public boolean hasNext() 
 	{

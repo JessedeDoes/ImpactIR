@@ -40,7 +40,7 @@ public class NEClassifier implements java.io.Serializable
 
 		for (Context context: corpus.enumerate())
 		{
-			Chunk chunk = corpus.getCurrentChunk(); 
+			Chunk chunk = corpus.getChunkFromContext(context); 
 			if (chunk != null)
 			{
 				d.addInstance(chunk, chunk.label);
@@ -57,12 +57,13 @@ public class NEClassifier implements java.io.Serializable
 
 		for (Context c: testCorpus.enumerate())
 		{
-			Chunk chunk = testCorpus.getCurrentChunk(); // volgens mij loopt dit niet synchroon, wel?
+			Chunk chunk = testCorpus.getChunkFromContext(c); // volgens mij loopt dit niet synchroon, wel?
 			if (chunk != null)
 			{
 				impact.ee.classifier.Instance instance = features.makeTestInstance(chunk);
-				System.err.println(chunk + " features: " + features.itemToString(instance));
+				
 				String outcome = classifier.classifyInstance(instance);
+				System.err.println(outcome + " " + chunk + " features: " + features.itemToString(instance));
 				if (!outcome.equalsIgnoreCase(chunk.label))
 					nErrors++;
 				nItems++;
