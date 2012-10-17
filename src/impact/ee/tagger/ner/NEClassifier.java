@@ -60,7 +60,7 @@ public class NEClassifier implements java.io.Serializable
 			Chunk chunk = testCorpus.getCurrentChunk(); 
 			if (chunk != null)
 			{
-				impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+				impact.ee.classifier.Instance instance = features.makeTestInstance(chunk);
 				String outcome = classifier.classifyInstance(instance);
 				if (!outcome.equalsIgnoreCase(chunk.label))
 					nErrors++;
