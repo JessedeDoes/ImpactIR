@@ -58,6 +58,9 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 					if (t.startsWith("I-"))
 					{
 						c.length++;
+					} else
+					{
+						break;
 					}
 				}
 				return c;

@@ -10,6 +10,7 @@ public class Chunk
 	int length=0;
 	String label="";
 	Context context = null;
+	List<String> tags = new ArrayList<String>();
 	
 	public String toString()
 	{
