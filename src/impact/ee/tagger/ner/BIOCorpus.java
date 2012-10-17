@@ -51,6 +51,7 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 				Chunk c = new Chunk();
 				c.length=1;
 				c.label = parts[1];
+				c.context = lookahead;
 				for (int i=1; i < Chunk.MAX_LENGTH; i++) // this is rather awful.
 				{
 					String t = lookahead.getAttributeAt("tag", i);
