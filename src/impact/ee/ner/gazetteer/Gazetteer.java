@@ -15,10 +15,10 @@ import java.io.*;
 
 public class Gazetteer 
 {
-	Map<String, Integer> stringTable = new HashMap<String, Integer>();
+	private Map<String, Integer> stringTable = new HashMap<String, Integer>();
 	
-	impact.ee.trie.Trie trie = new Trie();
-	String fileName = null;
+	private impact.ee.trie.Trie trie = new Trie();
+	private String fileName = null;
 	
 	public Gazetteer(String fileName)
 	{
@@ -52,6 +52,7 @@ public class Gazetteer
 	public void insert(String line)
 	{
 		System.err.println(line);
+		word2Code(line);
 		String[] words = line.trim().split("\\s+");
 		insert(words);
 	}
@@ -66,7 +67,7 @@ public class Gazetteer
 		//trie.root.putWord(codes, null);
 	}
 	
-	public int word2Code(String w)
+	private int word2Code(String w)
 	{
 		Integer i = stringTable.get(w);
 		if (i == null)
@@ -77,7 +78,7 @@ public class Gazetteer
 		return i;
 	}
 	
-	public TrieNode delta(TrieNode n, String w)
+	private TrieNode delta(TrieNode n, String w)
 	{
 		Integer c = stringTable.get(w);
 		if (c != null)
@@ -87,7 +88,7 @@ public class Gazetteer
 		return null;
 	}
 	
-	public Set<TrieNode> delta(Set<TrieNode> in, String w)
+	private Set<TrieNode> delta(Set<TrieNode> in, String w)
 	{
 		Integer c = stringTable.get(w);
 		Set<TrieNode> out = new HashSet<TrieNode>();
