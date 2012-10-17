@@ -57,7 +57,7 @@ public class NEClassifier implements java.io.Serializable
 
 		for (Context c: testCorpus.enumerate())
 		{
-			Chunk chunk = testCorpus.getCurrentChunk(); 
+			Chunk chunk = testCorpus.getCurrentChunk(); // volgens mij loopt dit niet synchroon, wel?
 			if (chunk != null)
 			{
 				impact.ee.classifier.Instance instance = features.makeTestInstance(chunk);
