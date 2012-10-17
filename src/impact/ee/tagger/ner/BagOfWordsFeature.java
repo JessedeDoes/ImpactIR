@@ -12,7 +12,7 @@ public class BagOfWordsFeature extends ExistentialFeature
 	
 	public BagOfWordsFeature(int k)
 	{
-		this.k = 0;
+		this.k = k;
 		this.name = "BagOfWordsFeature" + k;
 	}
 	
@@ -21,18 +21,19 @@ public class BagOfWordsFeature extends ExistentialFeature
 		Chunk c = (Chunk) o;
 		Distribution d = new Distribution();
 		d.setExistential(true);
+		//System.err.println(c);
 		for (int i=0; i < c.length; i++)
 		{
 			ArrayList<String> w = new ArrayList<String>();
-			for (int j=i; j-i < c.length && j-i < k; j++)
+			for (int j=i; j < c.length && j-i < k; j++)
 			{
 				w.add(c.context.getAttributeAt("word", j));
 				String value = StringUtils.join(w, "_");
-				System.err.println(value);
+				//System.err.println(value);
 				d.incrementCount(value);
 			}
 		}		
-		System.err.println(d);
+		//System.err.println(d);
 		return d;
 	}
 }
