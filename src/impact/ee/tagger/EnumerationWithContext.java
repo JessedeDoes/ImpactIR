@@ -6,9 +6,9 @@ import java.util.Iterator;
 
 class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-attributes type
 {
-	int windowSize= 21;
-	int focus = 10;
-	int capacity = 1000;
+	int windowSize= 41;
+	int focus = 20;
+	int capacity = 10000;
 	boolean first = true;
 	int offset= -1 * (windowSize - focus); // where the current window starts in the buffer
 	int overdue;
@@ -111,7 +111,8 @@ class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-att
 	}
 
 	@Override
-	public boolean hasNext() {
+	public boolean hasNext() 
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -43,7 +43,7 @@ public class BasicNERTagger implements Serializable
 	Set<String> knownWords = new HashSet<String>();
 	double proportionOfTrainingToUse = 1;
 	
-	String[] attributeNames = {"word", "tag"};
+	public static String[] attributeNames = {"word", "tag"};
 	
 	public void setClassifier(String className)
 	{
