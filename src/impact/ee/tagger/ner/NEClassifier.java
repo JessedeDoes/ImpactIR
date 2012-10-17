@@ -19,9 +19,6 @@ import impact.ee.util.Options;
  */
 public class NEClassifier implements java.io.Serializable 
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	Classifier classifier = null;
 	FeatureSet features = null;
@@ -64,13 +61,11 @@ public class NEClassifier implements java.io.Serializable
 				
 				String outcome = classifier.classifyInstance(instance);
 				System.err.println(outcome + " " + chunk + " features: " + features.itemToString(instance));
-				if (!outcome.equalsIgnoreCase(chunk.label))
-					nErrors++;
+				if (!outcome.equalsIgnoreCase(chunk.label)) nErrors++;
 				nItems++;
 			}
 		}
-		System.err.println("nItems: " + nItems + 
-				" errors: "  + nErrors / (double) nItems);
+		System.err.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
 	}
 
 	public static class Trainer

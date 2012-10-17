@@ -263,8 +263,8 @@ public class BasicNERTagger implements Serializable
 		}
 		System.err.println("nItems: " + nItems + 
 				" errors: "  + nErrors / (double) nItems);
-		//System.err.println("n unknown tems: " + nUnknownItems + 
-			//	" errors: "  + nUnknownErrors / (double) nUnknownItems);
+		// System.err.println("n unknown tems: " + nUnknownItems + 
+		//	" errors: "  + nUnknownErrors / (double) nUnknownItems);
 		
 		long endTime = System.currentTimeMillis();
 		long interval = endTime - startTime;

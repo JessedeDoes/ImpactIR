@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 
 /**
+ * <i>This file copied from Stanford NER! TODO: adapt for Dutch!</i>
+ * <br>
+ * 
  * Provides static methods which
  * map any String to another String indicative of its "word shape" -- e.g.,
  * whether capitalized, numeric, etc.  Different implementations may
