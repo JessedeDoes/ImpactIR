@@ -193,7 +193,7 @@ public class Alignment
 	 * @param t
 	 * @param x
 	 * @param y
-	 * @param k number of shortest paths to construct
+	 * @param maxLength number of shortest paths to construct
 	 */
 	
 	public List<Position[]> getCondensedPathList()

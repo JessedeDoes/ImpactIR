@@ -34,6 +34,7 @@ public class NEClassifierFeatures
 			f.addFeature(new WordAfterFeature(i));
 		}
 		f.addStochasticFeature(new BagOfWordsFeature(2));
+		f.addStochasticFeature(new BagOfCharacterNGramsFeature(3,5));
 		f.addFeature(new ChunkShapeFeature(WordShapeClassifier.WORDSHAPECHRIS1));
 	}
 }
