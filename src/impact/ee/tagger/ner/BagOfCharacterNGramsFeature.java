@@ -24,17 +24,17 @@ public class BagOfCharacterNGramsFeature extends ExistentialFeature
 		Distribution d = new Distribution();
 		d.setExistential(true);
 		
-		String s = c.getText();
+		String s = " " + c.getText() + " "; // better than just c.getText()
 		for (int i=0; i < s.length(); i++)
 		{
-			for (int j=i+minLength; j < s.length() && j-i < maxLength; j++)
+			for (int j=i+minLength; j < s.length() && j-i <= maxLength; j++)
 			{
 				String value = s.substring(i,j);
 				d.incrementCount(value);
 			}
 		}	
 		d.computeProbabilities();
-		System.err.println(c + " " + d);
+		// System.err.println(c + " " + d);
 		return d;
 	}
 }
