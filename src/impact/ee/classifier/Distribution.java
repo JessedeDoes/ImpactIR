@@ -14,6 +14,7 @@ public class Distribution implements java.io.Serializable
 	public ArrayList<Outcome> outcomes = new ArrayList<Outcome>();
 	private java.util.HashMap<String,Outcome> outcomeMap = new HashMap<String, Outcome>();
 	double N=0;
+	boolean existential = false;
 
 	public class Outcome implements java.io.Serializable
 	{
@@ -102,7 +103,7 @@ public class Distribution implements java.io.Serializable
 	{
 		for (Outcome i: outcomes)
 		{
-			i.p = i.count / N;
+			i.p = this.existential?(i.count>0?1:0):i.count / N;
 		}
 	}
 

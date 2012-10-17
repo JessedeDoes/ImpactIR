@@ -29,12 +29,13 @@ public class SVMLightExec
 {
 	static String learner = "svm_multilearn";
 	static boolean verbose = true;
+	static double parameterC = 1.0; // 0.0714;
 	
 	public static void trainClassifiers(File trainingFile, File modelDirectory)
 	{
 		try 
 		{
-			ProcessBuilder pb  = new ProcessBuilder(learner, "-z", "m", 
+			ProcessBuilder pb  = new ProcessBuilder(learner, "-z", "-c",  (parameterC + ""), "m", 
 					trainingFile.getCanonicalPath(), modelDirectory.getCanonicalPath());
 
 			Map<String, String> env = pb.environment();

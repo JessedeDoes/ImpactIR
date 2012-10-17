@@ -11,6 +11,8 @@ public class StochasticFeature implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 	public String name;
+	private boolean existential = false;
+	
 	Map<Object,Distribution> 
 		storedValueHash = new HashMap<Object,Distribution>();
 	
@@ -21,6 +23,10 @@ public class StochasticFeature implements Serializable
 		storedValueHash.put(o, d);
 	}
 	
+	public boolean isExistential()
+	{
+		return existential;
+	}
 	public Distribution getValue(Object o)
 	{
 		return null;

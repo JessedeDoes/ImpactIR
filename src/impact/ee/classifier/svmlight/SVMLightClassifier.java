@@ -201,7 +201,9 @@ public class SVMLightClassifier implements Classifier, Serializable
 		Problem p = makeProblem(d);
 
 		TrainingParameters tp = new TrainingParameters();
-		tp.getKernelParameters().kernel_type = KernelParam.LINEAR;
+		tp.getKernelParameters().kernel_type = KernelParam.LINEAR; 
+		// tp.getLearningParameters().svm_c = 100.0; // ? is this the C parameter
+		
 		// Switch on some debugging output
 		tp.getLearningParameters().verbosity = 0; // kan beter uit om gezever te vermijden?
 		SVMLightInterface.SORT_INPUT_VECTORS = true;
