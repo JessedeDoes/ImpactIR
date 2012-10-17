@@ -188,7 +188,7 @@ ancêtre: commonNoun(Number=singular)=ancêtre  (45:[/]-[/] commonNoun commonNou
 		classifiers.callback = this.callback;
 		classifiers.classifyLemma(w.lemma,w. lemmaPoS);
 	}
-	
+
 	public void expandWordForm(WordForm w)
 	{
 		classifiers.callback = this.callback;

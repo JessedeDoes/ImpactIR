@@ -11,7 +11,7 @@ public interface ParadigmExpander
 {
 	public void setCallback(FoundFormHandler callback);
 	public void expandWordForm(WordForm w);
-        public void expandLemmaList(String filename);
+	public void expandLemmaList(String filename);
 	public void findInflectionPatterns(InMemoryLexicon all, Set<WordForm> heldOut);
-        public void findInflectionPatterns(String fileName);
+	public void findInflectionPatterns(String fileName);
 }
