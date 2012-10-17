@@ -27,7 +27,9 @@ public class BagOfWordsFeature extends ExistentialFeature
 			for (int j=i; j-i < c.length && j-i < k; j++)
 			{
 				w.add(c.context.getAttributeAt("word", j));
-				d.incrementCount(StringUtils.join(w, "_"));
+				String value = StringUtils.join(w, "_");
+				System.err.println(value);
+				d.incrementCount(value);
 			}
 		}		
 		System.err.println(d);
