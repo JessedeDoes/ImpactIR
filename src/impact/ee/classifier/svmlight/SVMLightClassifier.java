@@ -143,6 +143,27 @@ public class SVMLightClassifier implements Classifier, Serializable
 		}
 	}
 	
+	public Distribution getDistribution(Instance instance)
+	{
+		if (trainingMethod == TrainingMethod.ALL_VS_ALL)
+		{
+			return null;
+			
+		}
+		LabeledFeatureVector lfv = makeLabeledFeatureVector(instance,false);
+		lfv.setLabel(-666);
+		Distribution distribution = new Distribution();
+		for (String label: modelMap.keySet())
+		{
+			SVMLightModel m = modelMap.get(label);
+			double d = m.classify(lfv);
+			distribution.addOutcome(label, d);
+		}
+		// should be scaled to probabilities...
+		distribution.sort(); 
+		return distribution;
+	}
+	
 	public String classifyOneVsAll(Instance instance) 
 	{
 		// TODO Auto-generated method stub
