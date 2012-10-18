@@ -233,8 +233,11 @@ public class SVMLightClassifier implements Classifier, Serializable
 					name = name.replaceAll("^class", "");
 					name = name.replaceAll("\\.dat\\.model$", "");
 					//name = name.split("\\.")[0];
-					modelMap.put(inverseLabelMap.get(name), model);
-					validateModel(model, p, labelMap.get(name));
+					Double d = Double.parseDouble(name);
+					String className = inverseLabelMap.get(d);
+					System.err.println("class label = " + d  + ", class name = " + className + " file = " + mf.getCanonicalPath());
+					modelMap.put(className, model);
+					validateModel(model, p, d);
 				} catch (ParseException e) 
 				{
 					// TODO Auto-generated catch block
