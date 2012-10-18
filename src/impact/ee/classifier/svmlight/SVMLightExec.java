@@ -94,7 +94,6 @@ public class SVMLightExec
 		p.print(trainingFile.getCanonicalPath());
 		SVMLightExec.trainClassifiers(trainingFile, modelDirectory);
 		File[] modelFiles = modelDirectory.listFiles();
-	
 		return modelFiles;
 	}
 }
