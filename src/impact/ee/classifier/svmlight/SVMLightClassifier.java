@@ -102,7 +102,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 	
 	public enum TrainingMethod { ONE_VS_ALL, ALL_VS_ALL, ONE_VS_ALL_EXTERNAL };
 	
-	public TrainingMethod trainingMethod = TrainingMethod.ONE_VS_ALL_EXTERNAL;
+	public TrainingMethod trainingMethod = TrainingMethod.ONE_VS_ALL;
 	
 	public class Problem
 	{
