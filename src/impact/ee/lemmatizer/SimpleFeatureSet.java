@@ -14,6 +14,9 @@ public class SimpleFeatureSet extends FeatureSet
 			addFeature(new SuffixFeature(i));
 			addFeature(new PrefixFeature(i));
 		}
+		for (int i=2; i < 5; i++)
+			addFeature(new CharAtFeature(-i));
+		
 		addFeature(new WholeStringFeature());
 	} 
 }

@@ -30,7 +30,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	private static final long serialVersionUID = 1L;
 
 	Classifier classifierWithPoS = new SVMLightClassifier();
-	Classifier classifierWithoutPoS = new SVMLightClassifier();
+	Classifier classifierWithoutPoS = new LibSVMClassifier();
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
@@ -57,7 +57,6 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		trainingSet.features = features;
 		try
 		{
-
 			for (WordForm w: lexicon) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
 				if (heldOutSet != null && heldOutSet.contains(w))
@@ -81,6 +80,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		}
 		// allRules = new ArrayList<Rule>(rules.keySet());
 		// Collections.sort(allRules, new RuleFrequencyComparator());
+		features.finalize(); // hm is this still needed?
 		try
 		{
 			classifierWithoutPoS.train(trainingSet);

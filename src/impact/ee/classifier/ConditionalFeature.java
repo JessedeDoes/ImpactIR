@@ -49,6 +49,9 @@ public class ConditionalFeature extends StochasticFeature
 		return storedValueHash.get(v1);
 	}
 	
+	/**
+	 * It might be more useful to prune globally infrequent values...
+	 */
 	public void pruneDistribution(Distribution d)
 	{
 		ArrayList<Outcome> newOutcomes = new ArrayList<Outcome>();

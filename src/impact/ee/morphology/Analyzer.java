@@ -5,18 +5,22 @@ import impact.ee.classifier.libsvm.LibSVMClassifier;
 import impact.ee.classifier.svmlight.SVMLightClassifier;
 import impact.ee.morphology.features.CharacterContextFeature;
 
+import java.io.IOException;
 import java.util.*;
+import impact.ee.util.*;
 
 /**
- * Simpele implementatie van de classificeer-mogelijke-splitsingen aanpak. <br>
+ * Simpele implementatie van de classificeer-mogelijke-splitsingen aanpak. (Van den Bosch, basisidee uiteindelijk teruggaand op de lettergreepsplitser
+ * in TeX) <br>
  * Bedoeling is gebruik in andere modules.<br>
- * Ik denk dat een morfologische analyse misschien beter met CRF zou kunnen (of eventueel SVM-struct, maar hoe scalable is dat?) 
+ * Ik denk dat een morfologische analyse misschien beter nog met CRF zou kunnen (of eventueel SVM-struct, maar hoe scalable is dat?) 
  *
  * @author Gebruiker
  *
  */
-public class Analyzer 
+public class Analyzer implements java.io.Serializable
 {
+	private static final long serialVersionUID = 1L;
 	Classifier classifier = new SVMLightClassifier();
 	FeatureSet features = new FeatureSet();
 	
@@ -44,16 +48,35 @@ public class Analyzer
 	{
 		for (MorphologicalWord w: words)
 		{
-			for (Position p: w.positions)
+			MorphologicalWord w1 = new MorphologicalWord(w.text);
+			for (Position p: w1.positions)
 			{
 				Instance inst = features.makeTestInstance(p);
 				String label = classifier.classifyInstance(inst);
 				p.label = label;
 			}
-			System.err.println(w.toString());
+			System.err.println(w1.toString() + " truth: "  + w.toString());
 		}
 	}
 	
+	public void saveToFile(String fileName)
+	{
+		try 
+		{
+			new Serialize<Analyzer>().saveObject(this, fileName);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	public static Analyzer loadFromFile(String fileName)
+	{
+		return new Serialize<Analyzer>().loadFromFile(fileName);
+	}
+
 	public static void main(String[] args)
 	{
 		CelexFile c0 = new CelexFile();
