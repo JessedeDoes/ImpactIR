@@ -102,7 +102,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 	
 	public enum TrainingMethod { ONE_VS_ALL, ALL_VS_ALL, ONE_VS_ALL_EXTERNAL };
 	
-	public TrainingMethod trainingMethod = TrainingMethod.ONE_VS_ALL;
+	public TrainingMethod trainingMethod = TrainingMethod.ONE_VS_ALL_EXTERNAL;
 	
 	public class Problem
 	{
@@ -118,7 +118,8 @@ public class SVMLightClassifier implements Classifier, Serializable
 				PrintWriter p = new PrintWriter(new FileWriter(filename));
 				for (LabeledFeatureVector v:  problemData)
 				{
-					p.print(inverseLabelMap.get(v.getLabel()) + " ");
+					//p.print(inverseLabelMap.get(v.getLabel()) + " ");
+					p.print(v.getLabel() + " ");
 					for (int i=0; i < v.size(); i++)
 					{
 						p.print(v.getDimAt(i) + ":" + v.getValueAt(i) + " ");
@@ -229,8 +230,9 @@ public class SVMLightClassifier implements Classifier, Serializable
 							.readSVMLightModelFromURL(mf.toURI().toURL());
 					model.compressLinear();
 					String name = mf.getName();
-					name = name.split("\\.")[0];
-					modelMap.put(name, model);
+					name = name.replaceAll("\\.model$", "");
+					//name = name.split("\\.")[0];
+					modelMap.put(inverseLabelMap.get(name), model);
 					validateModel(model, p, labelMap.get(name));
 				} catch (ParseException e) 
 				{
