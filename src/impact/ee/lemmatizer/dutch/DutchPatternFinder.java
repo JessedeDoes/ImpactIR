@@ -17,6 +17,7 @@ public class DutchPatternFinder implements PatternFinder
 	
 	static String consonants = "[bcdfghjklmnpqrstvwxz]";
 	static String vowels = "[aeiouy]";
+	
 	enum RegularStemChange
 	{
 		VOWEL_DOUBLING,
