@@ -14,24 +14,29 @@ public class CharacterContextFeature extends ExistentialFeature
 		this.name = "charcontext";
 	}
 	
+	private int posplus(Position p)
+	{
+		return p.position + 1;
+	}
+	
 	public Distribution getValue(Object o)
 	{
 		Position p = (Position) o;
-		String w = p.baseWord.text;
+		String w = "^" + p.baseWord.text + "$";
 		Distribution d = new Distribution();
 		d.setExistential(true);
 		int N = w.length();
-		for (int l=p.position - minLeft; l <= p.position+maxLeft && l < N; l++)
+		for (int l=posplus(p) - minLeft; l <= posplus(p)+maxLeft && l < N; l++)
 		{
 			if (l >= 0)
 			{
-				for (int r=p.position; r - l <= maxLength && r <= N; r++)
+				for (int r=posplus(p); r - l <= maxLength && r <= N; r++)
 				{
 					if (r != l)
 					{
-						String leftPart = w.substring(l,p.position);
-						String rightPart = w.substring(p.position,r);
-						d.incrementCount(leftPart + "_" + rightPart);
+						String leftPart = w.substring(l, posplus(p));
+						String rightPart = w.substring(posplus(p), r);
+						d.incrementCount(leftPart + "|" + rightPart);
 					}
 				}
 			}

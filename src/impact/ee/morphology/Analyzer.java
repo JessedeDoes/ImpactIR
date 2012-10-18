@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class Analyzer 
 {
-	Classifier classifier = new LibSVMClassifier();
+	Classifier classifier = new SVMLightClassifier();
 	FeatureSet features = new FeatureSet();
 	
 	public Analyzer()
