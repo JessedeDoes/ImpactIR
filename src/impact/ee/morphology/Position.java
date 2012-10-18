@@ -2,14 +2,20 @@ package impact.ee.morphology;
 
 public class Position 
 {
-	transient MorphologicalWord baseWord;
-	String label;
-	int position;
+	public transient MorphologicalWord baseWord;
+	public String label;
+	public int position;
 	public static String dummyLabel = "O";
 	
 	public Position(MorphologicalWord word, int i) 
 	{
 		this.baseWord = word;
 		this.position  = i;
+	}
+	
+	public String toString()
+	{
+		String w = baseWord.text;
+		return w.substring(0,position) + "|" + w.substring(position);
 	}
 }

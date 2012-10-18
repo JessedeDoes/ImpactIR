@@ -46,9 +46,9 @@ public class CelexFile
 			String[] ml = part.split("@");
 			if (ml.length > 1)
 			{
-				String morpheme = parts[0];
+				String morpheme = ml[0];
 				text += morpheme;
-				String label = parts[1];
+				String label = ml[1];
 				for (int i = 0; i < morpheme.length(); i++)
 				{
 					Position p = new Position(w,position + i);
@@ -61,7 +61,7 @@ public class CelexFile
 				position += morpheme.length();
 			}
 		}
-		w.baseWord = text;
+		w.text = text;
 		return w;
 	}
 }

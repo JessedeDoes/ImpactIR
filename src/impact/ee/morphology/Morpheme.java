@@ -1,0 +1,17 @@
+package impact.ee.morphology;
+
+public class Morpheme 
+{
+	MorphologicalWord baseWord;
+	String text="";
+	String label;
+	
+	public Morpheme(MorphologicalWord w)
+	{
+		this.baseWord = w;
+	}
+	public String toString()
+	{
+		return "(" + text + ","  + label + ")";
+	}
+}
