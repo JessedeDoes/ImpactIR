@@ -66,7 +66,7 @@ public class SVMLightExec
 							if (line.contains("examples read"))
 							{
 								System.err.println("deleting combined training file...");
-								// tf.delete();
+								tf.delete();
 							}
 						}
 						brCleanUp.close();

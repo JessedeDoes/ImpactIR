@@ -231,7 +231,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 					model.compressLinear();
 					String name = mf.getName();
 					name = name.replaceAll("^class", "");
-					name = name.replaceAll("\\.model$", "");
+					name = name.replaceAll("\\.dat\\.model$", "");
 					//name = name.split("\\.")[0];
 					modelMap.put(inverseLabelMap.get(name), model);
 					validateModel(model, p, labelMap.get(name));
