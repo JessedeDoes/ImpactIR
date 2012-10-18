@@ -119,7 +119,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 				for (LabeledFeatureVector v:  problemData)
 				{
 					//p.print(inverseLabelMap.get(v.getLabel()) + " ");
-					p.print(v.getLabel() + " ");
+					p.print("class" + v.getLabel() + " ");
 					for (int i=0; i < v.size(); i++)
 					{
 						p.print(v.getDimAt(i) + ":" + v.getValueAt(i) + " ");
@@ -230,6 +230,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 							.readSVMLightModelFromURL(mf.toURI().toURL());
 					model.compressLinear();
 					String name = mf.getName();
+					name = name.replaceAll("^class", "");
 					name = name.replaceAll("\\.model$", "");
 					//name = name.split("\\.")[0];
 					modelMap.put(inverseLabelMap.get(name), model);
