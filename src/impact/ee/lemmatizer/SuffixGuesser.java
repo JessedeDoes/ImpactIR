@@ -71,7 +71,7 @@ public class SuffixGuesser implements Classifier
 
 			d.incrementCount(cls);
 
-
+			//System.err.println(d);
 			Trie.TrieNode nextNode = node.delta(w.charAt(n-1-i));
 			if (nextNode == null) break; else 	node = nextNode;
 		}
@@ -119,7 +119,9 @@ public class SuffixGuesser implements Classifier
 	public String classifyInstance(Instance i)
 	{
 		// TODO Auto-generated method stub
-		return null;
+		String s = i.values.get(0);
+		Distribution d = distributionForString(s);
+		return d.outcomes.get(0).label;
 	}
 
 	//@Override
@@ -230,7 +232,8 @@ public class SuffixGuesser implements Classifier
 		d.features.finalize();
 		for (Instance  i: d.instances)
 		{
-			String s = i.values.get(0); // Vieze truc;
+			String s = i.values.get(0); // Vieze truc: .... 
+			//System.err.println(s);
 			String cls = i.classLabel;
 			addWordToSuffixTrie(s,cls);
 		}

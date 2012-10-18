@@ -21,7 +21,7 @@ import impact.ee.util.*;
 public class Analyzer implements java.io.Serializable
 {
 	private static final long serialVersionUID = 1L;
-	Classifier classifier = new SVMLightClassifier();
+	Classifier classifier = new LibSVMClassifier();
 	FeatureSet features = new FeatureSet();
 	
 	public Analyzer()
@@ -54,6 +54,10 @@ public class Analyzer implements java.io.Serializable
 				Instance inst = features.makeTestInstance(p);
 				String label = classifier.classifyInstance(inst);
 				p.label = label;
+			}
+			if (w1.toString().equals(w.toString()))
+			{
+				System.err.println("VERHIP: " + w1);
 			}
 			System.err.println(w1.toString() + " truth: "  + w.toString());
 		}
