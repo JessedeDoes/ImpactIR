@@ -21,6 +21,9 @@ import java.util.*;
  * </ol>
  * @author Gebruiker
  *
+ *HM... can we use svmstruct for joint lemma/pos guessing.... ????
+ *
+ *Lemmatization suitable for database construction is different...
  */
 
 public class SimplePatternBasedLemmatizer implements java.io.Serializable
