@@ -21,18 +21,23 @@ public class DutchPatternFinder implements PatternFinder
 	 * We should make suffixes dependent on PoS, of course...
 	 */
 	String[] suffixes =
-	{
-		"en", "d", "t", "de", "den", "te", "ten", "s", "'s", "st", "er", "ers", "end", "ende", "enden", 
-		"e", "ste", "sten", "ere", "eren", "ën", "ina", "um", "a", "", "n"
-	};
-	
+		{
+			"en", "d", "t", "de", "den", "te", "ten", "s", "'s", "st", "er", "ers", "end", "ende", "enden", 
+			"e", "ste", "sten", "ere", "eren", "ën", "ina", "um", "a", "", "n"
+		};
+
 	String[] lemmaSuffixes =
-	{
+		{
 			"en", "um", ""	
-	};
-	
+		};
+
+	String[] infixes =
+		{
+			"ge", ""	
+		};
+
 	Set<StemChange> stemChanges = StemChange.getAll();
-	
+
 	@Override
 	public Pattern findPattern(String a, String b) //  a is word form, b is lemma in applications
 	{
@@ -44,13 +49,26 @@ public class DutchPatternFinder implements PatternFinder
 				{
 					String stemA = a.substring(0, a.length() - suffixa.length());
 					String stemB = b.substring(0, b.length() - suffixb.length());
-					for (StemChange change: stemChanges)
+					for (String infix: infixes)
 					{
-						String x = change.transform(stemA);
-						if (x != null && x.equals(stemB))
+						//System.err.println("INFIX" + infix);
+						String stemAWithoutInfix = stemA;
+						if (!infix.equals("") && !stemA.contains(infix))
+							continue;
+						if (!infix.equals("") && stemA.contains(infix))
 						{
-							found = true;
-							//System.err.println(stemA + "-" + suffixa + " -->" + stemB + "-"  + suffixb + " : " + change.type);
+							//System.err.println("HA!" + stemA);
+							stemAWithoutInfix = stemA.replace(infix, ""); // is er een replaceOneTime? gevoltigeerd probleem
+						}
+						//System.err.println(stemAWithoutInfix + " " + stemB);
+						for (StemChange change: stemChanges)
+						{
+							String x = change.transform(stemAWithoutInfix);
+							if (x != null && x.equals(stemB))
+							{
+								found = true;
+								System.err.println(stemAWithoutInfix + "-" + suffixa + " -->" + stemB + "-"  + suffixb + " : " + change.type);
+							}
 						}
 					}
 				}
@@ -62,11 +80,12 @@ public class DutchPatternFinder implements PatternFinder
 		}
 		return found?new SimplePattern():null;
 	}
-	
+
 	public static void main(String[] args)
 	{
 		DutchPatternFinder p = new DutchPatternFinder();
-		p.findPattern("zakken", "zakte");
+		p.findPattern("gevoltigeerd", "voltigeren");
+		System.exit(0);
 		p.findPattern("zaken", "zaakte");
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile("resources/exampledata/type_lemma_pos.tab");
@@ -90,7 +109,7 @@ public class DutchPatternFinder implements PatternFinder
 					explained++;
 				}
 			}
-			
+
 		}
 		System.err.println("Explained: " + explained  + " unexplained: " + unexplained);
 	}
