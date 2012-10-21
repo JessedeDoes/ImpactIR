@@ -1,4 +1,4 @@
-package impact.ee.lemmatizer;
+package impact.ee.lemmatizer.dutch;
 import impact.ee.classifier.*;
 import impact.ee.classifier.libsvm.*;
 import impact.ee.classifier.svmlight.SVMLightClassifier;
@@ -7,7 +7,12 @@ import impact.ee.classifier.weka.*;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.util.Serialize;
-import impact.ee.lemmatizer.dutch.DutchPatternFinder;
+import impact.ee.lemmatizer.Example;
+import impact.ee.lemmatizer.Pattern;
+import impact.ee.lemmatizer.PatternFinder;
+import impact.ee.lemmatizer.Rule;
+import impact.ee.lemmatizer.SimpleFeatureSet;
+import impact.ee.lemmatizer.SuffixGuesser;
 import impact.ee.lemmatizer.reverse.*;
 import impact.ee.classifier.Distribution.Outcome;
 import java.io.IOException;
@@ -25,6 +30,8 @@ import java.util.*;
  *HM... can we use svmstruct for joint lemma/pos guessing.... ????
  *
  *Lemmatization suitable for database construction is different...
+ *disabling smoothing means that we basically get only the first guess in many cases!
+ *(so if PoS guess is wrong (gevarengeld --> gevarengelen etc), we do not see the other options!)
  */
 
 public class SimplePatternBasedLemmatizer implements java.io.Serializable
@@ -90,17 +97,25 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	{
 		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.1);
 		train(l,heldout);
+		TestDutchLemmatizer testResults = new TestDutchLemmatizer();
 		for (WordForm wf: heldout)
 		{
-			testWordform(wf);
+			testWordform(wf, testResults);
 		}
+		System.err.println(testResults);
 	}
 
-	private void testWordform(WordForm wf) 
+	private void testWordform(WordForm wf, TestDutchLemmatizer t) 
 	{
 		//if (!wf.tag.contains("part")) return;
 		String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
 		Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
+		checkResult(wf, answer, outcomes, t);
+	}
+
+	private void checkResult(WordForm wf, String answer, Distribution outcomes, TestDutchLemmatizer t) 
+	{
+		t.nItems++;
 		Rule r = this.ruleID2Rule.get(answer);
 		if (r == null)
 		{
@@ -115,6 +130,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 				return;
 			}
 			boolean isOK = guessedLemma.equalsIgnoreCase(wf.lemma);
+			if (isOK) t.nCorrect++;
 		    System.err.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
 			if (guessedLemma == null || !guessedLemma.equals(wf.lemma))
 			{
@@ -136,11 +152,15 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 					{
 						foundTagMatch = true;
 						System.err.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  r1);
+						if (okNOW)
+							t.nCorrectGivenTag++;
 					} 
 					if (r1.PoS.startsWith(wf.lemmaPoS) && !foundPoSMatch)
 					{
 						foundPoSMatch = true;
 						System.err.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  r1);
+						if (okNOW)
+							t.nCorrectGivenPoS++;
 					}
 				}
 			}

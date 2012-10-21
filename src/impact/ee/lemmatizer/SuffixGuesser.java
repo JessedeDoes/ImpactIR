@@ -33,7 +33,7 @@ public class SuffixGuesser implements Classifier
 	impact.ee.trie.Trie prefixTrie = new Trie();
 	boolean useVarianceForSmoothing = true;
 	Set<String> allClasses = new HashSet<String>();
-	boolean applySmoothing = false;
+	public boolean applySmoothing = false;
 	
 	/**
 	 * The maximum suffix length taken into account.

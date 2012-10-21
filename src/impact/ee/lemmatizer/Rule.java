@@ -10,7 +10,7 @@ public class Rule
 {
 	public Pattern pattern;
 	public String lemmaPoS;
-	String PoS;
+	public String PoS;
 	public int count=0;
 	public int id;
 	public ArrayList<Example> examples = new ArrayList<Example>();

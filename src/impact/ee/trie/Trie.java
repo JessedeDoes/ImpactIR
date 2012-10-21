@@ -208,7 +208,7 @@ public class Trie implements java.io.Serializable
 		public boolean isFinal;
 		public Object data;
 		int code;
-		TrieNode parentNode;
+		transient TrieNode parentNode; // otherwise we get cycles
 		
 		public TrieNode()
 		{
