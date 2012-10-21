@@ -1,6 +1,8 @@
 package impact.ee.lemmatizer.dutch;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -14,6 +16,9 @@ import java.util.Set;
  * denk aan s-merge-in
  * heest bij hees etc...
  * 
+ * 
+ * Let ook op gevallen als {opschorten,opschortten,VRB(mai,ind,impf,1/2/3,pl,trs)} 
+ * waarbij we niet verdubbeling met -en mogen doen, dus eigenlijk moeten we de suffix goed indelen enzo....
  * @author Gebruiker
  *
  */
@@ -21,13 +26,15 @@ public abstract class StemChange
 {
 	public abstract String transform(String s);
 	static Set<StemChange> PossibleStemChanges = new HashSet<StemChange>();
+	static Map<RegularStemChange, StemChange> changeMap = new HashMap<RegularStemChange, StemChange>();
 	RegularStemChange type;
 	
 	
 	public StemChange(RegularStemChange x)
 	{
-		PossibleStemChanges.add(this);
 		this.type = x;
+		PossibleStemChanges.add(this);
+		changeMap.put(type,this);
 	}
 	
 	public boolean appliesToPoS(String PoS) { return true; }
@@ -213,6 +220,14 @@ public abstract class StemChange
 	public static Set<StemChange> getAll()
 	{
 		return StemChange.PossibleStemChanges;
+	}
+	
+	public static StemChange getStemChange(RegularStemChange type)
+	{
+		StemChange r = changeMap.get(type);
+		if (r == null)
+			System.err.println("Type " + type + " not known!");
+		return changeMap.get(type);
 	}
 	
 	public static void main(String[] args)

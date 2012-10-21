@@ -31,9 +31,10 @@ public class SuffixGuesser implements Classifier
 {
 	impact.ee.trie.Trie suffixTrie = new Trie();
 	impact.ee.trie.Trie prefixTrie = new Trie();
-	boolean useVarianceForSmoothing = false;
+	boolean useVarianceForSmoothing = true;
 	Set<String> allClasses = new HashSet<String>();
-
+	boolean applySmoothing = false;
+	
 	/**
 	 * The maximum suffix length taken into account.
 	 * Should be at least equal to the longest suffix or prefix found while extracting patterns!!
@@ -86,7 +87,7 @@ public class SuffixGuesser implements Classifier
 	 * </ul>
 	 */
 
-	public void complete()
+	private void complete()
 	{
 		computeSuffixDistributions();
 		computeThetas();
@@ -136,12 +137,9 @@ public class SuffixGuesser implements Classifier
 		return (Distribution) n.data;
 	}
 
-	public void computeThetas()
+	private void computeThetas()
 	{
-		for (int i=0; i <=  M; i++)
-			theta[i] = 0.3; // arbitrary smoothing choice
-
-		theta[0] = 0.05;  theta[1] = 0.1; theta[3] = 0.2;
+		setInitialSmoothingParameters();
 
 		if (!useVarianceForSmoothing)  return;
 
@@ -158,13 +156,27 @@ public class SuffixGuesser implements Classifier
 		double Pavg =0;
 		for (Distribution.Outcome i: d0.outcomes) Pavg += i.p; Pavg /= s;
 
-				double theta0 = 0;
-				for (Distribution.Outcome i: d0.outcomes) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
+		double theta0 = 0;
+		for (Distribution.Outcome i: d0.outcomes) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
 
-						System.err.println("theta0 =  " + theta0);
-						//System.exit(0);
-						for (int i=0; i <=  M; i++)
-							theta[i] = theta0;
+		System.err.println("theta0 =  " + theta0);
+		//System.exit(0);
+		for (int i=0; i <=  M; i++)
+			theta[i] = theta0;
+	}
+
+	private void setInitialSmoothingParameters() 
+	{
+		if (!applySmoothing)
+		{
+			for (int i=0; i <=  M; i++)
+				theta[i] = 0.0;
+			return;
+		}
+		for (int i=0; i <=  M; i++)
+			theta[i] = 0.3; // arbitrary smoothing choice
+
+		theta[0] = 0.05;  theta[1] = 0.1; theta[3] = 0.2;
 	}
 
 	/**
@@ -196,9 +208,16 @@ public class SuffixGuesser implements Classifier
 			path[i+1] = path[i].delta(c);
 			if (path[i+1] == null) break;
 		}
+		
 		//System.err.println(s + " match suffix length:  " + i);
 		Distribution d = zeroDistribution;
-		d.mergeHigherOrderDistribution(observedDistributionAtNode(path[0]), 0.0);
+		if (applySmoothing)
+		{
+			d.mergeHigherOrderDistribution(observedDistributionAtNode(path[0]), 0.0);
+		} else
+		{
+			d = observedDistributionAtNode(path[0]);
+		}
 		for (int j=1; j  < M && path[j] != null;  j++)
 		{
 			Distribution dnext = observedDistributionAtNode(path[j]);
@@ -207,7 +226,15 @@ public class SuffixGuesser implements Classifier
 				// System.err.println("?! No distribution defined for  " + s + " at " + j + " node = "  + path[j]);
 			}
 			else
-				d.mergeHigherOrderDistribution(dnext, theta[j]);
+			{
+				if (!applySmoothing)
+				{
+					d = dnext;
+				} else
+				{
+					d.mergeHigherOrderDistribution(dnext, theta[j]);
+				}
+			}
 			//System.err.println("s= " + s + " j= " + j + " d= " + d);
 		}
 		return d;
@@ -256,10 +283,11 @@ public class SuffixGuesser implements Classifier
 	{
 		new impact.ee.util.Options(args);
 		FeatureSet fs = new FeatureSet.Dummy();
-		ClassifierSet cs = new ClassifierSet(fs, "lemmatizer.SuffixGuesser");
+		ClassifierSet cs = new ClassifierSet(fs, "impact.ee.lemmatizer.SuffixGuesser");
 		ReverseLemmatizer rl = new ReverseLemmatizer(new SimplePatternFinder(), cs);
 
 		String referenceLexicon = Options.getOption("referenceLexicon");
+	
 		//ParadigmExpander pe = new PrefixSuffixGuesser();
 		if (Options.getOption("command") != null && Options.getOption("command").equals("test"))
 		{

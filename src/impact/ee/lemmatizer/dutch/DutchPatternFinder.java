@@ -91,6 +91,7 @@ public class DutchPatternFinder implements PatternFinder
 		{
 			foundPattern = this.fallbackFinder.findPattern(a, b);
 			System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
+			//foundPattern = null; // OeHoeps..
 		} else
 		{
 			foundPattern = P.iterator().next();
@@ -126,7 +127,7 @@ public class DutchPatternFinder implements PatternFinder
 			boolean test4 = w.lemmaPoS.equals("VRB") && w.tag.contains("part");
 			boolean test5 = w.lemmaPoS.equals("ADJ");
 			
-			if (!w.wordform.equalsIgnoreCase(w.lemma) && test4)
+			if (!w.wordform.equalsIgnoreCase(w.lemma) && test2)
 			{
 				if (p.findPattern(w.wordform, w.lemma, w.lemmaPoS) == null)
 				{

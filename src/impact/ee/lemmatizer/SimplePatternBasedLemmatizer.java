@@ -7,6 +7,7 @@ import impact.ee.classifier.weka.*;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.util.Serialize;
+import impact.ee.lemmatizer.dutch.DutchPatternFinder;
 import impact.ee.lemmatizer.reverse.*;
 import impact.ee.classifier.Distribution.Outcome;
 import java.io.IOException;
@@ -31,14 +32,14 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	private static final long serialVersionUID = 1L;
 
 	Classifier classifierWithPoS = new SVMLightClassifier();
-	Classifier classifierWithoutPoS = new SVMLightClassifier(); // WekaClassifier("trees.J48", false);
+	Classifier classifierWithoutPoS = new SuffixGuesser(); // WekaClassifier("trees.J48", false);
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
 
 	int ruleId = 1;
 
-	private transient PatternFinder patternFinder = new SimplePatternFinder();
+	private transient PatternFinder patternFinder = new DutchPatternFinder();
 
 	FeatureSet features = new SimpleFeatureSet();
 
@@ -50,6 +51,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		}
 		if (classifierWithoutPoS.getClass().getName().contains("SuffixGuesser"))
 		{
+			SuffixGuesser sfg = (SuffixGuesser) classifierWithoutPoS;
+			sfg.applySmoothing = false;
 			features = new FeatureSet.Dummy();
 		}
 	}
@@ -64,6 +67,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 			{
 				if (heldOutSet != null && heldOutSet.contains(w)) continue;
 				Rule rule = findRule(w);
+				System.err.println(w + " " + rule);
+			
 				trainingSet.addInstance(w.wordform, "rule." + rule.id);
 			}
 		} catch (Exception e)
@@ -78,6 +83,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		{
 			e.printStackTrace();
 		}
+		// System.exit(1);
 	}
 
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
@@ -92,18 +98,24 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 
 	private void testWordform(WordForm wf) 
 	{
+		//if (!wf.tag.contains("part")) return;
 		String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
 		Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
 		Rule r = this.ruleID2Rule.get(answer);
 		if (r == null)
 		{
 			System.err.println("HUH?: " + answer);
-		} else if (!wf.wordform.equals(wf.lemma))
+		} else if (true || !wf.wordform.equals(wf.lemma))
 		{
 			//System.err.println(r);
 			String guessedLemma = r.pattern.apply(wf.wordform);
-			if (guessedLemma != null)
-				System.err.println("First choice:" + wf + " (" +  answer +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
+			if (guessedLemma == null)
+			{
+				System.err.println("Dit kan dus niet:.... " + r);
+				return;
+			}
+			boolean isOK = guessedLemma.equalsIgnoreCase(wf.lemma);
+		    System.err.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
 			if (guessedLemma == null || !guessedLemma.equals(wf.lemma))
 			{
 				boolean foundPoSMatch = false;
@@ -119,15 +131,16 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 					String guess = r1.pattern.apply(wf.wordform);
 					if (guess == null)
 						continue;
+					boolean okNOW = guess.equalsIgnoreCase(wf.lemma);
 					if (r1.PoS.equals(wf.tag) && !foundTagMatch)
 					{
 						foundTagMatch = true;
-						System.err.println("guess with complete tag information:"  + guess);
+						System.err.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  r1);
 					} 
 					if (r1.PoS.startsWith(wf.lemmaPoS) && !foundPoSMatch)
 					{
 						foundPoSMatch = true;
-						System.err.println("guess with main PoS information:"  + guess + " / " + r1.PoS);
+						System.err.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  r1);
 					}
 				}
 			}
@@ -159,7 +172,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 	private Pattern findPattern(WordForm w) 
 	{
 		Pattern p = null;
-		Pattern r = patternFinder.findPattern(w.wordform,w.lemma);
+		Pattern r = patternFinder.findPattern(w.wordform,w.lemma,w.lemmaPoS);
+		System.err.println(r);
 		p = patterns.get(r);
 		if (p == null)
 		{

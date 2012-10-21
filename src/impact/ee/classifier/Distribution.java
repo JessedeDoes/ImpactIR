@@ -77,6 +77,8 @@ public class Distribution implements java.io.Serializable
 
 	public void mergeHigherOrderDistribution(Distribution d, double theta)
 	{
+		//if (theta == 0)
+		//	this.outcomes = d.outcomes;
 		for (Outcome i: outcomes)
 		{
 			i.p =( theta * i.p + d.getProbability(i.label)) / (1 + theta); 

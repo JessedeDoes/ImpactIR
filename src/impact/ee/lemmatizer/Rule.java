@@ -40,7 +40,7 @@ public class Rule
 
 	public String toString()
 	{
-		return pattern + " " + lemmaPoS + " " + PoS;
+		return pattern + ": " + lemmaPoS + "->" + PoS;
 	}
 
 	public int hashCode()
