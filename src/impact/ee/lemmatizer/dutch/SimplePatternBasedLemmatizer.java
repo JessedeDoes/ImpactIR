@@ -38,7 +38,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	Classifier classifierWithPoS = new SVMLightClassifier();
+	Classifier classifierWithPoS = new SVMLightClassifier(); // not used
 	Classifier classifierWithoutPoS = new SuffixGuesser(); // WekaClassifier("trees.J48", false);
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
