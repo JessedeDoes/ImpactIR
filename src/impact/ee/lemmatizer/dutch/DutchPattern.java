@@ -1,8 +1,9 @@
 package impact.ee.lemmatizer.dutch;
 
+import impact.ee.lemmatizer.Pattern;
 import impact.ee.lemmatizer.dutch.StemChange.RegularStemChange;
 
-public class DutchPattern 
+public class DutchPattern implements Pattern
 {
 	StemChange.RegularStemChange stemChange;
 	String infix="";
@@ -19,5 +20,19 @@ public class DutchPattern
 	public String toString()
 	{
 		return infix + "-" + stemChange + "-[" + inflectionSuffix + "," + lemmaSuffix + "]";
+	}
+
+	@Override
+	public String apply(String s)  // trouble: which possibility for infix removal?
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String applyConverse(String s) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

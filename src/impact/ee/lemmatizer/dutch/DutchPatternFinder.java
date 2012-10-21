@@ -1,6 +1,9 @@
 package impact.ee.lemmatizer.dutch;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import impact.ee.lemmatizer.*;
 import impact.ee.lexicon.*;
@@ -40,12 +43,19 @@ public class DutchPatternFinder implements PatternFinder
 
 	Set<StemChange> stemChanges = StemChange.getAll();
 
+	public Pattern findPattern(String a, String b)
+	{
+		return null;
+	}
 	@Override
-	public Pattern findPattern(String a, String b) //  a is word form, b is lemma in applications
+	public Pattern findPattern(String a, String b, String PoS) //  a is word form, b is lemma in applications
 	{
 		boolean found = false;
-		Set<DutchPattern> P = new HashSet<DutchPattern>();
+		Comparator<DutchPattern> comparator = new Comparator<DutchPattern>() 
+			     { public int compare(DutchPattern a, DutchPattern b) { return b.inflectionSuffix.length() - a.inflectionSuffix.length();} };
+		SortedSet<DutchPattern> P = new TreeSet<DutchPattern>(comparator);
 		for (String suffixa: suffixes)
+		{
 			for (String suffixb: lemmaSuffixes)
 			{
 				if (a.endsWith(suffixa) && b.endsWith(suffixb))
@@ -58,6 +68,8 @@ public class DutchPatternFinder implements PatternFinder
 						{
 							for (StemChange change: stemChanges)
 							{
+								if (!change.appliesToPoS(PoS))
+									continue;
 								String x = change.transform(stripped);
 								if (x != null && x.equals(stemB))
 								{
@@ -73,20 +85,35 @@ public class DutchPatternFinder implements PatternFinder
 					}
 				}
 			}
+		}
+		Pattern foundPattern = null;
 		if (!found)
 		{
-			Pattern s = this.fallbackFinder.findPattern(a, b);
-			System.err.println("fallback:" + s);
+			foundPattern = this.fallbackFinder.findPattern(a, b);
+			System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
+		} else
+		{
+			foundPattern = P.iterator().next();
 		}
-		return found?new SimplePattern():null;
+		
+	    if (false && P.size() > 1)
+	    {
+	    	int k=0;
+	    	System.err.println("multiple for " + a + "~" + b);
+	    	for (DutchPattern p: P)
+	    	{
+	    		System.err.println(k++ + ":" + p);
+	    	}
+	    }
+		return foundPattern;
 	}
 
 	public static void main(String[] args)
 	{
 		DutchPatternFinder p = new DutchPatternFinder();
-		p.findPattern("gevoltigeerd", "voltigeren");
+		p.findPattern("gevoltigeerd", "voltigeren", "VRB");
 		//System.exit(0);
-		p.findPattern("zaken", "zaakte");
+		p.findPattern("zaken", "zaakte", "VRB");
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile("resources/exampledata/type_lemma_pos.tab");
 		int explained = 0;
@@ -98,12 +125,13 @@ public class DutchPatternFinder implements PatternFinder
 			boolean test3 = w.lemmaPoS.equals("VRB") && w.tag.contains("pres");
 			boolean test4 = w.lemmaPoS.equals("VRB") && w.tag.contains("part");
 			boolean test5 = w.lemmaPoS.equals("ADJ");
+			
 			if (!w.wordform.equalsIgnoreCase(w.lemma) && test4)
 			{
-				if (p.findPattern(w.wordform, w.lemma) == null)
+				if (p.findPattern(w.wordform, w.lemma, w.lemmaPoS) == null)
 				{
 					unexplained++;
-					System.err.println(w);
+					//System.err.println(w);
 				} else
 				{
 					explained++;

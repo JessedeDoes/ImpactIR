@@ -1,6 +1,11 @@
 package impact.ee.lemmatizer;
 public class SimplePatternFinder implements PatternFinder
 {
+	@Override
+	public Pattern findPattern(String a, String b, String PoS)
+	{
+		return null;
+	}
 	/**
 	 * Problem.
 	 * This procedure favors af(breken/gebroken) over (af/afge)br(eken/oken)

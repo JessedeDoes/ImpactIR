@@ -23,11 +23,14 @@ public abstract class StemChange
 	static Set<StemChange> PossibleStemChanges = new HashSet<StemChange>();
 	RegularStemChange type;
 	
+	
 	public StemChange(RegularStemChange x)
 	{
 		PossibleStemChanges.add(this);
 		this.type = x;
 	}
+	
+	public boolean appliesToPoS(String PoS) { return true; }
 	
 	static enum RegularStemChange
 	{
@@ -49,6 +52,7 @@ public abstract class StemChange
 	static String voicedConsonants = "[bdvz]";
 	static String markedUnvoicedConsonants = "[ptfs]";
 	static String possibleUI = "[ui]?";
+	
 	
 	// Let op woordbegin hier en daar bij consonants...
 	
@@ -179,6 +183,7 @@ public abstract class StemChange
 			}
 			return null;
 		}
+		public boolean appliesToPoS(String PoS) { return PoS.contains("ADJ"); }
 	};
 	
 	public static char devoice(char c)

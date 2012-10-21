@@ -11,6 +11,6 @@ package impact.ee.lemmatizer;
  */
 public interface Pattern
 {
-  public String apply(String s);
-  public String applyConverse(String s);
+  public String apply(String s); // turns a wordform into a lemma
+  public String applyConverse(String s); // the other way around
 }

@@ -234,6 +234,11 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
 			sp.leftPrefix = (sp.rightPrefix="");
 			return sp;
 		}
+		@Override
+		public Pattern findPattern(String a, String b, String PoS)
+		{
+			return null;
+		}
 	}
 
 	class InitialPatternFinder implements PatternFinder
@@ -244,6 +249,11 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
 			SimplePattern sp = (SimplePattern) simple.findPattern(a, b);
 			sp.leftSuffix = (sp.rightSuffix="");
 			return sp;
+		}
+		@Override
+		public Pattern findPattern(String a, String b, String PoS)
+		{
+			return null;
 		}
 	}
 
