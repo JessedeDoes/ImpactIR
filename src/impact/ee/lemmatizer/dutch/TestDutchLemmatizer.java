@@ -9,6 +9,9 @@ public class TestDutchLemmatizer
 	
 	public String toString()
 	{
-		return "items: " + nItems + " correct: "  + nCorrect + " with known PoS: " +  nCorrectGivenPoS + " with known Tag " + nCorrectGivenTag;
+		double score = nCorrect / (double) nItems;
+		double score2 = (nCorrect + nCorrectGivenPoS) / (double) nItems;
+		return "items: " + nItems + " correct: "  + score + " with known PoS: " +  score2 + " with known Tag " + nCorrectGivenTag;
+		
 	}
 }
