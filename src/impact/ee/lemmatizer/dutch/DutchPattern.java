@@ -25,7 +25,6 @@ public class DutchPattern implements Pattern
 	@Override
 	public String apply(String s)  // trouble: which possibility for infix removal?
 	{
-		// TODO Auto-generated method stub
 		if (!s.endsWith(inflectionSuffix))
 			return null;
 		s = s.replaceAll(inflectionSuffix + "$", "");
