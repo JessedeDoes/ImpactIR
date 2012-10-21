@@ -95,7 +95,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
-		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.1);
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.01);
 		train(l,heldout);
 		TestDutchLemmatizer testResults = new TestDutchLemmatizer();
 		for (WordForm wf: heldout)
@@ -151,14 +151,14 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 					if (r1.PoS.equals(wf.tag) && !foundTagMatch)
 					{
 						foundTagMatch = true;
-						System.err.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  r1);
+						System.err.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  " " +  r1);
 						if (okNOW)
 							t.nCorrectGivenTag++;
 					} 
 					if (r1.PoS.startsWith(wf.lemmaPoS) && !foundPoSMatch)
 					{
 						foundPoSMatch = true;
-						System.err.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  r1);
+						System.err.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  " " + r1);
 						if (okNOW)
 							t.nCorrectGivenPoS++;
 					}
