@@ -1,7 +1,7 @@
 package impact.ee.util;
 
-import java.util.Collection;
 
+import java.util.*;
 
 public class StringUtils 
 {
@@ -18,6 +18,20 @@ public class StringUtils
 			sb.append(item);
 		}
 		return sb.toString();
+	}
+
+	public static Set<String> removeInfix(String s, String infix)
+	{
+		Set<String> V = new HashSet<String>(); int p=0;
+		V.add(s);
+		
+		while ((p=s.indexOf(infix,p)) >= 0)
+		{
+			V.add(s.substring(0,p) + s.substring(p + infix.length()));
+			p++;
+		}
+		
+		return V;
 	}
 	
 	public static String xmlSingleQuotedEscape(String s) 
