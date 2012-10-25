@@ -311,7 +311,7 @@ public class Trie implements java.io.Serializable
 				next = new TrieNode();
 				addTransition(c,next);
 			}
-			return next.putWord(w,p+1);
+			return next.putWord(w,p+1,data);
 		}
 
 		void reviseLastTransition(Hashtable<TrieNode, TrieNode> pool)

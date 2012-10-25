@@ -62,6 +62,7 @@ public class DutchPatternFinder implements PatternFinder
 				{
 					String stemA = a.substring(0, a.length() - suffixa.length());
 					String stemB = b.substring(0, b.length() - suffixb.length());
+					
 					for (String infix: infixes)
 					{
 						for (String stripped: StringUtils.removeInfix(stemA, infix))

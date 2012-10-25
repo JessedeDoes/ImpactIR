@@ -50,7 +50,8 @@ public abstract class StemChange
 		FINAL_VOICING,
 		FINAL_CONSONANT_DOUBLING, // tak --> takken
 		FINAL_CONSONANT_DEDOUBLING,
-		VRD_VR
+		VRD_VR,
+		IRREGULAR_STEM_CHANGE
 	}
 
 	static String anything = ".*";
@@ -192,6 +193,8 @@ public abstract class StemChange
 		}
 		public boolean appliesToPoS(String PoS) { return PoS.contains("ADJ"); }
 	};
+	
+	static StemChange strongVerbs = new IrregularStemChange(StemAlternations.strongVerbs);
 	
 	public static char devoice(char c)
 	{

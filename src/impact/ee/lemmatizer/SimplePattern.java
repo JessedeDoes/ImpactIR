@@ -43,7 +43,7 @@ public class SimplePattern implements Pattern
 		if (leftSuffix.equals("") && rightSuffix.equals(""))
 			post="";
 		else post = String.format("[%s/%s]",leftSuffix,rightSuffix);
-		return String.format("%s-%s", pre,post);
+		return String.format("SIMPLE:%s-%s", pre,post);
 	}
 
 	public boolean equals(Object o1)
