@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import impact.ee.lemmatizer.*;
+import impact.ee.lemmatizer.dutch.StemChange.RegularStemChange;
 import impact.ee.lexicon.*;
 import impact.ee.util.StringUtils;
 
@@ -62,13 +63,14 @@ public class DutchPatternFinder implements PatternFinder
 				{
 					String stemA = a.substring(0, a.length() - suffixa.length());
 					String stemB = b.substring(0, b.length() - suffixb.length());
-					
+					System.err.println(stemA + " " + stemB);
 					for (String infix: infixes)
 					{
 						for (String stripped: StringUtils.removeInfix(stemA, infix))
 						{
 							for (StemChange change: stemChanges)
 							{
+								System.err.println(stemA + " " + stemB + "?"+ change);
 								if (!change.appliesToPoS(PoS))
 									continue;
 								String x = change.transform(stripped);
@@ -113,11 +115,13 @@ public class DutchPatternFinder implements PatternFinder
 	public static void main(String[] args)
 	{
 		DutchPatternFinder p = new DutchPatternFinder();
-		p.findPattern("gevoltigeerd", "voltigeren", "VRB");
+		//p.findPattern("gevoltigeerd", "voltigeren", "VRB");
 		//System.exit(0);
-		p.findPattern("zaken", "zaakte", "VRB");
+		p.findPattern("langsliep", "langslopen", "VRB");
+		System.exit(0);
 		InMemoryLexicon l = new InMemoryLexicon();
-		l.readFromFile("resources/exampledata/type_lemma_pos.tab");
+		//l.readFromFile("resources/exampledata/type_lemma_pos.tab");
+		l.readFromFile(args[0]);
 		int explained = 0;
 		int unexplained = 0;
 		for (WordForm w: l)
@@ -130,13 +134,23 @@ public class DutchPatternFinder implements PatternFinder
 			
 			if (!w.wordform.equalsIgnoreCase(w.lemma) && test2)
 			{
-				if (p.findPattern(w.wordform, w.lemma, w.lemmaPoS) == null)
+				Pattern pat=null;
+				if ((pat=p.findPattern(w.wordform, w.lemma, w.lemmaPoS)) == null)
 				{
 					unexplained++;
 					//System.err.println(w);
 				} else
 				{
-					explained++;
+					if (!pat.getClass().getName().contains("Dutch"))
+					{
+						unexplained++;
+					} else
+					{
+						DutchPattern d = (DutchPattern) pat;
+						if (d.stemChange.equals(RegularStemChange.IRREGULAR_STEM_CHANGE))
+							System.err.println(d);
+						explained++;
+					}
 				}
 			}
 

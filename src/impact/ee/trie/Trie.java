@@ -220,7 +220,7 @@ public class Trie implements java.io.Serializable
 			parentNode=null;
 		}
 
-		void addTransition(int c, TrieNode n)
+		public void addTransition(int c, TrieNode n)
 		{
 			if (transitions == null)
 				transitions = new Vector<Transition>(0,0);	

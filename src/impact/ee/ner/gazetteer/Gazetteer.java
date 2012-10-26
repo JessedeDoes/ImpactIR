@@ -1,7 +1,5 @@
 package impact.ee.ner.gazetteer;
 
-
-
 import impact.ee.trie.Trie;
 import impact.ee.trie.Trie.TrieNode;
 
@@ -16,7 +14,7 @@ import java.io.*;
 public class Gazetteer 
 {
 	private Map<String, Integer> stringTable = new HashMap<String, Integer>();
-	
+	private Set<String> allEntries = new HashSet<String>();
 	private impact.ee.trie.Trie trie = new Trie();
 	private String fileName = null;
 	
@@ -24,6 +22,40 @@ public class Gazetteer
 	{
 		this.fileName = fileName;
 		readFromFile(fileName);
+	}
+	
+	/**
+	 * The scanning stuff does not contribute much if
+	 * we want partial matches as features anyway..
+	 * @author does
+	 *
+	 */
+	class ScanState
+	{
+		TrieNode node;
+		Set<ScanState> predecessors = new HashSet<ScanState>();
+		
+		boolean isFinal()
+		{
+			return node.isFinal;
+		}
+		
+		Set<String> prolongMatches(String[] sentence, int position, Set<String> soFar)
+		{
+			if (node==trie.root)
+				return soFar;
+			Set<String> prolongations = new HashSet<String>();
+			for (String s: soFar)
+			{
+				prolongations.add(sentence[position] + " " + s);
+			}
+			Set<String> V = new HashSet<String>();
+			for (ScanState s: predecessors)
+			{
+				V.addAll(s.prolongMatches(sentence, position-1, prolongations));
+			}
+			return V;
+		}
 	}
 	
 	public boolean hasWord(String w)
@@ -51,8 +83,7 @@ public class Gazetteer
 	
 	public void insert(String line)
 	{
-		System.err.println(line);
-		word2Code(line);
+		allEntries.add(line);
 		String[] words = line.trim().split("\\s+");
 		insert(words);
 	}
@@ -64,7 +95,23 @@ public class Gazetteer
 		{
 			codes[i] = word2Code(words[i]);
 		}
-		//trie.root.putWord(codes, null);
+		Trie.TrieNode node = trie.root;
+		for (int i=0; i < codes.length; i++)
+		{ 
+			Map<Integer,Trie.TrieNode> transitionMap = (Map<Integer,Trie.TrieNode>) 
+					node.data;
+			if (transitionMap == null)
+				node.data = transitionMap = new TreeMap<Integer,Trie.TrieNode>();
+			Trie.TrieNode next = transitionMap.get(codes[i]);
+			if (next == null)
+			{
+				next = trie.new TrieNode();
+				node.addTransition(codes[i], next);
+				transitionMap.put(codes[i], next);
+			}
+			node=next;
+		}
+		node.isFinal = true;
 	}
 	
 	private int word2Code(String w)
@@ -81,31 +128,84 @@ public class Gazetteer
 	private TrieNode delta(TrieNode n, String w)
 	{
 		Integer c = stringTable.get(w);
-		if (c != null)
+		if (c != null && n.data != null)
 		{
-			return n.delta(c);
+			Map<Integer,Trie.TrieNode> transitionMap = (Map<Integer,Trie.TrieNode>) n.data;
+			return transitionMap.get(c);
 		}
 		return null;
 	}
 	
-	private Set<TrieNode> delta(Set<TrieNode> in, String w)
+	private Map<TrieNode,ScanState> delta(Map<TrieNode,ScanState> in, String w)
 	{
 		Integer c = stringTable.get(w);
-		Set<TrieNode> out = new HashSet<TrieNode>();
+		Map<TrieNode,ScanState> out = new HashMap<TrieNode,ScanState>();
 		if (c != null)
 		{
-			for (TrieNode n: in)
+			for (ScanState s: in.values())
 			{
-				TrieNode next = n.delta(c);
+				TrieNode n  = s.node;
+				TrieNode next = delta(n,w);
 				if (next != null)
 				{
-					out.add(next);
+					ScanState snext = out.get(next);
+					if (snext == null)
+					{
+						snext = new ScanState();
+						snext.node = next;
+						out.put(next,snext);
+					}
+					snext.predecessors.add(s);
 				}
 			}
 		}
-		TrieNode x = trie.root.delta(c);
-		if (x != null)
-			out.add(x);
+		
+		ScanState s = new ScanState();
+		s.node = trie.root;
+		out.put(trie.root,s);
+		
 		return out;
+	}
+	
+	public void findMatches(String sentence)
+	{
+		findMatches(sentence.split("\\s+"));
+	}
+	
+	public void findMatches(String[] words)
+	{
+		Map<TrieNode,ScanState> start = new HashMap<TrieNode,ScanState>();
+		ScanState s = new ScanState();
+		s.node = trie.root;
+		start.put(trie.root, s);
+		Map<TrieNode,ScanState> state = start;
+		for (int i=0; i < words.length; i++)
+		{
+			Map<TrieNode,ScanState> next = delta(state,words[i]);
+			// System.err.println(i + " " + next.size());
+			for (ScanState snext: next.values())
+			{
+				if (snext.isFinal())
+				{
+					Set<String> V = new HashSet<String>();
+					V.add("#");
+					Set<String> V1 = snext.prolongMatches(words, i, V);
+					System.err.println("Complete Match " + V1);
+				} 
+			}
+			state = next;
+		}
+	}
+	
+	public int nEntries()
+	{
+		return allEntries.size();
+	}
+	
+	public static void main(String[] args)
+	{
+		Gazetteer g = new Gazetteer(args[0]);
+		System.err.println(g.nEntries());
+		g.findMatches("Ik ken Edsger W. Dijkstra heel goed gelukkig !");
 	}
 }

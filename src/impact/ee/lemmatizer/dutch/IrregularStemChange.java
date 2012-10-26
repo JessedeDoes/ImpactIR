@@ -66,31 +66,47 @@ public class IrregularStemChange extends StemChange
 		v.add(value);
 	}
 	
+	// moet meerdere mogelijkheden kunnen teruggeven....
+	
 	public String transform(String s)
+	{
+		return transform(s,null,false);
+	}
+	
+	public String transform(String s, Set<String> result, boolean multi)
 	{
 		Trie.TrieNode node = suffixTrie.root;
 		Trie.TrieNode deepestNode = null;
 		int i=0;
 		int suffixLength = 0;
+		List<Integer> suffixLengths = new ArrayList<Integer>();
+		List<Trie.TrieNode> finalNodes = new ArrayList<Trie.TrieNode>();
 		for (i=0; i < s.length() && node != null; i++)
 		{
 			
 			if (node.isFinal)
 			{
 				suffixLength = i;
+				suffixLengths.add(i);
 				deepestNode = node;
+				finalNodes.add(deepestNode);
 			}
 			//System.err.println(i + ":" + deepestNode);
 			node = node.delta(s.charAt(s.length()-i-1));
 		}
-		if (node==null)
-			i--;
+		//System.err.println(s + ":" + suffixLength);
 		if (node != null && node.isFinal)
 		{
 			deepestNode = node;
-			suffixLength = s.length();
-		}	
+			finalNodes.add(deepestNode);
 			
+			suffixLength = s.length();
+			suffixLengths.add(s.length());
+		}	
+		if (multi)
+		{
+			
+		}
 		if (deepestNode != null)
 		{
 			//System.err.println(i +  " " + s + deepestNode.data);
