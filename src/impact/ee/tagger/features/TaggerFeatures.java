@@ -87,6 +87,8 @@ public class TaggerFeatures
 		{
 			fs.addFeature(new CapitalFirstFeature(i));
 			fs.addFeature(new SentenceInternalCapitalFeature(i));
+			fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,4,i));
+			fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,8,i));
 			//fs.addFeature(new InitialFeature(i));
 		}
 		if (useFeedback)
