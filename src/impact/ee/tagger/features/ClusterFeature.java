@@ -43,7 +43,7 @@ public class ClusterFeature extends Feature
 			String s = word2cluster.get(c.getAttributeAt("word", k));
 			if (s != null && s.length() > depth)
 			{
-				return s.substring(depth);
+				return s.substring(0,depth);
 			}
 		} catch (Exception e)
 		{
