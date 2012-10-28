@@ -54,7 +54,9 @@ public class ContextVector
 			distribution = new Distribution();
 			for (String s: termFrequencies.keySet())
 			{
-				distribution.addOutcome(s, termFrequencies.get(s));
+				double d = termFrequencies.get(s);
+				if (d > 0)
+					distribution.addOutcome(s, termFrequencies.get(s));
 			}
 		}
 		return distribution;
