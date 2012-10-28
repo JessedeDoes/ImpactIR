@@ -14,6 +14,7 @@ public class ContextVector
 	{
 		focusWord = s;
 	}
+	
 	public void addContext(Context c)
 	{
 		

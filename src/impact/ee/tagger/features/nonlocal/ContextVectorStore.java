@@ -50,7 +50,6 @@ public class ContextVectorStore
 	{
 		return 1;
 	}
-
 	/**
 	 * idf(d,s) should be length(d) / number of documents countaining s
 	 * @param v
