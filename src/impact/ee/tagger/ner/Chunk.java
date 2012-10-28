@@ -7,7 +7,7 @@ import java.util.*;
 public class Chunk 
 {
 	public final static  int MAX_LENGTH=10;
-	int length=0;
+	public int length=0;
 	String label="";
 	Context context = null;
 	List<String> tags = new ArrayList<String>();

@@ -14,7 +14,7 @@ public class CharacterContextFeature extends ExistentialFeature
 		this.name = "charcontext";
 	}
 	
-	private int posplus(Position p)
+	private int posPlusOne(Position p)
 	{
 		return p.position + 1;
 	}
@@ -26,16 +26,16 @@ public class CharacterContextFeature extends ExistentialFeature
 		Distribution d = new Distribution();
 		d.setExistential(true);
 		int N = w.length();
-		for (int l=posplus(p) - minLeft; l <= posplus(p)+maxLeft && l < N; l++)
+		for (int l=posPlusOne(p) - minLeft; l <= posPlusOne(p)+maxLeft && l < N; l++)
 		{
 			if (l >= 0)
 			{
-				for (int r=posplus(p); r - l <= maxLength && r <= N; r++)
+				for (int r=posPlusOne(p); r - l <= maxLength && r <= N; r++)
 				{
 					if (r != l)
 					{
-						String leftPart = w.substring(l, posplus(p));
-						String rightPart = w.substring(posplus(p), r);
+						String leftPart = w.substring(l, posPlusOne(p));
+						String rightPart = w.substring(posPlusOne(p), r);
 						d.incrementCount(leftPart + "|" + rightPart);
 					}
 				}

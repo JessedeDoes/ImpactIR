@@ -1,6 +1,9 @@
 package impact.ee.tagger.features.nonlocal;
+import impact.ee.classifier.Distribution;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
+import impact.ee.tagger.ner.Chunk;
+import impact.ee.tagger.ner.ChunkedCorpus;
 import impact.ee.util.WeightMap;
 
 import java.util.*;
@@ -11,7 +14,7 @@ public class ContextVectorStore
 	Map<String, ContextVector> contextMap = new HashMap<String, ContextVector>();
 	WeightMap<String> globalTermFrequencies = new WeightMap<String>();
 	private int nItems = 0;
-
+	
 	public ContextVectorStore(int contextSize)
 	{
 		this.contextSize = contextSize;
@@ -27,12 +30,51 @@ public class ContextVectorStore
 			setTFIDFWeights(v);
 	}
 	
+	public void fillContextStore(ChunkedCorpus c)
+	{
+		for (Context context: c.enumerate())
+		{
+			Chunk chunk = c.getChunkFromContext(context);
+			if (chunk != null)
+				addChunkContext(context, chunk);
+		}
+		for (ContextVector v: contextMap.values())
+			setTFIDFWeights(v);
+	}
+	
+	public Distribution getContextDistribution(String s)
+	{
+		ContextVector v = contextMap.get(s);
+		if (v != null)
+			return v.getDistribution();
+		return null;
+	}
+	public void addChunkContext(Context context, Chunk chunk)
+	{
+		String s = chunk.getText();
+		globalTermFrequencies.increment(s,1);
+		ContextVector v = contextMap.get(s);
+		if (v == null)
+		{
+			contextMap.put(s,v = new ContextVector(s));
+		}
+		for (int i=-contextSize; i <= contextSize; i++)
+		{
+			if (i==0) continue;
+			String w;
+			if (i < 0)
+				w = context.getAttributeAt("word", i);
+			else
+				w = context.getAttributeAt("word", chunk.length + i);
+			v.termFrequencies.increment(w,positionWeight(i));
+		}
+	}
+	
 	public void addContext(Context c)
 	{
 		String s = c.getAttributeAt("word", 0);
-		ContextVector v = contextMap.get(s);
 		globalTermFrequencies.increment(s,1);
-		
+		ContextVector v = contextMap.get(s);
 		if (v == null)
 		{
 			contextMap.put(s,v = new ContextVector(s));
