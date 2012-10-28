@@ -8,6 +8,7 @@ public class ContextVector
 {
 	String focusWord;
 	WeightMap<String> termFrequencies = new WeightMap<String>();
+	double maxTermFrequency = -1;
 	
 	public ContextVector(String s)
 	{
@@ -20,12 +21,14 @@ public class ContextVector
 	
 	public double getMaxTermFrequency()
 	{
+		if (maxTermFrequency >= 0)
+			return maxTermFrequency;
 		double max=0;
 		for (String s: this.termFrequencies.keySet())
 		{
 			double f = termFrequencies.get(s);
 			if (f > max) max = f;
 		}
-		return max;
+		return maxTermFrequency= max;
 	}
 }

@@ -1,5 +1,6 @@
 package impact.ee.tagger.features.nonlocal;
 import impact.ee.tagger.Context;
+import impact.ee.tagger.Corpus;
 import impact.ee.util.WeightMap;
 
 import java.util.*;
@@ -16,6 +17,16 @@ public class ContextVectorStore
 		this.contextSize = contextSize;
 	}
 
+	public void fillContextStore(Corpus c)
+	{
+		for (Context context: c.enumerate())
+		{
+			addContext(context);
+		}
+		for (ContextVector v: contextMap.values())
+			setWeights(v);
+	}
+	
 	public void addContext(Context c)
 	{
 		String s = c.getAttributeAt("word", 0);
@@ -47,8 +58,21 @@ public class ContextVectorStore
 	 */
 	public double getWeight(ContextVector v, String s) // apply tfidf weighting
 	{
-		double idf = Math.log(globalTermFrequencies.get(v.focusWord) / globalTermFrequencies.get(s)); // nee dit levert niks op, is altijd hetzelfde...
+		double fs = globalTermFrequencies.get(s);
+		if (fs == 0)
+			return 0;
+		double idf = Math.log(globalTermFrequencies.get(v.focusWord) / fs); // nee dit levert niks op, is altijd hetzelfde...
 		double tf = v.termFrequencies.get(s) / v.getMaxTermFrequency() ; // globalTermFrequencies.get(v.focusWord);
 		return tf * idf;
+	}
+	
+	public void setWeights(ContextVector v)
+	{
+		v.getMaxTermFrequency();
+		for (String s: v.termFrequencies.keySet())
+		{
+			double d = getWeight(v,s);
+			v.termFrequencies.setWeight(s, d);
+		}
 	}
 }

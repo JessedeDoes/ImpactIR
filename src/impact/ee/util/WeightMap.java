@@ -31,4 +31,9 @@ public class WeightMap<T>
 		Double z = get(key);
 		map.put(key, z+increment);
 	}
+	
+	public void setWeight(T key, double w)
+	{
+		map.put(key, w);
+	}
 }
