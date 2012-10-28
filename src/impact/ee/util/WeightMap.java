@@ -2,10 +2,15 @@ package impact.ee.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.*;
 public class WeightMap<T> 
 {
 	private Map<T,Double> map = new HashMap<T,Double>();
+	
+	public Set<T> keySet()
+	{
+		return map.keySet();
+	}
 	
 	public double get(T key)
 	{
