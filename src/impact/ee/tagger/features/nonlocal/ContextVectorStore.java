@@ -2,12 +2,18 @@ package impact.ee.tagger.features.nonlocal;
 import impact.ee.classifier.Distribution;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
+import impact.ee.tagger.ner.BIOCorpus;
 import impact.ee.tagger.ner.Chunk;
 import impact.ee.tagger.ner.ChunkedCorpus;
 import impact.ee.util.WeightMap;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+//@XmlRootElement
 public class ContextVectorStore 
 {
 	private int contextSize = 0;
@@ -49,6 +55,7 @@ public class ContextVectorStore
 			return v.getDistribution();
 		return null;
 	}
+	
 	public void addChunkContext(Context context, Chunk chunk)
 	{
 		String s = chunk.getText();
@@ -115,5 +122,33 @@ public class ContextVectorStore
 			double d = TFIDFWeight(v,s);
 			v.termFrequencies.setWeight(s, d);
 		}
+	}
+	
+	public void readFromFile(String fileName)
+	{
+		
+	}
+	
+	public void saveToFile(String fileName)
+	{
+		try
+		{
+			PrintWriter p = new PrintWriter(new FileWriter(fileName));
+			for (ContextVector v: this.contextMap.values())
+			{
+				p.println(v);
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+		ContextVectorStore s = new ContextVectorStore(2);
+		BIOCorpus bio = new BIOCorpus(args[0]);
+		s.fillContextStore(bio);
+		s.saveToFile(args[1]);
 	}
 }

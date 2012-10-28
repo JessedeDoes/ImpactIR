@@ -9,6 +9,7 @@ import impact.ee.tagger.ner.Chunk;
  */
 public class ContextDistributionFeature extends StochasticFeature 
 {
+	private static final long serialVersionUID = 1L;
 	ContextVectorStore store;
 	
 	public ContextDistributionFeature(ContextVectorStore store)

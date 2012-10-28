@@ -1,6 +1,7 @@
 package impact.ee.tagger.features.nonlocal;
 import impact.ee.classifier.Distribution;
 import impact.ee.tagger.Context;
+import impact.ee.util.StringUtils;
 import impact.ee.util.WeightMap;
 
 import java.util.*;
@@ -20,6 +21,17 @@ public class ContextVector
 	public void addContext(Context c)
 	{
 		
+	}
+	
+	public String toString()
+	{
+		List<String> z = new ArrayList<String>();
+		for (String s: this.termFrequencies.keySet())
+		{
+			double x = this.termFrequencies.get(s);
+			z.add(s + " " + x);
+		}
+		return this.focusWord + "\t" + StringUtils.join(z, "\t");
 	}
 	
 	public double getMaxTermFrequency()
