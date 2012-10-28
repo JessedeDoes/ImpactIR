@@ -117,6 +117,8 @@ public class ContextVectorStore
 		if (fs == 0)
 			return 0;
 		double idf = Math.log(size / fs); // nee dit levert niks op, is altijd hetzelfde...
+		if (idf < 0)
+			idf = 0;
 		double tf = v.termFrequencies.get(s) / v.getMaxTermFrequency() ; // globalTermFrequencies.get(v.focusWord);
 		return tf * idf;
 	}
