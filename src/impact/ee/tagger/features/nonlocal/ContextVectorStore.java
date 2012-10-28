@@ -20,6 +20,7 @@ public class ContextVectorStore
 	Map<String, ContextVector> contextMap = new HashMap<String, ContextVector>();
 	WeightMap<String> globalTermFrequencies = new WeightMap<String>();
 	private int nItems = 0;
+	private double nDocs =  0;
 	
 	public ContextVectorStore(int contextSize)
 	{
@@ -59,6 +60,7 @@ public class ContextVectorStore
 	public void addChunkContext(Context context, Chunk chunk)
 	{
 		String s = chunk.getText();
+		this.nDocs++;
 		globalTermFrequencies.increment(s,1);
 		ContextVector v = contextMap.get(s);
 		if (v == null)
@@ -107,9 +109,10 @@ public class ContextVectorStore
 	public double TFIDFWeight(ContextVector v, String s) // apply tfidf weighting
 	{
 		double fs = globalTermFrequencies.get(s);
+		double size = globalTermFrequencies.keySet().size();
 		if (fs == 0)
 			return 0;
-		double idf = Math.log(globalTermFrequencies.get(v.focusWord) / fs); // nee dit levert niks op, is altijd hetzelfde...
+		double idf = Math.log(size / fs); // nee dit levert niks op, is altijd hetzelfde...
 		double tf = v.termFrequencies.get(s) / v.getMaxTermFrequency() ; // globalTermFrequencies.get(v.focusWord);
 		return tf * idf;
 	}
