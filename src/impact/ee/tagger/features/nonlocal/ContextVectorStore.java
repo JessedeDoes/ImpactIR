@@ -61,7 +61,7 @@ public class ContextVectorStore
 	{
 		String s = chunk.getText();
 		this.nDocs++;
-		globalTermFrequencies.increment(s,1);
+		
 		ContextVector v = contextMap.get(s);
 		if (v == null)
 		{
@@ -75,6 +75,7 @@ public class ContextVectorStore
 				w = context.getAttributeAt("word", i);
 			else
 				w = context.getAttributeAt("word", chunk.length + i);
+			globalTermFrequencies.increment(w,1);
 			v.termFrequencies.increment(w,positionWeight(i));
 		}
 	}
