@@ -45,7 +45,7 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 			for (int i=1; i < Chunk.MAX_LENGTH; i++) // this is rather awful.
 			{
 				String t = context.getAttributeAt("tag", i);
-				if (t.startsWith("I-"))
+				if (t != null && t.startsWith("I-"))
 				{
 					c.length++;
 				} else
