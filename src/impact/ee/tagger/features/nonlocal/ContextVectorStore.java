@@ -24,7 +24,7 @@ public class ContextVectorStore
 			addContext(context);
 		}
 		for (ContextVector v: contextMap.values())
-			setWeights(v);
+			setTFIDFWeights(v);
 	}
 	
 	public void addContext(Context c)
@@ -56,7 +56,7 @@ public class ContextVectorStore
 	 * @param v
 	 * @param s
 	 */
-	public double getWeight(ContextVector v, String s) // apply tfidf weighting
+	public double TFIDFWeight(ContextVector v, String s) // apply tfidf weighting
 	{
 		double fs = globalTermFrequencies.get(s);
 		if (fs == 0)
@@ -66,12 +66,12 @@ public class ContextVectorStore
 		return tf * idf;
 	}
 	
-	public void setWeights(ContextVector v)
+	public void setTFIDFWeights(ContextVector v)
 	{
 		v.getMaxTermFrequency();
 		for (String s: v.termFrequencies.keySet())
 		{
-			double d = getWeight(v,s);
+			double d = TFIDFWeight(v,s);
 			v.termFrequencies.setWeight(s, d);
 		}
 	}
