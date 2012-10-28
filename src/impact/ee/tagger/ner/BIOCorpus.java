@@ -33,6 +33,8 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 	public Chunk getChunkFromContext(Context context)
 	{
 		String t0 = context.getAttributeAt("tag", 0);
+		if (t0 == null)
+			return null;
 		if (t0.startsWith("B-"))
 		{
 			String[] parts = t0.split("-");
