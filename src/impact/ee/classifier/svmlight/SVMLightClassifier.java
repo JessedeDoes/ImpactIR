@@ -98,6 +98,9 @@ public class SVMLightClassifier implements Classifier, Serializable
 	public String targetClass = "pipo";
 	private boolean linear = true;
 	Map<String, SVMLightModel> modelMap = new HashMap<String, SVMLightModel>();
+	private MultiClassifier multiClassifier = null;
+	boolean useMultiClassifier = true;
+	
 	Map<Pair<String,String>,SVMLightModel> AllvsAllMap = new HashMap<Pair<String,String>,SVMLightModel>();
 	
 	public enum TrainingMethod { ONE_VS_ALL, ALL_VS_ALL, ONE_VS_ALL_EXTERNAL };
@@ -167,6 +170,11 @@ public class SVMLightClassifier implements Classifier, Serializable
 		// TODO Auto-generated method stub
 		LabeledFeatureVector lfv = makeLabeledFeatureVector(instance,false);
 		lfv.setLabel(-666);
+		if (this.useMultiClassifier && this.multiClassifier != null)
+		{
+			return multiClassifier.classify(lfv);
+		}
+		
 		double bestScore = Integer.MIN_VALUE;
 		String bestLabel = "NONE";
 		
@@ -222,13 +230,19 @@ public class SVMLightClassifier implements Classifier, Serializable
 		try 
 		{
 			File[] modelFiles = SVMLightExec.runTrainingProgram(p);
+			if (useMultiClassifier)
+			{
+				this.multiClassifier = new MultiClassifier();
+			}
 			for (File mf : modelFiles) 
 			{
 				try 
 				{
 					SVMLightModel model = SVMLightModel
 							.readSVMLightModelFromURL(mf.toURI().toURL());
-					model.compressLinear();
+					//model.g
+					
+					
 					String name = mf.getName();
 					name = name.replaceAll("^class", "");
 					name = name.replaceAll("\\.dat\\.model$", "");
@@ -236,8 +250,15 @@ public class SVMLightClassifier implements Classifier, Serializable
 					Double d = Double.parseDouble(name);
 					String className = inverseLabelMap.get(d);
 					System.err.println("class label = " + d  + ", class name = " + className + " file = " + mf.getCanonicalPath());
-					modelMap.put(className, model);
-					validateModel(model, p, d);
+					if (useMultiClassifier)
+					{
+						this.multiClassifier.addModel(model, className);
+					} else
+					{
+						model.compressLinear();
+						modelMap.put(className, model);
+						validateModel(model, p, d);
+					}
 				} catch (ParseException e) 
 				{
 					// TODO Auto-generated catch block
