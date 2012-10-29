@@ -6,7 +6,7 @@ import impact.ee.tagger.Context;
 class WordAtFeature extends Feature
 {
 	int k;
-
+	boolean toLowercase = true;
 	public WordAtFeature(int x)
 	{
 		k=x;
@@ -16,6 +16,6 @@ class WordAtFeature extends Feature
 	public String getValue(Object o)
 	{
 		String s = ((Context) o).getAttributeAt("word", k);
-		return s;
+		return toLowercase?s.toLowerCase():s;
 	}
 }
