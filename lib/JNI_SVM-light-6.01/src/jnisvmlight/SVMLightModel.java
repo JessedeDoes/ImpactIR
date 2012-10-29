@@ -274,6 +274,11 @@ public class SVMLightModel implements Serializable {
     return m_linWeights;
   }
 
+  public Map<Integer,Double> getLinearWeightsMap()
+  {
+    return m_linWeightsMap;
+  }
+
   public void setThreshold(double threshold) {
     m_threshold = threshold;
   }

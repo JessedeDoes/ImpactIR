@@ -35,8 +35,9 @@ public class MultiClassifier implements Serializable
 	public List<String> labels =  new ArrayList<String>();
 	Map<Integer,List<Weight>> weightMap = new HashMap<Integer,List<Weight>>();
 	
-	class  Weight
+	class  Weight implements Serializable
 	{
+		private static final long serialVersionUID = 1L;
 		int modelNumber;
 		double weight;
 		
@@ -52,15 +53,21 @@ public class MultiClassifier implements Serializable
 		int modelNumber = labels.size();
 		//models.add(model);
 		labels.add(className);
-		double[] weights = model.getLinearWeights();
-		for (int i=0; i < weights.length; i++)
+		model.compressLinear();
+		Map<Integer,Double> weights = model.getLinearWeightsMap(); // dit werkt dus niet, deze zijn nog niet aangemaakt...
+		if (weights == null)
 		{
-			if (weights[i] != 0)
+			System.err.println("null weights for class " + className);
+			return;
+		}
+		for (int i: weights.keySet())
+		{
+			if (weights.get(i) != null)
 			{
 				List<Weight> w = weightMap.get(i);
 				if (w == null)
 					weightMap.put(i, w = new ArrayList<Weight>());
-				w.add(new Weight(modelNumber,weights[i]));
+				w.add(new Weight(modelNumber,weights.get(i)));
 			}
 		}
 	}
@@ -71,8 +78,8 @@ public class MultiClassifier implements Serializable
 		for (int i=0; i < labels.size(); i++)
 			delta[i] = 0;
 		classify(delta,v);
-		String bestLabel=null;
-		double best=Double.MIN_VALUE;
+		String bestLabel = null;
+		double best = Double.MIN_VALUE;
 		for (int i =0;  i < labels.size(); i++)
 		{
 			if (delta[i] > best)
@@ -86,15 +93,16 @@ public class MultiClassifier implements Serializable
 	
 	public void classify(double[] delta, LabeledFeatureVector v)
 	{
+		double f =  v.getFactor();
 		for (int i=0; i < v.size(); i++)
 		{
 			double x = v.getValueAt(i);
-			List<Weight> weights = weightMap.get(i);
+			List<Weight> weights = weightMap.get(v.getDimAt(i));
 			if (weights != null)
 			{
 				for (Weight w: weights)
 				{
-					delta[w.modelNumber] += v.getFactor() * x;
+					delta[w.modelNumber] += f * x * w.weight;
 				}
 			}
 		}
