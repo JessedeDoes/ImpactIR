@@ -22,6 +22,7 @@ import java.util.Map;
 
 import jnisvmlight.KernelParam;
 import jnisvmlight.LabeledFeatureVector;
+import jnisvmlight.MultiClassifier;
 import jnisvmlight.SVMLightModel;
 import jnisvmlight.SVMLightInterface;
 import jnisvmlight.TrainingParameters;
@@ -264,6 +265,10 @@ public class SVMLightClassifier implements Classifier, Serializable
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+			if (useMultiClassifier)
+			{
+				this.multiClassifier.noLists();
 			}
 		} catch (Exception e) 
 		{	
