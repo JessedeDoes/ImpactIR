@@ -29,7 +29,7 @@ public class SVMLightExec
 {
 	static String learner = "svm_multilearn";
 	static boolean verbose = true;
-	static double parameterC = 1.0; // 0.0714;
+	static double parameterC = 1; // 0.0714;
 	
 	public static void trainClassifiers(File trainingFile, File modelDirectory)
 	{
@@ -93,6 +93,7 @@ public class SVMLightExec
 		modelDirectory.mkdir();
 		p.print(trainingFile.getCanonicalPath());
 		SVMLightExec.trainClassifiers(trainingFile, modelDirectory);
+		//File zz = new File("/tmp/model.5496025864372792763.dir/");
 		File[] modelFiles = modelDirectory.listFiles();
 		return modelFiles;
 	}

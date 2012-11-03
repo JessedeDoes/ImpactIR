@@ -4,7 +4,10 @@ import java.lang.reflect.Array;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-attributes type
+/*
+ * Werkt nog niet goed als bestand heel kort is!
+ */
+public class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-attributes type
 {
 	int windowSize= 41;
 	int focus = 20;
@@ -15,6 +18,7 @@ class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-att
 	T[] buffer;
 	int lineNumber  = 0;  
 	T defaultT = null;
+	Class elementClass;
 	
 	Enumeration<T> inputStream;
 	
@@ -23,11 +27,15 @@ class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-att
 		buffer = (T[]) Array.newInstance(c,capacity);
 		this.inputStream = inputStream;
 		this.defaultT = defaultT;
+		this.elementClass = c;
 		offset  = -1 * (windowSize - focus);
 	}
 	
 	void readInitialWindow() // read in the first window and ensure right context is present
 	{
+		//System.err.println("element class:" + elementClass);
+		//System.err.println("default:" + defaultT);
+		
 		for (int i=0; i < focus; i++)
 			buffer[i] = defaultT;
 		for (int i=focus; i < windowSize; i++)
@@ -39,7 +47,7 @@ class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-att
 				if (overdue >= windowSize - focus -1)
 				{
 					break;
-				} else
+				} else // why no dummy in buffer?
 				{
 					overdue++;
 				}

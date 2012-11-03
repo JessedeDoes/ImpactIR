@@ -1,5 +1,6 @@
 package impact.ee.tagger;
 
+import impact.ee.classifier.Feature;
 import impact.ee.util.TabSeparatedFile;
 
 import java.util.HashMap;
@@ -58,8 +59,15 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		public String getAttributeAt(String featureName, int relativePosition) 
 		{
 			// TODO Auto-generated method stub
-			Map<String,String> m = enumerationWithContext.get(relativePosition);
-			return m.get(featureName);
+			try
+			{
+				Map<String,String> m = enumerationWithContext.get(relativePosition);
+				return m.get(featureName);
+			} catch (Exception e)
+			{
+				// System.err.println("failed to get " + featureName + " at " + relativePosition);
+				return Feature.Unknown;
+			}
 		}
 
 		@Override

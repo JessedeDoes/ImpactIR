@@ -29,6 +29,7 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature
 	public CaseProfileFeature(String fileName)
 	{
 		this.fileName = fileName;
+		this.name = "caseProfile";
 		init();
 		
 	}

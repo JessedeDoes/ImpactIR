@@ -57,6 +57,17 @@ public class TaggerFeatures
 		//f.addStochasticFeature(getPoSDistributionAt(-2));ls -
 		return f;
 	}
+	
+	public static FeatureSet getMoreFeaturesForPoSTagger(boolean useFeedback)
+	{
+		FeatureSet f = getBasicFeatures(useFeedback);
+		f.addStochasticFeature(getTagDistributionAt(1));
+		f.addStochasticFeature(getTagDistributionAt(-1));
+		// f.addStochasticFeature(getPreviousWordDistributionAt(0)); // silly... only makes sense if pruned...
+		//f.addStochasticFeature(getPoSDistributionAt(2));
+		//f.addStochasticFeature(getPoSDistributionAt(-2));ls -
+		return f;
+	}
 
 	public static FeatureSet getBasicNERFeatures(boolean useFeedback)
 	{

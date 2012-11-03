@@ -117,7 +117,7 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 			Integer c;
 			if ((c = f.valueCounts.get(v)) == null || c < f.THRESHOLD)
 			{
-				instance.values.set(i,"_UNK_");
+				instance.values.set(i,Feature.Unknown);
 				//System.err.println(this.itemToString(instance));
 			} else
 			{

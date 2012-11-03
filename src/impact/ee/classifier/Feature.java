@@ -7,9 +7,7 @@ import weka.core.FastVector;
 
 public class Feature implements Serializable
 {
-	/**
-	 * 
-	 */
+	public static final String Unknown="_UNK_";
 	private static final long serialVersionUID = 1L;
 	public String name;
 	public FastVector values = new FastVector();
@@ -65,7 +63,7 @@ public class Feature implements Serializable
 			{
 				valueCounts.remove(v);
 				// System.err.println("pruning away:" + this.name + "=" + v + " " + valueCounts.get(v));
-				newValues.addElement("_UNK"); // logischer toch, anders features die er wel zijn onvergelijkbaar (?? maar waarom maakt het niets uit?)
+				newValues.addElement(Feature.Unknown); // logischer toch, anders features die er wel zijn onvergelijkbaar (?? maar waarom maakt het niets uit?)
 			}
 		}
 		values = newValues;

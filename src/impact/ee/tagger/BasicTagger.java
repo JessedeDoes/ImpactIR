@@ -17,9 +17,15 @@ import impact.ee.util.Serialize;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+
+
+
+//import org.apache.commons.collections.iterators.IteratorEnumeration;
 
 
 
@@ -64,7 +70,7 @@ import java.util.Set;
  * </ul>
  */
 
-public class BasicTagger implements Serializable
+public class BasicTagger implements Serializable, Tagger
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -149,13 +155,17 @@ public class BasicTagger implements Serializable
 				if (filter(c))
 				{
 					String answer = c.getAttributeAt("tag", 0);
-					d.addInstance(c, answer);
+					if (answer != null)
+					{
+						d.addInstance(c, answer);
+					}
 					knownWords.add(c.getAttributeAt("word", 0));
 				}
 			}
 		}
 		
 		features.finalize(); // oehoeps, dit is niet fijn, dat dat expliciet moet, moet anders...
+		//d.pruneInstances();
 		
 		System.err.println("start training, "  + d.size() + " items");
 		
@@ -264,26 +274,46 @@ public class BasicTagger implements Serializable
 		}
 	}
 	
+
+
+	@Override
+	public HashMap<String, String> apply(Context c) 
+	{
+		// TODO Auto-generated method stub
+		impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+		String outcome = classifier.classifyInstance(instance);
+		HashMap<String,String> m = new HashMap<String,String>();
+		m.put("word", c.getAttributeAt("word", 0));
+		m.put("tag", outcome);
+		String id =  c.getAttributeAt("id", 0);
+		if (id != null)
+			m.put("id", id);
+		return m;
+	}
+
+
+	@Override
+	public Corpus tag(Corpus inputCorpus) 
+	{
+		// TODO Auto-generated method stub
+		OutputEnumeration out = new OutputEnumeration(this,inputCorpus);
+		EnumerationWithContext ewc = 
+				new EnumerationWithContext(Map.class, out, new DummyMap());
+		
+		return new SimpleCorpus(ewc);
+	}
+	
 	public static void main(String[] args)
 	{
 		BasicTagger t = new BasicTagger();
-		// 
-		t.useFeedback = true;
-		t.useLexicon = true;
 		
-		boolean doTraining = false;
-		
-		if (doTraining)
-		{
-			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
-			t.examine(statsCorpus);
-			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
-			t.train(trainingCorpus);
-			t.saveModel("Models/basicTagger");
-		}
+	
 		
 		SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
-		t.loadModel("Models/basicTagger");
-		t.test(testCorpus);
+		t.loadModel(args[0]);
+		for (Context c: t.tag(testCorpus).enumerate())
+		{
+			System.out.println(c.getAttributeAt("word", 0) + "\t" + c.getAttributeAt("tag", 0));
+		}
 	}
 }

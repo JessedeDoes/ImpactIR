@@ -54,7 +54,8 @@ public class MultiClassifier implements Serializable
 		if (className == null)
 		{
 			System.err.println("NULL CLASS NAME " + labels.size());
-			System.exit(1);
+			//System.exit(1);
+			className = "NULL";
 		}
 		int modelNumber = labels.size();
 		//models.add(model);

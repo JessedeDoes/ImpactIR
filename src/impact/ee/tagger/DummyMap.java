@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class DummyMap implements java.util.Map
+public class DummyMap implements java.util.Map<String,String>
 {
 
 	@Override
@@ -32,7 +32,7 @@ public class DummyMap implements java.util.Map
 	}
 
 	@Override
-	public Object get(Object arg0) {
+	public String get(Object arg0) {
 		// TODO Auto-generated method stub
 		return "DUMMY";
 	}
@@ -50,7 +50,7 @@ public class DummyMap implements java.util.Map
 	}
 
 	@Override
-	public Object put(Object arg0, Object arg1) {
+	public String put(String arg0, String arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -62,7 +62,7 @@ public class DummyMap implements java.util.Map
 	}
 
 	@Override
-	public Object remove(Object arg0) {
+	public String remove(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}

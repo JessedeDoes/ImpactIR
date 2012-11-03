@@ -30,7 +30,7 @@ import java.util.*;
  *
  */
 
-public class BasicNERTagger implements Serializable
+public class BasicNERTagger implements Serializable, Tagger
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -157,53 +157,10 @@ public class BasicNERTagger implements Serializable
 		// TODO Auto-generated method stub
 		return true;
 	}
-/**
- * Implement the tagger as a filter, corpus in, corpus out
- * @author does
- *
- */
-	class OutputEnumeration implements Enumeration<Map<String,String>>
-	{
-		Corpus testCorpus;
-		Iterator<Context> inputIterator;
-		
-		public OutputEnumeration(Corpus crp)
-		{
-			testCorpus = crp;
-			inputIterator= crp.enumerate().iterator();
-		}
-		
-		@Override
-		public boolean hasMoreElements() 
-		{
-			// TODO Auto-generated method stub
-			return inputIterator.hasNext();
-		}
-
-		@Override
-		public Map<String, String> nextElement() 
-		{
-			// TODO Auto-generated method stub
-			try
-			{
-				Context c = inputIterator.next();
-				impact.ee.classifier.Instance instance = features.makeTestInstance(c);
-				String outcome = classifier.classifyInstance(instance);
-				HashMap<String,String> m = new HashMap<String,String>();
-				m.put("word", c.getAttributeAt("word", 0));
-				m.put("tag", outcome);
-				return m;
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			return null;
-		}
-	}
 	
 	public SimpleCorpus tag(Corpus testCorpus)
 	{
-		 Enumeration<Map<String,String>> output = new OutputEnumeration(testCorpus);
+		 Enumeration<Map<String,String>> output = new OutputEnumeration(this, testCorpus);
 		 EnumerationWithContext<Map<String,String>> ewc = 
 				 new EnumerationWithContext(Map.class, output, new DummyMap());
 		 return new SimpleCorpus(ewc);
@@ -298,6 +255,19 @@ public class BasicNERTagger implements Serializable
 			t.test(testCorpus);
 		}
 	}
+	
+	@Override
+	public HashMap<String, String> apply(Context c) 
+	{
+		// TODO Auto-generated method stub
+		impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+		String outcome = classifier.classifyInstance(instance);
+		HashMap<String,String> m = new HashMap<String,String>();
+		m.put("word", c.getAttributeAt("word", 0));
+		m.put("tag", outcome);
+		return m;
+	}
+	
 	
 	public static void main(String[] args)
 	{
