@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<project name="platform_placeholder" default="ocr.with.internal.and.external.dictionary" basedir=".">
+	<import file="../local/platform.xml"/>
+</project>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?> 
+
+<project name="JointMultiGramModel" default="dist" basedir="."> 
+
+     <property name="src" value="./src"/> 
+     <property name="build" value="build"/>
+     <property name="dist" value="dist"/>
+
+	<property name="neodir" value="lib/neo"/>
+	<property name="libdir" value="lib"/>
+	
+	<path id="java.class.path">
+		<fileset dir="${neodir}">
+			<include name="*.jar"/>
+		</fileset>
+        <pathelement path="lib/liblinear-1.91.jar"/>
+        <pathelement path="lib/jnisvmlight.jar"/>
+        <pathelement path="lib/libsvm.jar"/>
+        <pathelement path="lib/jgrapht-jdk1.6.jar"/>
+        <pathelement path="lib/weka.jar"/>
+   		<pathelement path="lib/commons-cli-1.2.jar"/>
+        <pathelement path="lib/mysql-connector-java-3.0.17-ga-bin.jar"/>
+        <pathelement path="lib/commons-logging-1.1.1.jar"/>
+	</path>
+	
+     <target name="init">  
+          <mkdir dir="${build}"/>
+     </target>
+
+
+     <target name="compile" depends="init"> 
+          <javac encoding="utf-8" srcdir="${src}" destdir="${build}">
+          <classpath refid="java.class.path"/>
+          </javac>
+     </target>
+
+
+    <target name="jar">
+        <jar destfile="${dist}/spellingvariation.jar">
+              <fileset dir= "${build}"/>
+              <fileset dir="resources"/>
+         </jar>
+    </target>
+
+    <target name="dist" depends="compile">
+        <jar destfile="${dist}/spellingvariation.jar">
+              <fileset dir= "${build}"/>
+ 	      <fileset dir="resources"/>
+         </jar>
+    </target>
+
+</project>

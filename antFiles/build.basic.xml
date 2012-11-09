@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+
+
+<project name="irEval" default="ir.evaluation" basedir=".">
+
+	<property name="neodir" value="../lib/neo"/>
+	<property name="libdir" value="../lib"/>
+
+	<property name="lexicon.datadir" value="UNK"/>
+	<property name="lexicon.compiled.dir" value="${lexicon.datadir}/${language}"/>
+	<property name="empty.lexicon" value="${lexicon.datadir}/EmptyLexicon"/>
+
+	<path id="java.class.path">
+		<fileset dir="${neodir}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="../dist/spellingvariation.jar"/>
+ 	    <pathelement path="${libdir}/jgrapht-jdk1.6.jar"/>
+	<pathelement path="${libdir}/xercesImpl.jar"/>
+        <pathelement path="${libdir}/weka.jar"/>
+   		<pathelement path="${libdir}/commons-cli-1.2.jar"/>
+       	<pathelement path="${libdir}/mysql-connector-java-3.0.17-ga-bin.jar"/>
+        <pathelement path="${libdir}/commons-logging-1.1.1.jar"/>
+		<pathelement path="${libdir}/jaxb-api-2.1.jar"/>
+       	<pathelement path="${libdir}/jaxb-impl-2.1.7.jar"/>
+        <pathelement path="${libdir}/jaxb-xjc-2.1.7.jar"/>
+	</path>
+
+	<property name="modern.wordform.as.lemma" value="false"/>
+
+	<!-- basic requirements -->
+
+	<!-- nog een target maken voor aanmaken van de simple analyzed wordforms! 
+ java lexicon.CreateSimpleAnalyzedWordforms svowdb02 BulgarianLexicon111111 etc
+	-->
+
+	<target name="lexicon.prepare">
+		<java classname="lexicon.PrepareLexicon">
+			<arg value="--targetDirectory"/>
+			<arg value="${lexicon.compiled.dir}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${historical.lexicon}"/>
+			<arg value="--databaseHost"/>
+			<arg value="${database.host}"/>
+			<arg value="--addWordBoundaries"/>
+			<arg value="true"/>
+		 	<classpath refid="java.class.path"/>
+		</java>
+	</target>
+
+	<property name="maximum.suggestions" value="2"/>
+
+	<target name="ir.evaluation">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}" error="${lemmatizer.input}.log">
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${historical.compiled.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="${pattern.input}"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
+
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+			<arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
+
+<!-- # not used yet -->
+
+	       		<classpath refid="java.class.path"/>
+	</java>
+        </target>
+
+	<target name="ir.evaluation.without.patterns">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}.nopatterns" error="${lemmatizer.input}.nopatterns.log">
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${historical.compiled.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="empty.txt"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
+
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+			<arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
+
+<!-- # not used yet -->
+
+	       		<classpath refid="java.class.path"/>
+	</java>
+        </target>
+
+	<target name="ir.evaluation.without.historical.lexicon">
+		<java classname="lemmatizer.LemmatizationTest" output="${lemmatizer.output}.nohistorical" error="${lemmatizer.input}.nohistorical.log">
+			<arg value="--lemmatizerInput"/>
+			<arg value="${lemmatizer.input}"/>
+			<arg value="--modernLexicon"/>
+			<arg value="${modern.compiled.lexicon}"/>
+			<arg value="--historicalLexicon"/>
+			<arg value="${empty.lexicon}"/>
+			<arg value="--patternInput"/>
+			<arg value="${pattern.input}"/>
+                        <arg value="--lexiconTrie"/>
+			<arg value="${lexicon.trie}"/>
+
+<!-- vermoeiende settings voor matching -->
+
+			<arg value="--allowDeletions"/> <arg value="true"/>
+			<arg value="--allowInsertions"/> <arg value="true"/>
+			<arg value="--minimumJointProbability"/> <arg value="1e-5"/>
+			<arg value="--minimumConfidence"/> <arg value="1e-4"/>
+			<arg value="--maximumSuggestions"/> <arg value="${maximum.suggestions}"/>
+			<arg value="--addWordBoundaries"/> <arg value="true"/>
+			<arg value="--maximumPenalty"/> <arg value="3000"/>
+
+			 <arg value="--modernWordformAsLemma"/> <arg value="${modern.wordform.as.lemma}"/>
+
+<!-- # not used yet -->
+
+	       		<classpath refid="java.class.path"/>
+	</java>
+
+	</target>
+
+	<target name="evaluationset.export">
+		<exec executable="mysql" output="${evaluation.set.exported}" input="${export.query}">
+			<arg value="-h"/>	
+			<arg value="${database.host}"/>
+			<arg value="-pimpact"/>
+			<arg value="-uimpact"/>
+			<arg value="${evaluation.database}"/>
+		</exec>
+	</target>
+</project>

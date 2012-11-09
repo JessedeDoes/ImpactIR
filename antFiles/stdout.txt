@@ -1,0 +1,112 @@
+build.bulgarian.xml
+Buildfile: build.bulgarian.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 13 seconds
+build.czech.1800_1809.xml
+Buildfile: build.czech.1800_1809.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 3 seconds
+build.czech.1810_1842.xml
+Buildfile: build.czech.1810_1842.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 5 seconds
+build.czech.1843_1849.xml
+Buildfile: build.czech.1843_1849.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 5 seconds
+build.czech.1850.xml
+Buildfile: build.czech.1850.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 3 seconds
+build.dutch.xml
+Buildfile: build.dutch.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 58 seconds
+build.english.xml
+Buildfile: build.english.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 12 seconds
+build.french.xml
+Buildfile: build.french.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 14 seconds
+build.german.16.xml
+Buildfile: build.german.16.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 5 seconds
+build.german.17.xml
+Buildfile: build.german.17.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 3 seconds
+build.german.18.xml
+Buildfile: build.german.18.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 6 seconds
+build.german.19.xml
+Buildfile: build.german.19.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 6 seconds
+build.german.xml
+Buildfile: build.german.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 11 seconds
+build.polish.xml
+Buildfile: build.polish.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 9 seconds
+build.slovene.xml
+Buildfile: build.slovene.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 2 minutes 50 seconds
+build.spanish.xml
+Buildfile: build.spanish.xml
+
+ir.evaluation:
+
+BUILD SUCCESSFUL
+Total time: 14 seconds

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<project name="czech_ir_evaluation_1800_1809" default="ir.evaluation" basedir=".">
+	<property name="language" value="Czech"/>	
+	<property name="period" value="1843_1849"/>
+        <import file="build.czech.xml"/>
+</project>
