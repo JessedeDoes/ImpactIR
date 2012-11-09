@@ -26,7 +26,7 @@ import java.util.*;
  * suppose classification is especially bad for multiwords entities as
  * everything is decided by the first one now....
  * so ... first segment,
- * then (re)classify??
+ * then (re)classify???
  *
  */
 
