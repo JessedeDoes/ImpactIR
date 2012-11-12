@@ -19,6 +19,20 @@ public class NamePartTagger extends BasicNERTagger
 		return false;
 	}
 	
+	
+	public static Tagger getNamePartTagger(String nerModel, String partModel)
+	{
+		
+		BasicNERTagger t0 = new BasicNERTagger();
+		NamePartTagger t1 = new NamePartTagger();
+		t0.loadModel(nerModel);
+		t1.loadModel(partModel);
+		ChainOfTaggers t = new ChainOfTaggers();
+		t.addTagger(t0);
+		t.addTagger(t1);
+		return t;
+	}
+	
 	public static void main(String[] args)
 	{
 		String nerModel = args[0];
