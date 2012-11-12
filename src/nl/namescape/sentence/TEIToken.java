@@ -50,6 +50,5 @@ public class TEIToken extends HashMap<String,String> implements Token
 	{
 		isEOS=true;
 		// TODO Auto-generated method stub
-
 	}
 }

@@ -20,7 +20,9 @@ public class ChainOfTaggers implements Tagger
 	{
 		this.taggers.add(t);
 	}
+	
 	@Override
+	
 	public Corpus tag(Corpus inputCorpus) 
 	{
 		// TODO Auto-generated method stub
@@ -30,5 +32,10 @@ public class ChainOfTaggers implements Tagger
 			c = t.tag(c);
 		}
 		return c;
+	}
+	
+	public static void main(String[] args)
+	{
+		
 	}
 }

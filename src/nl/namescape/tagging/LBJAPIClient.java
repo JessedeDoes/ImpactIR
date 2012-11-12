@@ -45,6 +45,7 @@ public class LBJAPIClient
 		sw.start();
 		Vector<LinkedVector> data= parseXML(d);
 		sw.stop();
+		
 	
 		System.err.println("tokenized document parsed: " + sw.getElapsedTimeSecs());
 	
