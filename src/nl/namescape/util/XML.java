@@ -80,6 +80,7 @@ public class XML extends Object
 			}
 		}
 	}
+	
 	public static void findElementsByName(List<Element> list, Element e, String elementName, boolean recursive) // nonrecursive
 	{
 		NodeList children = e.getChildNodes();
@@ -654,5 +655,26 @@ public class XML extends Object
 			e.removeChild(ch.item(i));
 		}
 		e.appendChild(t);
+	}
+	
+	public static void removeInterveningNode(Element e)
+	{
+		Node p = e.getParentNode();
+		NodeList n = e.getChildNodes();
+		List<Node> children = new ArrayList<Node>();
+		Node next = e.getNextSibling();
+		for (int i=0; i < n.getLength(); i++)
+		{
+			children.add(n.item(i));
+		}
+		for (Node c: children) e.removeChild(c);
+		p.removeChild(e);
+		for (Node c: children)
+		{
+			if (next != null) 
+				p.insertBefore(c, next);
+			else
+				p.appendChild(c);
+		}
 	}
 }
