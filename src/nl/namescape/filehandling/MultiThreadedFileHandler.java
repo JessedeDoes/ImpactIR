@@ -20,7 +20,6 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		@Override
 		public void run() 
 		{
-			// TODO Auto-generated method stub
 			if (fileName != null && baseHandler1 != null)
 				baseHandler1.handleFile(fileName);
 		}
@@ -39,7 +38,6 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		@Override
 		public void run() 
 		{
-			// TODO Auto-generated method stub
 			if (inFile != null && baseHandler2 != null)
 				baseHandler2.handleFile(inFile,outFile);
 		}
@@ -65,5 +63,10 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		// TODO Auto-generated method stub
 		BinaryTask t = new BinaryTask(in,out);
 		pool.execute(t);
+	}
+	
+	public static void main(String args[])
+	{
+		
 	}
 }
