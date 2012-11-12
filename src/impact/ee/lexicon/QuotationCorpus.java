@@ -6,9 +6,11 @@ import impact.ee.util.SimpleTokenizer;
 import impact.ee.util.Database.MapFetcher;
 import impact.ee.util.SimpleTokenizer.Token;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //import lexicon.LexiconDatabase.QuotationsAsCorpus.Attestation;
 
@@ -45,7 +47,8 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 		int start_pos;
 		int end_pos;
 		int focus_position=-1;
-	
+		Set<String> attributes = new HashSet<String>();
+		
 		List<SimpleTokenizer.Token> tokenizedQuotation;
 		
 		public Attestation(Map<String,String> m)
@@ -56,6 +59,12 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 			wordform = m.get("wordform");
 			start_pos = Integer.parseInt(m.get("start_pos"));
 			end_pos = Integer.parseInt(m.get("end_pos"));
+			
+			attributes.add("quote");
+			attributes.add("word");
+			attributes.add("lemma");
+			attributes.add("tag");
+			
 			tokenizedQuotation = new SimpleTokenizer().tokenizeText(quotation);
 			
 			// find focus position
@@ -110,6 +119,13 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 					this.lemmaPoS = attributeValue;
 				}
 			}
+		}
+
+		@Override
+		public Set<String> getAttributes() 
+		{
+			// TODO Auto-generated method stub
+			return this.attributes;
 		}
 	}
 	

@@ -9,7 +9,6 @@ import nl.namescape.util.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import LbjTagger.Parameters;
 
 
 public class FrogTagXML 

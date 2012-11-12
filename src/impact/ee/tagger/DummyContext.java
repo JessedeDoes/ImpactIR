@@ -1,5 +1,8 @@
 package impact.ee.tagger;
 
+import java.util.Set;
+import java.util.HashSet;
+
 public class DummyContext implements Context 
 {
 
@@ -14,5 +17,10 @@ public class DummyContext implements Context
 			int relativePosition) 
 	{
 		System.err.println("Trying to set attribute on dummy context...");
+	}
+	
+	public Set<String> getAttributes()
+	{
+		return new HashSet();
 	}
 }

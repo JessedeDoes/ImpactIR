@@ -3,9 +3,12 @@ package impact.ee.tagger;
 import impact.ee.classifier.Feature;
 import impact.ee.util.TabSeparatedFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +19,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 {
 	EnumerationWithContext<Map<String,String>> enumerationWithContext;
 	boolean supportsReset = false;
+	List<String> attributeList = new ArrayList<String>();
 	class SimpleLineParser extends LineParser<Map<String,String>>
 	{
 		TabSeparatedFile tabjes = null;
@@ -78,6 +82,12 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 			Map<String,String> m = enumerationWithContext.get(relativePosition);
 			m.put(attributeName, attributeValue);
 		}
+		
+		public Set<String> getAttributes()
+		{
+			Map<String,String> m = enumerationWithContext.get(0);
+			return m.keySet();
+		}
 	}
 	
 	private Context context = new Context();
@@ -90,6 +100,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 	public SimpleCorpus(String fileName, String[] fieldNames)
 	{
 		supportsReset = true;
+		for (String s: fieldNames) attributeList.add(s);
 		try
 		{
 			BufferedReader b = new BufferedReader(new FileReader(new File(fileName)));

@@ -3,7 +3,7 @@ package nl.namescape.tei;
  * Deze klasse maakt de Illinois NE tagger xml-inpakbaar
  * Iets dergelijks voor Stanford doen...
  */
-import LbjTagger.*;
+//import LbjTagger.*;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -26,9 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import lbj.*;
-import IO.OutFile;
-import LBJ2.parse.*;
+//import lbj.*;
+//import IO.OutFile;
+//import LBJ2.parse.*;
 import org.w3c.dom.ranges.*;
 
 
