@@ -30,5 +30,15 @@ public class NamePartTagger extends BasicNERTagger
 		ChainOfTaggers t = new ChainOfTaggers();
 		t.addTagger(t0);
 		t.addTagger(t1);
+		SimpleCorpus c = 
+				new SimpleCorpus(args[2], BasicNERTagger.defaultAttributeNames);
+		Corpus tagged = t.tag(c);
+		for (Context tc: tagged.enumerate())
+		{
+			System.out.println(
+					tc.getAttributeAt("word", 0) + "\t"
+					+ tc.getAttributeAt("tag", 0) + "\t"
+					+ tc.getAttributeAt("namePartTag", 0)); 
+		}
 	}
 }
