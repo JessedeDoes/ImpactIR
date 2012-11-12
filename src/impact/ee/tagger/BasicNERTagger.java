@@ -42,8 +42,10 @@ public class BasicNERTagger implements Serializable, Tagger
 	boolean useShapes = true;
 	Set<String> knownWords = new HashSet<String>();
 	double proportionOfTrainingToUse = 1;
+	public String taggedAttribute = "tag";
 	
-	public static String[] attributeNames = {"word", "tag"};
+	public static String[] defaultAttributeNames = {"word", "tag"};
+	public String[] attributeNames = defaultAttributeNames;
 	
 	public void setClassifier(String className)
 	{
@@ -122,7 +124,7 @@ public class BasicNERTagger implements Serializable, Tagger
 			{
 				if (filter(c))
 				{
-					String answer = c.getAttributeAt("tag", 0);
+					String answer = c.getAttributeAt(taggedAttribute, 0);
 					if (answer == null)
 						continue;
 					if (doeEvenRaar)
@@ -179,7 +181,7 @@ public class BasicNERTagger implements Serializable, Tagger
 				continue;
 			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
 			// System.err.println(features.itemToString(item));
-			String truth = c.getAttributeAt("tag", 0);
+			String truth = c.getAttributeAt(taggedAttribute, 0);
 			if (truth == null)
 			{
 				System.out.print("\n");
@@ -194,7 +196,7 @@ public class BasicNERTagger implements Serializable, Tagger
 			
 			if (useFeedback)
 			{
-				c.setAttributeAt("tag", outcome, 0);
+				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}
 					
 			if (!truth.equals(outcome))
@@ -260,11 +262,25 @@ public class BasicNERTagger implements Serializable, Tagger
 	public HashMap<String, String> apply(Context c) 
 	{
 		// TODO Auto-generated method stub
-		impact.ee.classifier.Instance instance = features.makeTestInstance(c);
-		String outcome = classifier.classifyInstance(instance);
+		
 		HashMap<String,String> m = new HashMap<String,String>();
-		m.put("word", c.getAttributeAt("word", 0));
-		m.put("tag", outcome);
+		//m.put("word", c.getAttributeAt("word", 0));
+		
+		for (String key: c.getAttributes())
+		{
+			m.put(key, c.getAttributeAt(key, 0));
+		}
+		
+		if (filter(c))
+		{
+			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+			String outcome = classifier.classifyInstance(instance);
+			m.put(taggedAttribute, outcome);
+			if (useFeedback)
+			{
+				c.setAttributeAt(taggedAttribute, outcome, 0);
+			}
+		}
 		return m;
 	}
 	

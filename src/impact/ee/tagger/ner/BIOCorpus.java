@@ -14,7 +14,7 @@ public class BIOCorpus implements ChunkedCorpus, Iterator<Context>, Iterable<Con
 	
 	public BIOCorpus(String fileName)
 	{
-		Corpus c = new SimpleCorpus(fileName, BasicNERTagger.attributeNames);
+		Corpus c = new SimpleCorpus(fileName, BasicNERTagger.defaultAttributeNames);
 		bio = c.enumerate().iterator();
 	}
 	
