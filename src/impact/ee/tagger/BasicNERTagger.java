@@ -280,6 +280,9 @@ public class BasicNERTagger implements Serializable, Tagger
 			{
 				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}
+		} else
+		{
+			c.setAttributeAt(taggedAttribute, "O", 0);
 		}
 		return m;
 	}

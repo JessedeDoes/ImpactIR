@@ -36,6 +36,7 @@ public class EnumerationWithContext<T> implements Iterator<T>// T is the token-w
 		//System.err.println("element class:" + elementClass);
 		//System.err.println("default:" + defaultT);
 		
+		
 		for (int i=0; i < focus; i++)
 			buffer[i] = defaultT;
 		for (int i=focus; i < windowSize; i++)
