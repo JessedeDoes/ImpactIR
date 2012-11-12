@@ -159,6 +159,20 @@ public class TEITagClasses
 		return sss;
 	}
 
+	public static void removeTokenization(Document d)
+	{
+		List<Element> sentences = getSentenceElements(d);
+		List<Element> tokens = getTokenElements(d);
+		for (Element t: tokens)
+		{
+			XML.removeInterveningNode(t);
+		}
+		for (Element s: sentences)
+		{
+			XML.removeInterveningNode(s);
+		}
+	}
+	
 	public static boolean tagSplitsWords(String tagName)
 	{
 		return nameTags.contains(tagName) || !(inlineTags.contains(tagName));

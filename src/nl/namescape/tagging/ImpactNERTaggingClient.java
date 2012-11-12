@@ -3,6 +3,7 @@ package nl.namescape.tagging;
 import java.util.Map;
 
 import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.tei.TEINameTagging;
 
 import org.w3c.dom.Document;
@@ -42,6 +43,7 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 		Tagger namePartTagger = 
 				NamePartTagger.getNamePartTagger(args[0], args[1]);
 		ImpactNERTaggingClient x = new ImpactNERTaggingClient(namePartTagger);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
 		DirectoryHandling.tagAllFilesInDirectory(x, args[2], args[3]);
 	}
 }

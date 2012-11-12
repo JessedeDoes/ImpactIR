@@ -272,18 +272,24 @@ public class NymListBuilder
 		persNyms.addAll(orgNyms);
 		persNyms.addAll(miscNyms);
 	
-		Element sourceDesc = XML.getElementByTagname(root,"sourceDesc");
+		if (persNyms.size() > 0)
+		{
+			Element sourceDesc = XML.getElementByTagname(root,"sourceDesc");
 	
-		Element nymList = d.createElement("listNym");
+			Element nymList = d.createElement("listNym");
 		
-		for (Element nym: persNyms)
+			for (Element nym: persNyms)
+			{
+				nymList.appendChild(nym);
+				nymList.appendChild(d.createTextNode("\n"));
+			}
+			if (sourceDesc != null)
+			{
+				sourceDesc.appendChild(nymList);
+			}
+		} else
 		{
-			nymList.appendChild(nym);
-			nymList.appendChild(d.createTextNode("\n"));
-		}
-		if (sourceDesc != null)
-		{
-			sourceDesc.appendChild(nymList);
+			System.err.println("Whoops! no names in document!");
 		}
 	}
 
