@@ -33,6 +33,19 @@ public class NamePartTagger extends BasicNERTagger
 		return t;
 	}
 	
+	public static class Trainer
+	{
+		public static void main(String[] args)
+		{
+			NamePartTagger t = new NamePartTagger();
+			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
+			t.examine(statsCorpus);
+			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
+			t.train(trainingCorpus);
+			t.saveModel(args[1]);
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		String nerModel = args[0];
