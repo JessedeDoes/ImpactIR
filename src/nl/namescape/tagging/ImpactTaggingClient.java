@@ -24,10 +24,22 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 {
 	Tagger tagger;
 	
-	
 	public ImpactTaggingClient(Tagger tagger)
 	{
 		this.tagger = tagger;
+	}
+	
+	public void attachToElement(Element e, Map<String,String> m)
+	{
+		// e.setAttribute("type", tag);
+		String tag = m.get("tag");
+		if (tag != null)
+			e.setAttribute("type", tag);
+	}
+	
+	public void postProcess(Document d)
+	{
+		
 	}
 	
 	public void tagDocument(Document d)
@@ -38,18 +50,24 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 			int nWords = 0;
 			TEITokenStream inputCorpus = new TEITokenStream(d);
 			Corpus out = tagger.tag(inputCorpus);
-			Map<String, String> tagMap = new HashMap<String, String>();
-			for (Context c : out.enumerate()) {
-				String tag = c.getAttributeAt("tag", 0);
+			Map<String, Map<String,String>> tagMap = new HashMap<String, Map<String,String>>();
+			for (Context c : out.enumerate()) 
+			{
+				Map<String,String> m = new HashMap<String,String>();
+				for (String s: c.getAttributes())
+				{
+					m.put(s, c.getAttributeAt(s, 0));
+				}
 				String id = c.getAttributeAt("id", 0);
-				//System.err.println(id + "->"  + tag);
-				tagMap.put(id, tag);
+				if (id != null)
+					tagMap.put(id, m);
 				nWords++;
 			}
-			for (Element e : TEITagClasses.getTokenElements(d)) {
-				String tag = tagMap.get(e.getAttribute("xml:id"));
-				if (tag != null)
-					e.setAttribute("type", tag);
+			for (Element e : TEITagClasses.getTokenElements(d)) 
+			{
+				Map<String,String> tags = tagMap.get(e.getAttribute("xml:id"));
+				if (tags != null)
+					attachToElement(e,tags);
 			}
 			long endTime = System.currentTimeMillis();
 			long interval = endTime - startTime;

@@ -68,7 +68,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	 */
 
 	@Deprecated
-	public void injectNETags(String xmlFile, String neTaggedFile)
+	private void injectNETags(String xmlFile, String neTaggedFile)
 	{
 		HashMap<String,String> id2tag = new HashMap<String,String>();
 		try 
@@ -144,7 +144,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	 * @param d
 	 */
 
-	public static void addEntityTags(Document d)
+	private static void addEntityTags(Document d)
 	{
 		List<Element> wordElements = XML.getElementsByTagname(d.getDocumentElement(), "w", false);
 
@@ -158,7 +158,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 		}
 	}
 
-	public static void tagEntities(Document d, List<Element> wordElements, boolean tagParts) 
+	private static void tagEntities(Document d, List<Element> wordElements, boolean tagParts) 
 	{
 		String entityType = "";
 		Element entityStart = null;
@@ -262,7 +262,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 		range.detach();
 	}
 
-	public static void tagStructureAttribute(Element e) 
+	private static void tagStructureAttribute(Element e) 
 	{
 		if (e.getAttribute("type").equals("person"))
 		{
