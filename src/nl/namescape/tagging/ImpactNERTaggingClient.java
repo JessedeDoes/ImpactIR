@@ -27,7 +27,7 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 		String tag = m.get("tag");
 		if (tag != null)
 			e.setAttribute("neLabel", tag);
-		tag = m.get("nePartTag");
+		tag = m.get("namePartTag");
 		if (tag != null)
 			e.setAttribute("nePartLabel", tag);
 	}

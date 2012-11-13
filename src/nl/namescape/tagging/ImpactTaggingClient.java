@@ -108,6 +108,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 		{
 			PrintStream pout = new PrintStream(new FileOutputStream(out));
 			tagDocument(d);
+			postProcess(d);
 			pout.print(XML.documentToString(d));
 			pout.close();
 		} catch (FileNotFoundException e) 
