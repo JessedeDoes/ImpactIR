@@ -72,6 +72,11 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		pool.execute(t);
 	}
 	
+	public void shutdown()
+	{
+		this.pool.shutdown();
+	}
+	
 	static class ExampleHandler implements DoSomethingWithFile
 	{
 		long totalSpace = 0;
@@ -92,6 +97,7 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		}
 	}
 	
+
 	public static void main(String args[])
 	{
 		ExampleHandler e = new ExampleHandler();

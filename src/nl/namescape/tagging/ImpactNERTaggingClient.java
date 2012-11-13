@@ -44,6 +44,7 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 				NamePartTagger.getNamePartTagger(args[0], args[1]);
 		ImpactNERTaggingClient x = new ImpactNERTaggingClient(namePartTagger);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
-		DirectoryHandling.tagAllFilesInDirectory(x, args[2], args[3]);
+		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);
+		m.shutdown();
 	}
 }
