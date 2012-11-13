@@ -53,7 +53,6 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 			}
 			return m;
 		}
-		
 	}
 	
 	public class Context implements impact.ee.tagger.Context
@@ -62,7 +61,6 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		@Override
 		public String getAttributeAt(String featureName, int relativePosition) 
 		{
-			// TODO Auto-generated method stub
 			try
 			{
 				Map<String,String> m = enumerationWithContext.get(relativePosition);
@@ -78,7 +76,6 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		public void setAttributeAt(String attributeName, String attributeValue,
 				int relativePosition) 
 		{
-			// TODO Auto-generated method stub
 			Map<String,String> m = enumerationWithContext.get(relativePosition);
 			m.put(attributeName, attributeValue);
 		}
