@@ -5,6 +5,7 @@ import impact.ee.util.TabSeparatedFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,9 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		public Set<String> getAttributes()
 		{
 			Map<String,String> m = enumerationWithContext.get(0);
-			return m.keySet();
+			if (m != null)
+				return m.keySet();
+			return new HashSet<String>();
 		}
 	}
 	
