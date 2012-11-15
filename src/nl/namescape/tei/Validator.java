@@ -38,7 +38,8 @@ public class Validator implements DoSomethingWithFile
 {
 	//http://blog.krecan.net/2011/05/02/using-jing-for-relax-ng-validation/
 	//we are using Relax NG compact format
-	private static String namescapeSchema="/mnt/Projecten/Taalbank/Namescape/Codering/namescape.rng";
+	private static String namescapeSchema=
+			"/mnt/Projecten/Taalbank/Namescape/Codering/namescape_onlineroma.rng";
 	
 	private com.thaiopensource.validate.Validator thaiValidator = null;
 	CountingErrorHandler errorCounter = null;

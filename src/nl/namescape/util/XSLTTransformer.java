@@ -38,7 +38,7 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 	private Transformer transformer = null;
 	private TransformerFactory tFactory;
 	private String xslInUri;
-	private boolean useSaxon = false;
+	private boolean useSaxon = true;
 	private boolean alwaysReload = true;
 	
 	public XSLTTransformer(String xslInUri)
@@ -57,6 +57,11 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		tFactory = TransformerFactory.newInstance();
 		this.xslInUri = xslInUri;
 		loadStylesheet();
+		if (this.transformer == null)
+		{
+			System.err.println("EEK!");
+			System.exit(1);
+		}
 	}
 
 
