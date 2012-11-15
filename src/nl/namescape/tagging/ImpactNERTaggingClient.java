@@ -5,6 +5,7 @@ import java.util.Map;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.tei.TEINameTagging;
+import nl.namescape.util.Options;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,9 +41,14 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 	
 	public static void main(String[] args)
 	{
+		nl.namescape.util.Options options = 
+				new nl.namescape.util.Options(args);
+		args = options.commandLine.getArgs();
+
 		Tagger namePartTagger = 
 				NamePartTagger.getNamePartTagger(args[0], args[1]);
 		ImpactNERTaggingClient x = new ImpactNERTaggingClient(namePartTagger);
+		x.tokenize = Options.getOptionBoolean("tokenize", true);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
 		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);
 		m.shutdown();

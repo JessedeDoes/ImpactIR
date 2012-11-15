@@ -23,6 +23,7 @@ import java.util.*;
 public class ImpactTaggingClient implements SimpleInputOutputProcess
 {
 	Tagger tagger;
+	boolean tokenize = true;
 	
 	public ImpactTaggingClient(Tagger tagger)
 	{
@@ -86,7 +87,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 	@Override
 	public void handleFile(String in, String out) 
 	{
-		boolean tokenize = true;
+		
 		Document d = null;
 		if (tokenize)
 		{
