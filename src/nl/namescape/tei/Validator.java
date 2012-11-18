@@ -113,7 +113,7 @@ public class Validator implements DoSomethingWithFile
 	{
 		try
 		{
-			Document d = XML.parse(fileName);
+			Document d = XML.parse(fileName, true);
 			validate(d);
 		} catch (Exception e)
 		{

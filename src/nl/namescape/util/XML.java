@@ -11,6 +11,8 @@ import java.util.*;
 import java.io.*;
 import java.net.URI;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -405,15 +407,20 @@ public class XML extends Object
 		return trimmed;
 	}
 	
-	public static Document parse(String aFilename) throws ParserConfigurationException, SAXException, IOException
+	public static Document parse(String aFilename, boolean namespaceAware) throws ParserConfigurationException, SAXException, IOException
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
+		factory.setNamespaceAware(namespaceAware);
 		factory.setFeature( "http://apache.org/xml/features/dom/defer-node-expansion", false );
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		URI u = new File(aFilename).toURI();
 		Document document = builder.parse(u.toString());
 		return document;
+	}
+	
+	public static Document parse(String aFilename) throws ParserConfigurationException, SAXException, IOException
+	{
+		return parse(aFilename,true);
 	}
 
 
