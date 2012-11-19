@@ -6,6 +6,9 @@ import impact.ee.classifier.svmlight.SVMLightClassifier.TrainingMethod;
 import impact.ee.classifier.weka.*;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
+import impact.ee.tagger.Context;
+import impact.ee.tagger.Corpus;
+import impact.ee.tagger.Tagger;
 import impact.ee.util.Serialize;
 import impact.ee.lemmatizer.Example;
 import impact.ee.lemmatizer.Pattern;
@@ -34,7 +37,7 @@ import java.util.*;
  *(so if PoS guess is wrong (gevarengeld --> gevarengelen etc), we do not see the other options!)
  */
 
-public class SimplePatternBasedLemmatizer implements java.io.Serializable
+public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagger
 {
 	private static final long serialVersionUID = 1L;
 
@@ -225,5 +228,37 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable
 		l.readFromFile(args[0]);
 		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
 		spbl.test(l);
+	}
+
+	@Override
+	public HashMap<String, String> apply(Context c) 
+	{
+		// TODO Auto-generated method stub
+		HashMap<String,String> m = new HashMap<String,String>();
+		//m.put("word", c.getAttributeAt("word", 0));
+		
+		for (String key: c.getAttributes())
+		{
+			m.put(key, c.getAttributeAt(key, 0));
+		}
+		
+		String word = c.getAttributeAt("word", 0);
+		String tag = c.getAttributeAt("tag", 0);
+		String lemma = this.findLemmaConsistentWithTag(word,lemma);
+		m.put("lemma", lemma);
+		return m;
+	}
+
+	private String findLemmaConsistentWithTag(String word, String lemma) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Corpus tag(Corpus inputCorpus) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
