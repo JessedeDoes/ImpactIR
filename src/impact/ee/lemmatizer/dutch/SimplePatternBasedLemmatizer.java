@@ -7,6 +7,7 @@ import impact.ee.classifier.weka.*;
 import impact.ee.lexicon.ILexicon;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
+import impact.ee.tagger.BasicNERTagger;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
 import impact.ee.tagger.DummyMap;
@@ -113,7 +114,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	public void train(impact.ee.lexicon.InMemoryLexicon l)
 	{
 		this.lexicon = l;
-		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.05);
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.9);
 		train(l,heldout);
 	}
 	
@@ -330,6 +331,16 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(args[0]);
 		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
-		spbl.test(l);
+		spbl.train(l);
+		SimpleCorpus testCorpus = new SimpleCorpus(args[1], BasicNERTagger.defaultAttributeNames);
+
+		for (Context c: spbl.tag(testCorpus).enumerate())
+		{
+			System.out.println(
+					c.getAttributeAt("word", 0) 
+					+ "\t" + c.getAttributeAt("tag", 0)
+					+ "\t" + c.getAttributeAt("lemma", 0));
+		}
+		// spbl.test(l);
 	}
 }
