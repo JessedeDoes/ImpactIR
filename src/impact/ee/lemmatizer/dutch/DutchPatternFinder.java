@@ -63,14 +63,14 @@ public class DutchPatternFinder implements PatternFinder
 				{
 					String stemA = a.substring(0, a.length() - suffixa.length());
 					String stemB = b.substring(0, b.length() - suffixb.length());
-					System.err.println(stemA + " " + stemB);
+					//System.err.println(stemA + " " + stemB);
 					for (String infix: infixes)
 					{
 						for (String stripped: StringUtils.removeInfix(stemA, infix))
 						{
 							for (StemChange change: stemChanges)
 							{
-								System.err.println(stemA + " " + stemB + "?"+ change);
+								//System.err.println(stemA + " " + stemB + "?"+ change);
 								if (!change.appliesToPoS(PoS))
 									continue;
 								String x = change.transform(stripped);
@@ -93,7 +93,7 @@ public class DutchPatternFinder implements PatternFinder
 		if (!found)
 		{
 			foundPattern = this.fallbackFinder.findPattern(a, b);
-			System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
+			//System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
 			//foundPattern = null; // OeHoeps..
 		} else
 		{

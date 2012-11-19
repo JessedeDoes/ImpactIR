@@ -61,7 +61,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	LemmaCache lemmaCache = new LemmaCache();
 	TagSet corpusTagset = new CGNTagSet();
 	ILexicon lexicon = null;
-	
+
 	int ruleId = 1;
 
 	private transient PatternFinder patternFinder = new DutchPatternFinder();
@@ -81,7 +81,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 			features = new FeatureSet.Dummy();
 		}
 	}
-	
+
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		Dataset trainingSet = new Dataset("lemmatizer");
@@ -93,7 +93,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 				if (heldOutSet != null && heldOutSet.contains(w)) continue;
 				Rule rule = findRule(w);
 				System.err.println(w + " " + rule);
-			
+
 				trainingSet.addInstance(w.wordform, "rule." + rule.id);
 			}
 		} catch (Exception e)
@@ -117,7 +117,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.9);
 		train(l,heldout);
 	}
-	
+
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
 		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.05);
@@ -156,7 +156,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 			}
 			boolean isOK = guessedLemma.equalsIgnoreCase(wf.lemma);
 			if (isOK) t.nCorrect++;
-		    System.err.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
+			System.err.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
 			if (guessedLemma == null || !guessedLemma.equals(wf.lemma))
 			{
 				boolean foundPoSMatch = false;
@@ -252,12 +252,12 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		// TODO Auto-generated method stub
 		HashMap<String,String> m = new HashMap<String,String>();
 		//m.put("word", c.getAttributeAt("word", 0));
-		
+
 		for (String key: c.getAttributes())
 		{
 			m.put(key, c.getAttributeAt(key, 0));
 		}
-		
+
 		String word = c.getAttributeAt("word", 0);
 		String tag = c.getAttributeAt("tag", 0);
 		String lemma = this.findLemmaConsistentWithTag(word,tag);
@@ -275,30 +275,34 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		{
 			return bestGuess;
 		}
+
 		if (!corpusTagset.isInflectingPoS(tag))
 		{
 			return wordform.toLowerCase();
 		}
-		
+
 		bestGuess ="UNKNOWN";
-		
+
 		Set<WordForm> lemmata = lexicon.findLemmata(wordform);
-		for (WordForm w: lemmata)
+		if (lemmata != null)
 		{
-			if (tagRelation.compatible(tag, w.tag))
+			for (WordForm w: lemmata)
 			{
-				lemmaCache.put(wordform, tag, w.lemma);
-				return w.lemma;
+				if (tagRelation.compatible(tag, w.tag))
+				{
+					lemmaCache.put(wordform, tag, w.lemma);
+					return w.lemma;
+				}
 			}
 		}
 		
 		Distribution outcomes =
-			classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wordform));
-		
-		for (Outcome o: outcomes.outcomes)
+				classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wordform));
+
+		if (outcomes != null) for (Outcome o: outcomes.outcomes)
 		{
 			Rule r1 =  this.ruleID2Rule.get(o.label);
-			if (r1 == null)
+			if (r1 == null || r1.pattern == null)
 			{
 				continue;
 			}
@@ -319,13 +323,13 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	@Override
 	public SimpleCorpus tag(Corpus testCorpus)
 	{
-		 Enumeration<Map<String,String>> output = new OutputEnumeration(this, testCorpus);
-		 EnumerationWithContext<Map<String,String>> ewc = 
-				 new EnumerationWithContext(Map.class, output, new DummyMap());
-		 return new SimpleCorpus(ewc);
+		Enumeration<Map<String,String>> output = new OutputEnumeration(this, testCorpus);
+		EnumerationWithContext<Map<String,String>> ewc = 
+				new EnumerationWithContext(Map.class, output, new DummyMap());
+		return new SimpleCorpus(ewc);
 	}
-	
-	
+
+
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
