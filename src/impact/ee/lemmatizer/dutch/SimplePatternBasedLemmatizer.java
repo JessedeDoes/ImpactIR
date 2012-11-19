@@ -9,6 +9,10 @@ import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
+import impact.ee.tagger.DummyMap;
+import impact.ee.tagger.EnumerationWithContext;
+import impact.ee.tagger.OutputEnumeration;
+import impact.ee.tagger.SimpleCorpus;
 import impact.ee.tagger.Tagger;
 import impact.ee.util.Serialize;
 import impact.ee.lemmatizer.Example;
@@ -20,7 +24,9 @@ import impact.ee.lemmatizer.SimpleFeatureSet;
 import impact.ee.lemmatizer.SuffixGuesser;
 import impact.ee.lemmatizer.reverse.*;
 import impact.ee.lemmatizer.tagset.CGN2Parole;
+import impact.ee.lemmatizer.tagset.CGNTagSet;
 import impact.ee.lemmatizer.tagset.TagRelation;
+import impact.ee.lemmatizer.tagset.TagSet;
 import impact.ee.classifier.Distribution.Outcome;
 import java.io.IOException;
 import java.util.*;
@@ -52,6 +58,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
 	TagRelation tagRelation = new CGN2Parole();
 	LemmaCache lemmaCache = new LemmaCache();
+	TagSet corpusTagset = new CGNTagSet();
 	ILexicon lexicon = null;
 	
 	int ruleId = 1;
@@ -103,6 +110,13 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		// System.exit(1);
 	}
 
+	public void train(impact.ee.lexicon.InMemoryLexicon l)
+	{
+		this.lexicon = l;
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.05);
+		train(l,heldout);
+	}
+	
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
 		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.05);
@@ -229,13 +243,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return new Serialize<SimplePatternBasedLemmatizer>().loadFromFile(fileName);
 	}
 
-	public static void main(String[] args)
-	{
-		InMemoryLexicon l = new InMemoryLexicon();
-		l.readFromFile(args[0]);
-		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
-		spbl.test(l);
-	}
+
 
 	@Override
 	public HashMap<String, String> apply(Context c) 
@@ -265,6 +273,10 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		if ((bestGuess = lemmaCache.get(wordform,tag)) != null)
 		{
 			return bestGuess;
+		}
+		if (!corpusTagset.isInflectingPoS(tag))
+		{
+			return wordform.toLowerCase();
 		}
 		
 		bestGuess ="UNKNOWN";
@@ -304,9 +316,20 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	}
 
 	@Override
-	public Corpus tag(Corpus inputCorpus) 
+	public SimpleCorpus tag(Corpus testCorpus)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		 Enumeration<Map<String,String>> output = new OutputEnumeration(this, testCorpus);
+		 EnumerationWithContext<Map<String,String>> ewc = 
+				 new EnumerationWithContext(Map.class, output, new DummyMap());
+		 return new SimpleCorpus(ewc);
+	}
+	
+	
+	public static void main(String[] args)
+	{
+		InMemoryLexicon l = new InMemoryLexicon();
+		l.readFromFile(args[0]);
+		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
+		spbl.test(l);
 	}
 }

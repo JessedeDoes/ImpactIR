@@ -6,7 +6,6 @@ import java.util.*;
 public class Tag extends HashMap<String, Set<String>> 
 {
 	public static char multiValueSeparator='|';
-	TagSet tagset = new TagSet();
 	
 	public void put(String name, String value)
 	{
@@ -41,14 +40,14 @@ public class Tag extends HashMap<String, Set<String>>
 		t.put("pos", a[0]);
 		if (a.length > 1)
 		{
-			String rest = a[1].replaceAll(")", "");
+			String rest = a[1].replaceAll("\\)", "");
 			String[] featuresvalues = rest.split(",");
 			for (String fplusv: featuresvalues)
 			{
 				String[] fv = fplusv.split("=");
 				if (fv.length > 1)
 				{
-					String name=fv[0];
+					String name= fv[0];
 					String values = fv[1];
 					for (String value: values.split(multiValueSeparator+""))
 					{

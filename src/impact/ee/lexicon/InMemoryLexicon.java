@@ -78,10 +78,18 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon
 
 		wfz.add(w);
 		
-		Set<WordForm> lemz = form2lemmata.get(w.wordform);
+		Set<WordForm> lemz = form2lemmata.get(w.wordform.toLowerCase());
 		if (lemz == null)
-			form2lemmata.put(w.wordform, (lemz =new HashSet<WordForm>()));
+			form2lemmata.put(w.wordform.toLowerCase(), (lemz =new HashSet<WordForm>()));
 		lemz.add(w);
+		
+		if (!w.wordform.toLowerCase().equals(w.wordform))
+		{
+			Set<WordForm> lemzz = form2lemmata.get(w.wordform);
+			if (lemzz == null)
+				form2lemmata.put(w.wordform, (lemzz =new HashSet<WordForm>()));
+			lemzz.add(w);
+		}
 	}
 	
 	public boolean containsLemmaWordform(String lemma, String wordform)
