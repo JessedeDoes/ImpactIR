@@ -244,7 +244,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		
 		String word = c.getAttributeAt("word", 0);
 		String tag = c.getAttributeAt("tag", 0);
-		String lemma = this.findLemmaConsistentWithTag(word,lemma);
+		String lemma = this.findLemmaConsistentWithTag(word,tag);
 		m.put("lemma", lemma);
 		return m;
 	}
