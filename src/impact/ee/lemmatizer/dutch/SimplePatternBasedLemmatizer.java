@@ -4,6 +4,7 @@ import impact.ee.classifier.libsvm.*;
 import impact.ee.classifier.svmlight.SVMLightClassifier;
 import impact.ee.classifier.svmlight.SVMLightClassifier.TrainingMethod;
 import impact.ee.classifier.weka.*;
+import impact.ee.lexicon.ILexicon;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.Context;
@@ -11,12 +12,15 @@ import impact.ee.tagger.Corpus;
 import impact.ee.tagger.Tagger;
 import impact.ee.util.Serialize;
 import impact.ee.lemmatizer.Example;
+import impact.ee.lemmatizer.LemmaCache;
 import impact.ee.lemmatizer.Pattern;
 import impact.ee.lemmatizer.PatternFinder;
 import impact.ee.lemmatizer.Rule;
 import impact.ee.lemmatizer.SimpleFeatureSet;
 import impact.ee.lemmatizer.SuffixGuesser;
 import impact.ee.lemmatizer.reverse.*;
+import impact.ee.lemmatizer.tagset.CGN2Parole;
+import impact.ee.lemmatizer.tagset.TagRelation;
 import impact.ee.classifier.Distribution.Outcome;
 import java.io.IOException;
 import java.util.*;
@@ -46,7 +50,10 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
-
+	TagRelation tagRelation = new CGN2Parole();
+	LemmaCache lemmaCache = new LemmaCache();
+	ILexicon lexicon = null;
+	
 	int ruleId = 1;
 
 	private transient PatternFinder patternFinder = new DutchPatternFinder();
@@ -249,10 +256,51 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return m;
 	}
 
-	private String findLemmaConsistentWithTag(String word, String lemma) 
+	private String findLemmaConsistentWithTag(String wordform, String tag) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		/**
+		 * First check the lexicon
+		 */
+		String bestGuess = null;
+		if ((bestGuess = lemmaCache.get(wordform,tag)) != null)
+		{
+			return bestGuess;
+		}
+		
+		bestGuess ="UNKNOWN";
+		
+		Set<WordForm> lemmata = lexicon.findLemmata(wordform);
+		for (WordForm w: lemmata)
+		{
+			if (tagRelation.compatible(tag, w.tag))
+			{
+				lemmaCache.put(wordform, tag, w.lemma);
+				return w.lemma;
+			}
+		}
+		
+		Distribution outcomes =
+			classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wordform));
+		
+		for (Outcome o: outcomes.outcomes)
+		{
+			Rule r1 =  this.ruleID2Rule.get(o.label);
+			if (r1 == null)
+			{
+				continue;
+			}
+			String guessedLemma = r1.pattern.apply(wordform);
+			if (guessedLemma == null)
+				continue;
+			if (bestGuess == null)
+				bestGuess = guessedLemma;
+			if (tagRelation.compatible(tag, r1.PoS))
+			{
+				bestGuess =  guessedLemma;
+			} 
+		}
+		lemmaCache.put(wordform, tag, bestGuess);
+		return bestGuess;
 	}
 
 	@Override

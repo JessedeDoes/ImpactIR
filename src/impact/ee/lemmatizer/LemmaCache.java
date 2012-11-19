@@ -1,0 +1,19 @@
+package impact.ee.lemmatizer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class LemmaCache 
+{
+	Map<String,String> cache = new HashMap<String,String>();
+	String separator = "->";
+	public String get(String wordform, String tag)
+	{
+		return cache.get(wordform + separator + tag);
+	}
+	
+	public void put(String wordform, String tag, String lemma)
+	{
+		cache.put(wordform + separator + tag, lemma);
+	}
+}
