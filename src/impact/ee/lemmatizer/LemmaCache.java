@@ -2,11 +2,13 @@ package impact.ee.lemmatizer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LemmaCache 
 {
-	Map<String,String> cache = new HashMap<String,String>();
+	Map<String,String> cache = new ConcurrentHashMap<String,String>();
 	String separator = "->";
+	
 	public String get(String wordform, String tag)
 	{
 		return cache.get(wordform + separator + tag);
