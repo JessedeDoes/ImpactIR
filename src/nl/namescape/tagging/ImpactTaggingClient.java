@@ -87,13 +87,19 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 	@Override
 	public void handleFile(String in, String out) 
 	{
-		
+
 		Document d = null;
 		if (tokenize)
 		{
-			TEITokenizer tok = new TEITokenizer();
-			d = tok.getTokenizedDocument(in, true);
-			new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
+			try
+			{
+				TEITokenizer tok = new TEITokenizer();
+				d = tok.getTokenizedDocument(in, true);
+				new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		} else
 		{
 			try 
@@ -112,9 +118,8 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 			postProcess(d);
 			pout.print(XML.documentToString(d));
 			pout.close();
-		} catch (FileNotFoundException e) 
+		} catch (Exception e) 
 		{
-			
 			e.printStackTrace();
 		}
 	}
