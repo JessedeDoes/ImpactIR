@@ -80,7 +80,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
-			System.exit(1);
+			// System.exit(1); // why.... on earth ...
 		}
 	}
 	
