@@ -37,8 +37,8 @@ public class ImpactLemmatizerClient extends ImpactTaggingClient {
 		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
 		spbl.train(l);
 		ImpactLemmatizerClient xmlLemmatizer = new ImpactLemmatizerClient(spbl);
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,2); 
-		DirectoryHandling.tagAllFilesInDirectory(m, args[1], args[2]);
-		m.shutdown();
+		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,2); 
+		DirectoryHandling.tagAllFilesInDirectory(xmlLemmatizer, args[1], args[2]);
+		//m.shutdown();
 	}
 }

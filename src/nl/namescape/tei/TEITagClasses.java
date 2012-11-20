@@ -95,6 +95,41 @@ public class TEITagClasses
 	// neem dus voor alle w die niet in een van bovenstaande zitten
 	// een parent die ook geen inline tag is
 	
+	public static boolean fixIds(Document d)
+	{
+		List<Element> tokenz = getTokenElements(d);
+		int k=1;
+		boolean eek = false;
+		for (Element e: tokenz)
+		{
+			
+			if (e.getAttribute("xml:id") == null || e.getAttribute("xml:id").equals(""))
+			{
+				eek = true;
+				String s = e.getAttribute("id");
+				if (s == null || s.equals(""))
+					s = "wx." + k++;
+				else
+					e.removeAttribute("id");
+				e.setAttribute("xml:id", "w." + s);
+				
+			} else
+			{
+				
+			}
+			if (e.getAttribute("type") == null || e.getAttribute("type").equals(""))
+			{
+				String s = e.getAttribute("function");
+				if (s == null)
+					s="UNK";
+				else
+					e.removeAttribute("function");
+				e.setAttribute("type", s);
+			}
+		}
+		return eek;
+	}
+	
 	public static Set<Element> getSentenceSplittingElements(Document d)
 	{
 		List<Element> ssl = new ArrayList<Element>();

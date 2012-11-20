@@ -13,7 +13,7 @@ import java.net.URL;
 import java.sql.*;
 import java.io.*;
 
-class AcessDatabase
+class AccessDatabase
 {
   static Connection theConn;
 
