@@ -30,7 +30,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
 				e.setAttribute("lemma", lemma);
 			String tag = m.get("tag");
 			if (tag != null)
-				e.setAttribute("tag", tag);
+				e.setAttribute("type", tag);
 		} else
 		{
 			e.removeAttribute("lemma");
