@@ -78,7 +78,10 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 				int relativePosition) 
 		{
 			Map<String,String> m = enumerationWithContext.get(relativePosition);
-			m.put(attributeName, attributeValue);
+			if (m != null)
+			{
+				m.put(attributeName, attributeValue);
+			}
 		}
 		
 		public Set<String> getAttributes()
