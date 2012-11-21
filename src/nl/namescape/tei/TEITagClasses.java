@@ -118,7 +118,7 @@ public class TEITagClasses
 			{
 
 			}
-			if (e.getLocalName().contains("pc"))
+			if (e.getNodeName().contains("pc"))
 			{
 				e.removeAttribute("function");
 			} else

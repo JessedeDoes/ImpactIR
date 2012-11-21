@@ -23,7 +23,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);
-		if (e.getLocalName().equals("w"))
+		if (e.getNodeName().contains("w"))
 		{
 			String lemma = m.get("lemma");
 			if (lemma != null)
@@ -31,7 +31,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
 			String tag = m.get("tag");
 			if (tag != null)
 				e.setAttribute("type", tag);
-		} else
+		} else // pc
 		{
 			e.removeAttribute("lemma");
 		}
