@@ -50,9 +50,12 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 		{
 			long startTime = System.currentTimeMillis();
 			int nWords = 0;
-			boolean eek = TEITagClasses.fixIds(d);
-			if (eek)
-				System.err.println("eek!!!");
+			if (!tokenize)
+			{
+				boolean eek = TEITagClasses.fixIds(d);
+				if (eek)
+					System.err.println("eek!!!");
+			}
 			TEITokenStream inputCorpus = new TEITokenStream(d);
 			Corpus out = tagger.tag(inputCorpus);
 			Map<String, Map<String,String>> tagMap = new HashMap<String, Map<String,String>>();
