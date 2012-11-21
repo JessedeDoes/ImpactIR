@@ -284,8 +284,9 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 			return wordform.toLowerCase();
 		}
 
-		bestGuess ="UNKNOWN";
-
+		//bestGuess ="UNKNOWN";
+		bestGuess = wordform.toLowerCase();
+		
 		Set<WordForm> lemmata = lexicon.findLemmata(wordform);
 		if (lemmata != null)
 		{
