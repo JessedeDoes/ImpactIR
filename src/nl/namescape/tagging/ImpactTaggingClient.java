@@ -9,6 +9,7 @@ import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.sentence.TEITokenStream;
 
 import nl.namescape.tokenizer.TEITokenizer;
+import nl.namescape.util.Options;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.*;
@@ -129,9 +130,12 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 	
 	public static void main(String[] args)
 	{
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
+        args = options.commandLine.getArgs();
 		BasicTagger b = new BasicTagger();
 		b.loadModel(args[0]);
 		ImpactTaggingClient xmlTagger = new ImpactTaggingClient(b);
+		xmlTagger.tokenize = Options.getOptionBoolean("tokenize", true);
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
 }

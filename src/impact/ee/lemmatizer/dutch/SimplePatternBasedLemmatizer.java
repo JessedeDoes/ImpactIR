@@ -8,10 +8,13 @@ import impact.ee.lexicon.ILexicon;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.BasicNERTagger;
+import impact.ee.tagger.BasicTagger;
+import impact.ee.tagger.ChainOfTaggers;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
 import impact.ee.tagger.DummyMap;
 import impact.ee.tagger.EnumerationWithContext;
+import impact.ee.tagger.NamePartTagger;
 import impact.ee.tagger.OutputEnumeration;
 import impact.ee.tagger.SimpleCorpus;
 import impact.ee.tagger.Tagger;
@@ -329,16 +332,35 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return new SimpleCorpus(ewc);
 	}
 
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
+	{
+		
+		BasicTagger tagger = new BasicTagger();
+		
+		tagger.loadModel(taggingModel);
+		
+		InMemoryLexicon l = new InMemoryLexicon();
+		l.readFromFile(lexiconPath);
+		SimplePatternBasedLemmatizer lemmatizer = 
+				new SimplePatternBasedLemmatizer();
+		lemmatizer.train(l);
+		
+		
+		ChainOfTaggers t = new ChainOfTaggers();
+		t.addTagger(tagger);
+		t.addTagger(lemmatizer);
+		return t;
+	}
 
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(args[0]);
-		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
-		spbl.train(l);
+		SimplePatternBasedLemmatizer lemmatizer = new SimplePatternBasedLemmatizer();
+		lemmatizer.train(l);
 		SimpleCorpus testCorpus = new SimpleCorpus(args[1], BasicNERTagger.defaultAttributeNames);
 
-		for (Context c: spbl.tag(testCorpus).enumerate())
+		for (Context c: lemmatizer.tag(testCorpus).enumerate())
 		{
 			System.out.println(
 					c.getAttributeAt("word", 0) 

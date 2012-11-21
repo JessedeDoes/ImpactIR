@@ -10,9 +10,9 @@ import impact.ee.lemmatizer.dutch.SimplePatternBasedLemmatizer;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.tagger.Tagger;
 
-public class ImpactLemmatizerClient extends ImpactTaggingClient {
+public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
 
-	public ImpactLemmatizerClient(Tagger tagger) 
+	public ImpactTaggerLemmatizerClient(Tagger tagger) 
 	{
 		super(tagger);
 		this.tokenize = false;
@@ -27,16 +27,18 @@ public class ImpactLemmatizerClient extends ImpactTaggingClient {
 			String lemma = m.get("lemma");
 			if (lemma != null)
 				e.setAttribute("lemma", lemma);
+			String tag = m.get("tag");
+			if (tag != null)
+				e.setAttribute("lemma", tag);
 		}
 	}
 	
 	public static void main(String[] args)
 	{
-		InMemoryLexicon l = new InMemoryLexicon();
-		l.readFromFile(args[0]);
-		SimplePatternBasedLemmatizer spbl = new SimplePatternBasedLemmatizer();
-		spbl.train(l);
-		ImpactLemmatizerClient xmlLemmatizer = new ImpactLemmatizerClient(spbl);
+		Tagger taggerLemmatizer = 
+				SimplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
+		ImpactTaggerLemmatizerClient xmlLemmatizer = 
+				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
 		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,2); 
 		DirectoryHandling.tagAllFilesInDirectory(xmlLemmatizer, args[1], args[2]);
 		//m.shutdown();

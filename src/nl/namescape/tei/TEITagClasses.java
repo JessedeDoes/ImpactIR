@@ -89,12 +89,13 @@ public class TEITagClasses
 	{
 		return XML.getElementsByTagname(d.getDocumentElement(), "s", false);
 	}
-	// zinsplitsende tags: natuurlijk het lijstje hierboven gegeven.
-	// maar dat is vast niet alles.
-	// iedere w moet uiteindelijk bevat zijn in een sentence splitter
-	// neem dus voor alle w die niet in een van bovenstaande zitten
-	// een parent die ook geen inline tag is
-	
+
+	/**
+	 * Een tijdelijke fix voor de oude gefrogde bestanden.
+	 * Vergeet niet weer weg te halen...
+	 * @param d
+	 * @return
+	 */
 	public static boolean fixIds(Document d)
 	{
 		List<Element> tokenz = getTokenElements(d);
@@ -112,24 +113,37 @@ public class TEITagClasses
 				else
 					e.removeAttribute("id");
 				e.setAttribute("xml:id", "w." + s);
-				
+
 			} else
 			{
-				
+
 			}
-			if (e.getAttribute("type") == null || e.getAttribute("type").equals(""))
+			if (e.getLocalName().contains("pc"))
 			{
-				String s = e.getAttribute("function");
-				if (s == null)
-					s="UNK";
-				else
-					e.removeAttribute("function");
-				e.setAttribute("type", s);
+				e.removeAttribute("function");
+			} else
+			{
+				if (e.getAttribute("type") == null || e.getAttribute("type").equals(""))
+				{
+					String s = e.getAttribute("function");
+					if (s == null)
+						s="UNK";
+					else
+						e.removeAttribute("function");
+					e.setAttribute("type", s);
+				}
 			}
 		}
 		return eek;
 	}
 	
+	/**
+	  Zinsplitsende tags: natuurlijk het lijstje hierboven gegeven.
+	  maar dat is vast niet alles.
+	  Iedere w moet uiteindelijk bevat zijn in een sentence splitter
+	  neem dus voor alle w die niet in een van bovenstaande zitten
+	  een parent die ook geen inline tag is
+	*/
 	public static Set<Element> getSentenceSplittingElements(Document d)
 	{
 		List<Element> ssl = new ArrayList<Element>();

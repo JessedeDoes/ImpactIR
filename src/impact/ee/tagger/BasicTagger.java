@@ -83,7 +83,9 @@ public class BasicTagger implements Serializable, Tagger
 	Set<String> knownWords = new HashSet<String>();
 	double proportionOfTrainingToUse = 1;
 	
-	String[] attributeNames = {"word", "tag"};
+	public String taggedAttribute = "tag";
+	public static String[] defaultAttributeNames = {"word", "tag"};
+	public String[] attributeNames = defaultAttributeNames;
 	
 	public void setClassifier(String className)
 	{
@@ -154,7 +156,7 @@ public class BasicTagger implements Serializable, Tagger
 			{
 				if (filter(c))
 				{
-					String answer = c.getAttributeAt("tag", 0);
+					String answer = c.getAttributeAt(taggedAttribute, 0);
 					if (answer != null)
 					{
 						d.addInstance(c, answer);
@@ -194,7 +196,7 @@ public class BasicTagger implements Serializable, Tagger
 				continue;
 			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
 			// System.err.println(features.itemToString(item));
-			String truth = c.getAttributeAt("tag", 0);
+			String truth = c.getAttributeAt(taggedAttribute, 0);
 			String word = c.getAttributeAt("word", 0);
 			boolean known = knownWords.contains(word);
 		
@@ -202,7 +204,7 @@ public class BasicTagger implements Serializable, Tagger
 
 			if (useFeedback)
 			{
-				c.setAttributeAt("tag", outcome, 0);
+				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}
 			
 			if (stripPoS)
@@ -280,14 +282,29 @@ public class BasicTagger implements Serializable, Tagger
 	public HashMap<String, String> apply(Context c) 
 	{
 		// TODO Auto-generated method stub
-		impact.ee.classifier.Instance instance = features.makeTestInstance(c);
-		String outcome = classifier.classifyInstance(instance);
+		
 		HashMap<String,String> m = new HashMap<String,String>();
-		m.put("word", c.getAttributeAt("word", 0));
-		m.put("tag", outcome);
-		String id =  c.getAttributeAt("id", 0);
-		if (id != null)
-			m.put("id", id);
+		//m.put("word", c.getAttributeAt("word", 0));
+		
+		for (String key: c.getAttributes())
+		{
+			m.put(key, c.getAttributeAt(key, 0));
+		}
+		
+		if (filter(c))
+		{
+			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
+			//System.err.println(features.itemToString(instance));
+			String outcome = classifier.classifyInstance(instance);
+			m.put(taggedAttribute, outcome);
+			if (useFeedback)
+			{
+				c.setAttributeAt(taggedAttribute, outcome, 0);
+			}
+		} else
+		{
+			c.setAttributeAt(taggedAttribute, "O", 0);
+		}
 		return m;
 	}
 
