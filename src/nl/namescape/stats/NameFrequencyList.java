@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -30,7 +31,7 @@ import org.xml.sax.SAXException;
  * v = N / f
  * ARF = 1/v * sum(i=1..f) min(di,v)
  * Maar wat is di met verschillende documenten? zet gelijk aan v...
- 
+
  * d1 = n1 + (N-nf)
  */
 
@@ -38,11 +39,11 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 {
 	WordList tf = new WordList();
 	int nTokens = 0;
-	
+
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 	MultiMap<String,Element> examples = new MultiMap<String,Element> ();
-	
+
 	public void handleFile(String fileName) 
 	{
 		System.err.println(fileName);
@@ -57,7 +58,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 				{
 					nTokens++;
 
-				
+
 					String wordform = getNameText(e);
 					examples.putValue(wordform, s);
 					tf.incrementFrequency(wordform, 1); 
@@ -78,6 +79,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		}
 		return e.getAttribute("type") + ": "  + StringUtils.join(parts, " ");
 	}
+
 	public void print()
 	{
 		tf.sortByFrequency();
@@ -85,7 +87,16 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		{
 			System.out.println(x.type + "\t" + x.frequency);
 			Set<Element> e = examples.get(x.type);
-			System.out.println("\t"  + e.iterator().next().getTextContent().replaceAll("\\s+", " ").trim());
+			if (e != null)
+			{
+				Iterator<Element> i = e.iterator();
+				while (i.hasNext())
+				{
+					Element s = i.next();
+					String sentence = s.getTextContent().replaceAll("\\s+", " ").trim();
+					System.out.println("\t"  + sentence);
+				}
+			}
 		}
 	}
 
@@ -93,12 +104,12 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	{
 		NameFrequencyList s = new NameFrequencyList();
 		s.type = Type.word;
-		
+
 		if (args.length > 0)
 		{
 			for (String d: args)
 				DirectoryHandling.traverseDirectory(s,d);
-			s.print();
+					s.print();
 		}
 		else
 		{
