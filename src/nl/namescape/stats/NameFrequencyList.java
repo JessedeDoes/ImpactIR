@@ -76,7 +76,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		{
 			parts.add(w.getTextContent().trim());
 		}
-		return StringUtils.join(parts, " ");
+		return e.getAttribute("type") + ": "  + StringUtils.join(parts, " ");
 	}
 	public void print()
 	{
