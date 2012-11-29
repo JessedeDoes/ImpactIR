@@ -69,11 +69,11 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	public void print()
 	{
 		tf.sortByFrequency();
-		for (WordList.TypeFrequency x: tf.keyList())
+		for (WordList.TypeFrequency x: tf.keyList(true))
 		{
 			System.out.println(x.type + "\t" + x.frequency);
-			Set<Element> e = examples.get(x);
-			System.out.println("\t"  + e.iterator().next().getTextContent());
+			Set<Element> e = examples.get(x.type);
+			System.out.println("\t"  + e.iterator().next().getTextContent().replaceAll("\\s+", " ").trim());
 		}
 	}
 
