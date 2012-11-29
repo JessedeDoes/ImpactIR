@@ -1,8 +1,11 @@
 package nl.namescape.stats;
 
+import impact.ee.util.StringUtils;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -55,7 +58,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 					nTokens++;
 
 				
-					String wordform = e.getTextContent();
+					String wordform = getNameText(e);
 					examples.putValue(wordform, s);
 					tf.incrementFrequency(wordform, 1); 
 				}
@@ -66,6 +69,15 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		}
 	}
 
+	public String getNameText(Element e)
+	{
+		List<String> parts = new ArrayList<String>();
+		for (Element w: XML.getElementsByTagname(e, "w", false))
+		{
+			parts.add(w.getTextContent().trim());
+		}
+		return StringUtils.join(parts, " ");
+	}
 	public void print()
 	{
 		tf.sortByFrequency();
