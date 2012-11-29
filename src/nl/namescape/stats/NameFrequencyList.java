@@ -55,7 +55,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 					nTokens++;
 
 				
-					String wordform = XML.NodeToString(e); // e.getTextContent();
+					String wordform = e.getTextContent();
 					examples.putValue(wordform, s);
 					tf.incrementFrequency(wordform, 1); 
 				}
