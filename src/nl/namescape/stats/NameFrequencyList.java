@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -56,9 +57,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 				
 					String wordform = e.getTextContent();
 					examples.putValue(wordform, s);
-					
-
-					 tf.incrementFrequency(wordform, 1); 
+					tf.incrementFrequency(wordform, 1); 
 				}
 			}
 		} catch (Exception e)
@@ -73,6 +72,8 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		for (WordList.TypeFrequency x: tf.keyList())
 		{
 			System.out.println(x.type + "\t" + x.frequency);
+			Set<Element> e = examples.get(x);
+			System.out.println("\t"  + e.iterator().next().getTextContent());
 		}
 	}
 
