@@ -3,9 +3,12 @@ import impact.ee.util.StringUtils;
 
 import java.util.*;
 
+import org.apache.commons.collections.MultiMap;
+
 public class Tag extends HashMap<String, Set<String>> 
 {
 	public static char multiValueSeparator='|';
+	
 	
 	public void put(String name, String value)
 	{

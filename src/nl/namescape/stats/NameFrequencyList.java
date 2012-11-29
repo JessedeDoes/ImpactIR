@@ -10,6 +10,8 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.tei.TEITagClasses;
+import nl.namescape.util.MultiMap;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
@@ -35,27 +37,28 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
-
+	MultiMap<String,Element> examples = new MultiMap<String,Element> ();
+	
 	public void handleFile(String fileName) 
 	{
+		System.err.println(fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
-			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(d);
-			for (Element e: tokens)
+			List<Element> sentences = TEITagClasses.getSentenceElements(d);
+			for (Element s: sentences)
 			{
-				nTokens++;
-				
-				String lemma = e.getAttribute("lemma");
-				String wordform = e.getTextContent();
-				String tag = e.getAttribute("function");
-				String lwt = wordform + "\t" + tag + "\t" + lemma;
-				
-				switch (type)
+				List<Element> namez = XML.getElementsByTagname(s, "ns:ne", false);
+				for (Element e: namez)
 				{
-					case word: tf.incrementFrequency(wordform, 1); break;
-					case lemma: tf.incrementFrequency(lemma, 1); break;
-					case lwt: tf.incrementFrequency(lwt, 1); break;
+					nTokens++;
+
+				
+					String wordform = e.getTextContent();
+					examples.putValue(wordform, s);
+					
+
+					 tf.incrementFrequency(wordform, 1); 
 				}
 			}
 		} catch (Exception e)
@@ -85,6 +88,10 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 			s.print();
 		}
 		else
-			DirectoryHandling.traverseDirectory(s,"N:/Taalbank/CL-SE-Data/Corpora/GrootModernCorpus/parole-boeken");
+		{
+			DirectoryHandling.traverseDirectory(s,
+					"N:/Taalbank/Namescape/Corpus-Sanders/Data/NER");
+			s.print();
+		}
 	}
 }
