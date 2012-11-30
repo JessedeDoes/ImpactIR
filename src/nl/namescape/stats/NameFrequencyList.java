@@ -77,15 +77,18 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		{
 			parts.add(w.getTextContent().trim());
 		}
-		return e.getAttribute("type") + ": "  + StringUtils.join(parts, " ");
+		return e.getAttribute("type") + "\t"  + StringUtils.join(parts, " ");
 	}
 
 	public void print()
 	{
 		tf.sortByFrequency();
+		int idNo=1;
+		int exNo=1;
 		for (WordList.TypeFrequency x: tf.keyList(true))
 		{
-			System.out.println(x.type + "\t" + x.frequency);
+			String justName = x.type.replaceAll(".*\t", "");
+			System.out.println(idNo + "\t" + x.type + "\t" + justName +  "\t" +  x.frequency);
 			Set<Element> e = examples.get(x.type);
 			if (e != null)
 			{
@@ -94,9 +97,11 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 				{
 					Element s = i.next();
 					String sentence = s.getTextContent().replaceAll("\\s+", " ").trim();
-					System.out.println("\t"  + sentence);
+					System.err.println(exNo + "\t" + idNo + "\t"  + sentence);
+					exNo++;
 				}
 			}
+			idNo++;
 		}
 	}
 
