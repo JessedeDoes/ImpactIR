@@ -24,7 +24,7 @@ import java.util.*;
 
 /**
  * Simple paragraph-level language identification<br>
- * Now using cybozu labs lamguage identification
+ * Now using cybozu labs language identification
  * <p>
  * Problems:
  *<p>
@@ -34,15 +34,37 @@ import java.util.*;
  * @author does
  *
  */
+
+
 public class LanguageTagger implements SimpleInputOutputProcess
 {
+	static String[] priorLanguages = {"nl", "en", "de", "fr", "it", "es"};
+	static double[] priorProbabilities = {0.98, 0.02, 0.02, 0.02, 0.01, 0.01};
+	static HashMap<String,Double> priorMap  = new HashMap<String,Double>();
+	
+	boolean usePriors = false;
 	
 	static
 	{
+		
 		try 
 		{
 			DetectorFactory.loadProfileFromJar();
 			List<String> langs = DetectorFactory.getLangList();
+			double sum=0;
+			for (int i=0; i < priorLanguages.length; i++) 	
+				sum += priorProbabilities[i];
+				
+			for (int i=0; i < priorLanguages.length; i++) 
+			{
+				String lang= priorLanguages[i];
+				priorMap.put(lang,priorProbabilities[i] / sum);
+			}
+			for (String lang: langs)
+			{
+				if (priorMap.get(lang) == null)
+					priorMap.put(lang,0.0);
+			}
 		} catch (LangDetectException e) 
 		{
 			// TODO Auto-generated catch block
@@ -56,8 +78,11 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		try
 		{
 			Detector detector = DetectorFactory.create();
+			if (usePriors)
+				detector.setPriorMap(priorMap);
 			detector.append(s);
 			String lang = detector.detect();
+			//detector.getProbabilities();
 			return lang;
 		} catch (Exception e)
 		{
@@ -70,7 +95,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 	{
 		Counter<String> c = new Counter<String>();
 		Set<Element> paragraphLike = TEITagClasses.getSentenceSplittingElements(d);
-		int L=0;
+		int L = 0;
 		for (Element  z: paragraphLike)
 		{
 			// System.err.println(z);
@@ -78,7 +103,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 			String s = z.getTextContent();
 			L += s.length();
 			
-			// System.err.println("paragraph content: " + s);
+			// System.err.println("Paragraph content: " + s);
 			
 			String lang = detectLanguage(s);
 			
