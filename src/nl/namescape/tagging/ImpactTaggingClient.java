@@ -103,12 +103,14 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 				TEITokenizer tok = new TEITokenizer();
 				d = tok.getTokenizedDocument(in, true);
 				new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
+				System.err.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
 			} catch (Exception e)
 			{
 				e.printStackTrace();
 			}
 		} else
 		{
+			System.err.println("NOT tokenizing " + in);
 			try 
 			{
 				d = XML.parse(in);

@@ -222,6 +222,11 @@ public class TEITagClasses
 		}
 	}
 	
+	public static int getNumberOfWords(Document d)
+	{
+		return getWordElements(d.getDocumentElement()).size();
+	}
+	
 	public static boolean tagSplitsWords(String tagName)
 	{
 		return nameTags.contains(tagName) || !(inlineTags.contains(tagName));
