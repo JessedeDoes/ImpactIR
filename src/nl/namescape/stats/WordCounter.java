@@ -19,13 +19,14 @@ import org.xml.sax.helpers.DefaultHandler;
 public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 {
 	int nWords=0;
+	int nFiles=0;
 	SAXParserFactory factory = SAXParserFactory.newInstance();
-	SAXParser saxParser = null;
+	
 	public WordCounter()
 	{
 		try 
 		{
-			saxParser = factory.newSAXParser();
+			//saxParser = factory.newSAXParser();
 		} catch (Throwable err) 
 		{
 			err.printStackTrace ();
@@ -38,16 +39,29 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		if (qName.equals("w"))
 		{
 			//System.err.println("OK....");
-			nWords++;
+			incrementWordCount();
 		}
 	}
 	
+	private synchronized void incrementWordCount()
+	{
+		nWords++;
+	}
+	
+	private synchronized void incrementFileCount()
+	{
+		nFiles++;
+	}
 	@Override
 	public void handleFile(String fileName) 
 	{
 		// TODO Auto-generated method stub
+		 incrementFileCount();
+		 if (nFiles % 1000 == 0)
+			 System.err.println(nFiles + " "+ fileName);
 		try 
 		{
+			SAXParser saxParser = factory.newSAXParser();
 			saxParser.parse( new File(fileName), this);
 		} catch (Exception e) 
 		{
@@ -61,5 +75,6 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		WordCounter x = new WordCounter();
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
 		DirectoryHandling.traverseDirectory(m, args[0]);
+		m.shutdown();
 	}
 }
