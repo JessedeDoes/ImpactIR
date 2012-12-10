@@ -1,6 +1,6 @@
 package nl.namescape.stats.colloc;
 
-public class Dice implements collocationScore
+public class Dice implements CollocationScore
 {
 	@Override
 	public double score(long N, int f, int f1, int f2)

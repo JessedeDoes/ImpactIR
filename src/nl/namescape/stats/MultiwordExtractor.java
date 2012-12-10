@@ -4,7 +4,7 @@ import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.stats.colloc.Dice;
-import nl.namescape.stats.colloc.collocationScore;
+import nl.namescape.stats.colloc.CollocationScore;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
@@ -31,7 +31,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	int Stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	double minimumScore=0;
-	collocationScore scoreFunction = new Dice();
+	CollocationScore scoreFunction = new Dice();
 	
 	public void countWords(Document d)
 	{
