@@ -75,6 +75,17 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 	public void shutdown()
 	{
 		this.pool.shutdown();
+		while (!this.pool.isTerminated())
+		{
+			try 
+			{
+				Thread.sleep(100);
+			} catch (InterruptedException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	static class ExampleHandler implements DoSomethingWithFile

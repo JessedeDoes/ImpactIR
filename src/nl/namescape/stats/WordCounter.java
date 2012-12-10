@@ -15,11 +15,14 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import java.util.*;
 
 public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 {
 	int nWords=0;
 	int nFiles=0;
+	int nParseErrors=0;
+	Set<String> filesWithParseError = new HashSet<String>();
 	SAXParserFactory factory = SAXParserFactory.newInstance();
 	
 	public WordCounter()
@@ -52,6 +55,12 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 	{
 		nFiles++;
 	}
+	private synchronized void addToErrors(String fileName)
+	{
+		filesWithParseError.add(fileName);
+	}
+	
+	
 	@Override
 	public void handleFile(String fileName) 
 	{
@@ -66,6 +75,7 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		} catch (Exception e) 
 		{
 			// TODO Auto-generated catch block
+			addToErrors(fileName);
 			e.printStackTrace();
 		} 
 	}
@@ -76,5 +86,11 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
+		System.out.println(x.nWords + " words in "  + x.nFiles + " files");
+		System.err.println(x.filesWithParseError.size() + " parse errors");
+		for (String s: x.filesWithParseError)
+		{
+			System.err.println("\t" + s);
+		}
 	}
 }
