@@ -17,6 +17,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.*;
 
+/**
+ * Counts "w" tags in tokenized XML files.
+ * 
+ * @author does
+ *
+ */
 public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 {
 	int nWords=0;
@@ -24,7 +30,7 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 	int nParseErrors=0;
 	Set<String> filesWithParseError = new HashSet<String>();
 	SAXParserFactory factory = SAXParserFactory.newInstance();
-	
+
 	public WordCounter()
 	{
 		try 
@@ -35,39 +41,39 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 			err.printStackTrace ();
 		}
 	}
-	
+
 	public  void startElement(String uri, String localName, String qName, Attributes attributes) 
 	{
-		//System.err.println(localName);
+		
 		if (qName.equals("w"))
-		{
-			//System.err.println("OK....");
+		{	
 			incrementWordCount();
 		}
 	}
-	
+
 	private synchronized void incrementWordCount()
 	{
 		nWords++;
 	}
-	
+
 	private synchronized void incrementFileCount()
 	{
 		nFiles++;
 	}
+	
 	private synchronized void addToErrors(String fileName)
 	{
 		filesWithParseError.add(fileName);
 	}
-	
-	
+
+
 	@Override
 	public void handleFile(String fileName) 
 	{
 		// TODO Auto-generated method stub
-		 incrementFileCount();
-		 if (nFiles % 1000 == 0)
-			 System.err.println(nFiles + " "+ fileName);
+		incrementFileCount();
+		if (nFiles % 1000 == 0)
+			System.err.println(nFiles + " "+ fileName);
 		try 
 		{
 			SAXParser saxParser = factory.newSAXParser();
@@ -79,7 +85,7 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 			e.printStackTrace();
 		} 
 	}
-	
+
 	public static void main(String[] args)
 	{
 		WordCounter x = new WordCounter();
