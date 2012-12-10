@@ -3,6 +3,8 @@ import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.stats.MakeFrequencyList.Type;
+import nl.namescape.stats.colloc.Dice;
+import nl.namescape.stats.colloc.collocationScore;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
@@ -29,6 +31,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	int Stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	double minimumScore=0;
+	collocationScore scoreFunction = new Dice();
 	
 	public void countWords(Document d)
 	{
@@ -100,14 +103,16 @@ public class MultiwordExtractor implements DoSomethingWithFile
 				bigramCounter.remove(wn);
 			int f1 = tf.getFrequency(wn.parts.get(0));
 			int f2 = tf.getFrequency(wn.parts.get(1));
-			double score = this.score(nTokens,f, f1,f2);
+			double score = this.score(nTokens,f, f1, f2);
+			wn.score = score;
 		}
 	}
 	
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		// TODO Auto-n method stub
+		return scoreFunction.score(nTokens, f, f1, f2);
+		
 	}
 
 	public void handleFile(String fileName) 
