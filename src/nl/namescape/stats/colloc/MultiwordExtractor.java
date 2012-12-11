@@ -148,14 +148,20 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
-				int foundUpperCaseAt = Integer.MAX_VALUE;
+				int foundFirstUpperCaseAt = Integer.MAX_VALUE;
+				int foundLastUpperCaseAt = Integer.MAX_VALUE;
 				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
-						if (it.matches("^[A-Z].*")) foundUpperCaseAt = j-i;
+						if (it.matches("^[A-Z].*"))
+						{
+							if (foundFirstUpperCaseAt == Integer.MAX_VALUE) 
+								foundFirstUpperCaseAt = j-i;
+							foundLastUpperCaseAt = j-i;
+						}
 						nGram.add(it);
 						if (previous != null)
 						{
@@ -166,10 +172,10 @@ public class MultiwordExtractor implements DoSomethingWithFile
 						previous=it;
 					} else break;
 				}
-				if (foundUpperCaseAt < Integer.MAX_VALUE) 
+				if (foundFirstUpperCaseAt < Integer.MAX_VALUE) 
 				{
-					int startAt = Math.min(3, foundUpperCaseAt+1);
-					for (int j=startAt; j < nGram.size(); j++)
+					int startAt = Math.min(3, foundFirstUpperCaseAt+1);
+					for (int j=startAt; j < nGram.size() && j < foundLastUpperCaseAt+1; j++)
 					{
 						ngramCounter.increment(new WordNGram(nGram,j));
 					}
