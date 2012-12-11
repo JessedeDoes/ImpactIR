@@ -63,4 +63,19 @@ public class WordNGram
 	{
 		return parts.hashCode();
 	}
+	
+	int size()
+	{
+		return parts.size();
+	}
+	
+	public WordNGram span(int begin, int endBefore)
+	{
+		List<String> l = new ArrayList<String>();
+		for (int i=begin; i < endBefore; i++)
+		{
+			l.add(parts.get(i));
+		}
+		return new WordNGram(l);
+	}
 }

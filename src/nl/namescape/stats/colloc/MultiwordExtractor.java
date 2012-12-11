@@ -19,6 +19,8 @@ import java.util.*;
  * should we make this n-pass (? rather NOT)
  * First a typefrequency pass; next a bigram pass, 
  * Next step: add all the rest. (?)
+ * 
+ * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf
  */
 
 public class MultiwordExtractor implements DoSomethingWithFile
@@ -26,12 +28,23 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	WordList tf = new WordList();
 	int minimumUnigramFrequency = 2;
 	int minimumBigramFrequency = 2;
+	enum Stage 
+	{ 
+		wordFrequency, 
+		bigramFrequency, 
+		nGrams
+	}; 
+	// for coherence, we would need a fourth stage to get frequencies of parts of possible multiword entities
+	Stage stage= Stage.wordFrequency;
+	
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 	long nTokens=0;
-	int stage=1;
+	
+	
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> ngramCounter = new Counter<WordNGram>();
+	int maxLeadingLowerCaseWords=0;
 	
 	double minimumScore=0;
 	CollocationScore bigramScoreFunction = new MI();
@@ -138,6 +151,11 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		System.out.println("We have " + bigrams.size() +  " bigrams! ");
 	}
 
+	/* possible additional filter: all lower case words in an
+	 * entity are high frequency....
+	 * (and so are all lowercase bigrams in an entity)
+	 */
+	
 	public void extendBigrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
@@ -148,8 +166,8 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
-				int foundFirstUpperCaseAt = Integer.MAX_VALUE;
-				int foundLastUpperCaseAt = Integer.MAX_VALUE;
+				int indexOfFirstCapitalizedWord = Integer.MAX_VALUE;
+				int indexOfLastCapitalizedWord = Integer.MAX_VALUE;
 				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
@@ -158,9 +176,9 @@ public class MultiwordExtractor implements DoSomethingWithFile
 						String it = getWordOrLemma(e);
 						if (it.matches("^[A-Z].*"))
 						{
-							if (foundFirstUpperCaseAt == Integer.MAX_VALUE) 
-								foundFirstUpperCaseAt = j-i;
-							foundLastUpperCaseAt = j-i;
+							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
+								indexOfFirstCapitalizedWord = j-i;
+							indexOfLastCapitalizedWord = j-i;
 						}
 						nGram.add(it);
 						if (previous != null)
@@ -172,10 +190,11 @@ public class MultiwordExtractor implements DoSomethingWithFile
 						previous=it;
 					} else break;
 				}
-				if (foundFirstUpperCaseAt < Integer.MAX_VALUE) 
+				if (indexOfFirstCapitalizedWord < Integer.MAX_VALUE && 
+						indexOfFirstCapitalizedWord < maxLeadingLowerCaseWords+1) 
 				{
-					int minSize = Math.max(3, foundFirstUpperCaseAt+1);
-					int maxSize = foundLastUpperCaseAt + 1;
+					int minSize = Math.max(3, indexOfFirstCapitalizedWord+1);
+					int maxSize = indexOfLastCapitalizedWord + 1;
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
 					for (int j=maxSize; j < nGram.size() && j <= maxSize; j++)
@@ -225,9 +244,9 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			Document d = XML.parse(fileName);
 			switch (stage)
 			{
-				case 1: countWords(d); break;
-				case 2: countBigrams(d); break;
-				case 3: extendBigrams(d); break;
+				case wordFrequency: countWords(d); break;
+				case bigramFrequency: countBigrams(d); break;
+				case nGrams: extendBigrams(d); break;
 			}
 		} catch (Exception e)
 		{
@@ -235,7 +254,28 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		}
 	}
 
-
+	/**
+	 *  Da Silva et. al. Coherence
+	 */
+	
+	private double SCP(WordNGram w)
+	{
+		int f = ngramCounter.get(w);
+		double p = f/ (double) nTokens;
+		int n = w.size();
+		double Tp=0;
+		for (int i=1; i < n; i++)
+		{
+			int f1 = ngramCounter.get(w.span(0,i)); // unless single word...
+			int f2 = ngramCounter.get(w.span(i,n));
+			double p1 = f1 / (double) nTokens;
+			double p2 = f2 / (double) nTokens;
+			Tp += p1 * p2;
+		}
+		double Avp = Tp / (double) (n-1);
+		return p*p / Avp;
+	}
+	
 	public static void main(String[] args)
 	{
 		int processors = Runtime.getRuntime().availableProcessors();
@@ -244,18 +284,15 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
-		mwe.stage=2;
+		mwe.stage=Stage.bigramFrequency;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreBigrams();
-		mwe.stage = 3;
+		mwe.stage = Stage.nGrams;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
-		mwe.scoreNgrams();
-		
+		mwe.scoreNgrams();	
 	}
-
-
 }
