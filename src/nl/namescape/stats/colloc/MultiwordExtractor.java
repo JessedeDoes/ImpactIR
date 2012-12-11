@@ -31,14 +31,17 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	long nTokens=0;
 	int stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
+	Counter<WordNGram> ngramCounter = new Counter<WordNGram>();
+	
 	double minimumScore=0;
-	CollocationScore scoreFunction = new MI();
+	CollocationScore bigramScoreFunction = new MI();
 	double portionToPrint=1.0;
 	int maxPrint=100000;
 	
 	public void countWords(Document d)
 	{
-		List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
+		List<Element> tokens = 
+				nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 		for (Element e: tokens)
 		{
 			incrementWordCount();
@@ -58,12 +61,16 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			String previous = null;
-			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
+			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
 			for (Element e: tokens)
 			{
-				String it = getWordOrLemma(e);
-				storeBigram(previous, it);
-				previous = it;
+				if (TEITagClasses.isWord(e))
+				{
+					String it = getWordOrLemma(e);
+					storeBigram(previous, it);
+					previous = it;
+				} else
+					previous = null;
 			} 
 		}
 	}
@@ -126,7 +133,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 			k++;
 		}
-		System.out.println("Score function used: "  + this.scoreFunction.getClass().getName());
+		System.out.println("Bigram score function used: "  + this.bigramScoreFunction.getClass().getName());
 		System.out.println("Corpus has " + nTokens +  " tokens ");
 		System.out.println("We have " + bigrams.size() +  " bigrams! ");
 	}
@@ -136,19 +143,53 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
 		for (Element s: sentences)
 		{
-			String previous = null;
-			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
-			for (Element e: tokens)
+			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
+			for (int i=0; i < tokens.size(); i++)
 			{
-				String it = getWordOrLemma(e);
-				previous = it;
-			} 
+				String previous = null;
+				List<String> nGram = new ArrayList<String>();
+				for (int j=i; i < tokens.size(); j++)
+				{
+					Element e = tokens.get(j);
+					if (TEITagClasses.isWord(e))
+					{
+						String it = getWordOrLemma(e);
+						if (previous != null)
+						{
+							WordNGram bi = new WordNGram(previous,it);
+							if (bigramCounter.get(bi) < minimumBigramFrequency)
+								break;
+							if (j - i > 1)
+								nGram.add(it);
+						}
+						previous=it;
+					} else break;
+				}
+			}
 		}
 	}
 	
+	private void scoreNgrams() 
+	{
+		List<WordNGram> ngrams = ngramCounter.keyList();
+		for (WordNGram wn: ngrams)
+		{
+			int f = ngramCounter.get(wn);
+			if (f < minimumBigramFrequency)
+			{
+				ngramCounter.remove(wn);
+			} else
+			{
+				System.err.println(f + " " + wn);
+			}
+		}
+		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
+	}
+	
+	
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
-		return scoreFunction.score(nTokens, f, f1, f2);
+		return bigramScoreFunction.score(nTokens, f, f1, f2);
 	}
 
 
@@ -167,6 +208,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			{
 				case 1: countWords(d); break;
 				case 2: countBigrams(d); break;
+				case 3: extendBigrams(d); break;
 			}
 		} catch (Exception e)
 		{
@@ -186,5 +228,13 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreBigrams();
+		mwe.stage = 3;
+		m = new MultiThreadedFileHandler(mwe,4);
+		DirectoryHandling.traverseDirectory(m, args[0]);
+		m.shutdown();
+		mwe.scoreNgrams();
+		
 	}
+
+
 }

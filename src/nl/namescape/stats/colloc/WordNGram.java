@@ -16,6 +16,20 @@ public class WordNGram
 		}
 	}
 	
+	public WordNGram(List<String>  parts)
+	{
+		for (String s: parts)
+		{
+			this.parts.add(s);
+		}
+	}
+	
+	public WordNGram(String s1, String s2)
+	{
+		this.parts.add(s1);
+		this.parts.add(s2);
+	}
+	
 	public String toString()
 	{
 		return "(" + StringUtils.join(parts, ", ") + ")";
@@ -33,6 +47,7 @@ public class WordNGram
 		}
 		return true;
 	}
+	
 	@Override
 	public int hashCode()
 	{

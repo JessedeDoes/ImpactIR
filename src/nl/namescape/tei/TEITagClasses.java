@@ -208,6 +208,11 @@ public class TEITagClasses
 		return sss;
 	}
 
+	public static boolean isWord(Element e)
+	{
+		return e.getNodeName().equals("w");
+	}
+	
 	public static void removeTokenization(Document d)
 	{
 		List<Element> sentences = getSentenceElements(d);
