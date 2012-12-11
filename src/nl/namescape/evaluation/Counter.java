@@ -6,10 +6,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import nl.namescape.stats.WordList.TypeFrequency;
 
-public class Counter<T> extends HashMap<T,Integer>
+public class Counter<T> extends ConcurrentHashMap<T,Integer>
 {
 	@Override
 	public Integer get(Object key)
@@ -36,10 +37,10 @@ public class Counter<T> extends HashMap<T,Integer>
 	{
 		public int compare(T a, T b) 
 		{
-			if(get(a) < get(b)) 
+			if (get(a) < get(b)) 
 			{
 				return 1;
-			} else if(get(a)== get(b)) 
+			} else if (get(a) == get(b)) 
 			{
 				return 0;
 			} else 
@@ -51,9 +52,10 @@ public class Counter<T> extends HashMap<T,Integer>
 	
 	public List<T> keyList()
 	{
+		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 		List<T> l = new ArrayList<T>();
 		l.addAll(this.keySet());
-		CompareCounts v =   new CompareCounts();
+		CompareCounts v =  new CompareCounts();
 		Collections.sort(l, v);
 		return l;
 	}

@@ -2,6 +2,7 @@ package nl.namescape.stats.colloc;
 import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.stats.WordList;
 //import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.tei.TEITagClasses;
@@ -23,38 +24,34 @@ import java.util.*;
 public class MultiwordExtractor implements DoSomethingWithFile
 {
 	WordList tf = new WordList();
-	int minimumFrequency = 2;
+	int minimumUnigramFrequency = 2;
+	int minimumBigramFrequency = 2;
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 	long nTokens=0;
 	int stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	double minimumScore=0;
-	CollocationScore scoreFunction = new  MI();
-	double portionToPrint=0.25;
-	int maxPrint=100;
+	CollocationScore scoreFunction = new MI();
+	double portionToPrint=1.0;
+	int maxPrint=100000;
 	
 	public void countWords(Document d)
 	{
 		List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 		for (Element e: tokens)
 		{
-			nTokens++;
-
-			String lemma = e.getAttribute("lemma");
-			String wordform = e.getTextContent();
-			String tag = e.getAttribute("function");
-			String lwt = wordform + "\t" + tag + "\t" + lemma;
-			
-			switch (type)
-			{
-				case word: tf.incrementFrequency(wordform, 1); break;
-				case lemma: tf.incrementFrequency(lemma, 1); break;
-				case lwt: tf.incrementFrequency(lwt, 1); break;
-			}
+			incrementWordCount();
+			String it = getWordOrLemma(e);
+			incrementFrequency(it, 1);
 		} 
 	}
 
+	private synchronized void incrementFrequency(String s, int increment)
+	{
+		tf.incrementFrequency(s, 1);
+	}
+	
 	public void countBigrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
@@ -64,48 +61,53 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
 			for (Element e: tokens)
 			{
-				String lemma = e.getAttribute("lemma");
-				String wordform = e.getTextContent();
-				String tag = e.getAttribute("function");
-				String lwt = wordform + "\t" + tag + "\t" + lemma;
-
-				String it = "";
-				switch (type)
-				{
-					case word:  it = wordform; break;
-					case lemma: it = lemma; break;
-					case lwt: it = lwt; break;
-				}
+				String it = getWordOrLemma(e);
 				storeBigram(previous, it);
 				previous = it;
 			} 
 		}
 	}
 
-	private void storeBigram(String w1, String w2)
+	private String getWordOrLemma(Element e) 
+	{
+		String lemma = e.getAttribute("lemma");
+		String wordform = e.getTextContent();
+		String tag = e.getAttribute("function");
+		String lwt = wordform + "\t" + tag + "\t" + lemma;
+
+		String it = "";
+		switch (type)
+		{
+			case word:  it = wordform; break;
+			case lemma: it = lemma; break;
+			case lwt: it = lwt; break;
+		}
+		return it;
+	}
+
+	private synchronized void storeBigram(String w1, String w2)
 	{
 		if (w1==null || w2 == null) return;
-		if (tf.getFrequency(w1) < minimumFrequency || tf.getFrequency(w2) < minimumFrequency)
+		if (tf.getFrequency(w1) < minimumUnigramFrequency || 
+				tf.getFrequency(w2) < minimumUnigramFrequency)
 			return;
 		String[]  parts = {w1,w2};
 		WordNGram biGram = new WordNGram(parts);
-		//System.err.println(biGram);
 		bigramCounter.increment(biGram);
 	}
 
 	public void scoreBigrams()
 	{
-		List<WordNGram> bigrams =bigramCounter.keyList();
+		List<WordNGram> bigrams = bigramCounter.keyList();
 		for (WordNGram wn: bigrams)
 		{
-			
 			int f = bigramCounter.get(wn);
-			if (f < minimumFrequency)
+			if (f < minimumBigramFrequency)
 			{
 				bigramCounter.remove(wn);
 			}
 		}
-		bigrams =bigramCounter.keyList();
+		bigrams = bigramCounter.keyList();
 		for (WordNGram wn: bigrams)
 		{
 			
@@ -114,7 +116,6 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			int f2 = tf.getFrequency(wn.parts.get(1));
 			double score = this.score(nTokens,f, f1, f2);
 			wn.score = score;
-			// System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 		}
 		Collections.sort(bigrams, new ScoreComparator());
 		int k=0;
@@ -122,15 +123,37 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		{
 			if (k >= maxPrint || k > portionToPrint * bigrams.size())
 				break;
-			System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
+			System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 			k++;
 		}
-		System.err.println("We have " + bigrams.size() +  " bigrams! ");
+		System.out.println("Corpus has " + nTokens +  " tokens ");
+		System.out.println("We have " + bigrams.size() +  " bigrams! ");
 	}
 
+	public void extendBigrams(Document d)
+	{
+		List<Element> sentences = TEITagClasses.getSentenceElements(d);
+		for (Element s: sentences)
+		{
+			String previous = null;
+			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
+			for (Element e: tokens)
+			{
+				String it = getWordOrLemma(e);
+				previous = it;
+			} 
+		}
+	}
+	
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
 		return scoreFunction.score(nTokens, f, f1, f2);
+	}
+
+
+	private synchronized void incrementWordCount()
+	{
+		nTokens++;
 	}
 
 	public void handleFile(String fileName) 
@@ -154,9 +177,13 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	public static void main(String[] args)
 	{
 		MultiwordExtractor mwe = new MultiwordExtractor();
-		DirectoryHandling.traverseDirectory(mwe, args[0]);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,4);
+		DirectoryHandling.traverseDirectory(m, args[0]);
+		m.shutdown();
 		mwe.stage=2;
-		DirectoryHandling.traverseDirectory(mwe, args[0]);
+		m = new MultiThreadedFileHandler(mwe,4);
+		DirectoryHandling.traverseDirectory(m, args[0]);
+		m.shutdown();
 		mwe.scoreBigrams();
 	}
 }
