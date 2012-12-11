@@ -1,4 +1,4 @@
-package nl.namescape.stats;
+package nl.namescape.stats.colloc;
 import impact.ee.util.StringUtils;
 
 import java.util.*;
@@ -32,5 +32,10 @@ public class WordNGram
 				return false;
 		}
 		return true;
+	}
+	@Override
+	public int hashCode()
+	{
+		return parts.hashCode();
 	}
 }

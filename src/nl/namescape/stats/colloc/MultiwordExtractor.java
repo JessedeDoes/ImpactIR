@@ -1,11 +1,9 @@
-package nl.namescape.stats;
+package nl.namescape.stats.colloc;
 import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.namescape.stats.WordList;
 import nl.namescape.stats.MakeFrequencyList.Type;
-import nl.namescape.stats.colloc.Dice;
-import nl.namescape.stats.colloc.CollocationScore;
-import nl.namescape.stats.colloc.MI;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
@@ -36,8 +34,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 
 	public void countWords(Document d)
 	{
-		List<Element> sentences = TEITagClasses.getSentenceElements(d);
-		List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(d);
+		List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 		for (Element e: tokens)
 		{
 			nTokens++;
@@ -62,7 +59,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			String previous = null;
-			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
+			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
 			for (Element e: tokens)
 			{
 				String lemma = e.getAttribute("lemma");
@@ -98,6 +95,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	{
 		for (WordNGram wn: bigramCounter.keyList())
 		{
+			
 			int f = bigramCounter.get(wn);
 			if (f < minimumFrequency)
 			{
