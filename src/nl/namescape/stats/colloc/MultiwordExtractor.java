@@ -176,7 +176,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 				{
 					int minSize = Math.max(3, foundFirstUpperCaseAt+1);
 					int maxSize = foundLastUpperCaseAt + 1;
-					if (nGram.size() < minSize)
+					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
 					for (int j=maxSize; j < nGram.size() && j <= maxSize; j++)
 					{
