@@ -3,7 +3,7 @@ import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.stats.WordList;
-import nl.namescape.stats.MakeFrequencyList.Type;
+//import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
@@ -27,11 +27,13 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 	long nTokens=0;
-	int Stage=1;
+	int stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	double minimumScore=0;
 	CollocationScore scoreFunction = new  MI();
-
+	double portionToPrint=0.25;
+	int maxPrint=100;
+	
 	public void countWords(Document d)
 	{
 		List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
@@ -93,21 +95,37 @@ public class MultiwordExtractor implements DoSomethingWithFile
 
 	public void scoreBigrams()
 	{
-		for (WordNGram wn: bigramCounter.keyList())
+		List<WordNGram> bigrams =bigramCounter.keyList();
+		for (WordNGram wn: bigrams)
 		{
 			
 			int f = bigramCounter.get(wn);
 			if (f < minimumFrequency)
 			{
 				bigramCounter.remove(wn);
-				continue;
 			}
+		}
+		bigrams =bigramCounter.keyList();
+		for (WordNGram wn: bigrams)
+		{
+			
+			int f = bigramCounter.get(wn);
 			int f1 = tf.getFrequency(wn.parts.get(0));
 			int f2 = tf.getFrequency(wn.parts.get(1));
 			double score = this.score(nTokens,f, f1, f2);
 			wn.score = score;
-			System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
+			// System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 		}
+		Collections.sort(bigrams, new ScoreComparator());
+		int k=0;
+		for (WordNGram wn: bigrams)
+		{
+			if (k >= maxPrint || k > portionToPrint * bigrams.size())
+				break;
+			System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
+			k++;
+		}
+		System.err.println("We have " + bigrams.size() +  " bigrams! ");
 	}
 
 	private double score(long nTokens, int f, int f1, int f2) 
@@ -117,10 +135,11 @@ public class MultiwordExtractor implements DoSomethingWithFile
 
 	public void handleFile(String fileName) 
 	{
+		System.err.println("Stage " + stage + ": "  + fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
-			switch (Stage)
+			switch (stage)
 			{
 				case 1: countWords(d); break;
 				case 2: countBigrams(d); break;
@@ -136,7 +155,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	{
 		MultiwordExtractor mwe = new MultiwordExtractor();
 		DirectoryHandling.traverseDirectory(mwe, args[0]);
-		mwe.Stage=2;
+		mwe.stage=2;
 		DirectoryHandling.traverseDirectory(mwe, args[0]);
 		mwe.scoreBigrams();
 	}
