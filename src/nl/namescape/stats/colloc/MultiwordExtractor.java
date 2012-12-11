@@ -174,10 +174,11 @@ public class MultiwordExtractor implements DoSomethingWithFile
 				}
 				if (foundFirstUpperCaseAt < Integer.MAX_VALUE) 
 				{
-					int startAt = Math.min(3, foundFirstUpperCaseAt+1);
-					if (nGram.size() < startAt)
+					int minSize = Math.max(3, foundFirstUpperCaseAt+1);
+					int maxSize = foundLastUpperCaseAt + 1;
+					if (nGram.size() < minSize)
 						continue; // next i
-					for (int j=startAt; j < nGram.size() && j <= foundLastUpperCaseAt+1; j++)
+					for (int j=maxSize; j < nGram.size() && j <= maxSize; j++)
 					{
 						ngramCounter.increment(new WordNGram(nGram,j));
 					}
