@@ -5,6 +5,7 @@ import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.stats.colloc.Dice;
 import nl.namescape.stats.colloc.CollocationScore;
+import nl.namescape.stats.colloc.MI;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
@@ -31,8 +32,8 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	int Stage=1;
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	double minimumScore=0;
-	CollocationScore scoreFunction = new Dice();
-	
+	CollocationScore scoreFunction = new  MI();
+
 	public void countWords(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
@@ -45,12 +46,12 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			String wordform = e.getTextContent();
 			String tag = e.getAttribute("function");
 			String lwt = wordform + "\t" + tag + "\t" + lemma;
-
+			
 			switch (type)
 			{
-			case word: tf.incrementFrequency(wordform, 1); break;
-			case lemma: tf.incrementFrequency(lemma, 1); break;
-			case lwt: tf.incrementFrequency(lwt, 1); break;
+				case word: tf.incrementFrequency(wordform, 1); break;
+				case lemma: tf.incrementFrequency(lemma, 1); break;
+				case lwt: tf.incrementFrequency(lwt, 1); break;
 			}
 		} 
 	}
@@ -64,8 +65,6 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
 			for (Element e: tokens)
 			{
-				
-
 				String lemma = e.getAttribute("lemma");
 				String wordform = e.getTextContent();
 				String tag = e.getAttribute("function");
@@ -83,7 +82,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			} 
 		}
 	}
-	
+
 	private void storeBigram(String w1, String w2)
 	{
 		if (w1==null || w2 == null) return;
@@ -91,6 +90,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			return;
 		String[]  parts = {w1,w2};
 		WordNGram biGram = new WordNGram(parts);
+		//System.err.println(biGram);
 		bigramCounter.increment(biGram);
 	}
 
@@ -100,19 +100,21 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		{
 			int f = bigramCounter.get(wn);
 			if (f < minimumFrequency)
+			{
 				bigramCounter.remove(wn);
+				continue;
+			}
 			int f1 = tf.getFrequency(wn.parts.get(0));
 			int f2 = tf.getFrequency(wn.parts.get(1));
 			double score = this.score(nTokens,f, f1, f2);
 			wn.score = score;
+			System.err.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 		}
 	}
-	
+
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
-		// TODO Auto-n method stub
 		return scoreFunction.score(nTokens, f, f1, f2);
-		
 	}
 
 	public void handleFile(String fileName) 
@@ -131,7 +133,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		}
 	}
 
-	
+
 	public static void main(String[] args)
 	{
 		MultiwordExtractor mwe = new MultiwordExtractor();
