@@ -148,19 +148,22 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
-				for (int j=i; i < tokens.size(); j++)
+				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
+						nGram.add(it);
 						if (previous != null)
 						{
 							WordNGram bi = new WordNGram(previous,it);
 							if (bigramCounter.get(bi) < minimumBigramFrequency)
 								break;
 							if (j - i > 1)
-								nGram.add(it);
+							{
+								ngramCounter.increment(new WordNGram(nGram));
+							}
 						}
 						previous=it;
 					} else break;
@@ -171,6 +174,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	
 	private void scoreNgrams() 
 	{
+		// TODO: first add all bigrams to the ngram hash ?
 		List<WordNGram> ngrams = ngramCounter.keyList();
 		for (WordNGram wn: ngrams)
 		{
@@ -219,17 +223,19 @@ public class MultiwordExtractor implements DoSomethingWithFile
 
 	public static void main(String[] args)
 	{
+		int processors = Runtime.getRuntime().availableProcessors();
+		System.err.println("Processors: " + processors);
 		MultiwordExtractor mwe = new MultiwordExtractor();
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,4);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.stage=2;
-		m = new MultiThreadedFileHandler(mwe,4);
+		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreBigrams();
 		mwe.stage = 3;
-		m = new MultiThreadedFileHandler(mwe,4);
+		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreNgrams();
