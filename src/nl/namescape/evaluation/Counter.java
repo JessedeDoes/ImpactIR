@@ -16,7 +16,7 @@ public class Counter<T> extends ConcurrentHashMap<T,Integer>
 	public Integer get(Object key)
 	{
 		Integer z = super.get(key);
-		if (z==null)
+		if (z == null)
 			return 0;
 		return z;
 	}
@@ -37,6 +37,8 @@ public class Counter<T> extends ConcurrentHashMap<T,Integer>
 	{
 		public int compare(T a, T b) 
 		{
+			if (a == null || b == null)
+				throw new NullPointerException();
 			if (get(a) < get(b)) 
 			{
 				return 1;

@@ -126,6 +126,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 			k++;
 		}
+		System.out.println("Score function used: "  + this.scoreFunction.getClass().getName());
 		System.out.println("Corpus has " + nTokens +  " tokens ");
 		System.out.println("We have " + bigrams.size() +  " bigrams! ");
 	}
