@@ -24,6 +24,16 @@ public class WordNGram
 		}
 	}
 	
+	
+	public WordNGram(List<String>  parts, int k)
+	{
+		for (int i=0; i < k; i++)
+		{
+			this.parts.add(parts.get(i));
+		}
+	}
+	
+	
 	public WordNGram(String s1, String s2)
 	{
 		this.parts.add(s1);

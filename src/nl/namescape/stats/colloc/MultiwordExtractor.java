@@ -148,25 +148,27 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
+				boolean foundUpperCase = false;
 				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
+						if (it.matches("^[A-Z].*")) foundUpperCase = true;
 						nGram.add(it);
 						if (previous != null)
 						{
 							WordNGram bi = new WordNGram(previous,it);
 							if (bigramCounter.get(bi) < minimumBigramFrequency)
 								break;
-							if (j - i > 1)
-							{
-								ngramCounter.increment(new WordNGram(nGram));
-							}
 						}
 						previous=it;
 					} else break;
+				}
+				if (foundUpperCase) for (int j=2; j < nGram.size(); j++)
+				{
+					ngramCounter.increment(new WordNGram(nGram,j));
 				}
 			}
 		}
