@@ -210,7 +210,8 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		}
 	}
 
-	private boolean isReallyUppercase(int i, String it) {
+	private boolean isReallyUppercase(int i, String it) 
+	{
 		boolean upperCase = false;
 		if (it.matches("^[A-Z].*"))
 		{

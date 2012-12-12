@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * From a TEI tokenized corpus (with s and w tags), gather a 
@@ -27,7 +28,7 @@ public class CaseProfile  implements java.io.Serializable,
 {
 	WordList tf = new WordList();
 	int nTokens = 0;
-	Map<String,Counter> counts = new HashMap<String,Counter>();
+	Map<String,Counter> counts = new ConcurrentHashMap<String,Counter>();
 
 	class Counter
 	{
@@ -44,7 +45,7 @@ public class CaseProfile  implements java.io.Serializable,
 			this.key = s;
 		}
 
-		public void count(String s, int f)
+		public synchronized void count(String s, int f)
 		{
 			count += f;
 			variants.add(s);
@@ -101,12 +102,17 @@ public class CaseProfile  implements java.io.Serializable,
 				String wordform = e.getTextContent();
 				if (!first)
 				{
-					tf.incrementFrequency(wordform, 1);
+					countWord(wordform);
 				}
 				first = false;
 				previousWord = wordform;
 			}
 		}
+	}
+
+	private synchronized void countWord(String wordform) 
+	{
+		tf.incrementFrequency(wordform, 1);
 	}
 
 	public void print()
