@@ -14,6 +14,7 @@ import org.w3c.dom.*;
 import java.util.*;
 
 /**
+ * !!!!!!Only for possible names, uses case information.
  * Try to use collocation information
  * For each sentence... [BLA]
  * @author does
@@ -24,7 +25,7 @@ import java.util.*;
  * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf
  */
 
-public class MultiwordExtractor implements DoSomethingWithFile
+public class MultiwordNameExtractor implements DoSomethingWithFile
 {
 	WordList tf = new WordList();
 	int minimumUnigramFrequency = 2;
@@ -244,6 +245,32 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
 	
+	/**
+	 * Look for the most frequently occurring lowercase parts of multiword names
+	 * other words are most likely NOT part of names
+	 */
+	
+	private void getListOfPossibleNameFunctionWords()
+	{
+		boolean useFrequency = false;
+		Counter<String> lowerCaseParts = new Counter<String>();
+		
+		for (WordNGram wn: ngramCounter.keySet())
+		{
+			int f = ngramCounter.get(wn);
+			for (String s: wn.parts)
+			{
+				if (s.toLowerCase().equals(s))
+					lowerCaseParts.increment(s,useFrequency?f:1);
+			}
+		}
+		
+		System.err.println("LIST OF TOP LOWER CASE PARTS");
+		for (String s: lowerCaseParts.keyList())
+		{
+			System.err.println(lowerCaseParts.get(s) + "\t" + s);
+		}
+	}
 	
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
@@ -300,7 +327,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	{
 		int processors = Runtime.getRuntime().availableProcessors();
 		System.err.println("Processors: " + processors);
-		MultiwordExtractor mwe = new MultiwordExtractor();
+		MultiwordNameExtractor mwe = new MultiwordNameExtractor();
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
@@ -317,5 +344,6 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreNgrams();	
+		mwe.getListOfPossibleNameFunctionWords();
 	}
 }
