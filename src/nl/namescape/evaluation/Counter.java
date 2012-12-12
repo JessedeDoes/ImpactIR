@@ -39,22 +39,16 @@ public class Counter<T> extends ConcurrentHashMap<T,Integer>
 		{
 			if (a == null || b == null)
 				throw new NullPointerException();
-			if (get(a) < get(b)) 
-			{
-				return 1;
-			} else if (get(a) == get(b)) 
-			{
-				return 0;
-			} else 
-			{
-				return -1;
-			}
+			int cA = get(a);
+			int cB = get(b);
+			return (int) Math.signum(cB-cA);
 		}
 	}
 	
 	public List<T> keyList()
 	{
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+		
 		List<T> l = new ArrayList<T>();
 		l.addAll(this.keySet());
 		CompareCounts v =  new CompareCounts();
