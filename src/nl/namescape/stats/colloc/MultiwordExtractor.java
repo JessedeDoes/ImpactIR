@@ -3,6 +3,7 @@ import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.filehandling.MultiThreadedFileHandler;
+import nl.namescape.stats.CaseProfile;
 import nl.namescape.stats.WordList;
 //import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.tei.TEITagClasses;
@@ -28,6 +29,8 @@ public class MultiwordExtractor implements DoSomethingWithFile
 	WordList tf = new WordList();
 	int minimumUnigramFrequency = 2;
 	int minimumBigramFrequency = 2;
+	CaseProfile caseProfile = new CaseProfile();
+	
 	enum Stage 
 	{ 
 		wordFrequency, 
@@ -174,7 +177,18 @@ public class MultiwordExtractor implements DoSomethingWithFile
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
+						boolean upperCase = false;
 						if (it.matches("^[A-Z].*"))
+						{
+							if (i==0)
+							{
+								Double p = caseProfile.getUpperCaseProportion(it);
+								if (p == null || p > 0.5)
+									upperCase = true;
+							} else
+								upperCase = true;
+						}
+						if (upperCase)
 						{
 							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
 								indexOfFirstCapitalizedWord = j-i;
@@ -244,7 +258,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 			Document d = XML.parse(fileName);
 			switch (stage)
 			{
-				case wordFrequency: countWords(d); break;
+				case wordFrequency: countWords(d); caseProfile.handleDocument(d); break;
 				case bigramFrequency: countBigrams(d); break;
 				case nGrams: extendBigrams(d); break;
 			}
@@ -284,11 +298,14 @@ public class MultiwordExtractor implements DoSomethingWithFile
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
+		mwe.caseProfile.makeProfile();
+		
 		mwe.stage=Stage.bigramFrequency;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreBigrams();
+		
 		mwe.stage = Stage.nGrams;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
