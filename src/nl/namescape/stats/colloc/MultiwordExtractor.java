@@ -177,17 +177,7 @@ public class MultiwordExtractor implements DoSomethingWithFile
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
-						boolean upperCase = false;
-						if (it.matches("^[A-Z].*"))
-						{
-							if (i==0)
-							{
-								Double p = caseProfile.getUpperCaseProportion(it);
-								if (p == null || p > 0.5)
-									upperCase = true;
-							} else
-								upperCase = true;
-						}
+						boolean upperCase = isReallyUppercase(i, it);
 						if (upperCase)
 						{
 							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
@@ -218,6 +208,21 @@ public class MultiwordExtractor implements DoSomethingWithFile
 				}
 			}
 		}
+	}
+
+	private boolean isReallyUppercase(int i, String it) {
+		boolean upperCase = false;
+		if (it.matches("^[A-Z].*"))
+		{
+			if (i==0)
+			{
+				Double p = caseProfile.getUpperCaseProportion(it);
+				if (p == null || p > 0.5)
+					upperCase = true;
+			} else
+				upperCase = true;
+		}
+		return upperCase;
 	}
 	
 	private void scoreNgrams() 
