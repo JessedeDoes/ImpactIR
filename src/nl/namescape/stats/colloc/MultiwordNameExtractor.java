@@ -146,8 +146,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		{
 			
 			int f = bigramCounter.get(wn);
-			int f1 = tf.getFrequency(wn.parts.get(0));
-			int f2 = tf.getFrequency(wn.parts.get(1));
+			int f1 = tf.getFrequency(wn.parts.get(0),true);
+			int f2 = tf.getFrequency(wn.parts.get(1),true);
 			double score = this.score(nTokens,f, f1, f2);
 			double SCPScore = this.SCP(wn);
 			wn.score = SCPScore;
@@ -159,7 +159,11 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			if (k >= maxPrint || k > portionToPrint * bigrams.size())
 				break;
 			if (this.bigramCouldBeName(wn))
-				System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
+			{
+				int f1 = tf.getFrequency(wn.parts.get(0),true);
+				int f2 = tf.getFrequency(wn.parts.get(1),true);
+				System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn + "\t" + f1 + "\t" + f2);
+			}
 			k++;
 		}
 		System.out.println("Bigram score function used: "  + this.bigramScoreFunction.getClass().getName());
@@ -382,8 +386,15 @@ Silva, J. F. & Dias, G. & Guilloré, S. & Lopes, G. P.
 (1999). Using LocalMaxs Algorithm for the Extraction of
 Contiguous and Non-contiguous Multiword Lexical Units.
 In Lectures Notes in Artificial Intelligence, Springer-
-Verlag, volume 1695, (pp113--132).
-	 */
+Verlag, volume 1695, (pp 113--132).
+
+
+---
+
+Ik zie niet hed it bijdragt aan
+UC -- sequence of LC -- UC
+
+*/
 	
 	private double SCP(WordNGram w)
 	{
@@ -419,7 +430,7 @@ Verlag, volume 1695, (pp113--132).
 	private int getSpanFrequency(WordNGram w, int start, int end)
 	{
 		if (start == end-1)
-			return tf.getFrequency(w.parts.get(start));
+			return tf.getFrequency(w.parts.get(start),true);
 
 		WordNGram wng = w.span(start, end);
 		
