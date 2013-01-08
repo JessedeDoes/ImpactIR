@@ -105,7 +105,7 @@ public class WordList
 	public int getFrequency(String w, boolean sensitive)
 	{
 		Map<String,Integer> h = sensitive?this.typeFrequency:caseInsensitiveTypeFrequency;
-		Integer f = h.get(w.toLowerCase());
+		Integer f = h.get(sensitive?w:w.toLowerCase());
 		if (f == null)
 			return 0;
 		else
