@@ -35,7 +35,7 @@ Doug Downey, Matthew Broadhead, and Oren Etzioni
 
 public class MultiwordNameExtractor implements DoSomethingWithFile
 {
-	WordList tf = new WordList();
+	WordList tfx = new WordList();
 	int minimumUnigramFrequency = 2;
 	int minimumBigramFrequency = 2;
 	int maxLeadingLowerCaseWords=0;
@@ -79,7 +79,12 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 
 	private synchronized void incrementFrequency(String s, int increment)
 	{
-		tf.incrementFrequency(s, 1);
+		tfx.incrementFrequency(s, 1);
+	}
+	
+	private synchronized int getFrequency(String s)
+	{
+		return tfx.getFrequency(s,true);
 	}
 	
 	public void countBigrams(Document d)
@@ -122,8 +127,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	private synchronized void storeBigram(String w1, String w2)
 	{
 		if (w1==null || w2 == null) return;
-		if (tf.getFrequency(w1) < minimumUnigramFrequency || 
-				tf.getFrequency(w2) < minimumUnigramFrequency)
+		if (getFrequency(w1) < minimumUnigramFrequency || 
+				getFrequency(w2) < minimumUnigramFrequency)
 			return;
 		String[]  parts = {w1,w2};
 		WordNGram biGram = new WordNGram(parts);
@@ -146,13 +151,13 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		{
 			
 			int f = bigramCounter.get(wn);
-			int f1 = tf.getFrequency(wn.parts.get(0),true);
-			int f2 = tf.getFrequency(wn.parts.get(1),true);
+			int f1 = getFrequency(wn.parts.get(0));
+			int f2 = getFrequency(wn.parts.get(1));
 			double score = this.score(nTokens,f, f1, f2);
 			double SCPScore = this.SCP(wn);
 			wn.score = SCPScore;
 		}
-		Collections.sort(bigrams, new ScoreComparator());
+		//Collections.sort(bigrams, new ScoreComparator());
 		int k=0;
 		for (WordNGram wn: bigrams)
 		{
@@ -160,8 +165,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				break;
 			if (this.bigramCouldBeName(wn))
 			{
-				int f1 = tf.getFrequency(wn.parts.get(0),true);
-				int f2 = tf.getFrequency(wn.parts.get(1),true);
+				int f1 = getFrequency(wn.parts.get(0));
+				int f2 = getFrequency(wn.parts.get(1));
 				System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn + "\t" + f1 + "\t" + f2);
 			}
 			k++;
@@ -391,8 +396,11 @@ Verlag, volume 1695, (pp 113--132).
 
 ---
 
-Ik zie niet hed it bijdragt aan
-UC -- sequence of LC -- UC
+Ik zie niet hoe dit bijdraagt aan
+oplossing van UC -- sequence of LC -- UC
+omdat "Jan naar Parijs" ging
+Jan // naar Parijs ....
+Pfft.
 
 */
 	
@@ -430,7 +438,7 @@ UC -- sequence of LC -- UC
 	private int getSpanFrequency(WordNGram w, int start, int end)
 	{
 		if (start == end-1)
-			return tf.getFrequency(w.parts.get(start),true);
+			return getFrequency(w.parts.get(start));
 
 		WordNGram wng = w.span(start, end);
 		
