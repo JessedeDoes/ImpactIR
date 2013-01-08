@@ -22,11 +22,10 @@ import java.util.*;
  * First a typefrequency pass; next a bigram pass, 
  * Next step: add all the rest. (?)
  * 
- * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf * 
+ * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf *
+ *  
  * En Extraction of Multi-Word Collocations Using Syntactic Bigram
-Composition
-
-Violeta Seretan, Luka Nerima, Eric Wehrli
+Composition Violeta Seretan, Luka Nerima, Eric Wehrli
 
 ---
 Locating Complex Named Entities in Web Text
@@ -150,7 +149,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			int f1 = tf.getFrequency(wn.parts.get(0));
 			int f2 = tf.getFrequency(wn.parts.get(1));
 			double score = this.score(nTokens,f, f1, f2);
-			wn.score = score;
+			double SCPScore = this.SCP(wn);
+			wn.score = SCPScore;
 		}
 		Collections.sort(bigrams, new ScoreComparator());
 		int k=0;
@@ -158,7 +158,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		{
 			if (k >= maxPrint || k > portionToPrint * bigrams.size())
 				break;
-			System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
+			if (this.bigramCouldBeName(wn))
+				System.out.println(wn.score +  "\t" + bigramCounter.get(wn) + "\t" + wn);
 			k++;
 		}
 		System.out.println("Bigram score function used: "  + this.bigramScoreFunction.getClass().getName());
@@ -267,7 +268,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	 * other words are most likely NOT part of names
 	 */
 	
-	private void getListOfPossibleNameFunctionWords()
+	private Counter<String> getListOfPossibleNameFunctionWords()
 	{
 		boolean useFrequency = false;
 		Counter<String> lowerCaseParts = new Counter<String>();
@@ -287,6 +288,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		{
 			System.err.println(lowerCaseParts.get(s) + "\t" + s);
 		}
+		return lowerCaseParts;
 	}
 	
 	private double score(long nTokens, int f, int f1, int f2) 
@@ -385,7 +387,7 @@ Verlag, volume 1695, (pp113--132).
 	
 	private double SCP(WordNGram w)
 	{
-		int f = ngramCounter.get(w);
+		int f = (w.size() == 2?bigramCounter:ngramCounter).get(w);
 		double p = f / (double) nTokens;
 		int n = w.size();
 		double Tp=0;
@@ -405,6 +407,13 @@ Verlag, volume 1695, (pp113--132).
 		//double Avp = Tp / (double) (n-1); 
 		double Avp = Tp / K; 
 		return p*p / Avp;
+	}
+	
+	boolean bigramCouldBeName(WordNGram w)
+	{
+		boolean firstOK = isCapitalized(w.parts.get(0));
+		boolean lastOK = isCapitalized(w.parts.get(1));
+		return firstOK && lastOK;
 	}
 	
 	private int getSpanFrequency(WordNGram w, int start, int end)
