@@ -22,7 +22,16 @@ import java.util.*;
  * First a typefrequency pass; next a bigram pass, 
  * Next step: add all the rest. (?)
  * 
- * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf
+ * Cf: http://hlt.di.fct.unl.pt/jfs/ClustAnaClassNumEnt.pdf * 
+ * En Extraction of Multi-Word Collocations Using Syntactic Bigram
+Composition
+
+Violeta Seretan, Luka Nerima, Eric Wehrli
+
+---
+Locating Complex Named Entities in Web Text
+
+Doug Downey, Matthew Broadhead, and Oren Etzioni
  */
 
 public class MultiwordNameExtractor implements DoSomethingWithFile
@@ -30,6 +39,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	WordList tf = new WordList();
 	int minimumUnigramFrequency = 2;
 	int minimumBigramFrequency = 2;
+	int maxLeadingLowerCaseWords=0;
+	
 	CaseProfile caseProfile = new CaseProfile();
 	
 	enum Stage 
@@ -48,7 +59,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> ngramCounter = new Counter<WordNGram>();
-	int maxLeadingLowerCaseWords=0;
+	
 	
 	double minimumScore=0;
 	CollocationScore bigramScoreFunction = new MI();
@@ -211,10 +222,15 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 	}
 
+	private boolean isCapitalized(String s)
+	{
+		return s.matches("^[A-Z].*");
+	}
+	
 	private boolean isReallyUppercase(int i, String it) 
 	{
 		boolean upperCase = false;
-		if (it.matches("^[A-Z].*"))
+		if (isCapitalized(it))
 		{
 			if (i==0)
 			{
@@ -234,12 +250,13 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		for (WordNGram wn: ngrams)
 		{
 			int f = ngramCounter.get(wn);
+			double d = SCP(wn);
 			if (f < minimumBigramFrequency)
 			{
 				ngramCounter.remove(wn);
 			} else
 			{
-				System.err.println(f + " " + wn);
+				System.err.println(f + " " + wn  +  " SCP: " + d);
 			}
 		}
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
@@ -303,24 +320,110 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 
 	/**
 	 *  Da Silva et. al. Coherence
+	 *  
+	 *  Cluster Analysis and Classification of Named Entities
+
+Joaquim F. Ferreira da Silva
+
+Departamento de Informática, Faculdade de Ciências e Tecnologia, Universidade Nova de Lisboa
+Quinta da Torre, 2725 Monte da Caparica, Portugal
+jfs@di.fct.unl.pt
+
+Zornitsa Kozareva
+
+Faculty of Mathematics and Informatics, Plovdiv University
+236, Bulgaria blvd., Plovdiv, Bulgaria
+zkozareva@hotmail.com
+
+José Gabriel Pereira Lopes
+
+Departamento de Informática, Faculdade de Ciências e Tecnologia, Universidade Nova de Lisboa
+Quinta da Torre, 2725 Monte da Caparica, Portugal
+gpl@di.fct.unl.pt
+
+	 *  Three tools working together, are used for extracting MWUs
+from any corpus: the LocalMaxs algorithm, the Symmetric
+Conditional Probability (SCP) statistical measure and the
+Fair Dispersion Point Normalization (FDPN) (Silva &
+Lopes, 1999). Thus, let us take an n-gram as a string of n
+words in any text. So, isolated words are 1-grams and the
+string President of the Republic is a 4-gram. One can
+intuitively accept that there is a strong cohesion within the
+4-gram United Nations General Assembly, but not in the 4-
+gram of that but not. LocalMaxs algorithm is based on the
+idea that a MWU should be an n-gram whose cohesion is
+higher than any (n-1)-gram contained in the n-gram; and
+should also be higher than the cohesion of all the (n+1)-
+grams containing that n-gram. Thus, LocalMaxs needs to
+compare cohesions of n-grams having different sizes: (n+1),
+n and (n-1) and sharing all but one word in the borders, as
+we are interested on sequential n-grams. Then FDPN
+concept is applied to the SCP(.) measure in order to
+“transform” every n-gram of any length (n) in a pseudo-
+bigram, and then a new measure, SCP_f(.), is obtained
+(Silva & Lopes, 1999).
+
+SCP_f ( w1 .. wn ) = p(w1..wn)^2 / Avp
+
+where
+
+Avp = 1 / (n-1) * ∑(i=1..n-1) p(w1..wi) p(w_(i+1)..wn)
+
+where p(w1…wj) is the probability of the n-gram w1…wj in
+the corpus. So, SCP_f(.) reflects the average cohesion
+between any two adjacent contiguous sub-n-gram of the
+original n-gram.
+
+Also:
+
+Silva, J. F. & Dias, G. & Guilloré, S. & Lopes, G. P.
+(1999). Using LocalMaxs Algorithm for the Extraction of
+Contiguous and Non-contiguous Multiword Lexical Units.
+In Lectures Notes in Artificial Intelligence, Springer-
+Verlag, volume 1695, (pp113--132).
 	 */
 	
 	private double SCP(WordNGram w)
 	{
 		int f = ngramCounter.get(w);
-		double p = f/ (double) nTokens;
+		double p = f / (double) nTokens;
 		int n = w.size();
 		double Tp=0;
+		double K=0;
 		for (int i=1; i < n; i++)
 		{
-			int f1 = ngramCounter.get(w.span(0,i)); // unless single word...
-			int f2 = ngramCounter.get(w.span(i,n));
-			double p1 = f1 / (double) nTokens;
-			double p2 = f2 / (double) nTokens;
-			Tp += p1 * p2;
+			int f1 = getSpanFrequency(w,0,i);
+			int f2 = getSpanFrequency(w,i,n);
+			if (f1 > 0 && f2 > 0)
+			{
+				double p1 = f1 / (double) nTokens;
+				double p2 = f2 / (double) nTokens;
+				Tp += p1 * p2;
+				K++;
+			}
 		}
-		double Avp = Tp / (double) (n-1);
+		//double Avp = Tp / (double) (n-1); 
+		double Avp = Tp / K; 
 		return p*p / Avp;
+	}
+	
+	private int getSpanFrequency(WordNGram w, int start, int end)
+	{
+		if (start == end-1)
+			return tf.getFrequency(w.parts.get(start));
+
+		WordNGram wng = w.span(start, end);
+		
+		if (start == end-2)
+		{
+			// only lookup if we have a name-like bigram
+			boolean firstOK = start == 0 || isCapitalized(w.parts.get(start));
+			boolean lastOK = isCapitalized(w.parts.get(end-1));
+			if (firstOK && lastOK)
+				return this.bigramCounter.get(wng);
+			else return 0;
+		}
+		else return this.ngramCounter.get(wng);
 	}
 	
 	public static void main(String[] args)
