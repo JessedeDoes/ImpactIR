@@ -566,7 +566,7 @@ Pfft.
 				K++;
 			} else
 			{
-				System.err.println("!!Problem at i=" + i + " with " + w + " f1 = "  + " f2 = "  + f2);
+				System.err.println("!!Problem at i=" + i + " with " + w + " f1 = "  + f1 + " f2 = "  + f2);
 			}
 		}
 		//double Avp = Tp / (double) (n-1); 
