@@ -356,7 +356,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					} else break;
 				}
 				WordNGram wn = new  WordNGram(nGram);
-				if (this.otherNgramCounter.contains(wn))
+				if (this.otherNgramCounter.containsKey(wn))
 				{
 					this.otherNgramCounter.increment(wn);
 				}
