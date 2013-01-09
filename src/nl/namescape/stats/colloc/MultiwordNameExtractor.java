@@ -292,7 +292,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 							
 							if (ngramCounter.containsKey(wn))
 							{
-								System.err.println("look at parts of " + wn);
+								//System.err.println("look at parts of " + wn);
 								lengthOfLongestStoredNGram = j;
 								// store right chunks
 								for (int l=1; l < j; l++)
@@ -301,7 +301,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 									if (!isCapitalized(wl) && l < j-2)
 									{
 										WordNGram rightPart = new WordNGram(nGram, l, j);
-										System.err.println("store right part: " + rightPart);
+										//System.err.println("store right part: " + rightPart);
 										this.otherNgramCounter.increment(rightPart);
 									}
 								}
@@ -309,14 +309,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						} 
 					}
 					// store left chunks for SCP
-					System.err.println("longest at i=" + i + ": " + lengthOfLongestStoredNGram);
+					//System.err.println("longest at i=" + i + ": " + lengthOfLongestStoredNGram);
 					for (int j=3; j < lengthOfLongestStoredNGram; j++)
 					{
 						String wj = nGram.get(j-1);
 						if (!isCapitalized(wj))
 						{
 							WordNGram leftPart = new WordNGram(nGram,j);
-							System.err.println("store left part: " + leftPart);
+							//System.err.println("store left part: " + leftPart);
 							this.otherNgramCounter.increment(leftPart);
 						}
 					}
@@ -364,12 +364,12 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 							WordNGram wn = new  WordNGram(nGram,j-i);
 							if (this.otherNgramCounter.containsKey(wn))
 							{
-								System.err.println("Seen again:" + wn);
+								//System.err.println("Seen again:" + wn);
 								this.otherNgramCounter.increment(wn);
 							} else
 							{
-								if (wn.parts.get(0).equals("Dirk"))
-									System.err.println("Nope " + wn);
+								//if (wn.parts.get(0).equals("Dirk"))
+								//	System.err.println("Nope " + wn);
 							}
 						}
 					} else break;
@@ -610,15 +610,15 @@ Pfft.
 		}
 		if (this.nGramCouldBeName(wng))
 		{
-			System.err.println("Try as name " + wng);
+			//System.err.println("Try as name " + wng);
 			return this.ngramCounter.get(wng);
 		}
 		else
 		{
-			System.err.println("Try as nonname " + wng);
+			//System.err.println("Try as nonname " + wng);
 			int f = this.otherNgramCounter.get(wng);
 			if (f == 0)
-				System.err.println("Huh... " + wng  + "erin?: " + otherNgramCounter.containsKey(wng));
+				System.err.println("Huh... " + wng  + " in other Ngram hash?: " + otherNgramCounter.containsKey(wng));
 			return f;
 		}
 	}
@@ -628,7 +628,7 @@ Pfft.
 		for (Entry<WordNGram,Integer> e: this.otherNgramCounter.entrySet())
 		{
 			e.setValue(0);
-			System.err.println("Whoops " + e);
+			//System.err.println("Whoops " + e);
 		}
 	}
 	
