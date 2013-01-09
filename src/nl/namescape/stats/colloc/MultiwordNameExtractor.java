@@ -331,12 +331,12 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
+			
 			for (int i=0; i < tokens.size(); i++)
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
-				int indexOfFirstCapitalizedWord = Integer.MAX_VALUE;
-				int indexOfLastCapitalizedWord = Integer.MAX_VALUE;
+				
 				
 				for (int j=i; j < tokens.size(); j++)
 				{
@@ -344,13 +344,6 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
-						boolean upperCase = isReallyUppercase(i, it);
-						if (upperCase)
-						{
-							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
-								indexOfFirstCapitalizedWord = j-i;
-							indexOfLastCapitalizedWord = j-i;
-						}
 						nGram.add(it);
 						if (previous != null)
 						{
@@ -359,9 +352,11 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 								break;
 						}
 						previous=it;
-						if (j -i > 2)
+						
+						if (j -i > 1)
 						{
-							WordNGram wn = new  WordNGram(nGram,j-i);
+							WordNGram wn = new  WordNGram(nGram,j-i+1);
+							//if (wn.toString().contains("Postma")) System.err.println("count ngram: "  + wn);
 							if (this.otherNgramCounter.containsKey(wn))
 							{
 								//System.err.println("Seen again:" + wn);
