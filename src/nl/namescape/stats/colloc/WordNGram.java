@@ -33,6 +33,14 @@ public class WordNGram
 		}
 	}
 	
+	public WordNGram(List<String>  parts, int startAt, int endBefore)
+	{
+		for (int i=startAt; i < endBefore; i++)
+		{
+			this.parts.add(parts.get(i));
+		}
+	}
+	
 	
 	public WordNGram(String s1, String s2)
 	{
