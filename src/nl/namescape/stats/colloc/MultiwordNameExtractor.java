@@ -7,6 +7,7 @@ import nl.namescape.stats.CaseProfile;
 import nl.namescape.stats.WordList;
 //import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.tei.TEITagClasses;
+import nl.namescape.util.Util;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.*;
@@ -34,6 +35,13 @@ Locating Complex Named Entities in Web Text
 Doug Downey, Matthew Broadhead, and Oren Etzioni
  */
 
+
+/**
+ * TODO:
+ * - volgens mij gaat er iets mis waardoor voorkomens van combinaties gemist worden?
+ * @author does
+ *
+ */
 public class MultiwordNameExtractor implements DoSomethingWithFile
 {
 	WordList tfx = new WordList();
@@ -226,12 +234,20 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				{
 					int minSize = Math.max(3, indexOfFirstCapitalizedWord+1);
 					int maxSize = indexOfLastCapitalizedWord + 1;
+					
+					//if (nGram.toString().contains("Beusekom"))
+						//System.err.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
+					
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
-					for (int j=minSize; j < nGram.size() && j <= maxSize; j++)
+					for (int j=minSize; j <= nGram.size() && j <= maxSize; j++)
 					{
 						if (isCapitalized(nGram.get(j-1)))
-							ngramCounter.increment(new WordNGram(nGram,j));
+						{
+							WordNGram wng  = new WordNGram(nGram,j);
+							// System.err.println("Consider: " + wng + " in " + Util.join(nGram, ", "));
+							ngramCounter.increment(wng);
+						}
 					}
 				}
 			}
