@@ -490,12 +490,30 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		Collections.sort(nGramList, new ScoreComparator());
 		for (WordNGram wn: nGramList)
 		{
-			int f = ngramCounter.get(wn);
-			System.err.println(f + " " + wn  +  " SCP: " + wn.score);
+			if (filterLowerCaseAndStuff(wn))
+			{
+				int f = ngramCounter.get(wn);
+				System.err.println(f + " " + wn  +  " SCP: " + wn.score);
+			}
 		}
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
 
+	private boolean filterLowerCaseAndStuff(WordNGram wng)
+	{
+		for (String s: wng.parts)
+		{
+			if (isCapitalized(s) || NameParticles.isNameParticle(s))
+			{
+				
+			} else
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Look for the most frequently occurring lowercase parts of multiword names
 	 * other words are most likely NOT part of names
