@@ -1,4 +1,5 @@
 package nl.namescape.stats.colloc;
+import nl.namescape.SentencePerLineOutput;
 import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
@@ -38,7 +39,10 @@ Doug Downey, Matthew Broadhead, and Oren Etzioni
 
 /**
  * TODO:
- * - volgens mij gaat er iets mis waardoor voorkomens van combinaties gemist worden?
+ * - volgens mij gaat er iets mis waardoor voorkomens van combinaties gemist worden? (done)
+ * - Bigrammen overhevelen naar ngram lijst (done)
+ * - Zinnen met teveel hoofdletters eruit laten
+ * - 
  * @author does
  *
  */
@@ -48,9 +52,9 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	int minimumUnigramFrequency = 2;
 	int minimumBigramFrequency = 2;
 	int maxLeadingLowerCaseWords=0;
-	
+
 	CaseProfile caseProfile = new CaseProfile();
-	
+
 	enum Stage 
 	{ 
 		wordFrequency, 
@@ -60,52 +64,60 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		countPartsOfNGrams,
 		applyLocalMaxs
 	}; 
-	
+
 	// for coherence, we would need a fourth stage to get frequencies of parts of possible multiword entities
 	Stage stage= Stage.wordFrequency;
-	
+
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 	long nTokens=0;
-	
-	
+
+
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> nameLikeBigramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> ngramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> otherNgramCounter = new Counter<WordNGram>();
-	
+
 	double minimumScore=0;
 	CollocationScore bigramScoreFunction = new MI();
 	double portionToPrint=1.0;
 	int maxPrint = 100000;
-	
+
 	public void countWords(Document d)
 	{
-		List<Element> tokens = 
-				nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
-		for (Element e: tokens)
+		List<Element> sentences = TEITagClasses.getSentenceElements(d);
+		for (Element s: sentences)
 		{
-			incrementWordCount();
-			String it = getWordOrLemma(e);
-			incrementFrequency(it, 1);
-		} 
+			if (!SentencePerLineOutput.sentenceHasEnoughLowercaseCharacters(s))
+				continue;
+			List<Element> tokens = 
+					nl.namescape.tei.TEITagClasses.getWordElements(s);
+			for (Element e: tokens)
+			{
+				incrementWordCount();
+				String it = getWordOrLemma(e);
+				incrementFrequency(it, 1);
+			} 
+		}
 	}
 
 	private synchronized void incrementFrequency(String s, int increment)
 	{
 		tfx.incrementFrequency(s, 1);
 	}
-	
+
 	private synchronized int getFrequency(String s)
 	{
 		return tfx.getFrequency(s,true);
 	}
-	
+
 	public void countBigrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
 		for (Element s: sentences)
 		{
+			if (!SentencePerLineOutput.sentenceHasEnoughLowercaseCharacters(s))
+				continue;
 			String previous = null;
 			int i=0;
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
@@ -131,12 +143,12 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		String lwt = wordform + "\t" + tag + "\t" + lemma;
 
 		String it = "";
-		
+
 		switch (type)
 		{
-			case word:  it = wordform; break;
-			case lemma: it = lemma; break;
-			case lwt: it = lwt; break;
+		case word:  it = wordform; break;
+		case lemma: it = lemma; break;
+		case lwt: it = lwt; break;
 		}
 		return it;
 	}
@@ -170,7 +182,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		bigrams = bigramCounter.keyList();
 		for (WordNGram wn: bigrams)
 		{
-			
+
 			int f = bigramCounter.get(wn);
 			int f1 = getFrequency(wn.parts.get(0));
 			int f2 = getFrequency(wn.parts.get(1));
@@ -201,12 +213,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	 * entity are high frequency....
 	 * (and so are all lowercase bigrams in an entity)
 	 */
-	
+
 	public void extendBigramsToNGrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
 		for (Element s: sentences)
 		{
+			if (!SentencePerLineOutput.sentenceHasEnoughLowercaseCharacters(s))
+				continue;
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
 			int position = 0;
 			for (int i=0; i < tokens.size(); i++)
@@ -238,7 +252,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 								break;
 						}
 						previous=it;
-						
+
 					} else break;
 				}
 				if (indexOfFirstCapitalizedWord < Integer.MAX_VALUE && 
@@ -246,10 +260,10 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				{
 					int minSize = Math.max(3, indexOfFirstCapitalizedWord+1);
 					int maxSize = indexOfLastCapitalizedWord + 1;
-					
+
 					//if (nGram.toString().contains("Beusekom"))
 					//System.err.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
-					
+
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
 					for (int j=minSize; j <= nGram.size() && j <= maxSize; j++)
@@ -270,12 +284,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	 * This is silly - can be done from the ngram hash!!
 	 * @param d
 	 */
-	
+
 	public void getPartsOfNgrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
 		for (Element s: sentences)
 		{
+			if (!SentencePerLineOutput.sentenceHasEnoughLowercaseCharacters(s))
+				continue;
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
 			int position = 0;
 			for (int i=0; i < tokens.size(); i++)
@@ -284,7 +300,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				List<String> nGram = new ArrayList<String>();
 				int indexOfFirstCapitalizedWord = Integer.MAX_VALUE;
 				int indexOfLastCapitalizedWord = Integer.MAX_VALUE;
-				
+
 				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
@@ -309,7 +325,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						previous=it;
 					} else break;
 				}
-				
+
 				if (indexOfFirstCapitalizedWord < Integer.MAX_VALUE && 
 						indexOfFirstCapitalizedWord < maxLeadingLowerCaseWords+1) 
 				{
@@ -317,14 +333,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					int maxSize = indexOfLastCapitalizedWord + 1;
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
-					
+
 					int lengthOfLongestStoredNGram=0;
 					for (int j=minSize; j <= nGram.size() && j <= maxSize; j++)
 					{
 						if (isCapitalized(nGram.get(j-1)))
 						{
 							WordNGram wn = new WordNGram(nGram,j);
-							
+
 							if (ngramCounter.containsKey(wn))
 							{
 								//System.err.println("look at parts of " + wn);
@@ -359,20 +375,22 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			}
 		}
 	}
-	
+
 	public void countPartsOfNgrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
 		for (Element s: sentences)
 		{
+			if (!SentencePerLineOutput.sentenceHasEnoughLowercaseCharacters(s))
+				continue;
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
-			
+
 			for (int i=0; i < tokens.size(); i++)
 			{
 				String previous = null;
 				List<String> nGram = new ArrayList<String>();
-				
-				
+
+
 				for (int j=i; j < tokens.size(); j++)
 				{
 					Element e = tokens.get(j);
@@ -387,7 +405,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 								break;
 						}
 						previous=it;
-						
+
 						if (j -i > 1)
 						{
 							WordNGram wn = new  WordNGram(nGram,j-i+1);
@@ -407,12 +425,12 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			}
 		}
 	}
-	
+
 	private boolean isCapitalized(String s)
 	{
 		return s.matches("^[A-Z].*");
 	}
-	
+
 	private boolean isReallyUppercase(int i, String it) 
 	{
 		boolean upperCase = false;
@@ -428,7 +446,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 		return upperCase;
 	}
-	
+
 	private void pruneNgrams() 
 	{
 		// TODO: first add all bigrams to the ngram hash ?
@@ -443,7 +461,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
-	
+
 	private void scoreNgrams() 
 	{
 		// TODO: first add all bigrams to the ngram hash ?
@@ -455,9 +473,9 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			wn.score = d;
 			//System.err.println(f + " " + wn  +  " SCP: " + d);
 		}
-		
+
 		// add the bigrams ...
-		
+
 		for (WordNGram bi: this.nameLikeBigramCounter.keySet())
 		{
 			int f = nameLikeBigramCounter.get(bi);
@@ -467,7 +485,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				bi.score = SCP(bi);
 			}
 		}
-		
+
 		List<WordNGram> nGramList = ngramCounter.keyList();
 		Collections.sort(nGramList, new ScoreComparator());
 		for (WordNGram wn: nGramList)
@@ -477,17 +495,17 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
-	
+
 	/**
 	 * Look for the most frequently occurring lowercase parts of multiword names
 	 * other words are most likely NOT part of names
 	 */
-	
+
 	private Counter<String> getListOfPossibleNameFunctionWords()
 	{
 		boolean useFrequency = false;
 		Counter<String> lowerCaseParts = new Counter<String>();
-		
+
 		for (WordNGram wn: ngramCounter.keySet())
 		{
 			int f = ngramCounter.get(wn);
@@ -497,7 +515,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					lowerCaseParts.increment(s,useFrequency?f:1);
 			}
 		}
-		
+
 		System.err.println("LIST OF TOP LOWER CASE PARTS");
 		for (String s: lowerCaseParts.keyList())
 		{
@@ -505,7 +523,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 		return lowerCaseParts;
 	}
-	
+
 	private double score(long nTokens, int f, int f1, int f2) 
 	{
 		return bigramScoreFunction.score(nTokens, f, f1, f2);
@@ -525,7 +543,9 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			Document d = XML.parse(fileName);
 			switch (stage)
 			{
-				case wordFrequency: countWords(d); caseProfile.handleDocument(d); break;
+				case wordFrequency: 
+					countWords(d); 
+					caseProfile.handleDocument(d); break;
 				case bigramFrequency: countBigrams(d); break;
 				case nGrams: extendBigramsToNGrams(d); break;
 				case getPartsOfNGrams: getPartsOfNgrams(d); break;
@@ -542,6 +562,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	 *  
 	 *  Cluster Analysis and Classification of Named Entities
 
+<pre>
 Joaquim F. Ferreira da Silva
 
 Departamento de Informática, Faculdade de Ciências e Tecnologia, Universidade Nova de Lisboa
@@ -559,8 +580,10 @@ José Gabriel Pereira Lopes
 Departamento de Informática, Faculdade de Ciências e Tecnologia, Universidade Nova de Lisboa
 Quinta da Torre, 2725 Monte da Caparica, Portugal
 gpl@di.fct.unl.pt
+</pre>
 
-	 *  Three tools working together, are used for extracting MWUs
+<p>
+Three tools working together, are used for extracting MWUs
 from any corpus: the LocalMaxs algorithm, the Symmetric
 Conditional Probability (SCP) statistical measure and the
 Fair Dispersion Point Normalization (FDPN) (Silva &
@@ -581,18 +604,20 @@ concept is applied to the SCP(.) measure in order to
 “transform” every n-gram of any length (n) in a pseudo-
 bigram, and then a new measure, SCP_f(.), is obtained
 (Silva & Lopes, 1999).
-
+</p>
+<pre>
 SCP_f ( w1 .. wn ) = p(w1..wn)^2 / Avp
 
 where
 
 Avp = 1 / (n-1) * ∑(i=1..n-1) p(w1..wi) p(w_(i+1)..wn)
-
+</pre>
+<p>
 where p(w1…wj) is the probability of the n-gram w1…wj in
 the corpus. So, SCP_f(.) reflects the average cohesion
 between any two adjacent contiguous sub-n-gram of the
 original n-gram.
-
+<p>
 Also:
 
 Silva, J. F. & Dias, G. & Guilloré, S. & Lopes, G. P.
@@ -602,7 +627,7 @@ In Lectures Notes in Artificial Intelligence, Springer-
 Verlag, volume 1695, (pp 113--132).
 
 
----
+<p>
 
 Ik zie niet hoe dit bijdraagt aan
 oplossing van UC -- sequence of LC -- UC
@@ -610,8 +635,8 @@ omdat "Jan naar Parijs" ging
 Jan // naar Parijs ....
 Pfft.
 
-*/
-	
+	 */
+
 	private double SCP(WordNGram w)
 	{
 		int f = (w.size() == 2?bigramCounter:ngramCounter).get(w);
@@ -638,34 +663,34 @@ Pfft.
 		double Avp = Tp / K; 
 		return p*p / Avp;
 	}
-	
+
 	boolean nGramCouldBeName(WordNGram w)
 	{
 		boolean firstOK = isCapitalized(w.parts.get(0));
 		boolean lastOK = isCapitalized(w.parts.get(w.size()-1));
 		return firstOK && lastOK;
 	}
-	
+
 	boolean nGramCouldBeName(int i, WordNGram w)
 	{
 		boolean firstOK = isReallyUppercase(i,w.parts.get(0));
 		boolean lastOK = isCapitalized(w.parts.get(w.size()-1));
 		return firstOK && lastOK;
 	}
-	
+
 	private int getSpanFrequency(WordNGram w, int start, int end)
 	{
 		if (start == end-1)
 			return getFrequency(w.parts.get(start));
 
 		WordNGram wng = w.span(start, end);
-		
+
 		if (start == end-2)
 		{
 			// only lookup if we have a name-like bigram
 			return this.bigramCounter.get(wng);
 		}
-		
+
 		if (this.nGramCouldBeName(wng))
 		{
 			//System.err.println("Try as name " + wng);
@@ -680,7 +705,7 @@ Pfft.
 			return f;
 		}
 	}
-	
+
 	private void resetOtherNGramCounters() 
 	{
 		for (Entry<WordNGram,Integer> e: this.otherNgramCounter.entrySet())
@@ -689,7 +714,7 @@ Pfft.
 			//System.err.println("Whoops " + e);
 		}
 	}
-	
+
 	public static void main(String[] args)
 	{
 		int processors = Runtime.getRuntime().availableProcessors();
@@ -699,32 +724,32 @@ Pfft.
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.caseProfile.makeProfile();
-		
+
 		mwe.stage=Stage.bigramFrequency;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.scoreBigrams();
-		
+
 		mwe.stage = Stage.nGrams;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		mwe.pruneNgrams();	
 		mwe.getListOfPossibleNameFunctionWords();
-		
+
 		mwe.stage = Stage.getPartsOfNGrams;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
-		
+
 		mwe.resetOtherNGramCounters();
-		
+
 		mwe.stage = Stage.countPartsOfNGrams;
 		m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
-		
+
 		mwe.scoreNgrams();		
 	}	
 }

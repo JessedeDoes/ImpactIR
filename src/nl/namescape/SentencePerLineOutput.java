@@ -72,6 +72,36 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 		
 	}
 	
+	public static boolean sentenceHasEnoughLowercaseCharacters(Element s)
+	{
+		List<Element> tokens = 	nl.namescape.tei.TEITagClasses.getTokenElements(s);
+		boolean first = true;
+		String outLine = "";
+		int nLowercase=0;
+		int nCharacters=0;
+		boolean firstIsUpper=false;
+		for (Element t: tokens)
+		{
+			String token = t.getTextContent();
+			nCharacters += token.length();
+			
+			for (int i=0; i < token.length(); i++)
+			{
+				char c  = token.charAt(i);
+				if (first && i==0)
+				{
+					firstIsUpper = Character.isLetter(c) && Character.isUpperCase(c);
+				}
+				if (Character.isLetter(c) && Character.isLowerCase(c))
+					nLowercase++;
+			}
+			
+			outLine += (first? "":" ") + token;
+			first = false;
+		}
+		
+		return ( nLowercase / (double) nCharacters > 0.7);
+	}
 	
 	@Override
 	public void handleFile(String in, String out) 

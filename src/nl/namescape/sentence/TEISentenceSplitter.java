@@ -53,6 +53,7 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 			e.printStackTrace();
 		}
 	}
+	
 	public static void main(String[] args)
 	{
 		Proxy.setProxy();

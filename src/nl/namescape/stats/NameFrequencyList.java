@@ -26,13 +26,9 @@ import org.xml.sax.SAXException;
 
 
 
-/*
- * ARF:
- * v = N / f
- * ARF = 1/v * sum(i=1..f) min(di,v)
- * Maar wat is di met verschillende documenten? zet gelijk aan v...
-
- * d1 = n1 + (N-nf)
+/**
+ * Prints a type frequency list of names entities to stdout and
+ * examples (all occurrences) to stderr
  */
 
 public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingWithFile

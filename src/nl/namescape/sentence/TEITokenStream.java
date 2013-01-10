@@ -211,7 +211,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 				 * endNode does not have after w2
 				 * 
 				 */
-				if (commonAncestor.getNodeType()!=Node.ELEMENT_NODE)
+				if (commonAncestor == null || commonAncestor.getNodeType()!=Node.ELEMENT_NODE)
 				{
 					return null;
 				}
