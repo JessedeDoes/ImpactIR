@@ -70,13 +70,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 	
 	
 	Counter<WordNGram> bigramCounter = new Counter<WordNGram>();
+	Counter<WordNGram> nameLikeBigramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> ngramCounter = new Counter<WordNGram>();
 	Counter<WordNGram> otherNgramCounter = new Counter<WordNGram>();
 	
 	double minimumScore=0;
 	CollocationScore bigramScoreFunction = new MI();
 	double portionToPrint=1.0;
-	int maxPrint=100000;
+	int maxPrint = 100000;
 	
 	public void countWords(Document d)
 	{
@@ -106,14 +107,16 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			String previous = null;
+			int i=0;
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
 			for (Element e: tokens)
 			{
 				if (TEITagClasses.isWord(e))
 				{
 					String it = getWordOrLemma(e);
-					storeBigram(previous, it);
+					storeBigram(i,previous, it);
 					previous = it;
+					i++;
 				} else
 					previous = null;
 			} 
@@ -138,7 +141,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		return it;
 	}
 
-	private synchronized void storeBigram(String w1, String w2)
+	private synchronized void storeBigram(int positionOfSecondPart, String w1, String w2)
 	{
 		if (w1==null || w2 == null) return;
 		if (getFrequency(w1) < minimumUnigramFrequency || 
@@ -146,6 +149,10 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			return;
 		String[]  parts = {w1,w2};
 		WordNGram biGram = new WordNGram(parts);
+		if (nGramCouldBeName(positionOfSecondPart-1, biGram))
+		{
+			this.nameLikeBigramCounter.increment(biGram);
+		}
 		bigramCounter.increment(biGram);
 	}
 
@@ -213,6 +220,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
+						// BUG: what if first token in sentence is interpunction ...
 						boolean upperCase = isReallyUppercase(i, it);
 						if (upperCase)
 						{
@@ -439,7 +447,28 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		{
 			int f = ngramCounter.get(wn);
 			double d = SCP(wn);
-			System.err.println(f + " " + wn  +  " SCP: " + d);
+			wn.score = d;
+			//System.err.println(f + " " + wn  +  " SCP: " + d);
+		}
+		
+		// add the bigrams ...
+		
+		for (WordNGram bi: this.nameLikeBigramCounter.keySet())
+		{
+			int f = nameLikeBigramCounter.get(bi);
+			if (f > 1)
+			{
+				ngramCounter.increment(bi,nameLikeBigramCounter.get(bi));
+				bi.score = SCP(bi);
+			}
+		}
+		
+		List<WordNGram> nGramList = ngramCounter.keyList();
+		Collections.sort(nGramList, new ScoreComparator());
+		for (WordNGram wn: nGramList)
+		{
+			int f = ngramCounter.get(wn);
+			System.err.println(f + " " + wn  +  " SCP: " + wn.score);
 		}
 		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
@@ -612,6 +641,13 @@ Pfft.
 		return firstOK && lastOK;
 	}
 	
+	boolean nGramCouldBeName(int i, WordNGram w)
+	{
+		boolean firstOK = isReallyUppercase(i,w.parts.get(0));
+		boolean lastOK = isCapitalized(w.parts.get(w.size()-1));
+		return firstOK && lastOK;
+	}
+	
 	private int getSpanFrequency(WordNGram w, int start, int end)
 	{
 		if (start == end-1)
@@ -622,9 +658,9 @@ Pfft.
 		if (start == end-2)
 		{
 			// only lookup if we have a name-like bigram
-			
 			return this.bigramCounter.get(wng);
 		}
+		
 		if (this.nGramCouldBeName(wng))
 		{
 			//System.err.println("Try as name " + wng);
