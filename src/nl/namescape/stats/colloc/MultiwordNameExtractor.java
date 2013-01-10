@@ -128,6 +128,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		String lwt = wordform + "\t" + tag + "\t" + lemma;
 
 		String it = "";
+		
 		switch (type)
 		{
 			case word:  it = wordform; break;
@@ -236,7 +237,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					int maxSize = indexOfLastCapitalizedWord + 1;
 					
 					//if (nGram.toString().contains("Beusekom"))
-						//System.err.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
+					//System.err.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
 					
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
@@ -254,6 +255,11 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		}
 	}
 
+	/**
+	 * This is silly - can be done from the ngram hash!!
+	 * @param d
+	 */
+	
 	public void getPartsOfNgrams(Document d)
 	{
 		List<Element> sentences = TEITagClasses.getSentenceElements(d);
@@ -300,7 +306,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						continue; // next i
 					
 					int lengthOfLongestStoredNGram=0;
-					for (int j=minSize; j < nGram.size() && j <= maxSize; j++)
+					for (int j=minSize; j <= nGram.size() && j <= maxSize; j++)
 					{
 						if (isCapitalized(nGram.get(j-1)))
 						{
@@ -372,14 +378,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						if (j -i > 1)
 						{
 							WordNGram wn = new  WordNGram(nGram,j-i+1);
-							//if (wn.toString().contains("Postma")) System.err.println("count ngram: "  + wn);
+							// if (wn.toString().contains("Postma")) System.err.println("count ngram: "  + wn);
 							if (this.otherNgramCounter.containsKey(wn))
 							{
 								//System.err.println("Seen again:" + wn);
 								this.otherNgramCounter.increment(wn);
 							} else
 							{
-								//if (wn.parts.get(0).equals("Dirk"))
+								// if (wn.parts.get(0).equals("Dirk"))
 								//	System.err.println("Nope " + wn);
 							}
 						}
