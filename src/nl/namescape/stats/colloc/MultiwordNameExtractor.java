@@ -208,6 +208,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
+			int position = 0;
 			for (int i=0; i < tokens.size(); i++)
 			{
 				String previous = null;
@@ -221,7 +222,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					{
 						String it = getWordOrLemma(e);
 						// BUG: what if first token in sentence is interpunction ...
-						boolean upperCase = isReallyUppercase(i, it);
+						boolean upperCase = isReallyUppercase(position, it);
+						position++;
 						if (upperCase)
 						{
 							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
@@ -236,6 +238,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 								break;
 						}
 						previous=it;
+						
 					} else break;
 				}
 				if (indexOfFirstCapitalizedWord < Integer.MAX_VALUE && 
@@ -274,6 +277,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 		for (Element s: sentences)
 		{
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(s);
+			int position = 0;
 			for (int i=0; i < tokens.size(); i++)
 			{
 				String previous = null;
@@ -287,7 +291,8 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					if (TEITagClasses.isWord(e))
 					{
 						String it = getWordOrLemma(e);
-						boolean upperCase = isReallyUppercase(i, it);
+						boolean upperCase = isReallyUppercase(position, it);
+						position++;
 						if (upperCase)
 						{
 							if (indexOfFirstCapitalizedWord == Integer.MAX_VALUE) 
