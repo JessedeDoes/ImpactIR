@@ -6,7 +6,7 @@ import org.w3c.dom.Element;
 
 
 
-public class StanfordNamePartTagger extends StanfordNERClient 
+public class StanfordNamePartTagger extends NERServletClient 
 {
 	public StanfordNamePartTagger()
 	{
@@ -32,7 +32,7 @@ public class StanfordNamePartTagger extends StanfordNERClient
 	
 	public static void main(String[] args)
 	{
-		StanfordNERClient stan = new StanfordNamePartTagger();
+		NERServletClient stan = new StanfordNamePartTagger();
 		//FrogClient frog = new FrogClient();
 		if (args.length == 0)
 		{

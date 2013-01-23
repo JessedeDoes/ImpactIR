@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 
 
 
-public class StanfordNERClient implements SentenceTagger 
+public class NERServletClient implements SentenceTagger 
 {
 	public String server = "svowim01.inl.loc";
 	public int port = 8090;
@@ -20,7 +20,7 @@ public class StanfordNERClient implements SentenceTagger
 	Map<String,String> requestParameters = new HashMap<String,String>();	
 	public boolean useTags = false;
 	
-	public StanfordNERClient()
+	public NERServletClient()
 	{
 		try
 		{
@@ -65,7 +65,7 @@ public class StanfordNERClient implements SentenceTagger
 	
 	public static void main(String[] args)
 	{
-		StanfordNERClient stan = new StanfordNERClient();
+		NERServletClient stan = new NERServletClient();
 		//FrogClient frog = new FrogClient();
 		if (args.length == 0)
 		{

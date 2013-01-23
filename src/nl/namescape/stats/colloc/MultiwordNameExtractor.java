@@ -653,7 +653,11 @@ omdat "Jan naar Parijs" ging
 Jan // naar Parijs ....
 Pfft.
 
-	 */
+<p>
+Bijvoorbeeld: algemene voornaam / zeldzame achternaam
+Dan SCP niet zo hoog ...
+Ook bijvoorbeeld "Van + zeldzame achternaam"
+*/
 
 	private double SCP(WordNGram w)
 	{
