@@ -6,12 +6,14 @@ import java.util.List;
 
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TagLabelAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.ling.CoreAnnotations.WordAnnotation;
+//import edu.stanford.nlp.ling.CoreAnnotations.
 import edu.stanford.nlp.ling.CoreAnnotations.AnswerAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.CoarseTagAnnotation;
 import edu.stanford.nlp.objectbank.ObjectBank;
 
 /**
@@ -107,17 +109,20 @@ public class StanfordSentenceTagging
 			Class answerClass = null;
 			Class beginClass = null;
 			Class endClass = null;
+			
 			try 
 			{
 				answerClass = Class.forName("edu.stanford.nlp.ling.CoreAnnotations$AnswerAnnotation");
-				beginClass = Class.forName("edu.stanford.nlp.ling.CoreAnnotations$BeginPositionAnnotation");
-				endClass = Class.forName("edu.stanford.nlp.ling.CoreAnnotations$EndPositionAnnotation");
+				//beginClass = Class.forName("edu.stanford.nlp.ling.CoreAnnotations$BeginPositionAnnotation");
+				//endClass = Class.forName("edu.stanford.nlp.ling.CoreAnnotations$EndPositionAnnotation");
 			} catch (ClassNotFoundException e1) 
 			{
 				e1.printStackTrace();
 			}
 	
 			String answer = x.getString(answerClass);
+			if (!answer.equals("O"))
+				printFieldsInCoreLabel(x);
 			//int begin = x.get(beginClass);
 			//int end = x.get(endClass);
 	
@@ -156,7 +161,8 @@ public class StanfordSentenceTagging
 	
 	public static List<CoreLabel> getTokens2(AbstractSequenceClassifier asc, String sentence)
 	{
-		ObjectBank<List<CoreLabel>> ob = asc.makeObjectBankFromString(sentence);
+		@SuppressWarnings("unchecked")
+		ObjectBank<List<CoreLabel>> ob = asc.makeObjectBankFromString(sentence, null);
 		for (List<CoreLabel> l: ob)
   		 return l;
 		return null;
@@ -166,7 +172,7 @@ public class StanfordSentenceTagging
 	{
 		CoreLabel l = new CoreLabel();
 		l.setWord(word);
-		l.set(TagAnnotation.class, tag);
+		l.set(PartOfSpeechAnnotation.class, tag); // Hm??
 		//l.setTag(tag);
 		return l;
 	}
@@ -178,8 +184,10 @@ public class StanfordSentenceTagging
 		return l;
 	}
 	
-	private void printFieldsInCoreLabel(CoreLabel x) 
+	private  static  void printFieldsInCoreLabel(CoreLabel x) 
 	{
+		//System.err.println("x.NER:" + x.ner());
+		System.err.println("position: " + x.beginPosition() + " ---> "  + x.endPosition());
 		for (Class s: x.keySet())
 		{
 			//System.err.println(s.getClass() + "<"  + s);

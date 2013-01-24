@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  */
 public class DocumentTagger 
 {
-	public boolean doTokenization = true;
+	public boolean tokenize = true;
 	
 	SentenceTagger sentenceTagger = null;
 	
@@ -218,7 +218,7 @@ public class DocumentTagger
 		try 
 		{
 			Document d0;
-			if (this.doTokenization)
+			if (this.tokenize)
 			{
 				TEITokenizer tok = new TEITokenizer();
 				d0 = tok.getTokenizedDocument(inFile, true);
@@ -355,7 +355,7 @@ public class DocumentTagger
 			SentenceTagger st = (SentenceTagger)  
 					(Class.forName(taggerClassName).newInstance());
 			DocumentTagger dt = new DocumentTagger(st);
-			dt.doTokenization = options.getOptionBoolean("tokenize", true);
+			dt.tokenize = options.getOptionBoolean("tokenize", true);
 
 			File f = new File(args[0]);
 			if (f.isDirectory())
