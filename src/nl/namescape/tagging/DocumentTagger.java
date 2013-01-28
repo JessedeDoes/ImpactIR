@@ -17,6 +17,7 @@ import javax.xml.parsers.SAXParser;
 
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
+import nl.namescape.tokenizer.PunctuationTagger;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Options;
 import nl.namescape.util.Progress;
@@ -32,7 +33,7 @@ import org.w3c.dom.Element;
 public class DocumentTagger 
 {
 	public boolean tokenize = true;
-	
+	public boolean splitSentences = false;
 	SentenceTagger sentenceTagger = null;
 	
 	public DocumentTagger(SentenceTagger st)
@@ -225,8 +226,16 @@ public class DocumentTagger
 				TEISentenceSplitter splitter = new TEISentenceSplitter(new JVKSentenceSplitter());
 				splitter.splitSentences(d0);
 			}  else
+			{
 				d0 = nl.namescape.util.XML.parse(inFile);
-
+				if (this.splitSentences)
+				{
+					TEISentenceSplitter splitter = new TEISentenceSplitter(new JVKSentenceSplitter());
+					(new PunctuationTagger()).tagPunctuation(d0);
+					splitter.splitSentences(d0);
+				}
+				
+			}
 			addTaggingToTokenizedDocument(d0);
 
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF8");

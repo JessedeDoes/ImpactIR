@@ -86,6 +86,7 @@ public class StanfordAPIClient implements SentenceTagger
 		stan.addClassifier("/mnt/Projecten/Taalbank/Namescape/Corpus-KB/Training/models/kranten.ser.gz");
 		DocumentTagger dt = new DocumentTagger(stan);
 		dt.tokenize = Options.getOptionBoolean("tokenize", true);
+		dt.splitSentences = Options.getOptionBoolean("sentences", false);
 		File f = new File(args[0]);
 		if (f.isDirectory())
 			dt.tagXMLFilesInDirectory(args[0], args[1]);

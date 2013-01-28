@@ -17,6 +17,8 @@ public class Options
 	{
 		options.addOption("t", "tagger", true, "tagger");
 		options.addOption("T", "tokenize", true, "tokenize or not");
+		options.addOption("s", "sentences", true, "add sentence splitting to already tokenized file");
+		options.addOption("c", "ctag", true, "use ctag attribute for PoS");
 		parseCommandLine(args);
 	}
 

@@ -24,7 +24,7 @@ import java.util.Set;
 public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
 	boolean tagParts = true;
-
+	boolean useCTAG = false;
 	public void printForSketchEngine(Document d, PrintStream out)
 	{
 		Map<String,Set<String>> metadataMap = nl.namescape.tei.Metadata.getMetadata(d);
@@ -40,6 +40,9 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 			{
 
 				String tag = t.getAttribute("type");
+				if (useCTAG)
+					tag = t.getAttribute("ctag");
+				
 				String lemma = t.getAttribute("lemma");
 				String word = t.getTextContent();
 				
@@ -68,7 +71,11 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 
 	public static void main(String[] args)
 	{
-		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new VerticalTextOutput(), args[0], 
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
+        args = options.commandLine.getArgs();
+		VerticalTextOutput v = new VerticalTextOutput();
+		v.useCTAG = options.getOptionBoolean("ctag", false);
+		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
 				args[1]);
 	}
 }
