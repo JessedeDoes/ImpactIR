@@ -89,7 +89,10 @@ public class TEITagClasses
 	{
 		return XML.getElementsByTagname(d.getDocumentElement(), "s", false);
 	}
-
+	public static List<Element> getSentenceElements(Element d)
+	{
+		return XML.getElementsByTagname(d, "s", false);
+	}
 	/**
 	 * Een tijdelijke fix voor de oude gefrogde bestanden.
 	 * Vergeet niet weer weg te halen...
