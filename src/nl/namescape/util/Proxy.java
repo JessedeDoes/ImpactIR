@@ -22,7 +22,7 @@ public class Proxy
 
 	public static void setProxy()
 	{
-		System.setProperty("http.proxyHost", "proxy.inl.nl"); 
+		System.setProperty("http.proxyHost", "proxy.inl.loc"); 
 		System.setProperty("http.proxyPort",  "8080");
 
 
