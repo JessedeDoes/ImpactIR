@@ -47,61 +47,50 @@ public class EPubConverter implements SimpleInputOutputProcess
 			path = path + "/" + parts[i];
 		}
 	}
-	public void getZipFiles(String filename, String destinationname)
+	public void getZipFiles(String filename, String destinationFolder)
 	{
 		try
 		{
 			byte[] buf = new byte[1024];
-			ZipInputStream zipinputstream = null;
+			ZipInputStream zipInputStream = null;
 			ZipEntry zipentry;
-			zipinputstream = new ZipInputStream(
-					new FileInputStream(filename));
+			zipInputStream = new ZipInputStream(new FileInputStream(filename));
 
-			zipentry = zipinputstream.getNextEntry();
+			zipentry = zipInputStream.getNextEntry();
 			while (zipentry != null) 
 			{ 
 				//for each entry to be extracted
 				String entryName = zipentry.getName();
 				System.out.println("entryname "+entryName);
 				
-				int n;
-				
-				FileOutputStream fileoutputstream;
-				//File newFile = new File(entryName);
-				//String directory = newFile.getParent();
-
-				//if(directory == null)
-				//{
-					//if(newFile.isDirectory())
-						//break;
-				//}
+				int n; FileOutputStream fileOutputStream;
 				
 				if (zipentry.isDirectory())
 				{
 
 				} else
 				{
-					createPath(destinationname + "/" + entryName);
-					fileoutputstream = new FileOutputStream(
-							destinationname + "/" + entryName);             
+					createPath(destinationFolder + "/" + entryName);
+					fileOutputStream = new FileOutputStream(destinationFolder + "/" + entryName);             
 
-					while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
-						fileoutputstream.write(buf, 0, n);
+					while ((n = zipInputStream.read(buf, 0, 1024)) > -1)
+						fileOutputStream.write(buf, 0, n);
 
-					fileoutputstream.close(); 
+					fileOutputStream.close(); 
 				}
-				zipinputstream.closeEntry();
-				// bad test: should parse content.opf tt get media type!!!
+				zipInputStream.closeEntry();
+				
+				// bad test on extension: should parse content.opf to get media type for each entry!
 				
 				if (entryName.toLowerCase().endsWith("html") || entryName.toLowerCase().endsWith("htm"))  // cleanup
 				{
-					cleanupHTML(destinationname + "/" + entryName);
+					cleanupHTML(destinationFolder + "/" + entryName);
 				}
-				zipentry = zipinputstream.getNextEntry();
+				zipentry = zipInputStream.getNextEntry();
 
 			}//while
 
-			zipinputstream.close();
+			zipInputStream.close();
 		}
 		catch (Exception e)
 		{
@@ -110,7 +99,8 @@ public class EPubConverter implements SimpleInputOutputProcess
 	}
 	
 	public static void renameNamespaceRecursive(Document doc, Node node,
-			String namespace) {
+			String namespace) 
+	{
 
 		if (node.getNodeType() == Node.ELEMENT_NODE) 
 		{
@@ -119,7 +109,8 @@ public class EPubConverter implements SimpleInputOutputProcess
 		}
 
 		NodeList list = node.getChildNodes();
-		for (int i = 0; i < list.getLength(); ++i) {
+		for (int i = 0; i < list.getLength(); ++i) 
+		{
 			renameNamespaceRecursive(doc, list.item(i), namespace);
 		}
 	}
@@ -179,7 +170,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 
 	private static void deleteRecursively( File file )
 	{
-		if ( !file.exists() )
+		if (!file.exists())
 		{
 			return;
 		}
