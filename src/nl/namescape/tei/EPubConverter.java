@@ -99,7 +99,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 
 			getZipFiles(inFilename, unzipTo.getPath());
 			//File[] modelFiles = unzipTo.listFiles();
-			transformer.setParameter("baseFolder", unzipTo.getPath());
+			transformer.setParameter("unzipTo", unzipTo.getPath());
 			transformer.transformFile(unzipTo.getPath() + "/META-INF/container.xml" , outFileName);
 		} catch (Exception e)
 		{

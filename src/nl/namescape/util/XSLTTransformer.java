@@ -137,7 +137,7 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 
 	public void setParameter(String name, String value)
 	{
-		transformer.setParameter(value, name);
+		transformer.setParameter(name, value);
 	}
 	/**
 	 * Voert de transformatie uit. De input bestaat uit een String met de XML code.
