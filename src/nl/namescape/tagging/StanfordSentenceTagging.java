@@ -121,8 +121,7 @@ public class StanfordSentenceTagging
 			}
 	
 			String answer = x.getString(answerClass);
-			if (!answer.equals("O"))
-				printFieldsInCoreLabel(x);
+			// if (!answer.equals("O")) printFieldsInCoreLabel(x);
 			//int begin = x.get(beginClass);
 			//int end = x.get(endClass);
 	

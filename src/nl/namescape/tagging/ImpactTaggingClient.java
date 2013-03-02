@@ -25,6 +25,12 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 {
 	Tagger tagger;
 	boolean tokenize = true;
+	protected Properties properties;
+	
+	public ImpactTaggingClient()
+	{
+		
+	}
 	
 	public ImpactTaggingClient(Tagger tagger)
 	{
@@ -131,6 +137,13 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
 	}
 	
 	public static void main(String[] args)

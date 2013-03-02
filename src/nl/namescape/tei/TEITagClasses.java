@@ -28,7 +28,7 @@ public class TEITagClasses
 	{"hi", "milestone", "pb", "i", "name", "persName", "orgName", "placeName"};
 	static Set<String> inlineTags = new HashSet<String>();
 	public static String[] milestone = {"pb", "cb", "milestone"};
-	public static String[] tokenTagNames = {"w", "pc"};
+	public static String[] tokenTagNames = {"w", "pc", "c"};
 	public static String[] nameTagNames = {"ns:ne", "name", "ne"};
 	public static String[] namePartTags = {"ns:nePart", "nePart"};
 	

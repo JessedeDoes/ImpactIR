@@ -1,6 +1,7 @@
 package nl.namescape.filehandling;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -115,5 +116,13 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(e,100);
 		DirectoryHandling.traverseDirectory(m, "D:/");
 		m.pool.shutdown();
+	}
+
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		if (this.baseHandler2 != null)
+			this.baseHandler2.setProperties(properties);
 	}
 }

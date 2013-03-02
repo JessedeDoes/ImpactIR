@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -23,7 +24,8 @@ import java.util.Set;
 
 public class BIOOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
-	boolean tagParts = true; 
+	boolean tagParts = true;
+	private Properties properties; 
 
 	public void printBIO(Document d, PrintStream out)
 	{
@@ -141,6 +143,12 @@ public class BIOOutput implements nl.namescape.filehandling.SimpleInputOutputPro
 		}
 	}
 
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
 	public static void main(String[] args)
 	{
 		System.err.println("hi there!");

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 import nl.namescape.filehandling.DirectoryHandling;
 
@@ -45,6 +46,8 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		return (Document) doc;
 	}
 
+	private Properties properties;
+
 	@Override
 	public void handleFile(String inFileName, String outFileName) 
 	{
@@ -61,6 +64,13 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
 	}
 	
 	public static void main(String[] args)

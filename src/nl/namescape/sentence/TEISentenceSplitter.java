@@ -3,6 +3,7 @@ package nl.namescape.sentence;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Properties;
 
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tokenizer.TEITokenizer;
@@ -17,6 +18,7 @@ import org.w3c.dom.Document;
 public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
 	SentenceSplitter splitter=null;
+	private Properties properties;
 	
 	public TEISentenceSplitter(SentenceSplitter splitter)
 	{
@@ -52,6 +54,13 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
 	}
 	
 	public static void main(String[] args)

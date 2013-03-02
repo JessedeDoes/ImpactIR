@@ -19,7 +19,7 @@ public class Resource
 
 	}
 
-	public Reader openFile(String s)
+	public InputStream openStream(String s)
 	{
 		try 
 		{
@@ -29,16 +29,16 @@ public class Resource
 				File file = new File(f + "/"+ s);
 				if (file.exists())
 				{
-					return new FileReader(file);
+					return new FileInputStream(file);
 				}
 			}
 			// next try for files included in jar
 			try
 			{
-				Reader r = new InputStreamReader(
-						this.getClass().getResourceAsStream("/"+ s));  
-				if (r != null)
-					return r;
+				InputStream is = 
+						this.getClass().getResourceAsStream("/"+ s);  
+				if (is != null)
+					return is;
 			} catch (Exception e)
 			{
 				e.printStackTrace();
@@ -51,7 +51,7 @@ public class Resource
 			if (url == null) url = new java.net.URL(s);
 			java.net.URLConnection site = url.openConnection();
 			InputStream is = site.getInputStream();
-			return new InputStreamReader(is);
+			return is;
 		} catch (IOException ioe)
 		{
 			System.err.println("Could not open " + s);
@@ -59,6 +59,13 @@ public class Resource
 		}
 	}
 	
+	public Reader openFile(String s)
+	{
+		InputStream is = openStream(s);
+		if (is != null)
+			return new InputStreamReader(is);
+		return null;
+	}
 	public static Reader openResourceFile(String s)
 	{
 		return new  Resource().openFile(s);

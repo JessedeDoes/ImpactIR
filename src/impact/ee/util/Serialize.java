@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+// This should be enhanced to include loading from 
+// jar as resource...
 
 public class Serialize<T> 
 {
@@ -41,7 +43,7 @@ public class Serialize<T>
 			in.close();
 			fileIn.close();
 			return t;
-		}catch(Exception i)
+		} catch(Exception i)
 		{
 			i.printStackTrace();
 			return null;

@@ -4,6 +4,7 @@ import impact.ee.tagger.BasicTagger;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Properties;
 
 import org.w3c.dom.Document;
 
@@ -17,6 +18,7 @@ import nl.namescape.util.XML;
 
 public class TEIUntokenizer implements SimpleInputOutputProcess
 {
+	private Properties properties;
 	@Override
 	public void handleFile(String in, String out) 
 	{
@@ -36,6 +38,12 @@ public class TEIUntokenizer implements SimpleInputOutputProcess
 		} 
 	}
 	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
 	public static void main(String[] args)
 	{
 		TEIUntokenizer b = new TEIUntokenizer();

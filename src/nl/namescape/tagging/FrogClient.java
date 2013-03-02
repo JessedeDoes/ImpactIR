@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * Geef reeds getokenizeerde zin op 1 regel aan frog
  * Output heeft de vorm
  */
-public class FrogClient implements SentenceTagger
+public class FrogClient extends DocumentTagger implements SentenceTagger
 {
 
 	class TaggedWord
@@ -51,7 +51,9 @@ public class FrogClient implements SentenceTagger
 	public FrogClient()
 	{
 		connect();
+		this.sentenceTagger = this;
 	}
+	
 	@Override
 	public void tagWordElement(Element e, String line) 
 	{
@@ -223,12 +225,12 @@ public class FrogClient implements SentenceTagger
 					socket.getInputStream()));
 		} catch (UnknownHostException e) 
 		{
-			System.out.println("Unknown host: " + server);
+			System.err.println("Unknown host: " + server);
 			System.exit(1);
 		} catch  (IOException e) 
 		{
-			System.out.println("No I/O");
-			System.exit(1);
+			System.err.println("No I/O: " + e);
+			//System.exit(1);
 		}
 	}
 

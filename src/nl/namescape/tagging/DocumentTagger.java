@@ -7,16 +7,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.SAXParser;
 
 
+import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
+import nl.namescape.tei.TEITagClasses;
 import nl.namescape.tokenizer.PunctuationTagger;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Options;
@@ -30,11 +34,18 @@ import org.w3c.dom.Element;
 /*
 
  */
-public class DocumentTagger 
+public class DocumentTagger implements SimpleInputOutputProcess
 {
 	public boolean tokenize = true;
 	public boolean splitSentences = false;
 	SentenceTagger sentenceTagger = null;
+	protected Properties properties;
+	
+	
+	public DocumentTagger()
+	{
+		
+	}
 	
 	public DocumentTagger(SentenceTagger st)
 	{
@@ -376,5 +387,18 @@ public class DocumentTagger
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public void handleFile(String inFilename, String outFilename) 
+	{
+		this.tagXMLFile(inFilename, outFilename);
+	}
+
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
 	}
 }

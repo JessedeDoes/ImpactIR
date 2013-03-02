@@ -1,6 +1,7 @@
 package nl.namescape.tagging;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.w3c.dom.Element;
 
@@ -11,12 +12,20 @@ import impact.ee.lemmatizer.dutch.SimplePatternBasedLemmatizer;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.tagger.Tagger;
 
-public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
-
+public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient 
+{
+	String taggingModel = null;
+	String lexiconPath = null;
+	
+	public ImpactTaggerLemmatizerClient()
+	{
+		
+	}
+	
 	public ImpactTaggerLemmatizerClient(Tagger tagger) 
 	{
 		super(tagger);
-		this.tokenize = false;
+		this.tokenize = false; // Hm wil je dit wel zo?
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,6 +50,17 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient {
 	 * Usage: args = <taggerModel> <lexicon> <inputDir> <outputDir> 
 	 * @param args
 	 */
+	
+	public void setProperties(Properties p)
+	{
+		 taggingModel = p.getProperty("taggingModel");
+		 lexiconPath = p.getProperty("lexiconPath");
+		 Tagger taggerLemmatizer = 
+					SimplePatternBasedLemmatizer.getTaggerLemmatizer(taggingModel,
+							lexiconPath);
+		 this.tagger = taggerLemmatizer;
+	}
+	
 	public static void main(String[] args)
 	{
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);

@@ -41,8 +41,10 @@ public class LanguageTagger implements SimpleInputOutputProcess
 	static String[] priorLanguages = {"nl", "en", "de", "fr", "it", "es"};
 	static double[] priorProbabilities = {0.98, 0.02, 0.02, 0.02, 0.01, 0.01};
 	static HashMap<String,Double> priorMap  = new HashMap<String,Double>();
-	
+	String MainLanguage = "en"; // nl
 	boolean usePriors = false;
+	boolean tagNTokens = true;
+	private Properties properties;
 	
 	static
 	{
@@ -96,6 +98,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		Counter<String> c = new Counter<String>();
 		Set<Element> paragraphLike = TEITagClasses.getSentenceSplittingElements(d);
 		int L = 0;
+		int totalTokens = 0;
 		for (Element  z: paragraphLike)
 		{
 			// System.err.println(z);
@@ -106,7 +109,10 @@ public class LanguageTagger implements SimpleInputOutputProcess
 			// System.err.println("Paragraph content: " + s);
 			
 			String lang = detectLanguage(s);
-			
+			int nTokens = TEITagClasses.getWordElements(z).size();
+			totalTokens += nTokens;
+			if (this.tagNTokens)
+				z.setAttribute("n", new Integer(nTokens).toString());
 			if (lang != null)
 			{
 				if (lang.equals("af"))
@@ -114,7 +120,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 				z.setAttribute("xml:lang", lang);
 				c.increment(lang,s.length());
 				
-				if (!lang.equalsIgnoreCase("nl") && s.length() > 100)
+				if (!lang.equalsIgnoreCase(MainLanguage) && s.length() > 100)
 				{
 					// System.err.println(lang + " IN " + s);
 				}
@@ -133,7 +139,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 			{
 				mainLanguage = lang;
 				d.getDocumentElement().setAttribute("xml:lang", mainLanguage);
-				if (!lang.equalsIgnoreCase("nl"))
+				if (!lang.equalsIgnoreCase(MainLanguage))
 				{
 					System.err.println("Document has nondutch main lang: "  + lang);
 				}
@@ -156,7 +162,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		{
 			d = XML.parse(in);
 			String main = tagLanguages(d);
-			if (!main.equals("nl"))
+			if (!main.equals(MainLanguage))
 			{
 				System.err.println("Nondutch doc: " + main + " : "  + in);
 			}
@@ -182,5 +188,12 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		
 		LanguageTagger xmlTagger = new LanguageTagger();
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[0], args[1]);
+	}
+
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
 	}
 }

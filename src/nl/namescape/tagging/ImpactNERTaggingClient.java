@@ -1,6 +1,7 @@
 package nl.namescape.tagging;
 
 import java.util.Map;
+import java.util.Properties;
 
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.MultiThreadedFileHandler;
@@ -16,6 +17,11 @@ import impact.ee.tagger.Tagger;
 public class ImpactNERTaggingClient extends ImpactTaggingClient 
 {
 
+	public ImpactNERTaggingClient()
+	{
+		
+	}
+	
 	public ImpactNERTaggingClient(Tagger tagger) 
 	{
 		super(tagger);
@@ -37,6 +43,14 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 	public void postProcess(Document d)
 	{
 		(new TEINameTagging()).realizeNameTaggingInTEI(d);
+	}
+	
+	public void setProperties(Properties p)
+	{
+		this.properties = p;
+		Tagger namePartTagger = 
+				NamePartTagger.getNamePartTagger(p.getProperty("nerModel"), p.getProperty("partModel"));
+		this.tagger = namePartTagger;
 	}
 	
 	public static void main(String[] args)

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -28,7 +29,8 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 {
 	boolean tagParts = true;
 	boolean useCTAG = false;
-	boolean speakerDocs = true;
+	boolean speakerDocs = false;
+	private Properties properties;
 	
 	public void printForSketchEngine(Document d, PrintStream out)
 	{
@@ -121,6 +123,13 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		}
 	}
 
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
+	
 	public static void main(String[] args)
 	{
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);

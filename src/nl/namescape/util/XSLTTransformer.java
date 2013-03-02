@@ -8,16 +8,23 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Properties;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -37,9 +44,11 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 	/** our Transformer object */
 	private Transformer transformer = null;
 	private TransformerFactory tFactory;
-	private String xslInUri;
+	private String xslInUri = null;
 	private boolean useSaxon = true;
 	private boolean alwaysReload = true;
+	private Properties properties;
+	InputStream xslReader = null;
 	
 	public XSLTTransformer(String xslInUri)
 	{
@@ -64,29 +73,76 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		}
 	}
 
-
-	private void loadStylesheet() 
+	public XSLTTransformer(InputStream xslReader)
 	{
-		try 
+		String key = "javax.xml.transform.TransformerFactory";
+		// N.B. Aangepast ivm nieuwe Javaversie (1.5 of 1.6), was vroeger:
+		// com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
+		String value = "org.apache.xalan.processor.TransformerFactoryImpl";
+		if (useSaxon)
 		{
-			this.transformer = tFactory.newTransformer(new StreamSource(this.xslInUri));
-		} catch (TransformerConfigurationException e) 
+			value = "net.sf.saxon.TransformerFactoryImpl";
+		}
+		Properties props = System.getProperties();
+		props.put(key, value);
+		System.setProperties(props);
+		tFactory = TransformerFactory.newInstance();
+		
+		this.xslReader = xslReader;
+		loadStylesheet();
+		if (this.transformer == null)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("EEK!");
+			System.exit(1);
 		}
 	}
 
+	private void loadStylesheet() 
+	{
+		if (xslInUri != null)
+		{
+			try 
+			{
+				this.transformer = tFactory.newTransformer(new StreamSource(this.xslInUri));
+			} catch (TransformerConfigurationException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		if (xslReader != null)
+		{
+			try 
+			{
+				this.transformer = tFactory.newTransformer(new StreamSource(xslReader));
+			} catch (TransformerConfigurationException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
+	
 	public XSLTTransformer(Transformer transformer)
 	{
 		this.transformer = transformer;
 	}
 
+	public void setParameter(String name, String value)
+	{
+		transformer.setParameter(value, name);
+	}
 	/**
 	 * Voert de transformatie uit. De input bestaat uit een String met de XML code.
 	 * 
-	 * @param instring
+	 * @param(STring  instring
 	 *            De input string
 	 * @param out
 	 *            java.io.Writer object Het resultaat van het transformeren van de XML code.
@@ -101,10 +157,12 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 	{
 		StreamSource source = new StreamSource(new StringReader(instring));
 		StreamResult result = new StreamResult(out);
+		
 		transformer.transform(source, result);
 		out.flush();
 	}
 	
+
 	public void transformFile(String inFileName, OutputStreamWriter out)
 	{
 		try 
@@ -119,6 +177,38 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	public Document transformDocument(Document inDocument)
+	{
+		try 
+		{
+			DOMSource source = new DOMSource(inDocument);
+			DOMResult result = new DOMResult();
+			transformer.transform(source, result);
+			org.w3c.dom.Node resultNode =  result.getNode();
+			DocumentBuilder builder = null;
+			try 
+			{
+				builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			} catch (ParserConfigurationException ex) {
+				ex.printStackTrace();
+				System.exit(-1);
+			}
+
+
+			
+			//Document doc = builder.newDocument();
+			//doc.appendChild(resultNode);
+			return (Document) resultNode;
+			//System.err.println("RESULT: " + resultNode);
+			//System.err.println(XML.NodeToString(resultNode));
+			//return resultNode.getOwnerDocument();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

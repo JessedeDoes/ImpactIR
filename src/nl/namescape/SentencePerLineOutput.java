@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -24,6 +25,7 @@ import java.util.Set;
 public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
 	boolean tagParts = true;
+	private Properties properties;
 
 	public void printSentences(Document d, PrintStream out)
 	{
@@ -118,6 +120,12 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 		}
 	}
 
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
 	public static void main(String[] args)
 	{
 		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new SentencePerLineOutput(), args[0], 

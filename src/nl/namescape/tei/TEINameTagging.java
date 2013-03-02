@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.io.*;
 
 
@@ -58,6 +59,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	public static String defaultNameTag =  namescapeNamespace + ":" + "ne"; // namespace + ":" + "ne";
 	public  static String namePartTag = "ns:nePart";
 	private NymListBuilder nymListBuilder = new NymListBuilder();
+	private Properties properties;
 	private static boolean addNormalizedForm = true;
 
 	/**
@@ -297,6 +299,12 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 		}
 	}
 	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
 	public static void main(String[] args)
 	{
 		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new TEINameTagging(), args[0], 

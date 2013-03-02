@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import nl.inl.impact.ner.stanfordplus.ImpactCRFClassifier;
 import nl.namescape.util.Options;
@@ -13,10 +14,23 @@ import org.w3c.dom.Element;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 
-public class StanfordAPIClient implements SentenceTagger 
+public class StanfordAPIClient extends DocumentTagger implements SentenceTagger 
 {
+	public StanfordAPIClient(SentenceTagger st) 
+	{
+		super(st);
+		// TODO Auto-generated constructor stub
+	}
+
+	public StanfordAPIClient()
+	{
+		super();
+		this.sentenceTagger = this;
+	}
+	
 	boolean useTags = false; // should be true... (?)
-	List<AbstractSequenceClassifier> listOfTaggers = new ArrayList<AbstractSequenceClassifier>();
+	List<AbstractSequenceClassifier> 
+		listOfTaggers = new ArrayList<AbstractSequenceClassifier>();
 	
 	public void addClassifier(String fileName)
 	{
@@ -73,6 +87,17 @@ public class StanfordAPIClient implements SentenceTagger
 			return w + "\t" + tag;
 		}
 		return w;
+	}
+	
+	public void setProperties(Properties p)
+	{
+		this.properties = p;
+		String model = properties.getProperty("model");
+		
+		
+		this.tokenize = !("false".equalsIgnoreCase(properties.getProperty("tokenize")));
+		this.splitSentences = ("true".equalsIgnoreCase(properties.getProperty("splitSentences")));
+		addClassifier(model);
 	}
 	
 	public static void main(String[] args)

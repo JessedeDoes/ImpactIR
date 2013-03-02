@@ -41,7 +41,7 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		try
 		{
 			Document d = XML.parse(fileName);
-			List<Element> tokens = nl.namescape.tei.TEITagClasses.getTokenElements(d);
+			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 			for (Element e: tokens)
 			{
 				nTokens++;
