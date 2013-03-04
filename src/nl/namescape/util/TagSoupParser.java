@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
@@ -46,6 +47,47 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		return (Document) doc;
 	}
 
+	public static Document parseFromHTMLString(String htmlText)
+	{
+		Parser p = new Parser();
+		SAX2DOM sax2dom = null;
+		org.w3c.dom.Node doc  = null;
+
+		try 
+		{ 
+			
+			p.setFeature(Parser.namespacesFeature, false);
+			p.setFeature(Parser.namespacePrefixesFeature, false);
+			sax2dom = new SAX2DOM();
+			p.setContentHandler(sax2dom);
+			p.parse(new InputSource(new StringReader(htmlText)));
+			doc = sax2dom.getDOM();
+			//System.err.println(doc);
+		} catch (Exception e) 
+		{
+			// TODO handle exception
+			e.printStackTrace();
+		}
+		return (Document) doc;
+	}
+	
+	public static Document parsePlainText(String plainText)
+	{
+		String[] paragraphs = plainText.split("\\s*\n\\s*\n\\s*");
+		String html="<html><body><div>";
+		for (String p: paragraphs)
+		{
+			html += "<p>";
+			String[] lines = p.split("\\s*\n\\s*");
+			for (String l: lines)
+			{
+				html +=  l + "<br>\n";
+			}
+			html += "</p>";
+		}
+		return parseFromHTMLString(html);
+	}
+	
 	private Properties properties;
 
 	@Override
@@ -73,9 +115,11 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		this.properties = properties;
 	}
 	
+	
 	public static void main(String[] args)
 	{
 		TagSoupParser p = new TagSoupParser();
+		
 		DirectoryHandling.tagAllFilesInDirectory(p, args[0], args[1]);
 	}
 }

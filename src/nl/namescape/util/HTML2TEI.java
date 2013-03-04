@@ -32,6 +32,11 @@ public class HTML2TEI implements SimpleInputOutputProcess
 		
 	}
 	
+	public Document convertDocument(Document htmlDocument)
+	{
+		 return transformer.transformDocument(htmlDocument);
+	}
+	
 	@Override
 	public void handleFile(String docFile, String outFilename) 
 	{
