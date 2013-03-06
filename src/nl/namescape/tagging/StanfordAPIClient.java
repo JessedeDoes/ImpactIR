@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 import nl.inl.impact.ner.stanfordplus.ImpactCRFClassifier;
+import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.Options;
 
@@ -138,17 +139,24 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		nl.namescape.util.Options options = 
 				new nl.namescape.util.Options(args);
 		args = options.commandLine.getArgs();
-		
 		StanfordAPIClient stan = new StanfordAPIClient();
-		stan.addClassifier("N:/Taalbank/Namescape/Tools/stanford-ner-2012-07-09/classifiers/english.all.3class.distsim.crf.ser.gz");
-		//stan.addClassifier("/mnt/Projecten/Taalbank/Namescape/Corpus-KB/Training/models/kranten.ser.gz");
+
+		String classifier, input, output;
+		if (args.length == 2)
+		{
+			classifier = "N:/Taalbank/Namescape/Tools/stanford-ner-2012-07-09/classifiers/english.all.3class.distsim.crf.ser.gz";
+			input = args[0];
+			output = args[1];
+		} else
+		{
+			classifier = args[0];
+			input = args[1];
+			output = args[2];
+		}
+		stan.addClassifier(classifier);
 		DocumentTagger dt = new DocumentTagger(stan);
 		dt.tokenize = Options.getOptionBoolean("tokenize", true);
 		dt.splitSentences = Options.getOptionBoolean("sentences", false);
-		File f = new File(args[0]);
-		if (f.isDirectory())
-			dt.tagXMLFilesInDirectory(args[0], args[1]);
-		else
-			dt.tagXMLFile(args[0], args[1]);
+		DirectoryHandling.tagAllFilesInDirectory(stan, input, output);
 	}
 }
