@@ -16,8 +16,8 @@ public class Text2TEI implements SimpleInputOutputProcess
 	{
 		// TODO Auto-generated method stub	
 		// TODO Auto-generated method stub
-	
-		
+
+
 		String s = slurpFile(inFilename);
 		Document teiDocument = parsePlainText(s);
 		try 
@@ -29,7 +29,7 @@ public class Text2TEI implements SimpleInputOutputProcess
 		{
 			e.printStackTrace
 			();
-			
+
 		}	
 	}
 
@@ -57,9 +57,9 @@ public class Text2TEI implements SimpleInputOutputProcess
 	{
 		// TODO Auto-generated method stub	
 	}
-	
+
 	static String plainText = "Hallo meneer\n \nIk weet het wel\nU Het is mooi weer!!";
-	
+
 	public Document parsePlainText(String plainText)
 	{
 		Document d = new TagSoupParser().parsePlainText(plainText);
@@ -67,8 +67,8 @@ public class Text2TEI implements SimpleInputOutputProcess
 	}
 	public static void main(String[] args)
 	{
-Text2TEI x = new Text2TEI();
-		
+		Text2TEI x = new Text2TEI();
+
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 	}
 }

@@ -17,6 +17,7 @@ import java.io.*;
 
 
 import nl.namescape.BIOOutput;
+import nl.namescape.stats.CooccurrenceGraph;
 import nl.namescape.tagging.LBJAPIClient;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Proxy;
@@ -137,6 +138,8 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 			w.removeAttribute("neLabel");
 			w.removeAttribute("nePartLabel");
 		}
+		// experimental ...
+		new CooccurrenceGraph().processDocument(d);
 		// tei.Various.fixNamespaceStuff(d);
 	}	
 

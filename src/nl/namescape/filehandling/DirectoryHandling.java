@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,6 +18,19 @@ public class DirectoryHandling
 	public static void tagAllFilesInDirectory(SimpleInputOutputProcess p, String folderName, String outFolderName)
 	{
 		File f = new File(folderName);
+		
+		if (!f.exists()) // only if p supports URLs....
+		{
+			try 
+			{
+				URL u = new URL(folderName);
+				p.handleFile(folderName, outFolderName);
+			} catch (Exception e)
+			{
+				
+				e.printStackTrace();
+			}
+		}
 		boolean saveToZip = false;
 		ZipOutputStream zipOutputStream = null;
 

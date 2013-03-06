@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 import nl.inl.impact.ner.stanfordplus.ImpactCRFClassifier;
+import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.Options;
 
 import org.w3c.dom.Document;
@@ -16,6 +17,7 @@ import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 
 public class StanfordAPIClient extends DocumentTagger implements SentenceTagger 
 {
+	boolean english = false;
 	public StanfordAPIClient(SentenceTagger st) 
 	{
 		super(st);
@@ -36,6 +38,8 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 	{
 		try 
 		{
+			if (fileName.contains("english"))
+				english = true;
 			listOfTaggers.add(edu.stanford.nlp.ie.crf.CRFClassifier.getClassifier(new File(fileName)));
 		} catch (Exception e) 
 		{
@@ -56,8 +60,8 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		{
 			String[] parts = line.split("\\s+");
 			w.setAttribute("neLabel", parts[1]);
-			if (!"O".equalsIgnoreCase(parts[1]))
-				System.err.println(parts[0] + " " + parts[1]);
+			//if (!"O".equalsIgnoreCase(parts[1]))
+			//	System.err.println(parts[0] + " " + parts[1]);
 			if (parts.length > 2)
 			{
 				w.setAttribute("nePartLabel", parts[2]);
@@ -72,6 +76,35 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 	@Override
 	public void postProcessDocument(Document d) 
 	{
+		if (english)
+		{
+			List<Element> sentences = TEITagClasses.getSentenceElements(d);
+			for (Element s: sentences)
+			{
+				List<Element> tokens = TEITagClasses.getTokenElements(s);
+				String previousLabel="";
+				for (Element t: tokens)
+				{
+					String neLabel = t.getAttribute("neLabel").toLowerCase();
+					if (neLabel.equalsIgnoreCase("organization"))
+						neLabel = "organisation";
+					if (neLabel == null || neLabel.equals(""))
+						neLabel = "O";
+					if (!neLabel.equalsIgnoreCase("O"))
+					{
+						System.err.println(neLabel);
+						if (previousLabel.equals(neLabel))
+						{
+							t.setAttribute("neLabel", "I-" + neLabel);
+						} else
+						{
+							t.setAttribute("neLabel", "B-" + neLabel);
+						}
+					}
+					previousLabel = neLabel;
+				}
+			}
+		}
 		(new nl.namescape.tei.TEINameTagging()).realizeNameTaggingInTEI(d);
 	}
 
@@ -107,8 +140,8 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		args = options.commandLine.getArgs();
 		
 		StanfordAPIClient stan = new StanfordAPIClient();
-		//stan.addClassifier("N:/Taalbank/Namescape/Tools/stanford-ner-2012-07-09/classifiers/english.conll.4class.distsim.crf.ser.gz");/
-		stan.addClassifier("/mnt/Projecten/Taalbank/Namescape/Corpus-KB/Training/models/kranten.ser.gz");
+		stan.addClassifier("N:/Taalbank/Namescape/Tools/stanford-ner-2012-07-09/classifiers/english.all.3class.distsim.crf.ser.gz");
+		//stan.addClassifier("/mnt/Projecten/Taalbank/Namescape/Corpus-KB/Training/models/kranten.ser.gz");
 		DocumentTagger dt = new DocumentTagger(stan);
 		dt.tokenize = Options.getOptionBoolean("tokenize", true);
 		dt.splitSentences = Options.getOptionBoolean("sentences", false);

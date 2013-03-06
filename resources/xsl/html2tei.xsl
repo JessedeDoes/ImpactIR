@@ -6,6 +6,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
     xmlns:html="http://www.w3.org/1999/xhtml" 
     xmlns:mf="http://example.com/mf" 
+    xmlns:tei="http://www.tei-c.org/ns/1.0"
     exclude-result-prefixes="mf html">
 
 <xsl:output method="xml" indent="no"/>
@@ -14,7 +15,7 @@
 
 <!-- Main block-level conversions -->
 <xsl:template match="html">
-<TEI.2>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
 <teiHeader>
 <sourceDesc>
 <listBibl id="inlMetadata">
@@ -98,7 +99,7 @@
 <text>
     <xsl:apply-templates select="body"/>
 </text>
-</TEI.2>
+</TEI>
 </xsl:template>
 
 

@@ -69,7 +69,6 @@ public class HTML2TEI implements SimpleInputOutputProcess
 	public static void main(String[] args)
 	{
 		HTML2TEI x = new HTML2TEI();
-		
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 		//x.dinges("/mnt/Projecten/Taalbank/Werkfolder_Redactie/Jesse/Projecten/Papiamento/Mosaiko 5 HV Kap 1 vershon 2012 10 28.doc");
 	}

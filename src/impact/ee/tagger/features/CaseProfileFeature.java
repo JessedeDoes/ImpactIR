@@ -67,7 +67,9 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature
 			{
 				return d;
 			}
-			return allLC;
+			return allLC;  
+			// this is extremely BAD for new (unknown) words!!
+			// should at least add the current value.....
 		} catch (Exception e)
 		{
 			

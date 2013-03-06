@@ -30,7 +30,15 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		{ 
 			File f = new File(sURL);
 			//URL url = new URL(sURL);
-			URL url = f.toURI().toURL();
+			URL url = null;
+			if (f.exists())
+			{
+				url = f.toURI().toURL();
+			} else
+				url = new URL(sURL);
+			
+			
+			//= f.toURI().toURL();
 			//System.err.println(url);
 			p.setFeature(Parser.namespacesFeature, false);
 			p.setFeature(Parser.namespacePrefixesFeature, false);
