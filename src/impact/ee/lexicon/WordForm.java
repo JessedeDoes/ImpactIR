@@ -18,7 +18,10 @@ public class WordForm
 	public String lemmaPoS = "nil";
 	@XmlElement
 	public String lemmaID = "nil";
+	@XmlElement
+	public String neLabel = "nil";
 	
+	public Integer primaryKey = null; // for databases
 	public String modernWordform = "";
 	public int wordformFrequency = 0;
 	public int lemmaFrequency = 0;

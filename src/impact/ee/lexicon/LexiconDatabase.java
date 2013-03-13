@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 
 
 
-public class LexiconDatabase extends impact.ee.util.Database  implements Iterable<WordForm>, ILexicon 
+public class LexiconDatabase extends impact.ee.util.Database implements Iterable<WordForm>, ILexicon 
 {
 	//Connection connection = null;
 	boolean onlyVerified = false;

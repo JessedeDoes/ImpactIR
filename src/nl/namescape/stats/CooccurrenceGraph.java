@@ -138,7 +138,7 @@ public class CooccurrenceGraph
 		Element root = d.getDocumentElement(); 
 		List<Element> paragraphs = XML.getElementsByTagname(root, "p", false);
 		corpusSize = paragraphs.size();
-		Set<String> nymIds = new HashSet<String>();
+		
 		
 		
 		for (Element p: paragraphs)
@@ -150,7 +150,6 @@ public class CooccurrenceGraph
 			{
 				for (Element n1: names) 
 				{
-					nymIds.add(n1.getAttribute("nymRef"));
 					foundNyms.add(n1.getAttribute("nymRef"));
 				}
 				
@@ -164,13 +163,11 @@ public class CooccurrenceGraph
 			
 			List<Element> names = XML.getElementsByTagname(p, "ns:ne", false);
 			Set<Pair<String,String>> foundPairs = new HashSet<Pair<String,String>>();
-			Set<String> foundNyms = new HashSet<String>();
+			
 			if (names.size() > 0)
 			{
 				for (Element n1: names) 
-				{
-					nymIds.add(n1.getAttribute("nymRef"));
-					foundNyms.add(n1.getAttribute("nymRef"));
+				{				
 					for (Element n2: names)
 					{
 						String n1id = n1.getAttribute("nymRef");
