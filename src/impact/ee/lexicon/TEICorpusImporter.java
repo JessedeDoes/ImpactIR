@@ -174,7 +174,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			this.title = m.getValue("title");
 			this.author = m.getValue("author");
 			this.publicationYear = m.getValue("pubyear");
-			this.documentID = m.getValue("idno");
+			this.documentID = d.getDocumentElement().getAttribute("xml:id");
 		}
 	}
 	
