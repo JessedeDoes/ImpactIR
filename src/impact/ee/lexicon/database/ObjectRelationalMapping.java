@@ -83,7 +83,7 @@ public class ObjectRelationalMapping
 		System.err.println(query);
 		try
 		{
-			PreparedStatement pStmnt = connection.prepareStatement(query);
+			PreparedStatement pStmnt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			int i=1;
 			for (String f: fieldList)
 			{
@@ -93,6 +93,14 @@ public class ObjectRelationalMapping
 				i++;
 			}
 			pStmnt.execute();
+			ResultSet rs = pStmnt.getGeneratedKeys();
+			while (rs.next())
+			{
+				int primaryKey = rs.getInt(1);
+				if (this.primaryKeyField != null)
+					primaryKeyField.set(object, new Integer(primaryKey));
+			}
+			rs.close();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -103,10 +111,11 @@ public class ObjectRelationalMapping
 	public void insertObjects(Connection connection, 
 			String tableName, Collection<Object> objects)
 	{
-		String query = "insert into " + tableName  + " (";
+		StringBuffer query = new StringBuffer("insert into " + tableName  + " (");
 		Set<String> dbFields = db2objectMap.keySet();
 		List<String> fieldList = new ArrayList<String>();
 		List<Object> objectList = new ArrayList<Object>();
+		
 		for (String s: dbFields)
 		{
 			fieldList.add(s);
@@ -115,28 +124,30 @@ public class ObjectRelationalMapping
 		int k=0;
 		for (String s: fieldList)
 		{
-			query += (k > 0?", ":"") + s; 
+			query.append((k > 0?", ":"") + s); 
 			k++;
 		}
-		query += ") VALUES ";
+		query.append(") VALUES ");
 
 		for (int j=0; j < objects.size(); j++)
 		{
-			query += "(";
+			//System.err.print(".");
+			query.append("(");
 			for (int i=0; i < fieldList.size(); i++)
 			{
-				query += ((i>0)?", ":"") + "?";
+				query.append(((i>0)?", ":"") + "?");
 			}
-			query += ")";
+			query.append( ")");
 			if (j < objects.size() - 1)
-				query += ", ";
+				query.append( ", ");
 		}
 
-		System.err.println(query);
+		//System.err.println(".");
+		//System.err.println(query);
 		
 		try
 		{
-			PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 			int i=1;
 			for (Object object: objects)
 			{

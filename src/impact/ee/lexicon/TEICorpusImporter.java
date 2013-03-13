@@ -8,6 +8,7 @@ import java.lang.reflect.*;
 import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.namescape.tei.Metadata;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.*;
@@ -31,6 +32,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	Map<Object, Object> lemmaMap = new HashMap<Object, Object>();
 	Map<Object, Object> wordformMap = new HashMap<Object, Object>();
 	Map<Object, Object> awfMap = new HashMap<Object, Object>();
+	Map<Object, Object> attestationMap = new HashMap<Object, Object>();
 	
 	
 	//Set<WordForm> lemmata = new HashSet<WordForm>();
@@ -119,6 +121,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	
 	public static class NEAnalyzedWordform
 	{
+		public Integer primaryKey = null;
 		public Integer lemmaKey = null;
 		public Integer wordformKey = null;
 		public NELemma lemma = null;
@@ -153,7 +156,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		public Integer analyzedWordformKey;
 		public Integer documentKey;
 		public String tokenID;
-		public String documentID;
+		public NEDocument document;
 		public NEAnalyzedWordform awf;	
 	}
 
@@ -163,6 +166,13 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		public String title;
 		public String author;
 		public String documentID;
+		public void getMetadata(Document d) 
+		{
+			// TODO Auto-generated method stub
+			Metadata m = new Metadata(d);
+			this.title = m.getValue("title");
+			this.author = m.getValue("author");
+		}
 	}
 	
 	static class NEWordformGroup
@@ -191,6 +201,17 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		
 		awfMapping.addField("lemma_id", "lemmaKey");
 		awfMapping.addField("wordform_id", "wordformKey");
+		awfMapping.setPrimaryKeyField("primaryKey");
+		
+		documentMapping.addField("title", "title");
+		documentMapping.addField("author", "author");
+		documentMapping.setPrimaryKeyField("primaryKey");
+		
+		attestationMapping.addField("document_id", "documentKey");
+		attestationMapping.addField("analyzed_wordform_id", "analyzedWordformKey");
+		attestationMapping.addField("token_id", "tokenID");
+		
+		attestationMapping.setPrimaryKeyField("primaryKey");
 		
 		//attestationMapping.addField();
 	}
@@ -226,6 +247,12 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		List<Element> names = 
 				XML.getElementsByTagname(root, "ns:ne", false);
 		
+		NEDocument document = new NEDocument();
+		document.getMetadata(d);
+		System.err.println("TITLE: " + document.title);
+		
+		documentMapping.insertObject(ldb.connection,"documents",  document); 
+		
 		for (Element n: names)
 		{
 			String wordform = n.getTextContent(); // getNameText(n);
@@ -246,8 +273,18 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			awf.lemma = neLemma;
 			awf.wordform = neWord;
 			awf = (NEAnalyzedWordform) canonical(awfMap,awf);
+			
+			String id = n.getAttribute("xml:id");
+			if (id != null && id.length() > 0)
+			{
+				NEAttestation at = new NEAttestation();
+				at.awf = awf;
+				at.document = document;
+				attestationMap.put(at, at);
+			}
 			//lexicon.addLemma(lemma, PoS, neLabel, gloss);
 		}
+		
 	}
 	
 	public void flush()
@@ -263,6 +300,15 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		}
 		
 		awfMapping.insertObjects(ldb.connection, "analyzed_wordforms", awfMap.keySet());
+		
+		for (Object o: attestationMap.keySet())
+		{
+			NEAttestation at = (NEAttestation) o;
+			at.documentKey = at.document.primaryKey;
+			at.analyzedWordformKey = at.awf.primaryKey;
+		}
+		
+		attestationMapping.insertObjects(ldb.connection, "token_attestations", attestationMap.keySet());
 	}
 	
 	private String getNameText(Element e) // whoops;
@@ -287,7 +333,6 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	{
 		TEICorpusImporter tci = new TEICorpusImporter();
 		//tci.importDocument(args[0]);
-		
 		DirectoryHandling.traverseDirectory(tci, args[0]);
 		tci.flush();
 	}
