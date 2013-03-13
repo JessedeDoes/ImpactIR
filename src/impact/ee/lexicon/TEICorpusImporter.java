@@ -165,6 +165,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		public Integer primaryKey;
 		public String title;
 		public String author;
+		public String publicationYear;
 		public String documentID;
 		public void getMetadata(Document d) 
 		{
@@ -172,6 +173,8 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			Metadata m = new Metadata(d);
 			this.title = m.getValue("title");
 			this.author = m.getValue("author");
+			this.publicationYear = m.getValue("pubyear");
+			this.documentID = m.getValue("idno");
 		}
 	}
 	
@@ -205,6 +208,8 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		
 		documentMapping.addField("title", "title");
 		documentMapping.addField("author", "author");
+		documentMapping.addField("persistent_id", "documentID");
+		documentMapping.addField("pub_year", "publicationYear");
 		documentMapping.setPrimaryKeyField("primaryKey");
 		
 		attestationMapping.addField("document_id", "documentKey");
@@ -280,6 +285,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 				NEAttestation at = new NEAttestation();
 				at.awf = awf;
 				at.document = document;
+				at.tokenID = id;
 				attestationMap.put(at, at);
 			}
 			//lexicon.addLemma(lemma, PoS, neLabel, gloss);
