@@ -91,5 +91,25 @@ public class DatabaseMapping
 		};
 		containmentMapping.addFields(containmentMappingData);
 	}
+
+	static Object canonical(Map<Object,Object> m, Object o)
+	{
+		if (!m.containsKey(o))
+		{
+			m.put(o, o);
+			return o;
+		} else
+		{
+			//System.err.println("Ah.. seen before: o");
+			return m.get(o);
+		}
+	}
+
+	static boolean equal(Object o1, Object o2)
+	{
+		if (o1==null) return o2==null;
+		if (o2==null) return false;
+		return o1.equals(o2);
+	}
 	
 }

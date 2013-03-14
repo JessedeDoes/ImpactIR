@@ -7,7 +7,7 @@ public class NEWordform
 	
 	public boolean equals(NEWordform other)
 	{
-		return TEICorpusImporter.equal(this.wordform,other.wordform); 			
+		return DatabaseMapping.equal(this.wordform,other.wordform); 			
 	}
 	
 	public boolean equals(Object other)

@@ -14,48 +14,41 @@ import nl.namescape.util.XML;
 
 import org.w3c.dom.*;
 
+/**
+ * This imports a bunch of ne-tagged TEI documents into a
+ * "NE lexicon database"
+ * 
+ * ToDo: something with NE resolution
+ * 
+ * @author does
+ *
+ */
 public class TEICorpusImporter implements DoSomethingWithFile
 {
 	EditableLexicon lexicon = null;
 	LexiconDatabase  ldb = new LexiconDatabase("impactdb", "ORMTEST");
 	DatabaseMapping databaseMapping = new DatabaseMapping();
 	
-	
-	static boolean equal(Object o1, Object o2)
-	{
-		if (o1==null) return o2==null;
-		if (o2==null) return false;
-		return o1.equals(o2);
-	}
+	int nDocuments = 0;
+	int maxDocuments= 10000;
+	boolean addEntriesForParts = true;
 	
 	public TEICorpusImporter()
 	{
 		databaseMapping.init();
 	}
-	
-
-	
-	private static Object canonical(Map<Object,Object> m, Object o)
-	{
-		if (!m.containsKey(o))
-		{
-			m.put(o, o);
-			return o;
-		} else
-		{
-			//System.err.println("Ah.. seen before: o");
-			return m.get(o);
-		}
-	}
-	
+		
 	public void importDocument(String filename)
 	{
 		try
 		{
+			if (nDocuments >= maxDocuments)
+			  return;
 			Document d = XML.parse(filename);
 			NEDocument document = new NEDocument(d);
 			document.url = filename;
 			importDocument(document);
+			nDocuments++;
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -68,8 +61,6 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		List<Element> names = 
 				XML.getElementsByTagname(root, "ns:ne", false);
 		
-		
-	
 		System.err.println("TITLE: " + document.title);
 		
 		databaseMapping.documentMapping.insertObject(ldb.connection,"documents",  document); 
@@ -89,13 +80,14 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			
 			List<Element> neParts = XML.getElementsByTagname(n, "ns:nePart", false);
 			int partNumber=0;
-			for (Element np: neParts)
+			
+			if (addEntriesForParts) for (Element np: neParts)
 			{
 				NELemma pLemma = createNELemma(np);
 				NEWordform pWord = createNEWordform(np);
 				NEAnalyzedWordform pAwf = createNEAnalyzedWordform(pLemma, pWord);
 				String pid = np.getAttribute("xml:id");
-				if (id != null && id.length() > 0)
+				if (pid != null && pid.length() > 0)
 				{
 					NEAttestation at = createNEAttestation(document, pAwf, pid);	
 				}
@@ -104,11 +96,10 @@ public class TEICorpusImporter implements DoSomethingWithFile
 				nec.child = pAwf;
 				nec.partNumber = partNumber++;
 				nec = (NEContainment) 
-					canonical(databaseMapping.containmentMap, nec);
-				// HM bah. should add extra key for group id to this...
+					DatabaseMapping.canonical(databaseMapping.containmentMap, nec);
+				// HM (bah.) should add extra key for group id to this...
 				// or should we add this to the PoS info for an NE (structure?)
 			}
-			
 			// lexicon.addLemma(lemma, PoS, neLabel, gloss);
 		}
 	}
@@ -131,7 +122,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		awf.lemma = neLemma;
 		awf.wordform = neWord;
 		awf = (NEAnalyzedWordform) 
-			canonical(databaseMapping.awfMap,awf);
+			DatabaseMapping.canonical(databaseMapping.awfMap,awf);
 		return awf;
 	}
 
@@ -139,7 +130,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	{
 		NEWordform neWord = new NEWordform();
 		neWord.wordform = n.getTextContent();
-		neWord = (NEWordform) canonical(databaseMapping.wordformMap,neWord);
+		neWord = (NEWordform) DatabaseMapping.canonical(databaseMapping.wordformMap,neWord);
 		return neWord;
 	}
 
@@ -149,7 +140,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		neLemma.lemma = n.getAttribute("normalizedForm");
 		neLemma.neLabel = n.getAttribute("type");
 		neLemma.gloss = n.getAttribute("gloss");
-		neLemma = (NELemma) canonical(databaseMapping.lemmaMap,neLemma);
+		neLemma = (NELemma) DatabaseMapping.canonical(databaseMapping.lemmaMap,neLemma);
 		return neLemma;
 	}
 	
@@ -164,6 +155,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			awf.lemmaKey = awf.lemma.primaryKey;
 			awf.wordformKey = awf.wordform.primaryKey;
 		}
+	
 		databaseMapping.awfMapping.insertObjects(ldb.connection, 
 				"analyzed_wordforms", databaseMapping.awfMap.keySet());
 		
@@ -174,6 +166,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			nec.childKey = nec.child.primaryKey;
 		}
 		
+		if (databaseMapping.containmentMap.size() > 0)
 		databaseMapping.containmentMapping.insertObjects(ldb.connection, 
 				"analyzed_wordform_groups",  databaseMapping.containmentMap.keySet());
 		
@@ -184,7 +177,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			at.analyzedWordformKey = at.awf.primaryKey;
 		}
 		
-		databaseMapping.attestationMapping.insertObjects(ldb.connection, "token_attestations", databaseMapping.attestationMap.keySet());
+		databaseMapping.attestationMapping.insertObjectsInPortions(ldb.connection, "token_attestations", databaseMapping.attestationMap.keySet(), 10000);
 	}
 	
 	private String getNameText(Element e) // whoops;
@@ -208,7 +201,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	public static void main(String[] args)
 	{
 		TEICorpusImporter tci = new TEICorpusImporter();
-		//tci.importDocument(args[0]);
+		// tci.importDocument(args[0]);
 		DirectoryHandling.traverseDirectory(tci, args[0]);
 		tci.flush();
 	}

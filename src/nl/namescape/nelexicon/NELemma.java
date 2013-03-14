@@ -14,9 +14,9 @@ public class NELemma
 	public boolean equals(NELemma other)
 	{
 		//System.err.println("BLOEP!");
-		return TEICorpusImporter.equal(this.lemma,other.lemma) 
-				&& TEICorpusImporter.equal(this.lemmaPoS, other.lemmaPoS)
-				&& TEICorpusImporter.equal(this.neLabel, other.neLabel);
+		return DatabaseMapping.equal(this.lemma,other.lemma) 
+				&& DatabaseMapping.equal(this.lemmaPoS, other.lemmaPoS)
+				&& DatabaseMapping.equal(this.neLabel, other.neLabel);
 	}
 	
 	public boolean equals(Object other)

@@ -110,9 +110,32 @@ public class ObjectRelationalMapping
 	}
 
 
+	
+	public void insertObjectsInPortions(Connection connection, 
+			String tableName, Collection<Object> objects, int portionSize)
+	{
+		List<Object> portion = new ArrayList<Object>();
+		int k=0;
+		for (Object object: objects)
+		{
+			if (k > 0 && k % portionSize ==0)
+			{
+				insertObjects(connection, tableName, portion);
+				portion.clear();
+			}
+			portion.add(object);
+			k++;
+		}
+		if (portion.size() > 0)
+			insertObjects(connection, tableName, portion);
+	}
+	
 	public void insertObjects(Connection connection, 
 			String tableName, Collection<Object> objects)
 	{
+		if (objects == null || objects.size() == 0)
+			return;
+		
 		StringBuffer query = new StringBuffer("insert into " + tableName  + " (");
 		Set<String> dbFields = db2objectMap.keySet();
 		List<String> fieldList = new ArrayList<String>();
