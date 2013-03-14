@@ -7,6 +7,8 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
+ * This class handles mapping of one java class to a database table
+ * 
  * Primary key handling?
  * @author does
  *
@@ -226,5 +228,21 @@ public class ObjectRelationalMapping
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void addFields(String[][] lemmaMappingData) 
+	{
+		// TODO Auto-generated method stub
+		for (int i=0; i < lemmaMappingData.length; i++)
+		{
+			String[] a = lemmaMappingData[i];
+			if (i==0 && a.length == 1)
+			{
+				this.setPrimaryKeyField(a[0]);
+			} else if (a.length == 2)
+			{
+				this.addField(a[0], a[1]);
+			}
+		}
 	}
 }
