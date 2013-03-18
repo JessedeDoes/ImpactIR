@@ -1,7 +1,6 @@
 package nl.namescape.nelexicon;
 import impact.ee.lexicon.EditableLexicon;
 import impact.ee.lexicon.LexiconDatabase;
-import impact.ee.lexicon.database.ObjectRelationalMapping;
 import impact.ee.util.StringUtils;
 
 import java.util.*;
@@ -10,6 +9,9 @@ import java.lang.reflect.*;
 import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.namescape.nelexicon.database.ObjectRelationalMapping;
+import nl.namescape.tei.TEITagClasses;
+import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.*;
@@ -32,6 +34,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 	int nDocuments = 0;
 	int maxDocuments= 10000;
 	boolean addEntriesForParts = true;
+	int quotationLength = 50;
 	
 	public TEICorpusImporter()
 	{
@@ -63,6 +66,9 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		
 		System.err.println("TITLE: " + document.title);
 		
+		Map<String, Document>
+			tokenizedParagraphHash = new HashMap<String, Document>();
+		
 		databaseMapping.documentMapping.insertObject(ldb.connection,"documents",  document); 
 		
 		for (Element n: names)
@@ -76,6 +82,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			if (id != null && id.length() > 0)
 			{
 				NEAttestation at = createNEAttestation(document, awf, id);	
+				addQuotationToAttestation(at,n, tokenizedParagraphHash);
 			}
 			
 			List<Element> neParts = XML.getElementsByTagname(n, "ns:nePart", false);
@@ -102,6 +109,84 @@ public class TEICorpusImporter implements DoSomethingWithFile
 			}
 			// lexicon.addLemma(lemma, PoS, neLabel, gloss);
 		}
+	}
+
+	private void addQuotationToAttestation(NEAttestation at, Element n, Map<String, Document> tokenizedParagraphHash) 
+	{
+		// TODO Auto-generated method stub
+		Element ancestor = (Element) n.getParentNode();
+		while (true)
+		{
+			String text = ancestor.getTextContent().trim();
+			String[] words = text.split("\\s+");
+			System.err.println("SIZE "  + words.length);
+			if (words.length > this.quotationLength || 
+					TEITagClasses.isSentenceSplittingElement(ancestor))
+			{
+			
+				break;
+			}
+			try
+			{
+				ancestor = (Element) ancestor.getParentNode();
+			} catch (Exception e)
+			{
+				break;
+			}
+		}
+		//System.exit(1);
+		Document tokenizedElement = tokenizedParagraphHash.get(ancestor.getAttribute("xml:id"));
+		if (tokenizedElement == null)
+		{
+			tokenizedElement = 
+			 new TEITokenizer().tokenizeString(XML.NodeToString(ancestor));
+			tokenizedParagraphHash.put(ancestor.getAttribute("xml:id"), tokenizedElement);
+		}
+		// System.err.println(XML.documentToString(tokenizedElement));
+		
+		//at.quotation = ancestor.getTextContent(); // HM HM...
+		
+		List<Element> nameInContextx = XML.getElementsByTagnameAndAttribute(tokenizedElement.getDocumentElement(), 
+				n.getTagName(), "xml:id", n.getAttribute("xml:id"), false);
+		Element nameInContext = nameInContextx.get(0);
+		
+		//System.err.println(XML.NodeToString(tokenizedElement));
+		
+		List<Element> words = 
+				TEITagClasses.getTokenElements(tokenizedElement.getDocumentElement());
+		List<Element> wordsInEntity = 
+				TEITagClasses.getTokenElements(nameInContext);
+		
+		Element firstWord = wordsInEntity.get(0);
+		Element lastWord = wordsInEntity.get(wordsInEntity.size()-1);
+		int startIndex = 1, endIndex=0;
+		for (int i=0; i < words.size(); i++)
+		{
+			Element w = words.get(i);
+			if (w==firstWord) startIndex=i;
+			if (w==lastWord) endIndex=i;
+		}
+		int start = Math.max(0, startIndex-10);
+		int end = Math.min(words.size(), endIndex+10);
+		String concordance="";
+		for (int i=start; i < end; i++)
+		{
+			if (i == startIndex)
+				concordance += "<oVar>";
+			
+		
+			concordance += words.get(i).getTextContent();
+			if (i== endIndex)
+				concordance += "</oVar>";
+			if (i < end -1)
+			{
+				concordance += " ";
+			}
+		}
+		System.err.println("CONC: " + concordance);
+		at.quotation = concordance;
+		// OK... now we have a suitable parent node
+		// if the content is not tokenized, we should tokenize it really
 	}
 
 	private NEAttestation createNEAttestation(NEDocument document,

@@ -28,7 +28,7 @@ import javax.xml.parsers.SAXParser;
 
 public class TEITokenizer extends DefaultHandler
 {
-	private OutputStreamWriter out;
+	private Writer out;
 	
 	private boolean inToken = false;
 	private boolean insideTokenizedElement = false;
@@ -36,6 +36,7 @@ public class TEITokenizer extends DefaultHandler
 	private boolean deferOpenTags = true;
 	private boolean deleteIntermediate  = true;
 	private boolean needWhite = false;
+	private boolean onlyInTextElement = true;
 	Document currentDocument = null;
 	private Set<String> inlineTags = new HashSet<String>();
 	private Set<String> milestoneTags = new HashSet<String>();
@@ -419,6 +420,39 @@ public class TEITokenizer extends DefaultHandler
 		{
 			err.printStackTrace ();
 		}
+	}
+	
+	public String preTokenizeString(String inputString)
+	{
+		try 
+		{
+			out = new StringWriter();
+			byte[] bytes = inputString.getBytes("UTF-8");
+			InputStream input = new ByteArrayInputStream(bytes);
+			if (parser == null)
+			{
+				SAXParserFactory factory = SAXParserFactory.newInstance();
+				factory.setFeature("http://apache.org/xml/features/validation/schema", false);
+				factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			    parser = factory.newSAXParser(); // waarom steeds opnieuw?
+			}
+			this.insideTokenizedElement = true;
+			parser.parse(input, this);
+			out.close();
+			return out.toString();
+		} catch (Throwable err) 
+		{
+			err.printStackTrace ();
+		}
+		return null;
+	}
+	
+	public Document tokenizeString(String inputString)
+	{
+		String pretokenized = preTokenizeString(inputString);
+		Document d = XML.parseString(pretokenized);
+		new PunctuationTagger().tagPunctuation(d);
+		return d;
 	}
 	
 	public String getTempDir()

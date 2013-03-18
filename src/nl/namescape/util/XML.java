@@ -423,7 +423,30 @@ public class XML extends Object
 		return parse(aFilename,true);
 	}
 
-
+	public static Document parseString(String inputString, boolean namespaceAware)
+	{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(namespaceAware);
+		try
+		{
+			factory.setFeature( "http://apache.org/xml/features/dom/defer-node-expansion", false );
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			byte[] bytes = inputString.getBytes("UTF-8");
+			InputStream input = new ByteArrayInputStream(bytes);
+			Document document = builder.parse(input);
+			return document;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Document parseString(String inputString)
+	{
+		return parseString(inputString, true);
+	}
+	
 	public static Document createDocument(String rootElementName)
 	{
 		try

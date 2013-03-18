@@ -1,9 +1,11 @@
-package impact.ee.lexicon.database;
+package nl.namescape.nelexicon.database;
 
 import impact.ee.lexicon.LexiconDatabase;
 import impact.ee.lexicon.WordForm;
 
 import java.util.*;
+
+import nl.namescape.nelexicon.NELemma;
 public class TestORM 
 {
 	public static List<Object> testRead()
@@ -11,17 +13,16 @@ public class TestORM
 		LexiconDatabase ldb = new LexiconDatabase("impactdb", "EE3_5");
 		String table = "lemmata";
 		ObjectRelationalMapping orm = 
-				new ObjectRelationalMapping(WordForm.class, "analyzed_wordforms");
+				new ObjectRelationalMapping(NELemma.class, "analyzed_wordforms");
 		
 		orm.addField("modern_lemma", "lemma");
 		orm.addField("wordform", "wordform");
 		orm.addField("lemma_part_of_speech", "lemmaPoS");
 		orm.addField("persistent_id", "lemmaID");
-		
+		orm.setPrimaryKeyField("primaryKey");
+	
 		List<Object> objects = 
-			orm.fetchObjects(ldb.connection, 
-					"select * from lemmata l, simple_analyzed_wordforms a, wordforms w where modern_lemma like 'a%' " +
-			" and a.wordform_id = w.wordform_id and l.lemma_id = a.lemma_id limit 30");
+			orm.fetchObjects(ldb.connection);
 		
 		for (Object o: objects)
 		{

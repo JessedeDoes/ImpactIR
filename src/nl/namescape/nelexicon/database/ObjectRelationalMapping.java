@@ -1,5 +1,6 @@
-package impact.ee.lexicon.database;
+package nl.namescape.nelexicon.database;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,6 +23,77 @@ public class ObjectRelationalMapping
 	Map<String,Field> db2objectMap = new HashMap<String,Field>();
 	Map<Field, String> object2dbMap = new HashMap<Field, String>();
 	Field primaryKeyField = null;
+	String primaryKeyDbField = null;
+	
+	List<ForeignKeyBinding> foreignKeyBindings = new ArrayList<ForeignKeyBinding>();
+	
+	public static class ForeignKeyBinding
+	{
+		Class javaClass;
+		String tableName;
+		Field foreignKeyField;
+		
+		public void insertObject(Object object, Object foreign)
+		{
+			try
+			{
+				if  (Collection.class.isAssignableFrom(foreignKeyField.getType()))
+				{
+					Object currentValue = foreignKeyField.get(object);
+					if (currentValue == null)
+					{
+						currentValue = foreignKeyField.getType().newInstance();
+					}
+					Collection c = (Collection) currentValue;
+					c.add(foreign);
+				} else
+				{
+					foreignKeyField.set(object, foreign);
+				}
+			} catch (Exception e)
+			{
+				
+			}
+		}
+	}
+	
+	public void addForeignKeyBinding(Class javaClass, String tableName, String keyFieldName)
+	{
+		try
+		{
+			ForeignKeyBinding fkb = new ForeignKeyBinding();
+			fkb.javaClass = javaClass;
+			fkb.tableName = tableName;
+			fkb.foreignKeyField = this.getClass().getField(keyFieldName);
+			foreignKeyBindings.add(fkb);
+		} catch (Exception e)
+		{
+
+		}
+	}
+	
+	// generated key field should not be included in inserts, but should be when retrieving
+
+	public List<String> getPrimaryKeys(Connection connection, String tableName)
+	{
+		java.util.List<String> list = new java.util.ArrayList<String>();
+		try
+		{
+			DatabaseMetaData meta = connection.getMetaData();
+			ResultSet rs = meta.getPrimaryKeys(null, null, "survey");
+			while (rs.next()) 
+			{
+				String columnName = rs.getString("COLUMN_NAME");
+				list.add(columnName);
+				System.err.println("getPrimaryKeys(): columnName=" + columnName);
+			}
+			rs.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return list;
+	}
 	
 	public ObjectRelationalMapping(Class javaClass, String tableName)
 	{
@@ -45,7 +117,7 @@ public class ObjectRelationalMapping
 
 		}
 	}
-	
+
 	public void setPrimaryKeyField(String fieldName)
 	{
 		try
@@ -109,8 +181,6 @@ public class ObjectRelationalMapping
 		}
 	}
 
-
-	
 	public void insertObjectsInPortions(Connection connection, 
 			String tableName, Collection<Object> objects, int portionSize)
 	{
@@ -129,18 +199,18 @@ public class ObjectRelationalMapping
 		if (portion.size() > 0)
 			insertObjects(connection, tableName, portion);
 	}
-	
+
 	public void insertObjects(Connection connection, 
 			String tableName, Collection<Object> objects)
 	{
 		if (objects == null || objects.size() == 0)
 			return;
-		
+
 		StringBuffer query = new StringBuffer("insert into " + tableName  + " (");
 		Set<String> dbFields = db2objectMap.keySet();
 		List<String> fieldList = new ArrayList<String>();
 		List<Object> objectList = new ArrayList<Object>();
-		
+
 		for (String s: dbFields)
 		{
 			fieldList.add(s);
@@ -169,7 +239,7 @@ public class ObjectRelationalMapping
 
 		//System.err.println(".");
 		//System.err.println(query);
-		
+
 		try
 		{
 			PreparedStatement statement = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -204,6 +274,18 @@ public class ObjectRelationalMapping
 	}
 
 
+	public List<Object> fetchObjects(Connection connection)
+	{
+		List<String> primaryKeys = getPrimaryKeys(connection, this.tableName);
+		if (primaryKeys.size() > 0)
+		{
+			primaryKeyDbField = primaryKeys.get(0);
+		}
+		String query = "select * from " + this.tableName;
+		
+		return fetchObjects(connection, query);
+	}
+	
 	// fetching objects from the DB
 
 	public List<Object> fetchObjects(Connection connection, String query)
@@ -242,6 +324,9 @@ public class ObjectRelationalMapping
 					if (javaField != null)
 					{
 						javaField.set(o, rs.getObject(i));
+					} else if (dbFieldName.equals(this.primaryKeyDbField) && this.primaryKeyField != null)
+					{
+						this.primaryKeyField.set(o, rs.getObject(i));
 					}
 				}
 				return o;

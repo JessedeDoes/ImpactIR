@@ -44,6 +44,11 @@ public class TEITagClasses
 					nameTags.add(s);
 	};
 	
+	public static boolean isSentenceSplittingElement(Element e)
+	{
+		return splitTags.contains(e.getNodeName());
+	}
+	
 	public static boolean noSentenceBreakIn(Element e)
 	{
 		return nameTags.contains(e.getNodeName()) 

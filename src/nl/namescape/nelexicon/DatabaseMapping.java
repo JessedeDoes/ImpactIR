@@ -3,7 +3,8 @@ package nl.namescape.nelexicon;
 import java.util.HashMap;
 import java.util.Map;
 
-import impact.ee.lexicon.database.ObjectRelationalMapping;
+import nl.namescape.nelexicon.database.ObjectRelationalMapping;
+
 
 public class DatabaseMapping 
 {
@@ -77,6 +78,7 @@ public class DatabaseMapping
 				{"primaryKey"},
 				{"document_id", "documentKey"},
 				{"analyzed_wordform_id", "analyzedWordformKey"},
+				{"quote", "quotation"},
 				{"token_id", "tokenID"}
 		};
 		
