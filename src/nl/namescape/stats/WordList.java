@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
@@ -141,6 +142,12 @@ public class WordList
 		sortByFrequency();
 		return sensitive?frequencyList:caseInsensitiveFrequencyList;
 	}
+	
+	public Set<String> keySet(boolean sensitive)
+	{
+		return sensitive?this.typeFrequency.keySet():this.caseInsensitiveTypeFrequency.keySet();
+	}
+	
 	public static class ValueComparator implements Comparator<TypeFrequency> 
 	{
 

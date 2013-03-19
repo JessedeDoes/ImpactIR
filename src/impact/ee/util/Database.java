@@ -498,7 +498,38 @@ public class Database
 				//Statement stmt = connection.createStatement();
 				//stmt.execute("SET SESSION `max_allowed_packet`= 1000000000;");
 				//stmt.close();
+				return connection;
+			}
+			catch (ClassNotFoundException e)
+			{
+				//logger.error("Database driver niet gevonden", e);
+				System.err.println("ramp (DRIVER) !!!!!!!!!!!!!!");
+				return null;
+			}
+			catch (SQLException e)
+			{
+				//logger.error("Kan geen verbinding met database maken", e);
+				e.printStackTrace();
+				System.err.println("ramp!!!!!!!!!!!!!!");
+				return null;
+			}
+		}
+		
+		public Connection connectToPostgres(String url, String user, String password)
+		{
+			try
+			{
+				// Register the JDBC driver for MySQL.
+				Class.forName("org.postgresql.Driver");
 
+				// Get a connection to the database
+				Connection connection = DriverManager.getConnection(url, user, password);
+
+				// Allow large packets
+
+				//Statement stmt = connection.createStatement();
+				//stmt.execute("SET SESSION `max_allowed_packet`= 1000000000;");
+				//stmt.close();
 				return connection;
 			}
 			catch (ClassNotFoundException e)

@@ -5,15 +5,13 @@ import impact.ee.util.StringUtils;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import nl.namescape.evaluation.Counter;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.MultiMap;
@@ -38,31 +36,49 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
+	
+	
 	MultiMap<String,Element> examples = new MultiMap<String,Element> ();
-
+	Map<String, Counter<String>> typeMap = new HashMap<String, Counter<String>>();
+	public boolean typeSensitive = true;
+	
 	public void handleFile(String fileName) 
 	{
 		System.err.println(fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
-			List<Element> sentences = TEITagClasses.getSentenceElements(d);
-			for (Element s: sentences)
-			{
-				List<Element> namez = XML.getElementsByTagname(s, "ns:ne", false);
-				for (Element e: namez)
-				{
-					nTokens++;
-
-
-					String wordform = getNameText(e);
-					examples.putValue(wordform, s);
-					tf.incrementFrequency(wordform, 1); 
-				}
-			}
+			processDocument(d);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public void processDocument(Document d) 
+	{
+		List<Element> sentences = TEITagClasses.getSentenceElements(d);
+		for (Element s: sentences)
+		{
+			List<Element> namez = XML.getElementsByTagname(s, "ns:ne", false);
+			for (Element e: namez)
+			{
+				nTokens++;
+				String wordform = getNameText(e);
+				String type = e.getAttribute("type");
+				if (!typeSensitive)
+				{
+					Counter<String> types = typeMap.get(wordform);
+					if (types == null)
+					{
+						types = new Counter<String>();
+						typeMap.put(wordform, types);
+					}
+					types.increment(type);
+				}
+				examples.putValue(wordform, s);
+				tf.incrementFrequency(wordform, 1); 
+			}
 		}
 	}
 
@@ -73,9 +89,32 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		{
 			parts.add(w.getTextContent().trim());
 		}
-		return e.getAttribute("type") + "\t"  + StringUtils.join(parts, " ");
+		if (typeSensitive)
+			return e.getAttribute("type") + "\t"  + StringUtils.join(parts, " ");
+		else
+			return  StringUtils.join(parts, " ");
 	}
 
+	public int getFrequency(String name)
+	{
+		return tf.getFrequency(name);
+	}
+	
+	public Set<String> keySet()
+	{
+		return tf.keySet(true);
+	}
+	
+	public Counter<String> getTypes(String name)
+	{
+		return typeMap.get(name);
+	}
+	
+	public Set<Element> getExamples(String name)
+	{
+		return this.examples.get(name);
+	}
+	
 	public void print()
 	{
 		tf.sortByFrequency();
