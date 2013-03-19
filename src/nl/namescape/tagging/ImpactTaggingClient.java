@@ -100,7 +100,6 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 	@Override
 	public void handleFile(String in, String out) 
 	{
-
 		Document d = null;
 		if (tokenize)
 		{

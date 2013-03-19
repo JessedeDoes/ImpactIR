@@ -39,6 +39,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	
 	
 	MultiMap<String,Element> examples = new MultiMap<String,Element> ();
+	MultiMap<String,Element> instances = new MultiMap<String,Element> ();
 	Map<String, Counter<String>> typeMap = new HashMap<String, Counter<String>>();
 	public boolean typeSensitive = true;
 	
@@ -77,6 +78,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 					types.increment(type);
 				}
 				examples.putValue(wordform, s);
+				instances.putValue(wordform, s);
 				tf.incrementFrequency(wordform, 1); 
 			}
 		}
@@ -113,6 +115,11 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	public Set<Element> getExamples(String name)
 	{
 		return this.examples.get(name);
+	}
+	
+	public Set<Element> getInstances(String name)
+	{
+		return this.instances.get(name);
 	}
 	
 	public void print()

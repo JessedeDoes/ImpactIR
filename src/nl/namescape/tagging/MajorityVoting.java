@@ -43,7 +43,7 @@ public class MajorityVoting implements SimpleInputOutputProcess
 				String topType = sorted.get(0);
 				if (typeMap.get(topType) >= minProportion * f) // regard other types as nonsensical
 				{
-					for (Element e: withoutType.getExamples(s))
+					for (Element e: withoutType.getInstances(s))
 					{
 						String typeWas = e.getAttribute("type");
 						if (!typeWas.equals(topType))
