@@ -10,6 +10,7 @@ import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.util.UUID;
 
 public class ElementConcordancer 
 {
@@ -19,7 +20,12 @@ public class ElementConcordancer
 	
 	public String getConcordance(Element n) 
 	{
+		String id;
+		giveElementAnId(n);
+		
 		Element ancestor = (Element) n.getParentNode();
+		
+		
 		while (true)
 		{
 			String text = ancestor.getTextContent().trim();
@@ -40,21 +46,34 @@ public class ElementConcordancer
 			}
 		}
 		
+		giveElementAnId(ancestor);
+		giveNamesIds(ancestor);
+		
 		Document tokenizedElement = tokenizedParagraphHash.get(ancestor.getAttribute("xml:id"));
+		
 		if (tokenizedElement == null)
 		{
 			tokenizedElement = 
 			 new TEITokenizer().tokenizeString(XML.NodeToString(ancestor));
-			tokenizedParagraphHash.put(ancestor.getAttribute("xml:id"), tokenizedElement);
+			tokenizedParagraphHash.put(ancestor.getAttribute("xml:id"), tokenizedElement); // OK dan hebben niet alle NE's hierin een ID!
 		}
+		
+		// System.err.println(XML.documentToString(tokenizedElement));
 		
 		List<Element> nameInContextx = XML.getElementsByTagnameAndAttribute(tokenizedElement.getDocumentElement(), 
 				n.getTagName(), "xml:id", n.getAttribute("xml:id"), false);
 		
+		if (nameInContextx.size() == 0)
+		{
+			
+			System.err.println(n.getAttribute("xml:id") +  " NOT FOUND IN " + XML.documentToString(tokenizedElement));
+			return "";
+		}
 		Element nameInContext = nameInContextx.get(0);
 		
 		List<Element> words = 
 				TEITagClasses.getTokenElements(tokenizedElement.getDocumentElement());
+		
 		List<Element> wordsInEntity = 
 				TEITagClasses.getTokenElements(nameInContext);
 		
@@ -88,5 +107,25 @@ public class ElementConcordancer
 		}
 		System.err.println("CONC: " + concordance);
 		return concordance;
+	}
+
+	private void giveElementAnId(Element n) {
+		String id = n.getAttribute("xml:id");
+		
+		if (id == null || id.length() == 0)
+		{
+			id = UUID.randomUUID().toString();
+			n.setAttribute("xml:id", id);
+		}
+	}
+
+	private void giveNamesIds(Element ancestor) 
+	{
+		List<Element> namez = TEITagClasses.getNameElements(ancestor);
+		for (Element nm: namez)
+		{
+			String id;
+			giveElementAnId(nm);
+		}
 	}
 }

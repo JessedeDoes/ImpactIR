@@ -244,4 +244,15 @@ public class TEITagClasses
 	{
 		return nameTags.contains(tagName) || !(inlineTags.contains(tagName));
 	}
+
+	public static List<Element> getNameElements(Element e) 
+	{
+		Set<String> elNames = new HashSet<String>();
+		for (String x: TEITagClasses.nameTagNames) 
+			elNames.add(x);
+		
+		List<Element> l = 
+				XML.getElementsByTagname(e, elNames, false);
+		return l;
+	}
 }

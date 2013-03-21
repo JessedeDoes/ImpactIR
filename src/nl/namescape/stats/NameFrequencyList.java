@@ -78,7 +78,7 @@ public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingW
 					types.increment(type);
 				}
 				examples.putValue(wordform, s);
-				instances.putValue(wordform, s);
+				instances.putValue(wordform, e);
 				tf.incrementFrequency(wordform, 1); 
 			}
 		}
