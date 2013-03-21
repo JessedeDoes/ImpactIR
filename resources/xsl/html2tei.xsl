@@ -381,7 +381,7 @@
 <xsl:template match="noscript"><gap type="noscript"/></xsl:template>
 <xsl:template match="embed"><gap type="embed"/></xsl:template>
 
-<xsl:template match="sup|sub|em|strong|i|b">
+<xsl:template match="sup|sub|em|strong|i|b|span">
 <hi>
 <xsl:attribute name="rend"><xsl:value-of select="name(.)"/></xsl:attribute>
 <xsl:apply-templates/>
