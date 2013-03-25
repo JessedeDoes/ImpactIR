@@ -25,7 +25,7 @@ public class TEITagClasses
 			"opener", "salute",  "signed", "trailer"};
 	static Set<String> splitTags = new HashSet<String>();
 	public static String[] inlineTagNames = 
-	{"hi", "milestone", "pb", "i", "name", "persName", "orgName", "placeName"};
+	{"hi", "milestone", "pb", "i", "name", "persName", "orgName", "placeName", "expan"};
 	static Set<String> inlineTags = new HashSet<String>();
 	public static String[] milestone = {"pb", "cb", "milestone"};
 	public static String[] tokenTagNames = {"w", "pc", "c"};

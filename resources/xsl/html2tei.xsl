@@ -10,7 +10,7 @@
     exclude-result-prefixes="mf html">
 
 <xsl:output method="xml" indent="no"/>
-
+<xsl:variable name="css"><xsl:value-of select="//style"/></xsl:variable>
 
 
 <!-- Main block-level conversions -->
@@ -367,13 +367,17 @@
 
 
 <xsl:template match="span">
-<!--
-<hi>
--->
-    <xsl:apply-templates/>
-<!--
+<xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
+<xsl:variable name="pattern">.<xsl:value-of select="$class"/>{font-style:italic</xsl:variable>
+<xsl:choose>
+<xsl:when test="contains($css,$pattern)">
+<xsl:message>Yep!</xsl:message>
+<hi rend="italic">
+<xsl:apply-templates/>
 </hi>
--->
+</xsl:when>
+<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 
 
@@ -381,7 +385,7 @@
 <xsl:template match="noscript"><gap type="noscript"/></xsl:template>
 <xsl:template match="embed"><gap type="embed"/></xsl:template>
 
-<xsl:template match="sup|sub|em|strong|i|b|span">
+<xsl:template match="sup|sub|em|strong|i|b">
 <hi>
 <xsl:attribute name="rend"><xsl:value-of select="name(.)"/></xsl:attribute>
 <xsl:apply-templates/>
