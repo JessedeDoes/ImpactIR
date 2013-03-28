@@ -26,6 +26,11 @@ public class Metadata
 		Map<String,Set<String>> m = new HashMap<String,Set<String>>();
 		List<Element> bibls = XML.getElementsByTagnameAndAttribute(d.getDocumentElement(), 
 				"listBibl","xml:id", "inlMetadata", false);
+		if (bibls.size() == 0)
+		{
+			bibls = XML.getElementsByTagnameAndAttribute(d.getDocumentElement(), 
+					"listBibl","id", "inlMetadata", false);
+		}
 		for (Element b: bibls)
 		{
 			//System.err.println(b);
@@ -68,6 +73,7 @@ public class Metadata
 			{
 				if (r.length() > 0)
 					r += separator;
+				s = s.replaceAll("\\s+", " ");
 				r += s;
 			}
 			return r;
