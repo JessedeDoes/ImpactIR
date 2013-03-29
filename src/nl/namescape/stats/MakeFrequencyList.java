@@ -48,7 +48,7 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 				
 				String lemma = e.getAttribute("lemma");
 				String wordform = e.getTextContent();
-				String tag = e.getAttribute("function");
+				String tag = e.getAttribute("type");
 				String lwt = wordform + "\t" + tag + "\t" + lemma;
 				
 				switch (type)
@@ -76,7 +76,7 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	public static void main(String[] args)
 	{
 		MakeFrequencyList s = new MakeFrequencyList();
-		s.type = Type.word;
+		s.type = Type.lwt;
 		
 		if (args.length > 0)
 		{
