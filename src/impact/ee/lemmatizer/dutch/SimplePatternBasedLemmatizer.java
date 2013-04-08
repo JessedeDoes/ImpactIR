@@ -49,6 +49,7 @@ import java.util.*;
  *Lemmatization suitable for database construction is different...
  *disabling smoothing means that we basically get only the first guess in many cases!
  *(so if PoS guess is wrong (gevarengeld --> gevarengelen etc), we do not see the other options!)
+ *There should be one classifier for each paradigm position... Like in the reverse lemmatizer...
  */
 
 public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagger
@@ -315,7 +316,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 				continue;
 			if (bestGuess == null)
 				bestGuess = guessedLemma;
-			if (tagRelation.compatible(tag, r1.PoS))
+			if (tagRelation.compatible(tag, r1.PoS)) // ?? not searching for best scoring match?
 			{
 				bestGuess =  guessedLemma;
 			} 
