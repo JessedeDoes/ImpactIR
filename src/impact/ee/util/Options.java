@@ -11,7 +11,7 @@ public class Options
 	static Properties properties = new Properties();
 	static org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
 	org.apache.commons.cli.GnuParser parser = new org.apache.commons.cli.GnuParser();
-	CommandLine commandLine = null;
+	public CommandLine commandLine = null;
 
 	public Options(String[] args)
 	{
@@ -77,7 +77,7 @@ public class Options
 			}
 			for (Option o:commandLine.getOptions())
 			{
-				String name=o.getLongOpt();
+				String name= o.getLongOpt();
 				String value = o.getValue();
 				properties.setProperty(name, value);
 			}

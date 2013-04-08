@@ -13,17 +13,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-enum MatchType 
-{
-	HistoricalExact, 
-	ModernExact, 
-	ModernWithPatterns, 
-	HistoricalWithPatterns, 
-	ModernHypotheticalExact,   
-	ModernHypotheticalWithPatterns,
-	None
-};
-
 @XmlRootElement
 public class WordMatch
 {

@@ -34,6 +34,7 @@ public class Lemmatizer
 	ITrie<Object> lexiconTrie = null;
 	boolean useMatcher = true;
 	boolean modernWordformAsLemma = false;
+	boolean simplify = false;
 	
 	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
@@ -205,6 +206,7 @@ public class Lemmatizer
 				}
 			}
 		}
+	
 		return matches;
 	}
 
@@ -236,6 +238,7 @@ public class Lemmatizer
 	{
 		new Options(args);
 		String c;
+		boolean simplify = true;
 		if ((c = Options.getOption("command"))  != null && c. equals("test"))
 		{
 			(new LemmatizationTest()).runTest();;
@@ -264,6 +267,10 @@ public class Lemmatizer
 				else
 				{     
 					//System.out.println(""  + w + " ");
+					if (simplify)
+					{
+						s = WordMatch.simplify(s, false);
+					}
 					ArrayList<WordMatch> asList = new ArrayList<WordMatch>(s);
 					Collections.sort(asList, new WordMatchComparator());
 					WordMatch bestMatch = asList.get(0);
