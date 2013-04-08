@@ -51,6 +51,9 @@ public class LookupLemmatizer implements Tagger
 			WordMatch bestMatch = asList.get(0);
 			System.err.println(w + "-->" + bestMatch.wordform);
 			m.put("lemma", bestMatch.wordform.lemma);
+			m.put("type",  bestMatch.wordform.lemmaPoS);
+			m.put("mform",  bestMatch.wordform.modernWordform);
+			
 			//test.incrementCount(bestMatch.type);
 			/*
 			System.out.println(w  + " --> " + bestMatch);

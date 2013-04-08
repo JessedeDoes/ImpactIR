@@ -29,7 +29,7 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 			e.setAttribute("type", tag);
 		String lemma = m.get("lemma");
 		if (tag != null)
-			e.setAttribute("lemma", tag);
+			e.setAttribute("lemma", lemma);
 	}
 	
 	public static void main(String[] args)
