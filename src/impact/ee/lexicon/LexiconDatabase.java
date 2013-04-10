@@ -25,8 +25,8 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 {
 	//Connection connection = null;
 	boolean onlyVerified = false;
-	boolean useSimpleWordformsOnly = false;
-	boolean dumpWithFrequenciesAndDerivations = true;
+	public boolean useSimpleWordformsOnly = false;
+	public boolean dumpWithFrequenciesAndDerivations = true;
 	boolean noDerivations = true;
 	
 	static String createSimpleWordformTableSQL = Resource.getStringFromFile("sql/createSimple.sql");

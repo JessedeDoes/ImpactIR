@@ -17,16 +17,14 @@ class WordFormIterator implements Iterator<WordForm>
 	//String postAdbQuery = "select distinct modern_lemma, wordform, '', '' from AttestatieLexicon.lexiconSplit";
 	
 	
-	String analyzedWordformTable = this.lexiconDatabase.useSimpleWordformsOnly ? "simple_analyzed_wordforms" : 
-		"analyzed_wordforms";
+	String analyzedWordformTable = null; // this.lexiconDatabase.useSimpleWordformsOnly ? "simple_analyzed_wordforms" : "analyzed_wordforms";
 	
 	String extractWordformsQuery = 
 		"select modern_lemma, wordform, lemma_part_of_speech, '' from lemmata, analyzed_wordforms a, wordforms" +
 		" where lemmata.lemma_id = a.lemma_id and a.wordform_id = " +
 		" wordforms.wordform_id";
 	
-	String query = extractWordformsQuery + 
-			(this.lexiconDatabase.onlyVerified? " and verified_by is not null" : ""); // geattesteerd deel voor het historisch lexicon?
+	String query =  null;//extractWordformsQuery +  (this.lexiconDatabase.onlyVerified? " and verified_by is not null" : ""); // geattesteerd deel voor het historisch lexicon?
 	
 	PreparedStatement stmt = null;
 

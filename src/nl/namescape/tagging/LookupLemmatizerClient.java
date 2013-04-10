@@ -24,12 +24,16 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);
+		System.err.println(m);
 		String tag = m.get("tag");
 		if (tag != null)
 			e.setAttribute("type", tag);
 		String lemma = m.get("lemma");
-		if (tag != null)
+		if (lemma != null)
 			e.setAttribute("lemma", lemma);
+		String mform = m.get("mform");
+		if (mform != null)
+			e.setAttribute("mform", lemma);
 	}
 	
 	public static void main(String[] args)
