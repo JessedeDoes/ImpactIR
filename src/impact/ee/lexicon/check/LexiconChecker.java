@@ -9,9 +9,9 @@ public class LexiconChecker
 		for (WordForm w: lexicon)
 		{
 			int d = LevenshteinDistance.computeLevenshteinDistance(w.lemma, w.wordform); 
-			if (d > w.lemma.length())
+			if (1.5*d > w.lemma.length())
 			{
-				System.err.println(k++ +  ": " + w);
+				System.err.println(k++ +  ": (" + d + ") " + w);
 			}
 		}
 	}

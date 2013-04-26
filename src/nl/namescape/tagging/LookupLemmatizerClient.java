@@ -50,9 +50,9 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 				Options.getOption("lexiconTrie"));
         LookupLemmatizer ll = new LookupLemmatizer(lemmatizer);
         LookupLemmatizerClient x = new LookupLemmatizerClient(ll);
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,3);
+		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,3);
 		System.err.println("Start tagging from " + args[0] + " to " + args[1]);
-		DirectoryHandling.tagAllFilesInDirectory(m, args[0], args[1]);
-		m.shutdown();
+		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
+		//m.shutdown();
 	}
 }

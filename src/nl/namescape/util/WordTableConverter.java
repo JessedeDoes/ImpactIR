@@ -1,5 +1,6 @@
 package nl.namescape.util;
 
+import java.sql.Connection;
 import java.util.*;
 
 import nl.namescape.filehandling.DirectoryHandling;
@@ -14,6 +15,7 @@ import org.w3c.dom.*;
  */
 public class WordTableConverter implements DoSomethingWithFile
 { 
+	public Connection connection = null;
 	List<Table> allTables = new ArrayList<Table>();
 	static class Row
 	{
@@ -43,6 +45,13 @@ public class WordTableConverter implements DoSomethingWithFile
 			{
 				Row row = new Row();
 				table.rows.add(row);
+				for (Element ce : XML.getElementsByTagname(re,"th", false))
+				{
+					Cell cell = new Cell();
+					cell.text = ce.getTextContent().trim().replaceAll("\\s+", " ");
+					// System.err.println("<"  + cell.text + ">");
+					row.cells.add(cell);
+				}
 				for (Element ce : XML.getElementsByTagname(re,"td", false))
 				{
 					Cell cell = new Cell();
@@ -70,6 +79,27 @@ public class WordTableConverter implements DoSomethingWithFile
 			}
 		}
 	}
+	
+	public void dumpToConnection(Table t, Connection connection)
+	{
+		Row row0 = t.rows.get(0);
+		List<String> fieldNames = new ArrayList<String>();
+		for (Cell c: row0.cells)
+		{
+			String fieldName = makeFieldName(c.text);
+			fieldNames.add(fieldName + " text ");
+		}
+		String createQuery = "create table table0 ( ";
+		
+	}
+	
+	private static String makeFieldName(String text) 
+	{
+		// TODO Auto-generated method stub
+		text = text.replaceAll("[^a-zA-Z0-9_]", "_");
+		return text;
+	}
+
 	@Override
 	public void handleFile(String fileName)
 	{

@@ -191,8 +191,10 @@ public class WordList
 	public static class TypeFrequency
 	{	
 		@XmlElement
+		public
 		String type;
 		@XmlElement
+		public
 		int frequency;
 		TypeFrequency(String type, int frequency)
 		{

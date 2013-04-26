@@ -42,12 +42,13 @@ public class LookupLemmatizer implements Tagger
 		else
 		{     
 			//System.out.println(""  + w + " ");
-			if (simplify)
+		
+			ArrayList<WordMatch> asList = new ArrayList<WordMatch>(s);
+			Collections.sort(asList, new WordMatchComparator());
+			if (simplify) // simplify after sorting?
 			{
 				s = WordMatch.simplify(s, true);
 			}
-			ArrayList<WordMatch> asList = new ArrayList<WordMatch>(s);
-			Collections.sort(asList, new WordMatchComparator());
 			WordMatch bestMatch = asList.get(0);
 			System.err.println(w + "-->" + bestMatch.wordform);
 			m.put("lemma", bestMatch.wordform.lemma);

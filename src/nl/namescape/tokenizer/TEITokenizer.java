@@ -34,7 +34,7 @@ public class TEITokenizer extends DefaultHandler
 	private boolean insideTokenizedElement = false;
 	private String pendingToken="";
 	private boolean deferOpenTags = true;
-	private boolean deleteIntermediate  = true;
+	private boolean deleteIntermediate  = false;
 	private boolean needWhite = false;
 	private boolean onlyInTextElement = true;
 	Document currentDocument = null;
@@ -524,21 +524,36 @@ public class TEITokenizer extends DefaultHandler
 		}
 	}
 	
+	/**
+	 * This is silly! should output "deepest" tag first....
+	 */
 	public void realizePendingTags()
 	{
+		Stack<Element> viceVersa = new Stack<Element>();
 		while(true)
 		{
 			try
 			{
 				Element e = pendingElementStack.pop();
 				if (e != null)
+					viceVersa.push(e);
+			} catch (Exception e)
+			{
+				break;
+			}
+		}
+		while(true)
+		{
+			try
+			{
+				Element e = viceVersa.pop();
+				if (e != null)
 				{
 					printStartTag(e);
-					openElementStack.push(e);
+					openElementStack.push(e); // this IS ok? No?
 				}
 			} catch (Exception e)
 			{
-				//e.printStackTrace();
 				break;
 			}
 		}

@@ -49,6 +49,14 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 	private boolean alwaysReload = true;
 	private Properties properties;
 	InputStream xslReader = null;
+	int jobId=0;
+	public static String inputEncoding = "UTF-8";
+	
+	private synchronized void nextJob()
+	{
+		jobId++;
+		setParameter("jobNumber","" + jobId);
+	}
 	
 	public XSLTTransformer(String xslInUri)
 	{
@@ -216,6 +224,8 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 	{
 		try 
 		{
+			nextJob();
+			setParameter("inputFile", inFileName);
 			BufferedReader br = openBufferedTextFile(inFileName);
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFileName),"UTF-8");
 			StreamSource source = new StreamSource(br);
@@ -238,7 +248,7 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		try
 		{
 			BufferedReader b = 
-				new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+				new BufferedReader(new InputStreamReader(new FileInputStream(fileName), inputEncoding));
 			return b;
 		} catch (Exception e)
 		{

@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.tei.TEITagClasses;
@@ -22,11 +23,11 @@ import org.xml.sax.SAXException;
 
 import java.util.Set;
 
-public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleInputOutputProcess, DoSomethingWithFile
 {
 	boolean tagParts = true;
 	private Properties properties;
-
+	PrintStream stdout = new PrintStream(System.out);
 	public void printSentences(Document d, PrintStream out)
 	{
 		Map<String,Set<String>> metadataMap = nl.namescape.tei.Metadata.getMetadata(d);
@@ -126,9 +127,32 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 		// TODO Auto-generated method stub
 		this.properties = properties;
 	}
+	
+
+	@Override
+	public void handleFile(String fileName) 
+	{
+		try 
+		{
+			Document d = XML.parse(fileName);
+			
+			printSentences(d, stdout);
+			stdout.flush();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args)
 	{
-		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new SentencePerLineOutput(), args[0], 
+		if (args.length > 1)
+		{
+			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new SentencePerLineOutput(), args[0], 
 				args[1]);
+		} else
+		{
+			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(new SentencePerLineOutput(), args[0]);
+		}
 	}
 }
