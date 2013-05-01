@@ -28,6 +28,8 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 	boolean tagParts = true;
 	private Properties properties;
 	PrintStream stdout = new PrintStream(System.out);
+	boolean printLemmata = false;
+	
 	public void printSentences(Document d, PrintStream out)
 	{
 		Map<String,Set<String>> metadataMap = nl.namescape.tei.Metadata.getMetadata(d);
@@ -46,6 +48,7 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 			boolean firstIsUpper=false;
 			for (Element t: tokens)
 			{
+				String lemma = t.getAttribute("lemma");
 				String token = t.getTextContent();
 				nCharacters += token.length();
 				
@@ -60,7 +63,7 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 						nLowercase++;
 				}
 				
-				outLine += (first? "":" ") + token;
+				outLine += (first? "":" ") + ((printLemmata && lemma != null && lemma.length()>0)?lemma:token);
 				first = false;
 			}
 			
