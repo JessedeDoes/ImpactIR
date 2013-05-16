@@ -38,4 +38,10 @@ public class ChainOfTaggers implements Tagger
 	{
 		
 	}
+
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
 }

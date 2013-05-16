@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import impact.ee.lemmatizer.Lemmatizer;
 import impact.ee.lemmatizer.WordMatch;
@@ -75,5 +76,11 @@ public class LookupLemmatizer implements Tagger
 				new EnumerationWithContext(Map.class, out, new DummyMap());
 		
 		return new SimpleCorpus(ewc);
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
 	}
 }

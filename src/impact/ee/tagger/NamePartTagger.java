@@ -1,5 +1,7 @@
 package impact.ee.tagger;
 
+import java.util.Properties;
+
 public class NamePartTagger extends BasicNERTagger 
 {
 	static String[] partTaggerAttributes = {"word", "tag", "namePartTag"};
@@ -7,6 +9,18 @@ public class NamePartTagger extends BasicNERTagger
 	public NamePartTagger()
 	{
 		super();
+		System.err.println("calling constructor without arguments ... are you sure?");
+		init();
+	}
+	
+	public NamePartTagger(Properties p)
+	{
+		loadModel(p.getProperty("namePartModelFileName"));
+		init();
+	}
+	
+	public void init()
+	{
 		this.taggedAttribute = "namePartTag";
 		this.attributeNames = partTaggerAttributes;
 	}
@@ -14,7 +28,7 @@ public class NamePartTagger extends BasicNERTagger
 	public boolean filter(Context c)
 	{
 		String tag = c.getAttributeAt("tag", 0);
-		if (tag != null && tag.contains("-person"))
+		if (tag != null && (tag.contains("-person") || tag.toUpperCase().contains("-PER")))
 			return true;
 		return false;
 	}
@@ -22,11 +36,13 @@ public class NamePartTagger extends BasicNERTagger
 	
 	public static Tagger getNamePartTagger(String nerModel, String partModel)
 	{
-		
-		BasicNERTagger t0 = new BasicNERTagger();
-		NamePartTagger t1 = new NamePartTagger();
-		t0.loadModel(nerModel);
-		t1.loadModel(partModel);
+		Properties p = new Properties();
+		p.put("namePartModelFileName", partModel);
+		p.put("modelFileName", nerModel);
+		BasicNERTagger t0 = new BasicNERTagger(p);
+		NamePartTagger t1 = new NamePartTagger(p);
+		//t0.loadModel(nerModel);
+		//t1.loadModel(partModel);
 		ChainOfTaggers t = new ChainOfTaggers();
 		t.addTagger(t0);
 		t.addTagger(t1);
@@ -50,10 +66,13 @@ public class NamePartTagger extends BasicNERTagger
 	{
 		String nerModel = args[0];
 		String partModel = args[1];
-		BasicNERTagger t0 = new BasicNERTagger();
-		NamePartTagger t1 = new NamePartTagger();
-		t0.loadModel(nerModel);
-		t1.loadModel(partModel);
+		Properties p = new Properties();
+		p.put("namePartModelFileName", partModel);
+		p.put("modelFileName", nerModel);
+		BasicNERTagger t0 = new BasicNERTagger(p);
+		NamePartTagger t1 = new NamePartTagger(p);
+		//t0.loadModel(nerModel);
+		//t1.loadModel(partModel);
 		ChainOfTaggers t = new ChainOfTaggers();
 		t.addTagger(t0);
 		t.addTagger(t1);

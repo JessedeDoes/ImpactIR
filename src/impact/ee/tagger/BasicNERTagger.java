@@ -33,7 +33,7 @@ import java.util.*;
 public class BasicNERTagger implements Serializable, Tagger
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	FeatureSet features = new FeatureSet();
 	Classifier classifier = new SVMLightClassifier(); // .svmlight.SVMLightClassifier();
 	boolean useFeedback = true;
@@ -70,6 +70,7 @@ public class BasicNERTagger implements Serializable, Tagger
 			p = new Serialize<Pair<Classifier,FeatureSet>>().loadFromFile(fileName);
 		this.classifier = p.first;
 		this.features = p.second;
+		System.err.println("model loaded from " + fileName + " for "  + this.getClass().getName());
 	}
 	
 	public void saveModel(String fileName)
@@ -86,8 +87,25 @@ public class BasicNERTagger implements Serializable, Tagger
 		}
 	}
 	
-	public BasicNERTagger()
+	public BasicNERTagger(Properties p)
 	{
+		String fileName = p.getProperty("modelFileName");
+		this.loadModel(fileName);
+	}
+	
+	public BasicNERTagger() // wrong setup: features should not be initialized in this way.
+	{
+		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
+	}
+	
+	public BasicNERTagger(boolean create) // wrong setup: features should not be initialized in this way.
+	{
+		if (create)
+		initializeFeatures();
+		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
+	}
+
+	private void initializeFeatures() {
 		features = TaggerFeatures.getMoreFeatures(useFeedback);
 		if (useLexicon)
 		{
@@ -104,7 +122,6 @@ public class BasicNERTagger implements Serializable, Tagger
 			for (Feature f: shapeFeatures)
 				features.addFeature(f);
 		}
-		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
 	}
 	
 	public void examine(Corpus statsCorpus)
@@ -238,7 +255,7 @@ public class BasicNERTagger implements Serializable, Tagger
 	{
 		public static void main(String[] args)
 		{
-			BasicNERTagger t = new BasicNERTagger();
+			BasicNERTagger t = new BasicNERTagger(true);
 			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
@@ -251,9 +268,11 @@ public class BasicNERTagger implements Serializable, Tagger
 	{
 		public static void main(String[] args)
 		{
-			BasicNERTagger t = new BasicNERTagger();
+			Properties p = new Properties();
+			p.put("modelFileName", args[0]);
+			BasicNERTagger t = new BasicNERTagger(p);
 			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
-			t.loadModel(args[0]);
+			//t.loadModel(args[0]);
 			t.test(testCorpus);
 		}
 	}
@@ -290,7 +309,7 @@ public class BasicNERTagger implements Serializable, Tagger
 	
 	public static void main(String[] args)
 	{
-		BasicNERTagger t = new BasicNERTagger();
+		BasicNERTagger t = new BasicNERTagger(true);
 		// 
 		t.useFeedback = true;
 		t.useLexicon = true;
@@ -309,5 +328,11 @@ public class BasicNERTagger implements Serializable, Tagger
 		SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
 		t.loadModel("Models/basicTagger");
 		t.test(testCorpus);
+	}
+
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
 	}
 }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -332,5 +333,11 @@ public class BasicTagger implements Serializable, Tagger
 		{
 			System.out.println(c.getAttributeAt("word", 0) + "\t" + c.getAttributeAt("tag", 0));
 		}
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
 	}
 }

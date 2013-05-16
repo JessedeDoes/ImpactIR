@@ -21,9 +21,17 @@ import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.util.Set;
+
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
@@ -31,12 +39,17 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 	boolean useCTAG = false;
 	boolean speakerDocs = false;
 	private Properties properties;
+
+	XPathFactory xpathFactory = XPathFactory.newInstance();
+	XPath xpath = xpathFactory.newXPath();
+
+	String xpathQuery= null;
 	
 	public void printForSketchEngine(Document d, PrintStream out)
 	{
 		Element e = d.getDocumentElement();
 		out.print("<file");
-		  
+
 		out.println(">");
 		if (speakerDocs)
 		{
@@ -44,22 +57,22 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 			for (Element sp: sps)
 			{
 				Map<String,String> metadata = new HashMap<String,String>();
-				
+
 				try
 				{
 					Element speaker = XML.getElementsByTagname(sp, "speaker", false).get(0);
 					metadata.put("speaker", getLemmaContent(speaker));
 				} catch (Exception ex)
 				{
-					
+
 				}
 				printForSketchEngine(sp, out, metadata);
 			}
 		} else
-		printForSketchEngine(e, out, null);
+			printForSketchEngine(e, out, null);
 		out.println("</file>");
 	}
-	
+
 	public String getLemmaContent(Element e)
 	{
 		if (e == null)
@@ -74,7 +87,7 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		}
 		return Util.join(lemmata, "_");
 	}
-	
+
 	public void printForSketchEngine(Element e, PrintStream out, Map<String,String> metadata)
 	{
 		//Map<String,Set<String>> metadataMap = nl.namescape.tei.Metadata.getMetadata(d);
@@ -82,7 +95,17 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		if (metadata != null) for (String k: metadata.keySet())
 			out.print(" " + k + "=" + "\"" + metadata.get(k) + "\"");
 		out.println(">");
-		List<Element> sentences = nl.namescape.tei.TEITagClasses.getSentenceElements(e);
+		List<Element> sentences;
+		if (this.xpathQuery == null)
+		 sentences = nl.namescape.tei.TEITagClasses.getSentenceElements(e);
+		else
+		{
+			sentences = new ArrayList<Element>();
+			List<Element> selectedElements = this.getMatchingElements(e.getOwnerDocument(), this.xpathQuery);
+			for (Element e1: selectedElements)
+				sentences.addAll(TEITagClasses.getSentenceElements(e1));
+		}
+		
 		for (Element s: sentences)
 		{
 			List<Element> words = 	nl.namescape.tei.TEITagClasses.getWordElements(s);
@@ -96,18 +119,18 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 				String tag = t.getAttribute("type");
 				if (useCTAG)
 					tag = t.getAttribute("ctag");
-				
+
 				String lemma = t.getAttribute("lemma");
 				String word = t.getTextContent();
-				
+
 				out.println(word + "\t" + tag + "\t"  + lemma);
 			}
 			out.println("</s>");
 		}
 		out.println("</doc>");
 	}
-	
-	
+
+
 	@Override
 	public void handleFile(String in, String out) 
 	{
@@ -118,7 +141,7 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 			printForSketchEngine(d, pout);
 		} catch (Exception e) 
 		{
-			
+
 			e.printStackTrace();
 		}
 	}
@@ -129,14 +152,37 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		// TODO Auto-generated method stub
 		this.properties = properties;
 	}
-	
+
+	public List<Element> getMatchingElements(Document d, String q)
+	{
+		List<Element> elementList = new ArrayList<Element>();
+		try
+		{
+			XPathExpression e = xpath.compile(q);
+			NodeList l = (NodeList) e.evaluate(d,XPathConstants.NODESET);
+			for (int i=0; i < l.getLength(); i++)
+				elementList.add((Element) l.item(i));
+		} catch (XPathExpressionException e1) 
+		{
+			e1.printStackTrace();
+		}
+		return elementList;
+	}
+
 	public static void main(String[] args)
 	{
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
-        args = options.commandLine.getArgs();
+		args = options.commandLine.getArgs();
 		VerticalTextOutput v = new VerticalTextOutput();
 		v.useCTAG = options.getOptionBoolean("ctag", false);
-		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
+		if (args.length > 2)
+		{
+			System.err.println("Using xpath query!: " + args[0]);
+			v.xpathQuery = args[0];
+			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[1], 
+					args[2]);
+		} else
+		 nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
 				args[1]);
 	}
 }

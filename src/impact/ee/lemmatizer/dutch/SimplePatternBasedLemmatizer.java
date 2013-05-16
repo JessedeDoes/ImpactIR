@@ -358,6 +358,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(args[0]);
+		//System.err.println(l.findLemmata("is"));
+		//System.exit(1);
 		SimplePatternBasedLemmatizer lemmatizer = new SimplePatternBasedLemmatizer();
 		lemmatizer.train(l);
 		SimpleCorpus testCorpus = new SimpleCorpus(args[1], BasicNERTagger.defaultAttributeNames);
@@ -370,5 +372,11 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 					+ "\t" + c.getAttributeAt("lemma", 0));
 		}
 		// spbl.test(l);
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
 	}
 }

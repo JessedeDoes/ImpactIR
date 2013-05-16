@@ -4,6 +4,7 @@ import impact.ee.classifier.*;
 import impact.ee.tagger.Context;
 import impact.ee.util.TabSeparatedFile;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -15,7 +16,7 @@ import java.util.*;
  * @author does
  *
  */
-public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature 
+public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature implements Serializable
 {
 	public Map<String, Distribution> profileMap 
 			= new HashMap<String, Distribution>();
@@ -38,6 +39,14 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature
 	{
 		if (initialized)
 			return;
+		System.err.println("Initializing case profile -- apparently serialization did not quite work?");
+		try
+		{
+			throw new Exception();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		String[] fields = {"word", "score"};
 		TabSeparatedFile f = new TabSeparatedFile(fileName, fields);
 		String[] x;
