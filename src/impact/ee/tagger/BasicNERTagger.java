@@ -105,7 +105,7 @@ public class BasicNERTagger implements Serializable, Tagger
 		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
 	}
 
-	private void initializeFeatures() {
+	void initializeFeatures() {
 		features = TaggerFeatures.getMoreFeatures(useFeedback);
 		if (useLexicon)
 		{

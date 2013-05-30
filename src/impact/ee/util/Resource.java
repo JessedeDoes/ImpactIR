@@ -12,14 +12,14 @@ public class Resource
 	public static String yetAnotherFolder = 
 			"N:/Impact/ImpactIR/OCRIRevaluatie/IREval/workspace/ImpactIR/resources";
 	
-	String[] foldersToTry = {resourceFolder, yetAnotherFolder};
+	static String[] foldersToTry = {resourceFolder, yetAnotherFolder};
 	
 	public Resource()
 	{
 
 	}
 
-	public InputStream openStream(String s)
+	public  InputStream openStream(String s)
 	{
 		try 
 		{
@@ -38,7 +38,10 @@ public class Resource
 				InputStream is = 
 						this.getClass().getResourceAsStream("/"+ s);  
 				if (is != null)
+				{
+					System.err.println("found in jar!!");
 					return is;
+				}
 			} catch (Exception e)
 			{
 				e.printStackTrace();

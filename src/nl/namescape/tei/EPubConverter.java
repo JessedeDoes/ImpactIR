@@ -1,9 +1,12 @@
 package nl.namescape.tei;
 
 
+import impact.ee.util.Resource;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -25,12 +28,14 @@ public class EPubConverter implements SimpleInputOutputProcess
 		Proxy.setProxy();
 	}
 
-	String xsltPath =  "/mnt/Projecten/Taalbank/Namescape/Corpus-Gutenberg/Data/Epub/test.xsl" ; // "/mnt/Projecten/Taalbank/Namescape/Tools/SrcIsaac/oxygen/epub2tei.flat.xsl";
-	XSLTTransformer transformer = new XSLTTransformer(xsltPath);
+	//String xsltPath =  "/mnt/Projecten/Taalbank/Namescape/Corpus-Gutenberg/Data/Epub/test.xsl" ; // "/mnt/Projecten/Taalbank/Namescape/Tools/SrcIsaac/oxygen/epub2tei.flat.xsl";
+	XSLTTransformer transformer = null;
 	
 	public EPubConverter()
 	{
 		Proxy.setProxy();
+		InputStream xslStream = new Resource().openStream("xsl/epub2tei.xsl");
+		transformer = new XSLTTransformer(xslStream);
 	}
 	
 	public void createPath(String fileName)
@@ -47,6 +52,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 			path = path + "/" + parts[i];
 		}
 	}
+	
 	public void getZipFiles(String filename, String destinationFolder)
 	{
 		try
@@ -188,6 +194,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 					"Couldn't empty database. Offending file:" + file );
 		}
 	}
+	
 	public static void main(String[] args)
 	{
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);

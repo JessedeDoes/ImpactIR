@@ -2,10 +2,15 @@ package nl.namescape.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,6 +25,12 @@ import org.xml.sax.InputSource;
 
 public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutputProcess
 {
+	static
+	{
+		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+		System.setProperty("http.maxRedirects", "100");
+	}
+	
 	public static Document parse2DOM(String sURL)
 	{
 		Parser p = new Parser();
@@ -44,7 +55,9 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 			p.setFeature(Parser.namespacePrefixesFeature, false);
 			sax2dom = new SAX2DOM();
 			p.setContentHandler(sax2dom);
-			p.parse(new InputSource(new InputStreamReader(url.openStream(),"UTF-8")));
+			
+			
+			p.parse(new InputSource(new InputStreamReader(getInputStream(url),"UTF-8")));
 			doc = sax2dom.getDOM();
 			//System.err.println(doc);
 		} catch (Exception e) 
@@ -55,6 +68,18 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		return (Document) doc;
 	}
 
+	public static InputStream getInputStream(URL url)
+	{
+		try
+		{
+			URLConnection urlConnection = url.openConnection();
+			InputStream is = urlConnection.getInputStream();
+			return is;
+		} catch (Exception e)
+		{
+			return null;
+		}
+	}
 	public static Document parseFromHTMLString(String htmlText)
 	{
 		Parser p = new Parser();

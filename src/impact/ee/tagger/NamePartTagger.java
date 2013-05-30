@@ -54,6 +54,7 @@ public class NamePartTagger extends BasicNERTagger
 		public static void main(String[] args)
 		{
 			NamePartTagger t = new NamePartTagger();
+			t.initializeFeatures();
 			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
