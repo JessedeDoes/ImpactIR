@@ -50,6 +50,28 @@ public class Validator implements DoSomethingWithFile
 		setSchema(namescapeSchema);
 	}
 
+	public Validator(String url)
+	{
+		try
+		{
+			SchemaReader schemaReader = com.thaiopensource.validate.rng.SAXSchemaReader.getInstance();
+
+			//schema can be reused, it's thread safe
+			Schema schema = schemaReader.createSchema(ValidationDriver.uriOrFileInputSource(url), PropertyMap.EMPTY);
+
+			//can use different error handler here (try DraconianErrorHandler http://www.thaiopensource.com/relaxng/api/jing/com/thaiopensource/xml/sax/DraconianErrorHandler.html)
+			errorCounter = new CountingErrorHandler(); // new ErrorHandlerImpl()
+			PropertyMapBuilder  builder = new PropertyMapBuilder();
+			builder.put(ValidateProperty.ERROR_HANDLER, errorCounter);
+			//NOTE: Validator is NOT thread safe
+			thaiValidator = schema.createValidator(builder.toPropertyMap());
+			System.err.println("created validator from " + url + " : "  + thaiValidator);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public void setSchema(String fileName)
 	{
 		try
@@ -120,11 +142,21 @@ public class Validator implements DoSomethingWithFile
 			e.printStackTrace();
 		}
 	}
+	
 	public static void main(String[] args)
 	{
-		Validator v =  new Validator();
-		DirectoryHandling.traverseDirectory(v, args[0]);
-		
+		Validator v;
+		String inFolder;
+		if (args.length == 1)
+		{
+			v =  new Validator();
+			inFolder  = args[0];
+		} else
+		{
+			v =  new Validator(args[0]);
+			inFolder  = args[1];
+		}
+		DirectoryHandling.traverseDirectory(v, inFolder);
 	}
 
 	@Override

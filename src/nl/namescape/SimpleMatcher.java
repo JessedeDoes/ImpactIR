@@ -51,7 +51,6 @@ public class SimpleMatcher implements EntityMatcher
 					createNym(e);
 				} else
 				{
-					System.err.println("Golly! found something .... ");
 					e.nym = e1.nym;
 					e.nym.instances.add(e);
 				}

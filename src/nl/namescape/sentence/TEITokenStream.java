@@ -272,7 +272,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 			}
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			System.err.println("Warning: failed to tag sentence because of hierarchy conflict");
 		}
 		return null;
 	}

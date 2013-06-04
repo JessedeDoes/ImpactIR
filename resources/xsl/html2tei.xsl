@@ -12,7 +12,6 @@
 <xsl:output method="xml" indent="no"/>
 <xsl:variable name="css"><xsl:value-of select="//style"/></xsl:variable>
 
-
 <!-- Main block-level conversions -->
 <xsl:template match="html">
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
@@ -22,78 +21,15 @@
 <bibl>
 <interpGrp type="idno"><interp value="$IDNO"/></interpGrp>
 <interpGrp type="author"><interp value="unknown"/></interpGrp>
-<!--
-<interpGrp type="title"><interp value="$TITLE"/></interpGrp>
--->
 <interpGrp type="title">
 <interp><xsl:attribute name="value"><xsl:value-of select="//title"/></xsl:attribute></interp>
 </interpGrp>
-<interpGrp type="yearFrom"><interp value="2013"/></interpGrp>
-<interpGrp type="yearTo"><interp value="2013"/></interpGrp>
-<interpGrp type="source"><interp value="pap.wikipedia.org"/></interpGrp>
+<interpGrp type="yearFrom"><interp value="unknown"/></interpGrp>
+<interpGrp type="yearTo"><interp value="unknown"/></interpGrp>
+<interpGrp type="source"><interp value="unknown"/></interpGrp>
 </bibl>
 </listBibl>
-<!--
-<listBibl id="inlMetadata_HANS">
-<bibl>
-<interpGrp type="title.level2">
-<interp value="$TITLE.LEVEL2"/>
-</interpGrp>
-<interpGrp type="publisher">
-<interp value="$PUBLISHER"/>
-</interpGrp>
-<interpGrp type="date.publication">
-<interp type="pubYear_from" value="$PUBYEAR_FROM"/>
-<interp type="pubMonth_from" value="$PUBMONTH_FROM"/>
-<interp type="pubDay_from" value=""/>
-<interp type="pubYear_to" value="$PUBYEAR_TO"/>
-<interp type="pubMonth_to" value=""/>
-<interp type="pubDay_to" value=""/>
-</interpGrp>
-<interpGrp type="date.text">
-<interp type="textYear_from" value="$TEXTYEAR_FROM"/>
-<interp type="textMonth_from" value=""/>
-<interp type="textDay_from" value=""/>
-<interp type="textYear_to" value="$TEXTYEAR_TO"/>
-<interp type="textMonth_to" value=""/>
-<interp type="textDay_to" value=""/>
-</interpGrp>
-<interpGrp type="date.witness">
-<interp type="witnessYear_from" value="$WITNESSYEAR_FROM"/>
-<interp type="witnessMonth_from" value=""/>
-<interp type="witnessDay_from" value=""/>
-<interp type="witnessYear_to" value="$WITNESSYEAR_TO"/>
-<interp type="witnessMonth_to" value=""/>
-<interp type="witnessDay_to" value=""/>
-</interpGrp>
-<interpGrp type="copyright.owner">
-<interp value="$COPYRIGHT_OWNER"/>
-</interpGrp>
-<interpGrp type="author.level2">
-<interp value="$AUTHOR.LEVEL2"/>
-</interpGrp>
-<interpGrp type="$IDNO">
-<interp value="aubyn"/>
-</interpGrp>
-<interpGrp type="corpus.provenance">
-<interp value="$CORPUS.PROVENANCE"/>
-</interpGrp>
-<interpGrp type="medium">
-<interp value="$MEDIUM"/>
-</interpGrp>
-<interpGrp type="genre"/>
-<interpGrp type="topic">
-<interp value="$TOPIC"/>
-</interpGrp>
-<interpGrp type="language.variant">
-<interp value="rob"/>
-</interpGrp>
-<interpGrp type="ipr">
-<interp value="online"/>
-</interpGrp>
-</bibl>
-</listBibl>
--->
+
 </sourceDesc>
 </teiHeader>
 <text>
