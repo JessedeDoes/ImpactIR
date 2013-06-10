@@ -21,6 +21,26 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 	EnumerationWithContext<Map<String,String>> enumerationWithContext;
 	boolean supportsReset = false;
 	List<String> attributeList = new ArrayList<String>();
+	Chunker chunker = null; // usually a sentence splitting criterion
+	
+	static class Chunker // default implementation
+	{
+		public boolean isChunkBoundary(Map<String,String> c)
+		{
+			String w = c.get("word");
+			if (w != null && (w.equals(".") || w.equals("?") || w.equals("?")))
+			{
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	public void setChunking()
+	{
+		chunker = new Chunker();
+	}
+	
 	class SimpleLineParser extends LineParser<Map<String,String>>
 	{
 		TabSeparatedFile tabjes = null;
@@ -64,6 +84,15 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		{
 			try
 			{
+				if (chunker != null && relativePosition != 0)
+				{
+					int increment = relativePosition > 0?1:-1;
+					for (int i=increment; relativePosition>0?i<=relativePosition:i>=relativePosition; i+= increment)
+					{
+						if (chunker.isChunkBoundary(enumerationWithContext.get(relativePosition)))
+							return enumerationWithContext.defaultT.get(featureName);
+					}
+				}
 				Map<String,String> m = enumerationWithContext.get(relativePosition);
 				return m.get(featureName);
 			} catch (Exception e)

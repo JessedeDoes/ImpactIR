@@ -16,7 +16,7 @@
 <xsl:template match="/">
 
 <CMD CMDVersion="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1369752611613/xsd"
+     xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1369752611615/xsd"
      xmlns="http://www.clarin.eu/cmd/">
     <Header>
         <MdCreator>servicedesk@inl.nl</MdCreator>

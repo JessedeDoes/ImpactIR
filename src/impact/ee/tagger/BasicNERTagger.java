@@ -46,6 +46,7 @@ public class BasicNERTagger implements Serializable, Tagger
 	
 	public static String[] defaultAttributeNames = {"word", "tag"};
 	public String[] attributeNames = defaultAttributeNames;
+	public boolean onlyUseContextInsideSentence = false;
 	
 	public void setClassifier(String className)
 	{
@@ -258,9 +259,11 @@ public class BasicNERTagger implements Serializable, Tagger
 			BasicNERTagger t = new BasicNERTagger(true);
 			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.examine(statsCorpus);
-			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
+			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames); // set chunking if needed ?
+			if (t.onlyUseContextInsideSentence)
+				trainingCorpus.setChunking();
 			t.train(trainingCorpus);
-			t.saveModel(args[1]);
+			t.saveModel(args[1]); 
 		}
 	}
 	
@@ -271,7 +274,9 @@ public class BasicNERTagger implements Serializable, Tagger
 			Properties p = new Properties();
 			p.put("modelFileName", args[0]);
 			BasicNERTagger t = new BasicNERTagger(p);
-			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
+			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames); // set chunking if needed
+			if (t.onlyUseContextInsideSentence)
+				testCorpus.setChunking();
 			//t.loadModel(args[0]);
 			t.test(testCorpus);
 		}

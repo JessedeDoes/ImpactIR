@@ -6,6 +6,7 @@ import org.w3c.dom.*;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.Corpus;
 
+@Deprecated
 public class TEIDocumentAsCorpus implements Corpus
 {
 	Document document;

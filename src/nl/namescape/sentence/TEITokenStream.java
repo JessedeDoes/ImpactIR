@@ -350,6 +350,9 @@ public class TEITokenStream implements TokenWindow, Corpus
 		return false;
 	}
 
+	/**
+	 * Probleem bij eerste zin: linker context deugt niet.
+	 */
 	@Override
 	public Token getToken(int rel) 
 	{

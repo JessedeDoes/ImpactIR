@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -42,7 +44,12 @@ public class DirectoryHandling
 			try 
 			{
 				URL u = new URL(folderName);
-				p.handleFile(folderName, outFolderName);
+				File downloaded = DirectoryHandling.downloadURL(folderName);
+				if (downloaded != null)
+				{
+				   p.handleFile(downloaded.getCanonicalPath(), outFolderName);
+				   downloaded.delete();
+				}
 			} catch (Exception e)
 			{
 				
@@ -225,6 +232,30 @@ public class DirectoryHandling
 			}
 			//System.err.println("tokens: " + nTokens);	
 		}	
+	}
+	
+	private static File downloadURL(String url)
+	{
+		  try 
+		  {
+			URL website = new URL(url);
+			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+			File savedURLContent = File.createTempFile("dowwload", ".temp");
+			try
+			{
+				if (true) savedURLContent.deleteOnExit();
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			FileOutputStream fos = new FileOutputStream(savedURLContent);
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+			return savedURLContent;
+		} catch (Exception e) 
+		{
+			// TODO: handle exception
+		}
+		return null;
 	}
 	
 	public static void main(String[] args)
