@@ -15,7 +15,6 @@ import impact.ee.util.Options;
 public class LookupLemmatizerClient extends ImpactTaggingClient
 {
 	LookupLemmatizer ll = null;
-	
 	public LookupLemmatizerClient(LookupLemmatizer ll2) 
 	{
 		super(ll2);
@@ -26,8 +25,10 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 		// e.setAttribute("type", tag);
 		System.err.println(m);
 		String tag = m.get("tag");
+		
 		if (tag != null)
 			e.setAttribute("type", tag);
+		
 		String lemma = m.get("lemma");
 		if (lemma != null)
 			e.setAttribute("lemma", lemma);

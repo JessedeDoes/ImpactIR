@@ -10,17 +10,24 @@ import java.util.Properties;
 import impact.ee.lemmatizer.Lemmatizer;
 import impact.ee.lemmatizer.WordMatch;
 import impact.ee.lemmatizer.WordMatchComparator;
+import impact.ee.lemmatizer.tagset.TagRelation;
 
 public class LookupLemmatizer implements Tagger 
 {
 	private Lemmatizer baseLemmatizer;
 	boolean simplify = true;
 	
+	TagRelation tagRelation = null;
+	
 	public LookupLemmatizer(impact.ee.lemmatizer.Lemmatizer baseLemmatizer)
 	{
 		this.baseLemmatizer = baseLemmatizer;
 	}
 	
+	/**
+	 * This should have an extra option to check for already assigned 
+	 * PoS and check consistency of lexical tag and corpus tag
+	 */
 	@Override
 	public HashMap<String, String> apply(Context c) 
 	{

@@ -35,7 +35,7 @@
 	-->
 
 	<target name="lexicon.prepare">
-		<java classname="lexicon.PrepareLexicon">
+		<java classname="impact.ee.lexicon.PrepareLexicon">
 			<arg value="--targetDirectory"/>
 			<arg value="${lexicon.compiled.dir}"/>
 			<arg value="--modernLexicon"/>
