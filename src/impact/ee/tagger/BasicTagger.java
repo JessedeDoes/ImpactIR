@@ -182,7 +182,7 @@ public class BasicTagger implements Serializable, Tagger
 	protected boolean filter(Context c) 
 	{
 		// TODO Auto-generated method stub
-		return true;
+		return (c.getAttributeAt("word",0) != null);
 	}
 
 	public void test(Corpus testCorpus)
@@ -198,6 +198,8 @@ public class BasicTagger implements Serializable, Tagger
 			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
 			// System.err.println(features.itemToString(item));
 			String truth = c.getAttributeAt(taggedAttribute, 0);
+			if (truth == null)
+				continue;
 			String word = c.getAttributeAt("word", 0);
 			boolean known = knownWords.contains(word);
 		
@@ -214,7 +216,7 @@ public class BasicTagger implements Serializable, Tagger
 				outcome = outcome.replaceAll(".*_", "");
 			}
 			
-			if (!truth.equals(outcome))
+			if (truth != null && !truth.equals(outcome))
 			{
 				nErrors++;
 				if (!known) nUnknownErrors++;

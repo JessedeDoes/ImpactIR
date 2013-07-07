@@ -11,7 +11,7 @@ import java.util.*;
 public class Brown2OED implements TagRelation 
 {
 	Set<String> compatible = new HashSet<String>();
-	
+
 	public Brown2OED()
 	{
 		try
@@ -21,12 +21,16 @@ public class Brown2OED implements TagRelation
 			while ((l = r.readLine()) != null)
 			{
 				String[] fields = l.split("\t");
-				String brownTag = fields[0].trim().toLowerCase();
+				String brownTags = fields[0].trim().toLowerCase();
 				String oedTags = fields[1].trim().toLowerCase();
 				for (String oedTag: oedTags.split("\\|"))
 				{
 					//System.err.println(brownTag + "~" + oedTag);
-					compatible.add(brownTag + "~" + oedTag);
+					for (String brownTag: brownTags.split("\\|"))
+					{
+						//System.err.println(brownTag + "~" + oedTag);
+						compatible.add(brownTag + "~" + oedTag);
+					}
 				}
 			}
 		} catch (Exception e)
@@ -34,7 +38,7 @@ public class Brown2OED implements TagRelation
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public boolean compatible(Tag t1, Tag t2)
 	{
@@ -51,7 +55,7 @@ public class Brown2OED implements TagRelation
 		// TODO Auto-generated method stub
 		return compatible.contains(t1.trim().toLowerCase() + "~" + t2.trim().toLowerCase());
 	}
-	
+
 	public static void main(String[] args)
 	{
 		new Brown2OED();

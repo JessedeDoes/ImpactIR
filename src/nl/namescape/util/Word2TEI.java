@@ -1,4 +1,5 @@
 package nl.namescape.util;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -73,6 +74,7 @@ public class Word2TEI implements SimpleInputOutputProcess
 		Word2TEI x = new Word2TEI();
 		
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
+		DirectoryHandling.traverseDirectory(x, new File(args[0]), new File(args[1]), null);
 		//x.dinges("/mnt/Projecten/Taalbank/Werkfolder_Redactie/Jesse/Projecten/Papiamento/Mosaiko 5 HV Kap 1 vershon 2012 10 28.doc");
 	}
 }

@@ -44,23 +44,28 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 			for (Element e: tokens)
 			{
-				nTokens++;
-				
-				String lemma = e.getAttribute("lemma");
-				String wordform = e.getTextContent();
-				String tag = e.getAttribute("type");
-				String lwt = wordform + "\t" + tag + "\t" + lemma;
-				
-				switch (type)
-				{
-					case word: tf.incrementFrequency(wordform, 1); break;
-					case lemma: tf.incrementFrequency(lemma, 1); break;
-					case lwt: tf.incrementFrequency(lwt, 1); break;
-				}
+				handleToken(e);
 			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	private synchronized void handleToken(Element e) 
+	{
+		nTokens++;
+		
+		String lemma = e.getAttribute("lemma");
+		String wordform = e.getTextContent();
+		String tag = e.getAttribute("type");
+		String lwt = wordform + "\t" + tag + "\t" + lemma;
+		
+		switch (type)
+		{
+			case word: tf.incrementFrequency(wordform, 1); break;
+			case lemma: tf.incrementFrequency(lemma, 1); break;
+			case lwt: tf.incrementFrequency(lwt, 1); break;
 		}
 	}
 

@@ -148,9 +148,7 @@ public class PunctuationTagger
 			}
 		} catch (Exception e) 
 		{
-			e.printStackTrace();
-			// new ParseUtils().printNode(we);
-			//System.exit(1);
+			System.err.println("Warning: nesting error in punctuation handling");			
 		}
 	}
 	

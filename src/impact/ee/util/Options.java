@@ -49,6 +49,8 @@ public class Options
 		options.addOption("w", "modernWordformAsLemma", true, 
 				"match modern word form instead of lemma");
 
+		options.addOption("A", "tokenize", true, 
+				"tokenize the input");
 
 		parseCommandLine(args);
 

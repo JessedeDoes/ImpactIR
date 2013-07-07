@@ -11,11 +11,18 @@ import java.io.ObjectInputStream;
 import java.util.*;
 
 
+/*
+ * Since the map is serialized with the feature, there is really no
+ * reason to re-read it, is there??
+ */
 
 public class ClusterFeature extends Feature
 {
 	private static final long serialVersionUID = 1L;
-	transient Map<String,String> word2cluster = new HashMap<String,String>();
+	
+	// maybe it is better not to have a transient map, just store the stuff in the model?
+	
+	Map<String,String> word2cluster = new HashMap<String,String>();
 	private boolean initialized = false;
 
 	static final String SandersClusterFile = 
@@ -85,6 +92,6 @@ public class ClusterFeature extends Feature
 	private void readObject(ObjectInputStream in) throws java.io.IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
-		readClustersFromFile();
+		//readClustersFromFile();
 	}
 }

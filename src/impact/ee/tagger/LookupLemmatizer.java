@@ -10,6 +10,7 @@ import java.util.Properties;
 import impact.ee.lemmatizer.Lemmatizer;
 import impact.ee.lemmatizer.WordMatch;
 import impact.ee.lemmatizer.WordMatchComparator;
+import impact.ee.lemmatizer.tagset.Brown2OED;
 import impact.ee.lemmatizer.tagset.TagRelation;
 
 public class LookupLemmatizer implements Tagger 
@@ -17,7 +18,7 @@ public class LookupLemmatizer implements Tagger
 	private Lemmatizer baseLemmatizer;
 	boolean simplify = true;
 	
-	TagRelation tagRelation = null;
+	TagRelation tagRelation = new Brown2OED();
 	
 	public LookupLemmatizer(impact.ee.lemmatizer.Lemmatizer baseLemmatizer)
 	{
@@ -58,9 +59,32 @@ public class LookupLemmatizer implements Tagger
 				s = WordMatch.simplify(s, true);
 			}
 			WordMatch bestMatch = asList.get(0);
+			boolean foundCompatible = false;
+			if (tagRelation != null) // look for best compatible tag...
+			{
+				for (int i=0; i < asList.size(); i++)
+				{
+					WordMatch x = asList.get(i);
+					if (tagRelation.compatible(m.get("tag"), x.wordform.lemmaPoS))
+					{
+						bestMatch = x;
+						foundCompatible = true;
+						break;
+					}
+				}
+			}
 			System.err.println(w + "-->" + bestMatch.wordform);
+			
 			m.put("lemma", bestMatch.wordform.lemma);
-			m.put("tag",  bestMatch.wordform.lemmaPoS);
+			if (m.get("tag") == null)
+			{
+				m.put("tag",  bestMatch.wordform.lemmaPoS);
+			} else
+			{
+				String corpusTag = m.get("tag");
+				String lexiconTag = bestMatch.wordform.lemmaPoS;
+				m.put("tag", "corpus:"  + corpusTag + ",lexicon:"  + lexiconTag  + ",matching:" + foundCompatible);
+			}
 			m.put("mform",  bestMatch.wordform.modernWordform);
 			
 			//test.incrementCount(bestMatch.type);

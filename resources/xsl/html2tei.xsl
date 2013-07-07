@@ -304,17 +304,34 @@
 
 <xsl:template match="span">
 <xsl:variable name="class"><xsl:value-of select="@class"/></xsl:variable>
-<xsl:variable name="pattern">.<xsl:value-of select="$class"/>{font-style:italic</xsl:variable>
+<xsl:variable name="style">
+<xsl:if test="$class!=''">
+<xsl:call-template name="fetchStyle"><xsl:with-param name="class"><xsl:value-of select="$class"/></xsl:with-param></xsl:call-template>
+</xsl:if>
+</xsl:variable>
+<xsl:message>Class:<xsl:value-of select="$class"/>--:<xsl:value-of select="$style"/></xsl:message>
 <xsl:choose>
-<xsl:when test="contains($css,$pattern)">
-<xsl:message>Yep!</xsl:message>
-<hi rend="italic">
+<xsl:when test="$style!=''">
+<hi>
+<xsl:attribute name="rend"><xsl:value-of select="$style"/></xsl:attribute>
 <xsl:apply-templates/>
 </hi>
 </xsl:when>
 <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 </xsl:choose>
 </xsl:template>
+
+<!--
+<xsl:variable name="pattern">.<xsl:value-of select="$class"/>{font-style:italic</xsl:variable>
+<xsl:choose>
+<xsl:when test="contains($css,$pattern)">
+<hi rend="italic">
+<xsl:apply-templates/>
+</hi>
+</xsl:when>
+<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+</xsl:choose>
+-->
 
 
 <xsl:template match="form"><gap type="form"/></xsl:template>
@@ -425,5 +442,25 @@
 </xsl:template>
 
 <xsl:template match="script|style" priority="100"/>
+
+<xsl:template name="fetchStyle">
+<xsl:param name="class"></xsl:param>
+<xsl:variable name="regex">.<xsl:value-of select="$class"/>\s*\{([^\}]*)\}</xsl:variable>
+<!--
+<xsl:message><xsl:value-of select="$regex"/></xsl:message>
+-->
+<xsl:analyze-string select="$css" regex="{$regex}">
+<xsl:matching-substring>
+<xsl:variable name="x" select="regex-group(1)"/>
+<xsl:value-of select="$x"/>
+<!--
+<xsl:if test="contains($x,'font-style:italic')">italic</xsl:if>
+<xsl:if test="contains($x,'super')">superscript</xsl:if>
+<xsl:if test="contains($x,'bold')">bold</xsl:if>
+<xsl:if test="contains($x,'sub')">subscript</xsl:if>
+-->
+</xsl:matching-substring>
+</xsl:analyze-string>
+</xsl:template>
 
 </xsl:stylesheet>
