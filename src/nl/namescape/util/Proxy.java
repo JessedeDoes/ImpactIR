@@ -22,6 +22,18 @@ public class Proxy
 
 	public static void setProxy()
 	{
+		try
+		{
+			String localhostname = java.net.InetAddress.getLocalHost().getHostName();
+			if (!localhostname.endsWith("inl.loc"))
+			{
+				System.err.println("use inl proxy only inside inl.loc");
+				return;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		System.setProperty("http.proxyHost", "proxy.inl.loc"); 
 		System.setProperty("http.proxyPort",  "8080");
 

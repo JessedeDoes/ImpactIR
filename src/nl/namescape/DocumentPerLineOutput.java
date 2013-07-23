@@ -123,6 +123,7 @@ public class DocumentPerLineOutput implements nl.namescape.filehandling.SimpleIn
 			Document d = XML.parse(in);
 			PrintStream pout = new PrintStream(new FileOutputStream(out));
 			printSentences(d, pout);
+			pout.close();
 		} catch (Exception e) 
 		{
 			

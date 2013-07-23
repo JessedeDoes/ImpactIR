@@ -81,7 +81,7 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	public static void main(String[] args)
 	{
 		MakeFrequencyList s = new MakeFrequencyList();
-		s.type = Type.lwt;
+		s.type = Type.word;
 		
 		if (args.length > 0)
 		{
