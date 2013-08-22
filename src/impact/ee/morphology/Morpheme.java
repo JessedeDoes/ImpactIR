@@ -5,6 +5,8 @@ public class Morpheme
 	MorphologicalWord baseWord;
 	String text="";
 	String label;
+	int firstPosition;
+	int lastPosition;
 	
 	public Morpheme(MorphologicalWord w)
 	{

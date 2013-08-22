@@ -53,9 +53,16 @@ public class CelexFile
 					String morpheme = ml[0];
 					text += morpheme;
 					String label = ml[1];
+					Morpheme m = new Morpheme(w);
+					w.morphemes.add(m);
+					m.text = morpheme;
+					m.label = label;
+					m.firstPosition = position;
+					m.lastPosition = position + morpheme.length()-1;
 					for (int i = 0; i < morpheme.length(); i++)
 					{
 						Position p = new Position(w,position + i);
+						p.morpheme = m;
 						if (i == morpheme.length() -1)
 							p.label = label;
 						else
@@ -71,6 +78,8 @@ public class CelexFile
 			e.printStackTrace();
 			System.err.println("!Error parsing " + ana);
 		}
+		w.closed = true;
+		//w.addMorphemes();
 		return w;
 	}
 }

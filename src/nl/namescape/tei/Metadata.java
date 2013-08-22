@@ -8,7 +8,7 @@ import org.w3c.dom.*;
 
 public class Metadata 
 {
-	Map<String,Set<String>> metadata = new  HashMap<String,Set<String>>();
+	public Map<String,Set<String>> metadata = new  HashMap<String,Set<String>>();
 	
 	public Metadata(Document d)
 	{

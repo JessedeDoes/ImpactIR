@@ -220,6 +220,9 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		}
 	}
 	
+	/*
+	 * Dit gaat niet goed als de input niet utf8 is i$oM0K
+	 */
 	public void transformFile(String inFileName, String outFileName)
 	{
 		try 

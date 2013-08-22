@@ -5,6 +5,8 @@ public class Position
 	public transient MorphologicalWord baseWord;
 	public String label;
 	public int position;
+	public int positionInMorpheme;
+	public Morpheme morpheme=null;
 	public static String dummyLabel = "O";
 	
 	public Position(MorphologicalWord word, int i) 

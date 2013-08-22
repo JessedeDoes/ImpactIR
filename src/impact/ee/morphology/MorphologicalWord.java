@@ -22,22 +22,47 @@ public class MorphologicalWord
 		}
 	}
 
-	private void addMorphemes()
+	void addMorphemes() // ?? last morpheme
 	{
+		if (this.closed)
+			return;
 		morphemes.clear();
 		Morpheme current = new Morpheme(this);
+		morphemes.add(current);
+		current.firstPosition = 0;
+		
+		
 		for (int i=0; i < positions.size(); i++)
 		{
 			Position p = positions.get(i);
 			current.text += text.charAt(i);
 			if (!p.label.equals(Position.dummyLabel))
 			{
-				current.label = p.label;
-				morphemes.add(current);
-				current = new Morpheme(this);
+				linkMorphemeToPosition(current, p);
+				
+				if (i < positions.size() -1)
+				{
+					current = new Morpheme(this);
+					morphemes.add(current);
+					current.firstPosition = p.position;
+					if (i < positions.size() - 1)
+						linkMorphemeToPosition(current, positions.get(i+1));
+				}
+			} else
+			{
+				p.positionInMorpheme = p.position - current.firstPosition;
+				p.morpheme = current;
 			}
 		}
 		closed = true;
+		System.out.println(this);
+	}
+
+	protected void linkMorphemeToPosition(Morpheme current, Position p) {
+		
+		current.label = p.label;
+		current.lastPosition = p.position;
+		p.morpheme = current;
 	}
 	
 	public String toString()
@@ -48,7 +73,7 @@ public class MorphologicalWord
 		List<String> ana = new ArrayList<String>();
 		for (Morpheme m: this.morphemes)
 		{
-			ana.add(m.toString());
+			ana.add(m.toString() + "/" +  m.firstPosition + "-" + m.lastPosition);
 		}
 		return w + ":  " + StringUtils.join(ana, ", ");
 	}

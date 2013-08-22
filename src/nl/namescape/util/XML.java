@@ -411,6 +411,7 @@ public class XML extends Object
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(namespaceAware);
+		factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		factory.setFeature( "http://apache.org/xml/features/dom/defer-node-expansion", false );
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		URI u = new File(aFilename).toURI();
