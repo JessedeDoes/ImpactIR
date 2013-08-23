@@ -35,6 +35,14 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 				System.out.println("Error: duplicate content! "  +k + "\t" + v);
 			}
 		}
+		for (String k: idmap.keySet())
+		{
+			Set<String> v = idmap.get(k);
+			if (v.size() > 1)
+			{
+				System.out.println("Error: duplicate id! "  +k + "\t" + v);
+			}
+		}
 		for (String f: filesWithoutText)
 		{
 			System.out.println("Empty file\t" + f);
@@ -136,7 +144,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			} else
 			{
 				filesWithThisId.add(fileName);
-				System.err.println("Error: duplicate idno "  + idno + " " + filesWithThisId);
+				//System.err.println("Error: duplicate idno "  + idno + " " + filesWithThisId);
 			}
 			filesWithThisId.add(fileName);
 		}
