@@ -1,0 +1,130 @@
+package nl.namescape.tei;
+
+import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.namescape.filehandling.SimpleInputOutputProcess;
+import nl.namescape.util.*;
+
+import org.w3c.dom.*;
+import org.w3c.dom.ranges.DocumentRange;
+import org.w3c.dom.ranges.Range;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.*;
+
+/**
+ * Dit werkt niet.
+ * Er zitten <p>-tjes in de esjes..
+ * @author does
+ *
+ */
+public class MolechaserMetadataFixer implements SimpleInputOutputProcess
+{
+	Validator validator = new Validator();
+	
+	public Document fixDocument(Document d, String fileName)
+	{
+		Element root = d.getDocumentElement();
+		Metadata m = new Metadata(d);
+		String idno = m.getValue("idno").trim();
+		if (idno == null || idno.equals(""))
+		{
+			String newIdno = MolechaserMetadataFixer.createIdno(m, fileName);
+			System.err.println("Attempt to assign idno: " + newIdno);
+			idno = newIdno;
+			setIdno(d,idno);
+		}
+		return d;
+	}
+	
+	
+	
+	public static void main(String[] args)
+	{
+		MolechaserMetadataFixer f =  new MolechaserMetadataFixer();
+		DirectoryHandling.tagAllFilesInDirectory(f, args[0], args[1], true);
+	}
+	
+	@Override
+	public void handleFile(String fileName, String out) 
+	{
+		// TODO Auto-generated method stubfil
+		Document d = null;
+		try
+		{
+			 d = XML.parse(fileName);
+			 fixDocument(d, fileName);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		try 
+		{
+			PrintStream pout = new PrintStream(new FileOutputStream(out));
+		
+			pout.print(XML.documentToString(d));
+			pout.close();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+
+
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	public void setIdno(Document d, String idno)
+	{
+		List<Element> listBibls = 
+				XML.getElementsByTagname(d.getDocumentElement(), "listBibl", false);
+		for (Element lb: listBibls)
+		{
+			if (lb.getAttribute("id").matches("[Ii][Nn][Ll][Mm].*"))
+			{
+				List<Element> bibls = XML.getElementsByTagname(lb, "bibl", false);
+				for (Element b: bibls)
+				{
+					Element myInterpGrp = null;
+					List<Element> idnoInterpGrps = XML.getElementsByTagnameAndAttribute(b, 
+							"interpGrp", "type", "idno", false);
+					if (idnoInterpGrps.size() > 0)
+					{
+						myInterpGrp = idnoInterpGrps.get(0);
+					} else
+					{
+						myInterpGrp = d.createElement("interpGrp");
+						myInterpGrp.setAttribute("type", "idno");
+						b.appendChild(myInterpGrp);
+					}
+					Element interp = d.createElement("interp");
+					interp.setAttribute("value", idno);
+					myInterpGrp.appendChild(interp);
+				}
+			}
+		}
+	}
+
+
+
+	public static String createIdno(Metadata m, String fileName)
+	{
+		String provenance = m.getValue("corpusProvenance");
+		if (provenance.contains("tandaard"))
+		{
+			String fn = new File(fileName).getName();
+			fn = fn.replaceAll(".xml$","");
+			return fn;
+		}
+		return null;
+	}
+}

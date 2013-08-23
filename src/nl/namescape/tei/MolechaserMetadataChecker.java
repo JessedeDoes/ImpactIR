@@ -1,5 +1,7 @@
 package nl.namescape.tei;
 import nl.namescape.filehandling.*;
+
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -7,14 +9,77 @@ import java.util.concurrent.ConcurrentMap;
 import nl.namescape.util.Proxy;
 import nl.namescape.util.XML;
 import org.w3c.dom.*;
+import java.security.*;
+
 public class MolechaserMetadataChecker implements DoSomethingWithFile
 {
 
 	ConcurrentHashMap<String,Set<String>> 
-		idmap = new ConcurrentHashMap<String,Set<String>>();
+	idmap = new ConcurrentHashMap<String,Set<String>>();
+	ConcurrentHashMap<String,Set<String>> 
+	dedupMap = new ConcurrentHashMap<String,Set<String>>();
+	Set<String> filesWithoutText = new HashSet<String>();
 	ConcurrentMap<String,String> multiProperties = new ConcurrentHashMap<String,String>();
 	int N = 0;
 	boolean checkIdno = true;
+	boolean checkDuplicateArticles = true;
+	static int minimum_words = 10;
+
+	public void printDuplicateInfo()
+	{
+		for (String k: dedupMap.keySet())
+		{
+			Set<String> v = dedupMap.get(k);
+			if (v.size() > 1)
+			{
+				System.out.println("Error: duplicate content! "  +k + "\t" + v);
+			}
+		}
+		for (String f: filesWithoutText)
+		{
+			System.out.println("Empty file\t" + f);
+		}
+	}
+
+	public String getPlainTextMD5(Document d, String fileName)
+	{
+		Element t = XML.getElementByTagname(d.getDocumentElement(), "body");
+		String s = t.getTextContent();
+		if (s.split("\\s+").length < minimum_words)
+		{
+			filesWithoutText.add(fileName);
+		}
+		try {
+			byte[] bytesOfMessage = s.getBytes("UTF-8");
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] thedigest = md.digest(bytesOfMessage);
+			StringBuffer hexString = new StringBuffer();
+			for (int i=0;i<thedigest.length;i++) 
+			{
+				hexString.append(Integer.toHexString(0xFF & thedigest[i]));
+			}
+
+			return hexString.toString();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return "oompf";
+	}
+	
+	public String getStandaardArticleKey(Metadata m, Document d, String fileName)
+	{
+		String key="";
+		String[] metaFields = {"witnessYear_from", "witnessMonth_from", "witnessDay_from",
+		"titleLevel1"};
+		for (String f: Arrays.asList(metaFields))
+		{
+			key += m.getValue(f) + "/";
+		}
+		key += getPlainTextMD5(d, fileName);
+		return key;
+	}
+	
 	@Override
 	public void handleFile(String fileName) 
 	{
@@ -24,27 +89,26 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		{
 			Document d = XML.parse(fileName,false);
 			Metadata m = new Metadata(d);
-			checkMetadata(m, fileName);
+			checkMetadata(m, d, fileName);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			//System.exit(1);
 		}
 	}
-	
+
 	public boolean isYear(String y)
 	{
 		return y.matches("^[0-9][0-9][0-9][0-9]$");
 	}
-	
-	public  void checkMetadata(Metadata m, String fileName)
+
+	public synchronized void checkMetadata(Metadata m, Document d, String fileName)
 	{
-		
+
 		String witnessYear_from = m.getValue("witnessYear_from").trim();
 		String witnessYear_to = m.getValue("witnessYear_to").trim();
 		String idno = m.getValue("idno").trim();
-		
-		
+
 		if (!isYear(witnessYear_from))
 		{
 			System.err.println("invalid year in " + fileName + " : " + witnessYear_from);
@@ -53,9 +117,16 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		{
 			System.err.println("invalid year in " + fileName + " : " + witnessYear_to);
 		}
-		
+
 		if (checkIdno)
 		{
+			if (idno == null || idno.equals(""))
+			{
+				String newIdno = MolechaserMetadataFixer.createIdno(m, fileName);
+				System.err.println("Attempt to assign idno: " + newIdno);
+				idno = newIdno;
+			}
+
 			Set<String> filesWithThisId = idmap.get(idno);
 
 			if (filesWithThisId == null)
@@ -69,7 +140,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			}
 			filesWithThisId.add(fileName);
 		}
-		
+
 		Set<String> languages = m.metadata.get("languageVariant");
 		String l;
 		if (languages == null || languages.size() != 1)
@@ -83,7 +154,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 				System.err.println("Wrong language variant: " + l);
 			}
 		}
-		
+
 		for (String name: m.metadata.keySet())
 		{
 			Set<String> values = m.metadata.get(name);
@@ -93,16 +164,34 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 				multiProperties.put(name,name);
 			}
 		}
-		if (N % 1000 == 0)
+
+		if (checkDuplicateArticles)
+		{
+			String key = this.getStandaardArticleKey(m,d, fileName);
+			Set<String> filesWithThisKey = dedupMap.get(key);
+
+			if (filesWithThisKey == null)
+			{
+				filesWithThisKey = new HashSet<String>();
+				dedupMap.put(key, filesWithThisKey);
+			} else
+			{
+				filesWithThisKey.add(fileName);
+				//System.err.println("Error: duplicate content? "  +key + " " + filesWithThisKey);
+			}
+			filesWithThisKey.add(fileName);
+		}
+
+		if (N % 10000 == 0)
 		{
 			print(m,fileName);
 		}
 		N++;
 	}
-	
+
 	public synchronized void print(Metadata m, String fileName)
 	{
-		
+
 		String authorLevel1 = m.getValue("authorLevel1").trim();
 		String authorLevel2 = m.getValue("authorLevel2").trim();
 		String titleLevel1 = m.getValue("titleLevel1").trim();
@@ -113,21 +202,21 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		String corpusProvenance =  m.getValue("corpusProvenance").trim();
 		String author=authorLevel1.equals("")?authorLevel2:authorLevel1;
 		String title=authorLevel1.equals("")?titleLevel2:titleLevel1;
-		
-		System.out.println(N + "\t" + corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
+
+		System.err.println(N + "\t" + corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
 				+ author + "\t" + title + "\t" + 
 				witnessYear_from + "\t"+ witnessYear_to + "\t" + 
 				authorLevel1 + "\t" +  authorLevel2 + "\t" 
 				+ titleLevel1 + "\t" + titleLevel2);
-		System.out.flush();
 	}
-	
+
 	public static void main(String[] args)
 	{
 		Proxy.setProxy();
-		DoSomethingWithFile d = new MolechaserMetadataChecker();
+		MolechaserMetadataChecker d = new MolechaserMetadataChecker();
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(d,4);
-		DirectoryHandling.traverseDirectory(d, args[0]);
+		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
+		d.printDuplicateInfo();
 	}
 }
