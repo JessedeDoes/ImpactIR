@@ -13,6 +13,7 @@ import org.w3c.dom.ranges.Range;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.security.MessageDigest;
 import java.util.*;
 
 /**
@@ -32,7 +33,7 @@ public class MolechaserMetadataFixer implements SimpleInputOutputProcess
 		String idno = m.getValue("idno").trim();
 		if (idno == null || idno.equals(""))
 		{
-			String newIdno = MolechaserMetadataFixer.createIdno(m, fileName);
+			String newIdno = MolechaserMetadataFixer.createIdno(m, d, fileName);
 			System.err.println("Attempt to assign idno: " + newIdno);
 			idno = newIdno;
 			setIdno(d,idno);
@@ -40,6 +41,29 @@ public class MolechaserMetadataFixer implements SimpleInputOutputProcess
 		return d;
 	}
 	
+	public static String getPlainTextMD5(Document d, String fileName)
+	{
+		Element t = XML.getElementByTagname(d.getDocumentElement(), "body");
+		String s = t.getTextContent();
+		
+		try 
+		{
+			byte[] bytesOfMessage = s.getBytes("UTF-8");
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] thedigest = md.digest(bytesOfMessage);
+			StringBuffer hexString = new StringBuffer();
+			for (int i=0;i<thedigest.length;i++) 
+			{
+				hexString.append(Integer.toHexString(0xFF & thedigest[i]));
+			}
+
+			return hexString.toString();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return "oompf";
+	}
 	
 	
 	public static void main(String[] args)
@@ -116,15 +140,19 @@ public class MolechaserMetadataFixer implements SimpleInputOutputProcess
 
 
 
-	public static String createIdno(Metadata m, String fileName)
+	public static String createIdno(Metadata m, Document d, String fileName)
 	{
 		String provenance = m.getValue("corpusProvenance");
+		if (provenance == null)
+			provenance = "NO_PROVENANCE";
 		if (provenance.contains("tandaard"))
 		{
 			String fn = new File(fileName).getName();
 			fn = fn.replaceAll(".xml$","");
 			return fn;
+		} else
+		{
+			return provenance + "." + getPlainTextMD5(d, fileName);
 		}
-		return null;
 	}
 }

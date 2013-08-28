@@ -11,6 +11,7 @@ import nl.namescape.util.XML;
 import org.w3c.dom.*;
 import java.security.*;
 
+
 public class MolechaserMetadataChecker implements DoSomethingWithFile
 {
 
@@ -49,15 +50,31 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		}
 	}
 
-	public String getPlainTextMD5(Document d, String fileName)
+	public String checkMinimumLength(Document d, String fileName)
 	{
-		Element t = XML.getElementByTagname(d.getDocumentElement(), "body");
-		String s = t.getTextContent();
-		if (s.split("\\s+").length < minimum_words)
+		List<Element> bodies = XML.getElementsByTagname(d.getDocumentElement(), "body", false);
+		String txt = "";
+		for (Element b: bodies)
+		{
+		// dit gaat mis bij artikelen met groups erin? Waar komen die vandaan?
+			String s = b.getTextContent();
+			txt += " " + s;
+		}
+		if (txt.split("\\s+").length < minimum_words)
 		{
 			filesWithoutText.add(fileName);
 		}
-		try {
+		return txt;
+	}
+	
+	public String getPlainTextMD5(Document d, String fileName)
+	{
+		Element t = XML.getElementByTagname(d.getDocumentElement(), "body");
+		// dit gaat mis bij artikelen met groups erin? Waar komen die vandaan?
+		String s = t.getTextContent();
+		
+		try 
+		{
 			byte[] bytesOfMessage = s.getBytes("UTF-8");
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] thedigest = md.digest(bytesOfMessage);
@@ -66,7 +83,6 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			{
 				hexString.append(Integer.toHexString(0xFF & thedigest[i]));
 			}
-
 			return hexString.toString();
 		} catch (Exception e) 
 		{
@@ -116,7 +132,13 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		String witnessYear_from = m.getValue("witnessYear_from").trim();
 		String witnessYear_to = m.getValue("witnessYear_to").trim();
 		String idno = m.getValue("idno").trim();
-
+		String provenance = m.getValue("corpusProvenance");
+		checkMinimumLength(d,fileName);
+		if (provenance == null || provenance.equals(""))
+		{
+			System.err.println("No corpusProvenance in file:  " + fileName);
+		}
+		
 		if (!isYear(witnessYear_from))
 		{
 			System.err.println("invalid year in " + fileName + " : " + witnessYear_from);
@@ -130,7 +152,8 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		{
 			if (idno == null || idno.equals(""))
 			{
-				String newIdno = MolechaserMetadataFixer.createIdno(m, fileName);
+				System.err.println("No idno in file:  " + fileName);
+				String newIdno = MolechaserMetadataFixer.createIdno(m, d, fileName);
 				System.err.println("Attempt to assign idno: " + newIdno);
 				idno = newIdno;
 			}
@@ -153,13 +176,13 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		String l;
 		if (languages == null || languages.size() != 1)
 		{
-			System.err.println("Wrong number of language variants: " + languages);
+			System.err.println("Wrong number of language variants: " + languages + ":  " + fileName);
 		} else
 		{
 			l = languages.iterator().next();
 			if (!l.equals("NN") && !l.equals("BN"))
 			{
-				System.err.println("Wrong language variant: " + l);
+				System.err.println("Wrong language variant: " + l +  ":  " + fileName);
 			}
 		}
 
