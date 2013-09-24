@@ -135,7 +135,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 
 	public void test(impact.ee.lexicon.InMemoryLexicon l)
 	{
-		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.05);
+		Set<WordForm> heldout = ReverseLemmatizationTest.createHeldoutSet(l, 0.01);
 		train(l,heldout);
 		TestDutchLemmatizer testResults = new TestDutchLemmatizer();
 		for (WordForm wf: heldout)
@@ -211,6 +211,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	{
 		Pattern p = findPattern(w);
 		Rule rule = new Rule(p, w.tag, w.lemmaPoS);
+		if (rule == null || rule.pattern == null)
+			return null;
 		Rule theRule = rules.get(rule);
 
 		if (theRule == null)

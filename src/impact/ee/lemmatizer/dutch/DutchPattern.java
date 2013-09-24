@@ -19,10 +19,15 @@ public class DutchPattern implements Pattern
 	
 	public String toString()
 	{
-		return  "{dutchPattern "  
+		return  "{dutchPattern: "  
 				+ (infix !=  ""? "(infix= "+ infix + ")":  "") 
 				+ (stemChange != RegularStemChange.IDENTITY? stemChange: "") 
-				+ " [" + inflectionSuffix + "/" + lemmaSuffix + "]}";
+				+ " <" + showEmpty(inflectionSuffix) + "~" + showEmpty(lemmaSuffix) + ">}";
+	}
+	
+	private String showEmpty(String s)
+	{
+		return (s == null || s== "")?"0":s;
 	}
 
 	@Override

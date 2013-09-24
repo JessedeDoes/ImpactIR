@@ -26,6 +26,9 @@ public class DutchPatternFinder implements PatternFinder
 	/**
 	 * We should make suffixes dependent on PoS, of course...
 	 */
+	
+	boolean useFallback =  true;
+	
 	String[] suffixes =
 	{
 			"en", "d", "t", "de", "den", "te", "ten", "s", "'s", "st", "er", "ers", "end", "ende", "enden", 
@@ -92,7 +95,8 @@ public class DutchPatternFinder implements PatternFinder
 		Pattern foundPattern = null;
 		if (!found)
 		{
-			foundPattern = this.fallbackFinder.findPattern(a, b);
+			if (this.useFallback)
+				foundPattern = this.fallbackFinder.findPattern(a, b);
 			//System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
 			//foundPattern = null; // OeHoeps..
 		} else

@@ -17,7 +17,8 @@ public class MultiplePatternBasedLemmatizer extends
 		SimplePatternBasedLemmatizer 
 {
 	ClassifierSet classifiersPerTag = new ClassifierSet(features, classifierWithoutPoS.getClass().getName());
-	
+	//ClassifierSet classifiersPerTag = new ClassifierSet(features, "impact.ee.lemmatizer.PrefixSuffixGuesser");
+	private Rule lastRule = null;
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		for (WordForm w: lexicon)
@@ -25,8 +26,8 @@ public class MultiplePatternBasedLemmatizer extends
 			if (heldOutSet != null && heldOutSet.contains(w)) continue;
 			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo
 			// System.err.println(w + " " + rule);
-
-			this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
+			if (rule != null)
+				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
 		};
 		classifiersPerTag.buildClassifiers();
 	}
@@ -34,14 +35,18 @@ public class MultiplePatternBasedLemmatizer extends
 	class theFormHandler implements FoundFormHandler
 	{
 		public String bestLemma;
+		public Rule rule;
 		@Override
 		public void foundForm(String wordform, String tag, String lemmaPoS,
 				Rule r, double p, int rank) 
 		{
 			String l = r.pattern.apply(wordform);
-			System.err.println("Hello, wordform =" + wordform + " rule =  " + r + " rank  = " + rank + " candidate = "  + l);
-			
-			bestLemma = l;
+			// System.err.println("Possible lemma, wordform=" + wordform + ", rule =  " + r + ", rank  = " + rank + " candidate = "  + l);
+			if (bestLemma == null)
+			{
+				bestLemma = l;
+				rule = r;
+			}
 		}
 	}
 	
@@ -51,7 +56,13 @@ public class MultiplePatternBasedLemmatizer extends
 		theFormHandler c =  new theFormHandler();
 		classifiersPerTag.callback = c;
 		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag, false);
-		return c.bestLemma;
+		String lemma = wordform.toLowerCase();
+		if (c.bestLemma != null)
+		{
+			lemma = c.bestLemma;
+			lastRule = c.rule;
+		}
+		return lemma;
 	}
 	
 	protected void testWordform(WordForm wf, TestDutchLemmatizer t)
@@ -61,7 +72,14 @@ public class MultiplePatternBasedLemmatizer extends
 		//Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
 		
 		String lemma = this.findLemmaConsistentWithTag(wf.wordform, wf.tag);
-		System.err.println(wf + " --> " + lemma);
+		
+		if (lemma.equals(wf.lemma))
+			t.nCorrect++;
+		else
+		{
+			System.err.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
+		}
+		t.nItems++;
 		//checkResult(wf, answer, outcomes, t);
 	}
 

@@ -1,5 +1,9 @@
 package impact.ee.lemmatizer;
+import impact.ee.classifier.Classifier;
+import impact.ee.classifier.Dataset;
+import impact.ee.classifier.Distribution;
 import impact.ee.classifier.FeatureSet;
+import impact.ee.classifier.Instance;
 import impact.ee.lemmatizer.reverse.ParadigmExpander;
 import impact.ee.lemmatizer.reverse.ReverseLemmatizationTest;
 import impact.ee.lemmatizer.reverse.ReverseLemmatizer;
@@ -60,7 +64,7 @@ class ScoredRule
  * @author jesse
  *
  */
-public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
+public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, Classifier
 {
 	// and the classifier sets????
 	ReverseLemmatizer initialExpander = null;
@@ -80,8 +84,8 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
 		FeatureSet fs1 = new FeatureSet.ReversedDummy();
 		FeatureSet fs2 = new FeatureSet.Dummy();
 
-		ClassifierSet cs1 = new ClassifierSet(fs1, "lemmatizer.SuffixGuesser");
-		ClassifierSet cs2 = new ClassifierSet(fs2, "lemmatizer.SuffixGuesser");
+		ClassifierSet cs1 = new ClassifierSet(fs1, "impact.ee.lemmatizer.SuffixGuesser");
+		ClassifierSet cs2 = new ClassifierSet(fs2, "impact.ee.lemmatizer.SuffixGuesser");
 
 		initialExpander = new ReverseLemmatizer(new InitialPatternFinder(), cs1);
 		finalExpander = new ReverseLemmatizer(new FinalPatternFinder(), cs2);
@@ -290,5 +294,40 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler
 			pe.expandLemmaList(Options.getOption("testFile"));
 
 		}
+	}
+	@Override
+	public String classifyInstance(Instance i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Distribution distributionForInstance(Instance i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void train(Dataset d) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void train(Dataset d, int MAX_ITEMS_USED) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void save(String filename) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void load(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void setType(String classifierType) {
+		// TODO Auto-generated method stub
+		
 	}
 }
