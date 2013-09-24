@@ -122,6 +122,9 @@ public class SuffixGuesser implements Classifier
 		// TODO Auto-generated method stub
 		String s = i.values.get(0);
 		Distribution d = distributionForString(s);
+		System.err.println(d);
+		if (d == null || d.outcomes.size() == 0)
+			return null;
 		return d.outcomes.get(0).label;
 	}
 

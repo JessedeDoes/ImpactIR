@@ -27,7 +27,7 @@ public abstract class StemChange
 	public abstract String transform(String s);
 	static Set<StemChange> PossibleStemChanges = new HashSet<StemChange>();
 	static Map<RegularStemChange, StemChange> changeMap = new HashMap<RegularStemChange, StemChange>();
-	RegularStemChange type;
+	public RegularStemChange type;
 	
 	
 	public StemChange(RegularStemChange x)

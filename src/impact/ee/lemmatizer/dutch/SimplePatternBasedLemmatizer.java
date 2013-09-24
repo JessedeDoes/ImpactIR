@@ -145,7 +145,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		System.err.println(testResults);
 	}
 
-	private void testWordform(WordForm wf, TestDutchLemmatizer t) 
+	protected void testWordform(WordForm wf, TestDutchLemmatizer t) 
 	{
 		//if (!wf.tag.contains("part")) return;
 		String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
@@ -153,7 +153,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		checkResult(wf, answer, outcomes, t);
 	}
 
-	private void checkResult(WordForm wf, String answer, Distribution outcomes, TestDutchLemmatizer t) 
+	protected void checkResult(WordForm wf, String answer, Distribution outcomes, TestDutchLemmatizer t) 
 	{
 		t.nItems++;
 		Rule r = this.ruleID2Rule.get(answer);
@@ -233,12 +233,15 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	{
 		Pattern p = null;
 		Pattern r = patternFinder.findPattern(w.wordform,w.lemma,w.lemmaPoS);
-		System.err.println(r);
+		//System.err.println(r);
 		p = patterns.get(r);
 		if (p == null)
 		{
 			patterns.put(r,r);
 			p=r;
+		} else
+		{
+			
 		}
 		return p;
 	}
@@ -365,6 +368,13 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return t;
 	}
 
+	@Override
+	public void setProperties(Properties properties) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
@@ -385,9 +395,5 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		// spbl.test(l);
 	}
 
-	@Override
-	public void setProperties(Properties properties) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

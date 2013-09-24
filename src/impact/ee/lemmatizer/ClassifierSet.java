@@ -102,21 +102,31 @@ public class ClassifierSet
 
 	public void classifyLemma(String lemma, String lemmaPoS, String tag)
 	{
+		classifyLemma(lemma,  lemmaPoS,  tag, true);
+	}
+	
+	public void classifyLemma(String lemma, String lemmaPoS, String tag, boolean checkPoS)
+	{
 		if (tag == null)
 		{
 			System.err.println("HEY: tag = null for " + lemma);
 		}
 		if (!tag.startsWith(lemmaPoS))
+		{
 			return; // doe dit anders!
+		}
 		Classifier classifier = classifiersPerTag.get(tag);
 		if (classifier == null)
 		{
 			System.err.println("Error: no classifier trained for "  + tag);
 			return;
 		}
+		
+		
 		Instance testItem = features.makeTestInstance(lemma);
 
 		Distribution outcomes = classifier.distributionForInstance(testItem);
+		// System.err.println(outcomes);
 		outcomes.sort();
 		double cumulativeP = 0;
 
@@ -129,8 +139,8 @@ public class ClassifierSet
 			double p = outcomes.get(rank).p;
 			Rule r = ruleID2Rule.get(classId);
 			cumulativeP += p;
-
-			if (p > cumulativeP/MIN_PROBABILITY && r.lemmaPoS.equals(lemmaPoS))
+			// System.err.println(r + " " + lemmaPoS + " "  + r.lemmaPoS);
+			if (p > cumulativeP/MIN_PROBABILITY && (!checkPoS || r.lemmaPoS.equals(lemmaPoS)))
 			{
 				if (callback != null)
 				{

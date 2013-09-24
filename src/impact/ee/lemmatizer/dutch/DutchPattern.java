@@ -7,8 +7,8 @@ public class DutchPattern implements Pattern
 {
 	StemChange.RegularStemChange stemChange;
 	String infix="";
-	String inflectionSuffix;
-	String lemmaSuffix;
+	String inflectionSuffix= "";
+	String lemmaSuffix = "";
 	
 	public DutchPattern(String suffixa, String suffixb, RegularStemChange type) 
 	{
@@ -19,7 +19,10 @@ public class DutchPattern implements Pattern
 	
 	public String toString()
 	{
-		return infix + "-" + stemChange + "-[" + inflectionSuffix + "," + lemmaSuffix + "]";
+		return  "{dutchPattern "  
+				+ (infix !=  ""? "(infix= "+ infix + ")":  "") 
+				+ (stemChange != RegularStemChange.IDENTITY? stemChange: "") 
+				+ " [" + inflectionSuffix + "/" + lemmaSuffix + "]}";
 	}
 
 	@Override
@@ -43,5 +46,30 @@ public class DutchPattern implements Pattern
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.toString().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		//System.exit(1);
+		try 
+		{
+			DutchPattern op = (DutchPattern) (other);
+			boolean b =  this.infix.equals(op.infix) 
+					&& this.inflectionSuffix.equals(op.inflectionSuffix)
+					&& this.lemmaSuffix.equals(op.lemmaSuffix)
+					&& this.stemChange == op.stemChange;
+			//System.err.println("?=?" + this + " " + other + " " + b);
+			return b;
+		} catch (Exception e)
+		{
+			return false;
+		}
 	}
 }

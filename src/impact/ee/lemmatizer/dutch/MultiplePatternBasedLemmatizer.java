@@ -2,6 +2,7 @@ package impact.ee.lemmatizer.dutch;
 
 import java.util.Set;
 
+import impact.ee.classifier.Distribution;
 import impact.ee.lemmatizer.ClassifierSet;
 import impact.ee.lemmatizer.FoundFormHandler;
 import impact.ee.lemmatizer.Rule;
@@ -22,8 +23,8 @@ public class MultiplePatternBasedLemmatizer extends
 		for (WordForm w: lexicon)
 		{
 			if (heldOutSet != null && heldOutSet.contains(w)) continue;
-			Rule rule = findRule(w);
-			System.err.println(w + " " + rule);
+			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo
+			// System.err.println(w + " " + rule);
 
 			this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
 		};
@@ -37,8 +38,9 @@ public class MultiplePatternBasedLemmatizer extends
 		public void foundForm(String wordform, String tag, String lemmaPoS,
 				Rule r, double p, int rank) 
 		{
-			
 			String l = r.pattern.apply(wordform);
+			System.err.println("Hello, wordform =" + wordform + " rule =  " + r + " rank  = " + rank + " candidate = "  + l);
+			
 			bestLemma = l;
 		}
 	}
@@ -48,10 +50,21 @@ public class MultiplePatternBasedLemmatizer extends
 		
 		theFormHandler c =  new theFormHandler();
 		classifiersPerTag.callback = c;
-		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag);
+		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag, false);
 		return c.bestLemma;
 	}
 	
+	protected void testWordform(WordForm wf, TestDutchLemmatizer t)
+	{
+		//if (!wf.tag.contains("part")) return;
+		//String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
+		//Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
+		
+		String lemma = this.findLemmaConsistentWithTag(wf.wordform, wf.tag);
+		System.err.println(wf + " --> " + lemma);
+		//checkResult(wf, answer, outcomes, t);
+	}
+
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
@@ -59,16 +72,6 @@ public class MultiplePatternBasedLemmatizer extends
 		//System.err.println(l.findLemmata("is"));
 		//System.exit(1);
 		MultiplePatternBasedLemmatizer lemmatizer = new MultiplePatternBasedLemmatizer();
-		lemmatizer.train(l);
-		SimpleCorpus testCorpus = new SimpleCorpus(args[1], BasicNERTagger.defaultAttributeNames);
-
-		for (Context c: lemmatizer.tag(testCorpus).enumerate())
-		{
-			System.out.println(
-					c.getAttributeAt("word", 0) 
-					+ "\t" + c.getAttributeAt("tag", 0)
-					+ "\t" + c.getAttributeAt("lemma", 0));
-		}
-		// spbl.test(l);
+		lemmatizer.test(l);
 	}
 }
