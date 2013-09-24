@@ -61,7 +61,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	//Classifier classifierWithPoS = new SVMLightClassifier(); // not used
 	FeatureSet features = new FeatureSet.Dummy(); // new SimpleFeatureSet();
 	Classifier classifierWithoutPoS = new SuffixGuesser(); // WekaClassifier("trees.J48", false);
-	ClassifierSet classifiersPerTag = new ClassifierSet(features, classifierWithoutPoS.getClass().getName());
+	
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
@@ -95,40 +95,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return tag;
 	}
 	
-	public void trainWithClassifiersPerTag(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
-	{
-		for (WordForm w: lexicon)
-		{
-			if (heldOutSet != null && heldOutSet.contains(w)) continue;
-			Rule rule = findRule(w);
-			System.err.println(w + " " + rule);
-
-			this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
-		};
-		classifiersPerTag.buildClassifiers();
-	}
 	
-	class theFormHandler implements FoundFormHandler
-	{
-		public String bestLemma;
-		@Override
-		public void foundForm(String wordform, String tag, String lemmaPoS,
-				Rule r, double p, int rank) 
-		{
-			
-			String l = r.pattern.apply(wordform);
-			bestLemma = l;
-		}
-	}
-	
-	private String findLemmaConsistentWithTagWithClassifiersPerTag(String wordform, String tag)
-	{
-		
-		theFormHandler c =  new theFormHandler();
-		classifiersPerTag.callback = c;
-		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag);
-		return c.bestLemma;
-	}
 	
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
@@ -240,7 +207,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		}
 	}
 
-	private Rule findRule(WordForm w) 
+	protected Rule findRule(WordForm w) 
 	{
 		Pattern p = findPattern(w);
 		Rule rule = new Rule(p, w.tag, w.lemmaPoS);
