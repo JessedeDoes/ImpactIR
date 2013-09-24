@@ -19,7 +19,7 @@
  * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package jnisvmlight;
+package jnisvmlight; 
 
 /**
  * Abstract class for an extended kernel.
@@ -40,7 +40,7 @@ public abstract class ExtendedKernel extends Kernel {
 
   protected ExtendedKernel(Kernel nestedKernel, double multiplier,
       double constant) {
-    super(nestedKernel);
+    super(nestedKernel); 
     this.m_a = multiplier;
     this.m_c = constant;
   }

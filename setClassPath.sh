@@ -1,4 +1,5 @@
 export PWD=`pwd`
+export CLASSPATH=".:$PWD/dist/ImpactIR.jar"
 for x in `ls $PWD/lib/*.jar`;
 do
   echo $x;

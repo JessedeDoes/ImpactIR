@@ -19,7 +19,9 @@ import impact.ee.tagger.OutputEnumeration;
 import impact.ee.tagger.SimpleCorpus;
 import impact.ee.tagger.Tagger;
 import impact.ee.util.Serialize;
+import impact.ee.lemmatizer.ClassifierSet;
 import impact.ee.lemmatizer.Example;
+import impact.ee.lemmatizer.FoundFormHandler;
 import impact.ee.lemmatizer.LemmaCache;
 import impact.ee.lemmatizer.Pattern;
 import impact.ee.lemmatizer.PatternFinder;
@@ -56,8 +58,10 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 {
 	private static final long serialVersionUID = 1L;
 
-	Classifier classifierWithPoS = new SVMLightClassifier(); // not used
+	//Classifier classifierWithPoS = new SVMLightClassifier(); // not used
+	FeatureSet features = new FeatureSet.Dummy(); // new SimpleFeatureSet();
 	Classifier classifierWithoutPoS = new SuffixGuesser(); // WekaClassifier("trees.J48", false);
+	ClassifierSet classifiersPerTag = new ClassifierSet(features, classifierWithoutPoS.getClass().getName());
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
@@ -70,7 +74,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 
 	private transient PatternFinder patternFinder = new DutchPatternFinder();
 
-	FeatureSet features = new SimpleFeatureSet();
+	
 
 	public SimplePatternBasedLemmatizer()
 	{
@@ -86,6 +90,46 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		}
 	}
 
+	public String simplifyTag(String tag)
+	{
+		return tag;
+	}
+	
+	public void trainWithClassifiersPerTag(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
+	{
+		for (WordForm w: lexicon)
+		{
+			if (heldOutSet != null && heldOutSet.contains(w)) continue;
+			Rule rule = findRule(w);
+			System.err.println(w + " " + rule);
+
+			this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
+		};
+		classifiersPerTag.buildClassifiers();
+	}
+	
+	class theFormHandler implements FoundFormHandler
+	{
+		public String bestLemma;
+		@Override
+		public void foundForm(String wordform, String tag, String lemmaPoS,
+				Rule r, double p, int rank) 
+		{
+			
+			String l = r.pattern.apply(wordform);
+			bestLemma = l;
+		}
+	}
+	
+	private String findLemmaConsistentWithTagWithClassifiersPerTag(String wordform, String tag)
+	{
+		
+		theFormHandler c =  new theFormHandler();
+		classifiersPerTag.callback = c;
+		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag);
+		return c.bestLemma;
+	}
+	
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		Dataset trainingSet = new Dataset("lemmatizer");
