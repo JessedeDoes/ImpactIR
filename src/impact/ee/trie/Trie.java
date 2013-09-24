@@ -8,7 +8,9 @@ import java.io.FileReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -196,7 +198,7 @@ public class Trie implements java.io.Serializable
 				this.root.nodesBelow, nWords);
 	}
 
-	public  class TrieNode implements Serializable
+	public class TrieNode implements Serializable
 	{
 		/**
 		 * 
@@ -314,6 +316,28 @@ public class Trie implements java.io.Serializable
 			return next.putWord(w,p+1,data);
 		}
 
+		public List<String> production()
+		{
+			if (this.nofTransitions() == 0)
+			{
+				String s = "$";
+				List<String> l = new ArrayList<String>();
+				l.add(s);
+				return l;
+			}
+			List<String> l = new ArrayList<String>();
+			for (Transition t: this.transitions)
+			{
+				List<String> x = t.node.production();
+				for (String s:x)
+				{
+					char c = (char) t.character;
+					l.add(c + s);
+				}
+			}
+			return l;
+		}
+		
 		void reviseLastTransition(Hashtable<TrieNode, TrieNode> pool)
 		{
 			Transition t;

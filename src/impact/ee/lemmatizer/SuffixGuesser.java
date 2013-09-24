@@ -7,6 +7,7 @@ import impact.ee.classifier.Instance;
 import impact.ee.lemmatizer.reverse.ReverseLemmatizationTest;
 import impact.ee.lemmatizer.reverse.ReverseLemmatizer;
 import impact.ee.trie.Trie;
+import impact.ee.util.LemmaLog;
 import impact.ee.util.Options;
 
 import java.io.IOException;
@@ -213,6 +214,9 @@ public class SuffixGuesser implements Classifier
 			if (path[i+1] == null) break;
 		}
 		
+		Trie.TrieNode myNode = path[i];
+		String suffix = s.substring(s.length()-i);
+		LemmaLog.addToLog("suffix:" + suffix + " ... " + myNode.production());
 		//System.err.println(s + " match suffix length:  " + i);
 		Distribution d = zeroDistribution;
 		if (applySmoothing)
@@ -246,7 +250,7 @@ public class SuffixGuesser implements Classifier
 			}
 			//System.err.println("s= " + s + " j= " + j + " d= " + d);
 		}
-		System.err.println(s + " " + suffixLength);
+		LemmaLog.addToLog(s + " " + suffixLength);
 		return d;
 	}
 

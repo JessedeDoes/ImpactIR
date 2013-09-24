@@ -18,6 +18,7 @@ import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.BasicNERTagger;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.SimpleCorpus;
+import impact.ee.util.LemmaLog;
 
 public class MultiplePatternBasedLemmatizer extends
 		SimplePatternBasedLemmatizer 
@@ -33,8 +34,9 @@ public class MultiplePatternBasedLemmatizer extends
 	{
 		for (WordForm w: lexicon)
 		{
+			w.tag = simplifyTag(w.tag);
 			if (heldOutSet != null && heldOutSet.contains(w)) continue;
-			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo
+			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo niet, vereenvoudigde tag komt er niet in
 			// System.err.println(w + " " + rule);
 			if (rule != null)
 				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
@@ -52,9 +54,9 @@ public class MultiplePatternBasedLemmatizer extends
 				Rule r, double p, int rank) 
 		{
 			String l = r.pattern.apply(wordform);
-			if (l == null)
-				l = "null:" + r.pattern;
-			allLemmata.add(l);
+			String l1 = l; 
+			if (l == null) l1 = "null:" + r.pattern;
+			allLemmata.add(l1);
 			// System.err.println("Possible lemma, wordform=" + wordform + ", rule =  " + r + ", rank  = " + rank + " candidate = "  + l);
 			if (bestLemma == null)
 			{
@@ -64,12 +66,27 @@ public class MultiplePatternBasedLemmatizer extends
 		}
 	}
 	
+	@Override
+	public String simplifyTag(String tag)
+	{
+		if (tag.startsWith("VRB") || tag.startsWith("XXNOU")) 
+		// remove last feature,  beneficial for verb, effect for NOU unclear
+		{
+			tag = tag.replaceAll(",[^,]*\\)",")");
+		}
+		return tag;
+	}
+	
 	private String findLemmaConsistentWithTag(String wordform, String tag)
 	{
+		if (tag.matches(".*NOU.*sg.*")) // ahem dedoes!
+		{
+			//return wordform.toLowerCase();
+		}
 		
 		theFormHandler c =  new theFormHandler();
 		classifiersPerTag.callback = c;
-		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag, false);
+		classifiersPerTag.classifyLemma(wordform, tag, tag, false);
 		String lemma = wordform.toLowerCase();
 		//System.err.println(c.allLemmata);
 		if (c.bestLemma != null)
@@ -90,9 +107,10 @@ public class MultiplePatternBasedLemmatizer extends
 		
 		if (lemma.equals(wf.lemma))
 			t.nCorrect++;
-		else
+		else if (wf.tag.startsWith("NOU"))
 		{
 			System.err.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
+			//System.err.println(LemmaLog.getLastLines(5));
 			//System.err.println(classifiersPerTag.allPossibleLabelsForTag(wf.tag));
 		}
 		t.nItems++;

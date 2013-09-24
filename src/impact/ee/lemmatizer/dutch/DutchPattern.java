@@ -40,12 +40,34 @@ public class DutchPattern implements Pattern
 		
 		//s = s.replaceAll(inflectionSuffix + "$", ""); // probleem kasseistenen -> kasseisten
 		StemChange change = StemChange.getStemChange(this.stemChange);
+		
+		// infix before stemchange???
+		
+		s = removeInfix(s);
 		String s1 = change.transform(s);
 		if (s1 == null)
 			return null;
 		s1 += this.lemmaSuffix;
+		
+		return s1;
+	}
+
+	private String removeInfix(String s1) 
+	{
 		if (this.infix.length() > 0)
-			s1 = s1.replaceFirst(infix, ""); // HM! - this removes  'ge' twice for instance
+		{
+			if (s1.contains(infix +  "ï"))
+			{
+				s1 = s1.replaceFirst(infix +  "ï", "i"); // hm ugly hack
+			} else if (s1.contains(infix +  "ï"))
+			{
+				s1 = s1.replaceFirst(infix +  "ü", "u"); // hm ugly hack
+			} else if (s1.contains(infix +  "ë"))
+			{
+				s1 = s1.replaceFirst(infix +  "ë", "e"); // hm ugly hack
+			} else 
+				s1 = s1.replaceFirst(infix, ""); // HM! - this removes  'ge' twice for instance
+		}
 		return s1;
 	}
 

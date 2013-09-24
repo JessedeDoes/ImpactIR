@@ -4,6 +4,7 @@ import impact.ee.classifier.Dataset;
 import impact.ee.classifier.Distribution;
 import impact.ee.classifier.FeatureSet;
 import impact.ee.classifier.Instance;
+import impact.ee.util.LemmaLog;
 
 import java.io.*;
 //import java.util.HashSet;
@@ -155,6 +156,7 @@ public class ClassifierSet
 			String classId = outcomes.get(rank).label;
 			double p = outcomes.get(rank).p;
 			Rule r = ruleID2Rule.get(classId);
+			LemmaLog.addToLog("rule for " + lemma + ":  " + r.toString());
 			cumulativeP += p;
 			// System.err.println(r + " " + lemmaPoS + " "  + r.lemmaPoS);
 			if (p > cumulativeP/MIN_PROBABILITY && (!checkPoS || r.lemmaPoS.equals(lemmaPoS)))
