@@ -53,6 +53,7 @@ public class Feature implements Serializable
 	public void pruneValues()
 	{
 		FastVector newValues = new FastVector();
+		boolean seenUnknown = false;
 		for (int i=0; i < values.size(); i++)
 		{
 			String v = (String) values.elementAt(i);    
@@ -63,7 +64,9 @@ public class Feature implements Serializable
 			{
 				valueCounts.remove(v);
 				// System.err.println("pruning away:" + this.name + "=" + v + " " + valueCounts.get(v));
-				newValues.addElement(Feature.Unknown); // logischer toch, anders features die er wel zijn onvergelijkbaar (?? maar waarom maakt het niets uit?)
+				if (!seenUnknown)
+					newValues.addElement(Feature.Unknown); // logischer toch, anders features die er wel zijn onvergelijkbaar (?? maar waarom maakt het niets uit?)
+				seenUnknown = true;
 			}
 		}
 		values = newValues;

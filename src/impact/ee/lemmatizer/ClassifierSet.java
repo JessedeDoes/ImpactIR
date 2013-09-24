@@ -10,6 +10,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 //import weka.classifiers.*;
 //import weka.classifiers.functions.*;
 //import weka.core.Instance;
@@ -35,7 +38,7 @@ public class ClassifierSet
 	public FoundFormHandler callback = null;
 
 	int MAX_ITEMS_USED = 10000; // we unfortunately need this because of weka limitations
-	double MIN_PROBABILITY = 10;
+	double MIN_PROBABILITY = 100000;
 
 	public ClassifierSet()
 	{
@@ -103,6 +106,20 @@ public class ClassifierSet
 	public void classifyLemma(String lemma, String lemmaPoS, String tag)
 	{
 		classifyLemma(lemma,  lemmaPoS,  tag, true);
+	}
+	
+	public Set<String> allPossibleLabelsForTag(String tag)
+	{
+		Set<String> l = new HashSet<String>();
+		Dataset d = this.datasetsPerTag.get(tag);
+		if (d != null)
+		{
+			for (Instance x: d.instances)
+			{
+				l.add(x.classLabel);
+			}
+		}
+		return l;
 	}
 	
 	public void classifyLemma(String lemma, String lemmaPoS, String tag, boolean checkPoS)

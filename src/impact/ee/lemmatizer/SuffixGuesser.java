@@ -205,6 +205,7 @@ public class SuffixGuesser implements Classifier
 		path[0] = this.suffixTrie.root;
 
 		int i = n;
+		
 		for (i= 0;  i  < M && i < n ;  i++)
 		{
 			int c = s.charAt(n-1-i);
@@ -221,15 +222,20 @@ public class SuffixGuesser implements Classifier
 		{
 			d = observedDistributionAtNode(path[0]);
 		}
+		
+		int suffixLength=0;
 		for (int j=1; j  < M && path[j] != null;  j++)
 		{
 			Distribution dnext = observedDistributionAtNode(path[j]);
+			
 			if (dnext == null)
 			{
 				// System.err.println("?! No distribution defined for  " + s + " at " + j + " node = "  + path[j]);
 			}
 			else
 			{
+				//System.err.println(d);
+				suffixLength++;
 				if (!applySmoothing)
 				{
 					d = dnext;
@@ -240,6 +246,7 @@ public class SuffixGuesser implements Classifier
 			}
 			//System.err.println("s= " + s + " j= " + j + " d= " + d);
 		}
+		System.err.println(s + " " + suffixLength);
 		return d;
 	}
 

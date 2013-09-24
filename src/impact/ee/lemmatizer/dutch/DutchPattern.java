@@ -35,7 +35,10 @@ public class DutchPattern implements Pattern
 	{
 		if (!s.endsWith(inflectionSuffix))
 			return null;
-		s = s.replaceAll(inflectionSuffix + "$", ""); // probleem kasseistenen -> kasseisten
+		if (inflectionSuffix != null && inflectionSuffix.length() > 0)
+			s = s.substring(0, s.length() - inflectionSuffix.length());
+		
+		//s = s.replaceAll(inflectionSuffix + "$", ""); // probleem kasseistenen -> kasseisten
 		StemChange change = StemChange.getStemChange(this.stemChange);
 		String s1 = change.transform(s);
 		if (s1 == null)

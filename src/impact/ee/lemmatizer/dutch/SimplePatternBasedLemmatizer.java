@@ -84,7 +84,8 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		}
 		if (classifierWithoutPoS.getClass().getName().contains("SuffixGuesser"))
 		{
-			SuffixGuesser sfg = (SuffixGuesser) classifierWithoutPoS;
+			SuffixGuesser sfg = (SuffixGuesser) 
+				classifierWithoutPoS;
 			sfg.applySmoothing = false;
 			features = new FeatureSet.Dummy();
 		}

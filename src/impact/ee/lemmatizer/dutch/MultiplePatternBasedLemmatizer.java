@@ -1,11 +1,17 @@
 package impact.ee.lemmatizer.dutch;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import impact.ee.classifier.Classifier;
 import impact.ee.classifier.Distribution;
+import impact.ee.classifier.FeatureSet;
+import impact.ee.classifier.weka.WekaClassifier;
 import impact.ee.lemmatizer.ClassifierSet;
 import impact.ee.lemmatizer.FoundFormHandler;
 import impact.ee.lemmatizer.Rule;
+import impact.ee.lemmatizer.SimpleFeatureSet;
 
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
@@ -17,8 +23,12 @@ public class MultiplePatternBasedLemmatizer extends
 		SimplePatternBasedLemmatizer 
 {
 	ClassifierSet classifiersPerTag = new ClassifierSet(features, classifierWithoutPoS.getClass().getName());
-	//ClassifierSet classifiersPerTag = new ClassifierSet(features, "impact.ee.lemmatizer.PrefixSuffixGuesser");
+	Classifier z = new  WekaClassifier("trees.J48", false);
+	FeatureSet s = new SimpleFeatureSet();
+	//ClassifierSet classifiersPerTag = new ClassifierSet(s, z.getClass().getName());
+	
 	private Rule lastRule = null;
+	
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		for (WordForm w: lexicon)
@@ -35,12 +45,16 @@ public class MultiplePatternBasedLemmatizer extends
 	class theFormHandler implements FoundFormHandler
 	{
 		public String bestLemma;
+		public List<String> allLemmata = new ArrayList<String>();
 		public Rule rule;
 		@Override
 		public void foundForm(String wordform, String tag, String lemmaPoS,
 				Rule r, double p, int rank) 
 		{
 			String l = r.pattern.apply(wordform);
+			if (l == null)
+				l = "null:" + r.pattern;
+			allLemmata.add(l);
 			// System.err.println("Possible lemma, wordform=" + wordform + ", rule =  " + r + ", rank  = " + rank + " candidate = "  + l);
 			if (bestLemma == null)
 			{
@@ -57,6 +71,7 @@ public class MultiplePatternBasedLemmatizer extends
 		classifiersPerTag.callback = c;
 		classifiersPerTag.classifyLemma(wordform, simplifyTag(tag), tag, false);
 		String lemma = wordform.toLowerCase();
+		//System.err.println(c.allLemmata);
 		if (c.bestLemma != null)
 		{
 			lemma = c.bestLemma;
@@ -78,6 +93,7 @@ public class MultiplePatternBasedLemmatizer extends
 		else
 		{
 			System.err.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
+			//System.err.println(classifiersPerTag.allPossibleLabelsForTag(wf.tag));
 		}
 		t.nItems++;
 		//checkResult(wf, answer, outcomes, t);

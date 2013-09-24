@@ -23,6 +23,12 @@ public class WekaClassifier implements Classifier
 	Class<?> classifierClass;
 	boolean doMulti = false;
 	//weka.classifiers.functions.SMO
+	
+	public WekaClassifier()
+	{
+		
+	}
+	
 	public WekaClassifier(String classifierType, boolean wrapInMultiClassifier)
 	{
 		try
@@ -140,6 +146,7 @@ public class WekaClassifier implements Classifier
 
 		for (Feature fi: features)
 		{
+			System.err.println(fi + " " + fi.values);
 			if (fi == features.classFeature && fi.values.size() ==1) // er moet meer dan een mogelijke waarde voor class zijn!
 			{
 				System.err.println("Voeg dummy waarde toe voor " + name);
