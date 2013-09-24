@@ -35,14 +35,14 @@ public class DutchPattern implements Pattern
 	{
 		if (!s.endsWith(inflectionSuffix))
 			return null;
-		s = s.replaceAll(inflectionSuffix + "$", "");
+		s = s.replaceAll(inflectionSuffix + "$", ""); // probleem kasseistenen -> kasseisten
 		StemChange change = StemChange.getStemChange(this.stemChange);
 		String s1 = change.transform(s);
 		if (s1 == null)
 			return null;
 		s1 += this.lemmaSuffix;
 		if (this.infix.length() > 0)
-			s1 = s1.replace(infix, ""); // HM!
+			s1 = s1.replaceFirst(infix, ""); // HM! - this removes  'ge' twice for instance
 		return s1;
 	}
 
