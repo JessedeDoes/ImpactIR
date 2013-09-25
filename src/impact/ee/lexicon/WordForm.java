@@ -1,5 +1,7 @@
 package impact.ee.lexicon;
 
+import java.io.Serializable;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -7,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class WordForm
+public class WordForm implements Serializable
 {
 	@XmlElement
 	public String lemma = "";

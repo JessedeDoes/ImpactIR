@@ -26,7 +26,7 @@ public class ClusterFeature extends Feature
 	private boolean initialized = false;
 
 	static final String SandersClusterFile = 
-			"/mnt/Projecten/Taalbank/Namescape/Gazetteers/brownclusters.from.sanders.txt";
+			"resources/exampledata/brownClusters.from.sanders.txt";
 
 	static Map<String, Map<String,String>> lexiconMap = 
 			new  HashMap<String, Map<String,String>>();
@@ -66,13 +66,17 @@ public class ClusterFeature extends Feature
 
 	public void initLexicon(String fileName)
 	{
-
+		
 		if (lexiconMap.containsKey(fileName))
 			word2cluster = lexiconMap.get(fileName);
 		else
 		{
-			word2cluster = readClusters(fileName);
-			lexiconMap.put(fileName, word2cluster);
+			if (!initialized)
+			{
+				System.err.println("reading cluster file " + fileName);
+				word2cluster = readClusters(fileName);
+				lexiconMap.put(fileName, word2cluster);
+			}
 		}
 		initialized = true;
 	}

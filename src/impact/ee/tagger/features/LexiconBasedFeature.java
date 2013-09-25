@@ -16,13 +16,13 @@ public class LexiconBasedFeature extends StochasticFeature
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	transient ILexicon lexicon;
+	ILexicon lexicon = null; // why transient??
 	private boolean initialized = false;
 
 	static final String databaseHost = "svowim02";
 	static final String database = "EE3_5";
 	static final String JVKLex = 
-			"/mnt/Projecten/Taalbank/Cl-SE-Data/Lexica/JVKLex/type_lemma_pos.tab";
+			"resources/exampledata/type_lemma_pos.tab";
 
 	static Map<String, ILexicon> lexiconMap = 
 			new  HashMap<String, ILexicon>();
@@ -35,11 +35,13 @@ public class LexiconBasedFeature extends StochasticFeature
 
 	public void initLexicon(String fileName)
 	{
-
+		if (lexicon != null || initialized)
+			return;
 		if (lexiconMap.containsKey(fileName))
 			lexicon = lexiconMap.get(fileName);
 		else
 		{
+			System.err.println("Reading lexicon...");
 			InMemoryLexicon iml = new InMemoryLexicon();
 			iml.readFromFile(fileName);
 			lexiconMap.put(fileName, iml);

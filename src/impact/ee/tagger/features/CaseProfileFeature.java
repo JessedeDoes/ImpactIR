@@ -22,7 +22,7 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 			= new HashMap<String, Distribution>();
 	
 	public static final String profilesFromCorpusSanders = 
-			"/mnt/Projecten/Taalbank/Namescape/Corpus-Sanders/Statistieken/CaseProfile.out";
+			"resources/exampledata/CaseProfile.out";
 	String fileName=null;
 	public boolean initialized=false;
 	Distribution allLC = new Distribution();
@@ -39,13 +39,13 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 	{
 		if (initialized)
 			return;
-		System.err.println("Initializing case profile -- apparently serialization did not quite work?");
+		System.err.println("Initializing case profile -- are you training or serialization did not quite work??");
 		try
 		{
-			throw new Exception();
+			//throw new Exception();
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		String[] fields = {"word", "score"};
 		TabSeparatedFile f = new TabSeparatedFile(fileName, fields);

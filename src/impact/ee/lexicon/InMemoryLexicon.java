@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 
 //import java.io.FileReader;
 import java.util.*;
@@ -21,8 +22,9 @@ import java.util.*;
  *
  */
 
-public class InMemoryLexicon implements Iterable<WordForm>, ILexicon
+public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializable
 {
+	private static final long serialVersionUID = 1L;
 	public HashMap<String, Set<WordForm>> lemma2forms = new HashMap<String, Set<WordForm>>();
 	public HashMap<String, Set<WordForm>> form2lemmata = new HashMap<String, Set<WordForm>>();
 	public Set<WordForm> wordforms = new HashSet<WordForm>();
