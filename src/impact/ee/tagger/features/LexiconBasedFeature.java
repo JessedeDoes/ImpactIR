@@ -19,10 +19,9 @@ public class LexiconBasedFeature extends StochasticFeature
 	ILexicon lexicon = null; // why transient??
 	private boolean initialized = false;
 
-	static final String databaseHost = "svowim02";
-	static final String database = "EE3_5";
-	static final String JVKLex = 
-			"resources/exampledata/type_lemma_pos.tab";
+	//static final String databaseHost = "svowim02";
+	//static final String database = "EE3_5";
+	//static final String JVKLex = "resources/exampledata/type_lemma_pos.tab";
 
 	static Map<String, ILexicon> lexiconMap = 
 			new  HashMap<String, ILexicon>();
@@ -30,7 +29,7 @@ public class LexiconBasedFeature extends StochasticFeature
 	public void initLexicon()
 	{
 		//lexicon = new LexiconDatabase(databaseHost, database);
-		initLexicon(JVKLex);
+		initLexicon(TaggerFeatures.getLexiconFileName());
 	}
 
 	public void initLexicon(String fileName)
@@ -45,6 +44,7 @@ public class LexiconBasedFeature extends StochasticFeature
 			InMemoryLexicon iml = new InMemoryLexicon();
 			iml.readFromFile(fileName);
 			lexiconMap.put(fileName, iml);
+			TaggerFeatures.putNamedObject("tagLexicon", iml); // not really needed....
 			lexicon = iml;
 		}
 		initialized = true;
@@ -53,6 +53,7 @@ public class LexiconBasedFeature extends StochasticFeature
 	private void readObject(ObjectInputStream in) throws java.io.IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
-		initLexicon();
+		TaggerFeatures.putNamedObject("tagLexicon", this.lexicon);
+		initLexicon(); // hoeft niet meer
 	}
 }

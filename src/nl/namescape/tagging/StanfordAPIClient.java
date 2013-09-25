@@ -155,8 +155,8 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		}
 		stan.addClassifier(classifier);
 		DocumentTagger dt = new DocumentTagger(stan);
-		dt.tokenize = Options.getOptionBoolean("tokenize", true);
-		dt.splitSentences = Options.getOptionBoolean("sentences", false);
+		dt.tokenize = options.getOptionBoolean("tokenize", true);
+		dt.splitSentences = options.getOptionBoolean("sentences", false);
 		DirectoryHandling.tagAllFilesInDirectory(stan, input, output);
 	}
 }

@@ -16,8 +16,12 @@ import impact.ee.lemmatizer.SimpleFeatureSet;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.BasicNERTagger;
+import impact.ee.tagger.BasicTagger;
+import impact.ee.tagger.ChainOfTaggers;
 import impact.ee.tagger.Context;
 import impact.ee.tagger.SimpleCorpus;
+import impact.ee.tagger.Tagger;
+import impact.ee.tagger.features.TaggerFeatures;
 import impact.ee.util.LemmaLog;
 
 public class MultiplePatternBasedLemmatizer extends
@@ -42,6 +46,11 @@ public class MultiplePatternBasedLemmatizer extends
 				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
 		};
 		classifiersPerTag.buildClassifiers();
+	}
+	
+	public void train(InMemoryLexicon lexicon)
+	{
+		train(lexicon, null);
 	}
 	
 	class theFormHandler implements FoundFormHandler
@@ -117,6 +126,41 @@ public class MultiplePatternBasedLemmatizer extends
 		//checkResult(wf, answer, outcomes, t);
 	}
 
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
+	{
+		
+		BasicTagger tagger = new BasicTagger();
+		
+		tagger.loadModel(taggingModel);
+		
+		InMemoryLexicon l = null;
+		try
+		{
+			l = (InMemoryLexicon) TaggerFeatures.getNamedObject("tagLexicon");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		if (l == null)
+		{
+			l = new InMemoryLexicon();
+			l.readFromFile(lexiconPath);
+		}
+		
+		// l should be obtained from the tagger....
+		
+		MultiplePatternBasedLemmatizer lemmatizer = 
+				new MultiplePatternBasedLemmatizer();
+		lemmatizer.train(l);
+		
+		
+		ChainOfTaggers t = new ChainOfTaggers();
+		t.addTagger(tagger);
+		t.addTagger(lemmatizer);
+		return t;
+	}
+	
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();

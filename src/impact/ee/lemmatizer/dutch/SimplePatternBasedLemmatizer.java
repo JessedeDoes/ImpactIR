@@ -360,6 +360,9 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(lexiconPath);
+		
+		// l should be obtained from the tagger....
+		
 		SimplePatternBasedLemmatizer lemmatizer = 
 				new SimplePatternBasedLemmatizer();
 		lemmatizer.train(l);

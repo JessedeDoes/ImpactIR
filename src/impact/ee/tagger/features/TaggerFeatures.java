@@ -1,8 +1,23 @@
 package impact.ee.tagger.features;
 import impact.ee.classifier.*;
+import java.util.*;
+import java.lang.ref.*;
 
 public class TaggerFeatures
 {
+	static final String JVKLex = "resources/exampledata/type_lemma_pos.tab";
+	static String lexiconFilename = JVKLex;
+	
+	public static String getLexiconFileName()
+	{
+		return lexiconFilename;
+	}
+	
+	public static void setLexiconFileName(String s)
+	{
+		lexiconFilename = s;
+	}
+	
 	public static String extractPoS(String tag)
 	{
 		if (tag == null) return null;
@@ -10,6 +25,18 @@ public class TaggerFeatures
 	}
 
 	// doe dit alleen voor uppercase tokens?
+	
+	static Map<String,Object> objectMap = new HashMap<String,Object>();
+	
+	public static Object getNamedObject(String name)
+	{
+		return objectMap.get(name);
+	}
+	
+	public static void putNamedObject(String name, Object o)
+	{
+		objectMap.put(name,o);
+	}
 	
 	public static StochasticFeature getPreviousWordDistributionAt(int k)
 	{

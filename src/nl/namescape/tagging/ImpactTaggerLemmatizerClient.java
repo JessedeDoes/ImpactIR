@@ -69,7 +69,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 				SimplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
 		ImpactTaggerLemmatizerClient xmlLemmatizer = 
 				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
-		xmlLemmatizer.tokenize = Options.getOptionBoolean("tokenize", true);
+		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,3);
 		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
 		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);

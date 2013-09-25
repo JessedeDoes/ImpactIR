@@ -102,7 +102,7 @@ public class BasicNERTagger implements Serializable, Tagger
 	public BasicNERTagger(boolean create) // wrong setup: features should not be initialized in this way.
 	{
 		if (create)
-		initializeFeatures();
+			initializeFeatures();
 		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
 	}
 

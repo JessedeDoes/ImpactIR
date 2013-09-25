@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import nl.namescape.util.Options;
+
 
 
 //import org.apache.commons.collections.iterators.IteratorEnumeration;
@@ -129,6 +131,27 @@ public class BasicTagger implements Serializable, Tagger
 	
 	public BasicTagger()
 	{
+		this(false);
+	}
+	
+	public BasicTagger(boolean create) // this loads all features --- which is wrong
+	{
+		if (create)
+		{
+			initializeFeatures();
+		}
+	}
+	
+	public BasicTagger(Properties p)
+	{
+		if (p.getProperty("tagLexicon") != null)
+		{
+			TaggerFeatures.setLexiconFileName(p.getProperty("tagLexicon"));
+		}
+		this.initializeFeatures();
+	}
+
+	private void initializeFeatures() {
 		features = TaggerFeatures.getMoreFeatures(useFeedback);
 		if (useLexicon)
 		{
@@ -259,7 +282,19 @@ public class BasicTagger implements Serializable, Tagger
 	{
 		public static void main(String[] args)
 		{
-			BasicTagger t = new BasicTagger();
+			Options o = new Options(args) 
+			{
+				public void defineOptions()
+				{
+					this.options.addOption("l", "lexicon", true, "lexicon");
+				}
+			};
+			args = o.commandLine.getArgs(); // need to do this in more places!
+			if (o.getOption("lexicon") != null)
+			{
+				TaggerFeatures.setLexiconFileName(o.getOption("lexicon"));
+			}
+			BasicTagger t = new BasicTagger(true);
 			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
@@ -272,7 +307,7 @@ public class BasicTagger implements Serializable, Tagger
 	{
 		public static void main(String[] args)
 		{
-			BasicTagger t = new BasicTagger();
+			BasicTagger t = new BasicTagger(false);
 			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
 			t.loadModel(args[0]);
 			t.test(testCorpus);

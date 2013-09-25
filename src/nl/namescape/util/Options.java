@@ -8,18 +8,23 @@ import org.apache.commons.cli.HelpFormatter;
 
 public class Options
 {
-	static Properties properties = new Properties();
-	static org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
+	Properties properties = new Properties();
+	public org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
 	org.apache.commons.cli.GnuParser parser = new org.apache.commons.cli.GnuParser();
 	public CommandLine commandLine;
 	
 	public Options(String[] args)
 	{
+		defineOptions();
+		parseCommandLine(args);
+	}
+
+	public void defineOptions() 
+	{
 		options.addOption("t", "tagger", true, "tagger");
 		options.addOption("T", "tokenize", true, "tokenize or not");
 		options.addOption("s", "sentences", true, "add sentence splitting to already tokenized file");
 		options.addOption("c", "ctag", true, "use ctag attribute for PoS");
-		parseCommandLine(args);
 	}
 
 	public void parseCommandLine(String[] arguments)
@@ -49,7 +54,7 @@ public class Options
 		}
 	}
 
-	public static  int getOptionInt(String key, int deflt)
+	public int getOptionInt(String key, int deflt)
 	{
 		try
 		{
@@ -60,7 +65,7 @@ public class Options
 		}
 	}
 
-	public static  boolean getOptionBoolean(String key, boolean deflt)
+	public   boolean getOptionBoolean(String key, boolean deflt)
 	{
 		try
 		{
@@ -71,7 +76,7 @@ public class Options
 		}
 	}
 
-	public static  int getOptionInt(String key)
+	public   int getOptionInt(String key)
 	{
 		try
 		{
@@ -82,12 +87,12 @@ public class Options
 		}
 	}
 
-	public static  String getOption(String key)
+	public   String getOption(String key)
 	{
 		return properties.getProperty(key);
 	}
 
-	public static  String getOption(String key, String deflt)
+	public String getOption(String key, String deflt)
 	{
 		String r =  properties.getProperty(key);
 		if (r==null)
@@ -97,7 +102,7 @@ public class Options
 		return r;
 	}
 
-	public static void load(String fileName)
+	public void load(String fileName)
 	{
 		try
 		{
@@ -114,7 +119,7 @@ public class Options
 		return st[st.length-1].getClassName();
 	}
 
-	public static void usage()
+	public void usage()
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		String topClass = getTopClass();
