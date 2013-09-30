@@ -254,7 +254,7 @@ public class StemAlternations
 			{"tuiten", "getuit", "tuit", "tuiten", "tuitte", "tuitten"},
 			{"uitscheiden", "scheden", "uit", "schee", "uit", "scheed", "uit", "scheeën", "uit", "uitgescheeën",  "uitgescheiden", "uitscheiden"},
 			{"uittreden", "tard", "uit", "tarden", "uit", "tord", "uit", "torden", "uit", "trad", "uit", "traden", "uit", "uitgetorden", "uitgetorten", "uitgetreden", "uitgetroden", "uittreden"},
-			{"vaan", "gevaan", "vaan"},
+			{"vaan", "gevaan", "vaan"}, // deze is wel een beet zot....
 			{"vallen", "gevallen", "vallen", "viel", "vielen"},
 			{"vangen", "gevangen", "gevongen", "vang", "vangde", "vangen", "vangt", "ving", "vingen", "vong", "vongen"},
 			{"varen", "gevaard", "gevaren", "vaar", "vaarde", "vaarden", "vaart", "varen", "voer", "voeren"},

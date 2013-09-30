@@ -12,6 +12,7 @@ import impact.ee.lemmatizer.ClassifierSet;
 import impact.ee.lemmatizer.FoundFormHandler;
 import impact.ee.lemmatizer.Rule;
 import impact.ee.lemmatizer.SimpleFeatureSet;
+import impact.ee.lemmatizer.tagset.GiGaNTCorpusLexiconRelation;
 
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
@@ -25,34 +26,48 @@ import impact.ee.tagger.features.TaggerFeatures;
 import impact.ee.util.LemmaLog;
 
 public class MultiplePatternBasedLemmatizer extends
-		SimplePatternBasedLemmatizer 
+SimplePatternBasedLemmatizer 
 {
 	ClassifierSet classifiersPerTag = new ClassifierSet(features, classifierWithoutPoS.getClass().getName());
 	Classifier z = new  WekaClassifier("trees.J48", false);
 	FeatureSet s = new SimpleFeatureSet();
 	//ClassifierSet classifiersPerTag = new ClassifierSet(s, z.getClass().getName());
-	
+
 	private Rule lastRule = null;
+
+	public MultiplePatternBasedLemmatizer()
+	{
+		this.tagRelation = new GiGaNTCorpusLexiconRelation();
+	}
 	
 	public void train(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
+		int nFallbacks = 0;
+		int nWords = 0;
 		for (WordForm w: lexicon)
 		{
 			w.tag = simplifyTag(w.tag);
 			if (heldOutSet != null && heldOutSet.contains(w)) continue;
 			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo niet, vereenvoudigde tag komt er niet in
 			// System.err.println(w + " " + rule);
+
+			// Tel hier hoeveel fallbacks er nodig geweest zijn.... (dit zijn dingen die eigenlijk vermeden moeten worden)
+
 			if (rule != null)
 				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
+			if (!rule.pattern.getClass().getName().contains("DutchPattern" ))
+				nFallbacks++;
+			nWords ++;
 		};
+		System.err.println("Words " + nWords + "  fallbacks " + nFallbacks);
 		classifiersPerTag.buildClassifiers();
 	}
-	
+
 	public void train(InMemoryLexicon lexicon)
 	{
 		train(lexicon, null);
 	}
-	
+
 	class theFormHandler implements FoundFormHandler
 	{
 		public String bestLemma;
@@ -74,25 +89,36 @@ public class MultiplePatternBasedLemmatizer extends
 			}
 		}
 	}
-	
+
 	@Override
 	public String simplifyTag(String tag)
 	{
 		if (tag.startsWith("VRB") || tag.startsWith("XXNOU")) 
-		// remove last feature,  beneficial for verb, effect for NOU unclear
+			// remove last feature,  beneficial for verb, effect for NOU unclear
 		{
 			tag = tag.replaceAll(",[^,]*\\)",")");
 		}
 		return tag;
 	}
-	
+
 	private String findLemmaConsistentWithTag(String wordform, String tag)
 	{
 		if (tag.matches(".*NOU.*sg.*")) // ahem dedoes!
 		{
 			//return wordform.toLowerCase();
 		}
+
+		String bestGuess = checkLexiconAndCache(wordform, tag);
 		
+		if (bestGuess != null)
+			return bestGuess;
+
+
+		bestGuess = wordform.toLowerCase();
+		if (!corpusTagset.isInflectingPoS(tag))
+		{
+			return wordform.toLowerCase();
+		}
 		theFormHandler c =  new theFormHandler();
 		classifiersPerTag.callback = c;
 		classifiersPerTag.classifyLemma(wordform, tag, tag, false);
@@ -105,15 +131,40 @@ public class MultiplePatternBasedLemmatizer extends
 		}
 		return lemma;
 	}
-	
+
+	private String checkLexiconAndCache(String wordform, String tag) 
+	{
+		String bestGuess = null;
+		if ((bestGuess = lemmaCache.get(wordform,tag)) != null)
+		{
+			//return bestGuess;
+		} else
+		{
+			Set<WordForm> lemmata = lexicon.findLemmata(wordform);
+			if (lemmata != null)
+			{
+				for (WordForm w: lemmata)
+				{
+					if (tagRelation.compatible(tag, w.tag))
+					{
+						bestGuess = w.lemma;
+						lemmaCache.put(wordform, tag, w.lemma);
+						break;
+					}
+				}
+			}
+		}
+		return bestGuess;
+	}
+
 	protected void testWordform(WordForm wf, TestDutchLemmatizer t)
 	{
 		//if (!wf.tag.contains("part")) return;
 		//String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
 		//Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
-		
+
 		String lemma = this.findLemmaConsistentWithTag(wf.wordform, wf.tag);
-		
+
 		if (lemma.equals(wf.lemma))
 			t.nCorrect++;
 		else if (wf.tag.startsWith("NOU"))
@@ -128,11 +179,11 @@ public class MultiplePatternBasedLemmatizer extends
 
 	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
 	{
-		
+
 		BasicTagger tagger = new BasicTagger();
-		
+
 		tagger.loadModel(taggingModel);
-		
+
 		InMemoryLexicon l = null;
 		try
 		{
@@ -141,26 +192,26 @@ public class MultiplePatternBasedLemmatizer extends
 		{
 			e.printStackTrace();
 		}
-		
+
 		if (l == null)
 		{
 			l = new InMemoryLexicon();
 			l.readFromFile(lexiconPath);
 		}
-		
+
 		// l should be obtained from the tagger....
-		
+
 		MultiplePatternBasedLemmatizer lemmatizer = 
 				new MultiplePatternBasedLemmatizer();
 		lemmatizer.train(l);
-		
-		
+
+
 		ChainOfTaggers t = new ChainOfTaggers();
 		t.addTagger(tagger);
 		t.addTagger(lemmatizer);
 		return t;
 	}
-	
+
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();

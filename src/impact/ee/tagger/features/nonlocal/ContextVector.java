@@ -7,6 +7,7 @@ import impact.ee.util.WeightMap;
 import java.util.*;
 
 public class ContextVector 
+// look at sspace for this kind of stuff - more feasible with SVD
 {
 	String focusWord;
 	WeightMap<String> termFrequencies = new WeightMap<String>();

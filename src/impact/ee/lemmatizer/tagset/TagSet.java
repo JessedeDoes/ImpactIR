@@ -9,4 +9,6 @@ public abstract class TagSet
 		return tag;
 	}
 	public abstract boolean isInflectingPoS(String pos);
+	
+	public abstract Tag parseTag(String tag);
 }

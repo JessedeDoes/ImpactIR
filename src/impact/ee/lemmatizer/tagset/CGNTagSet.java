@@ -11,4 +11,11 @@ public class CGNTagSet extends TagSet
 		String pos = this.getPoS(tag);
 		return pos.equals("WW") || pos.equals("N") || pos.equals("ADJ");
 	}
+
+	@Override
+	public Tag parseTag(String tag) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
