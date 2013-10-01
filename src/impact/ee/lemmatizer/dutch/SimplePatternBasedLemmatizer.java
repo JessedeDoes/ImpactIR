@@ -286,7 +286,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return m;
 	}
 
-	private String findLemmaConsistentWithTag(String wordform, String tag) 
+	protected String findLemmaConsistentWithTag(String wordform, String tag) 
 	{
 		/**
 		 * First check the lexicon
@@ -310,7 +310,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		{
 			for (WordForm w: lemmata)
 			{
-				if (tagRelation.compatible(tag, w.tag))
+				if (tagRelation.corpusTagCompatibleWithLexiconTag(tag, w.tag, false))
 				{
 					lemmaCache.put(wordform, tag, w.lemma);
 					return w.lemma;
@@ -333,7 +333,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 				continue;
 			if (bestGuess == null)
 				bestGuess = guessedLemma;
-			if (tagRelation.compatible(tag, r1.PoS)) // ?? not searching for best scoring match?
+			if (tagRelation.corpusTagCompatibleWithLexiconTag(tag, r1.PoS,false)) // ?? not searching for best scoring match?
 			{
 				bestGuess =  guessedLemma;
 			} 

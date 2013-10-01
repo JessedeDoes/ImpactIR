@@ -65,7 +65,7 @@ public class LookupLemmatizer implements Tagger
 				for (int i=0; i < asList.size(); i++)
 				{
 					WordMatch x = asList.get(i);
-					if (tagRelation.compatible(m.get("tag"), x.wordform.lemmaPoS))
+					if (tagRelation.corpusTagCompatibleWithLexiconTag(m.get("tag"), x.wordform.lemmaPoS,false))
 					{
 						bestMatch = x;
 						foundCompatible = true;

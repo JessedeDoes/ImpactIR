@@ -50,7 +50,7 @@ public class Brown2OED implements TagRelation
 	/**
 	 * t1 is brown tag, t2 is oed tag
 	 */
-	public boolean compatible(String t1, String t2) 
+	public boolean corpusTagCompatibleWithLexiconTag(String t1, String t2, boolean allowConversion) 
 	{
 		// TODO Auto-generated method stub
 		return compatible.contains(t1.trim().toLowerCase() + "~" + t2.trim().toLowerCase());

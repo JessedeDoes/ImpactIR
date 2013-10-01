@@ -32,7 +32,7 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 
 	public void readFromFile(String fileName)
 	{
-		System.err.println("read lexicon from: " + fileName);
+		System.err.println("reading lexicon from: " + fileName);
 		if (fileName.startsWith("database:"))
 		{
 			String dbName = fileName.substring("database:".length());
@@ -53,7 +53,7 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 			{
 				// System.err.println(s);
 				WordForm w = LexiconUtils.getWordformFromLine(s);
-				if (w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
+				if (w == null || w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
 					continue;
 				addWordform(w);
 			}

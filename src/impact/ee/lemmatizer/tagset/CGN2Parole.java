@@ -33,7 +33,7 @@ public class CGN2Parole implements TagRelation
 	}
 
 	@Override
-	public boolean compatible(String t1, String t2) 
+	public boolean corpusTagCompatibleWithLexiconTag(String t1, String t2, boolean allowConversion) 
 	{
 		// TODO Auto-generated method stub
 		String p0 = tagSet1.getPoS(t1);
@@ -51,6 +51,6 @@ public class CGN2Parole implements TagRelation
 	public static void main(String[] args)
 	{
 		CGN2Parole x = new CGN2Parole();
-		System.out.println(x.compatible("N","NOU"));
+		System.out.println(x.corpusTagCompatibleWithLexiconTag("N","NOU",false));
 	}
 }

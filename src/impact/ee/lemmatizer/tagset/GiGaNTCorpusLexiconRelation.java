@@ -1,5 +1,13 @@
 package impact.ee.lemmatizer.tagset;
 
+import impact.ee.lexicon.LexiconUtils;
+import impact.ee.lexicon.WordForm;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +28,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 	{
 		Set<Type> intersection = new HashSet<Type>(V1);
 		intersection.retainAll(V2);
+		//System.err.println(V1 + " intersect" + V2 +   "  " + intersection);
 		return intersection;
 	}
 	static <Type> boolean intersects(Set<Type> V1, Set<Type> V2)
@@ -31,33 +40,89 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 	{
 		return V1.isEmpty() && V2.isEmpty() || !intersection(V1,V2).isEmpty();
 	}
+	
+	/**
+	 * Better to use this only during lexicon lookup....
+	 * @param corpusTag
+	 * @param lexiconTag
+	 * @return
+	 */
+	public boolean possibleConversion(Tag corpusTag, Tag lexiconTag)
+	{
+		
+		String corpusPoS = corpusTag.getValues("pos");
+		String lexiconPoS = lexiconTag.getValues("pos");
+		if (corpusPoS.equals("NOU-C")) // denk ook aan "anderen" etc....
+		{
+			if (lexiconPoS.equals("AA"))
+			{
+				return true;
+			}
+			if (lexiconPoS.equals("VRB"))
+			{
+				return lexiconTag.hasFeature("finiteness",  "inf");
+			}
+		}
+		
+		if (corpusPoS.equals("AA"))
+		{
+			if (lexiconPoS.equals("VRB")) // ahem -- liever niet
+			{
+				return lexiconTag.hasFeature("finiteness","part");
+			}
+		}
+		return false;
+	}
 	@Override
-	public boolean compatible(String t1, String t2) 
+	public boolean corpusTagCompatibleWithLexiconTag(String corpusTag, String lexiconTag, boolean allowConversion) 
 	{
 		// TODO Auto-generated method stub
-		Tag tag1 = tagSet.parseTag(t1);
-		Tag tag2 = tagSet.parseTag(t2);
-		String p1 = tag1.getValues("pos");
-		String p2 = tag1.getValues("pos");
-		if (!p1.equals(tag2.getValues("pos")))
-			return false;
-		if (p1.equals("NOU-C") || p1.equals("NOU-P"))
+		Tag tag1 = tagSet.parseTag(corpusTag);
+		Tag tag2 = tagSet.parseTag(lexiconTag);
+		//System.err.println(tag1 + " " + tag2);
+		String corpusPoS = tag1.getValues("pos");
+		String lexiconPoS = tag2.getValues("pos");
+		//System.err.println(p1  + " " + p2);
+		if (!corpusPoS.equals(lexiconPoS))
+		{
+			if (allowConversion) return possibleConversion(tag1,tag2); else return false;
+		}
+		if (corpusPoS.equals("NOU-C") || corpusPoS.equals("NOU-P"))
 		{
 			return intersects(tag1.get("number"), tag2.get("number"));
+					// && (!tag1.hasFeature("gender") || agreement(tag1.get("gender"), tag2.get("gender")));
 			
-			//return V3
+			//return V3ta
 		}
-		if (p1.equals("VRB")) // tense must agree.... etc...
+		
+		if (corpusPoS.equals("VRB")) // tense must agree.... etc...
 		{
 			return agreement(tag1.get("number"), tag2.get("number"))
 					&& agreement(tag1.get("mood"), tag2.get("mood"))
 					&& agreement(tag1.get("tense"), tag2.get("tense"))
-					&& agreement(tag1.get("person"), tag2.get("person"));
+					&& agreement(tag1.get("formal"), tag2.get("formal"))
+					&& (!tag1.hasFeature("person") || agreement(tag1.get("person"), tag2.get("person")));
 		}
-		if (p1.equals("AA")) // tense must agree.... etc...
+		
+		if (corpusPoS.equals("AA")) // tense must agree.... etc...
 		{
-			return agreement(tag1.get("degree"), tag2.get("degree"));
+			return agreement(tag1.get("degree"), tag2.get("degree"))
+					&& agreement(tag1.get("formal"), tag2.get("formal"));
 		}
-		return t1.equals(t2);
+		return corpusPoS.equals(lexiconPoS);
+	}
+	
+	public static void main(String[] args) throws IOException
+	{
+		GiGaNTCorpusLexiconRelation r = new GiGaNTCorpusLexiconRelation();
+		Reader reader = new InputStreamReader(System.in);
+		BufferedReader b = new BufferedReader(reader) ; // UTF?
+		String s;
+		while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
+		{
+			// System.err.println(s);
+			String[] p = s.split("\\s+");
+			System.err.println(r.corpusTagCompatibleWithLexiconTag(p[0],p[1], true));
+		}
 	}
 }

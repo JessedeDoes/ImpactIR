@@ -79,7 +79,8 @@ public class LexiconUtils
 	public static WordForm getWordformFromLine(String s) 
 	{
 		String[] parts = s.split("\t");
-
+		if (parts.length < 3)
+			return null;
 		WordForm w = new WordForm();
 		w.wordform = parts[0]; 
 		w.lemma = parts[1];
@@ -97,10 +98,10 @@ public class LexiconUtils
 			if (parts.length > 4)
 			{
 				w.lemmaFrequency = Integer.parseInt(parts[4]);
-				if (w.lemmaFrequency > 10000)
+				if (w.lemmaFrequency > 10000) // Huh???/
 				{
 					System.err.println(s);
-					System.exit(1);
+					//System.exit(1);
 				}
 			}
 			if (parts.length > 5)
