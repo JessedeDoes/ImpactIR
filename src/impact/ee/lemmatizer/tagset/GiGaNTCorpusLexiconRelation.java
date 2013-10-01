@@ -31,6 +31,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		//System.err.println(V1 + " intersect" + V2 +   "  " + intersection);
 		return intersection;
 	}
+	
 	static <Type> boolean intersects(Set<Type> V1, Set<Type> V2)
 	{
 		return !intersection(V1,V2).isEmpty();
@@ -58,9 +59,11 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 			{
 				return true;
 			}
+			
 			if (lexiconPoS.equals("VRB"))
 			{
-				return lexiconTag.hasFeature("finiteness",  "inf");
+				return corpusTag.hasFeature("number","sg")
+						 && lexiconTag.hasFeature("finiteness",  "inf");
 			}
 		}
 		
@@ -73,16 +76,17 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		}
 		return false;
 	}
+	
 	@Override
 	public boolean corpusTagCompatibleWithLexiconTag(String corpusTag, String lexiconTag, boolean allowConversion) 
 	{
-		// TODO Auto-generated method stub
+		
 		Tag tag1 = tagSet.parseTag(corpusTag);
 		Tag tag2 = tagSet.parseTag(lexiconTag);
-		//System.err.println(tag1 + " " + tag2);
+		
 		String corpusPoS = tag1.getValues("pos");
 		String lexiconPoS = tag2.getValues("pos");
-		//System.err.println(p1  + " " + p2);
+		
 		if (!corpusPoS.equals(lexiconPoS))
 		{
 			if (allowConversion) return possibleConversion(tag1,tag2); else return false;
@@ -91,8 +95,6 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		{
 			return intersects(tag1.get("number"), tag2.get("number"));
 					// && (!tag1.hasFeature("gender") || agreement(tag1.get("gender"), tag2.get("gender")));
-			
-			//return V3ta
 		}
 		
 		if (corpusPoS.equals("VRB")) // tense must agree.... etc...
