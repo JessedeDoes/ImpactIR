@@ -40,10 +40,12 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 	FeatureSet s = new SimpleFeatureSet();
 	private Map<String,Set<String>> matchInformation = new HashMap<String,Set<String>>();
 	LemmaMatchLog lemmaLog = new LemmaMatchLog();
-	//ClassifierSet classifiersPerTag = new ClassifierSet(s, z.getClass().getName());
+
 	boolean noHeuristics = false;
 	boolean reduceNounGender = true; 
+
 	// taking gender into account is better in a lexicon leave out test, but not practically possible in corpus tagging
+
 	private Rule lastRule = null;
 
 	public MultiplePatternBasedLemmatizer()
@@ -58,22 +60,18 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		int nWords = 0;
 		this.lexicon = lexicon; 
 		boolean sampling = false;
-		addPresentParticleToLexicon(lexicon);
+		addPresentParticleToLexicon(lexicon); // and other hacks as well....
 		for (WordForm w: lexicon)
 		{
-			
-			// ehm.. ja..
-			w.tag = simplifyTag(w.tag); // HM.. OK.. dit moet anders --- houd alleen de interessante features
-			//System.err.println(w.tag);
+			w.tag = simplifyTag(w.tag); 
+
 			if (heldOutSet != null && heldOutSet.contains(w)) 
 				continue;
 			if (sampling && !(nWords % 10 == 0))
 				continue;
-			if (noHeuristics) continue; // even overslaan om alleen lemmatiseren met lexicon te checken....
-			Rule rule = findRule(w); // dit moet omgekeerd -- nee hij klopt zo niet, vereenvoudigde tag komt er niet in
-			// System.err.println(w + " " + rule);
+			if (noHeuristics) continue;
 
-			// Tel hier hoeveel fallbacks er nodig geweest zijn.... (dit zijn dingen die eigenlijk vermeden moeten worden)
+			Rule rule = findRule(w); 
 
 			if (rule != null)
 				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
@@ -81,21 +79,25 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				nFallbacks++;
 			nWords ++;
 		};
-		
+
 		System.err.println("Words " + nWords + "  fallbacks " + nFallbacks);
 		classifiersPerTag.buildClassifiers();
 	}
-
-	private void addPresentParticleToLexicon(InMemoryLexicon lexicon) 
+/**
+ * Generate some extra forms
+ * Also: s-genitives
+ * @param lexicon
+ */
+	private void addPresentParticleToLexicon(InMemoryLexicon lexicon)
 	{	
 		Set<WordForm> additions = new HashSet<WordForm>();
-		
-		for (WordForm w: lexicon) // temporary hack: add present participles
+
+		for (WordForm w: lexicon) // temporary hack: add present participles etc
 		{
 			w.tag = w.tag.replaceAll("NA=", "number=");
 			w.tag = w.tag.replaceAll("PA=", "person=");
 			w.tag = w.tag.replaceAll("/","|");
-			
+
 			if (w.tag.matches("VRB.*[23].*") && !w.tag.contains("1"))
 			{
 				if (w.wordform.endsWith("t") && !w.lemma.endsWith("ten")) // ahem moet; omvat; .....
@@ -104,19 +106,19 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					//System.err.println(w);
 				}
 			}
-			
+
 			if (w.tag.matches("AA.*") && w.wordform.endsWith("e") && !w.lemma.endsWith("e"))
 			{
 				w.tag = w.tag.replaceAll("\\)", ",formal=infl-e)");
 				//System.err.println(w);
 			}
-			
+
 			if (w.tag.matches("AA.*") && w.wordform.endsWith("s") && !w.lemma.endsWith("s"))
 			{
 				w.tag = w.tag.replaceAll("\\)", ",formal=infl-s)");
 				//System.err.println(w);
 			}
-			
+
 			if (w.tag.matches("VRB.*inf.*"))
 			{
 				WordForm w1 = new WordForm();
@@ -124,25 +126,34 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				w1.lemma = w.lemma;
 				w1.lemmaPoS =w.lemmaPoS;
 				w1.tag="VRB(finiteness=part,tense=pres)";
-				
+
 				additions.add(w1);
-				
+
 				WordForm w2 = new WordForm();
 				w2.wordform = w.wordform + "de";
 				w2.lemma = w.lemma;
 				w2.lemmaPoS =w.lemmaPoS;
-				w2.tag="VRB(finiteness=part,tense=pres)";
+				w2.tag="VRB(finiteness=part,tense=pres,formal=infl-e)";
 				additions.add(w2);
-				
-				WordForm w3 = new WordForm();
+
+				WordForm w3 = new WordForm(); // not needed anymore??
 				w3.wordform = w.wordform;
 				w3.lemma = w.lemma;
 				w3.lemmaPoS =w.lemmaPoS;
 				w3.tag="VRB(mood=ind,tense=pres,number=pl,finiteness=fin)";
 				additions.add(w3);
 			}
+			if (w.tag.matches("VRB.*part.*past.*") && w.lemma.matches(".*en$") && !w.wordform.matches(".*e$"))
+			{
+				WordForm w1 = new WordForm();
+				w1.wordform = w.wordform + "e"; // niet altijd!
+				w1.lemma = w.wordform;
+				w1.lemmaPoS =w.lemmaPoS;
+				w1.tag="AA(degree=pos,formal=infl-e)";
+				additions.add(w1);
+			}
 		}
-		
+
 		for (WordForm w:additions)
 			lexicon.addWordform(w);
 	}
@@ -179,7 +190,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 	{
 		String[] coreF = { "pos", "tense", "mood", "person", "number", "formal", "finiteness" };
 		Set<String> coreFeatures = new HashSet<String>(Arrays.asList(coreF));
-		
+
 		if (tag.startsWith("VRB"))
 		{
 			Tag t = corpusTagset.parseTag(tag);
@@ -194,7 +205,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			}
 			return t.toString();
 		}
-		
+
 		if (reduceNounGender && tag.startsWith("NOU-C"))
 		{
 			Tag t = corpusTagset.parseTag(tag);
@@ -217,10 +228,6 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 	{
 		if (corpusTag == null)
 			return wordform.toLowerCase();
-		if (corpusTag.matches(".*NOU.*sg.*")) // ahem dedoes!
-		{
-			//return wordform.toLowerCase();
-		}
 
 		String bestGuess = checkLexiconAndCache(wordform, corpusTag);
 
@@ -229,23 +236,23 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 
 		bestGuess = wordform.toLowerCase();
+
 		if (!corpusTagset.isInflectingPoS(corpusTag))
 		{
 			lemmaLog.addToLog(wordform, wordform.toLowerCase(), "_none_", corpusTag, MatchType.Unknown);
 			return wordform.toLowerCase();
 		}
-		//System.err.println("Not found in lexicon, need to do some work");
+
+
 		String lemma = wordform.toLowerCase();
+
 		boolean foundHeuristicMatch = false;
 		if (!noHeuristics) for (String lexiconTag: classifiersPerTag.tagsSorted)
-		{
-			// problem is how to determine the most suitable classifier for a corpus tag
-			// if there is some tolerance in matching the tag sets.... (bla)
-			
+		{			
 			if (this.tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag,lexiconTag,false)) // problem: there may be multiple possibilities...
 			{
 				System.err.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
-				
+
 				theFormHandler c =  new theFormHandler();
 				classifiersPerTag.callback = c;
 				classifiersPerTag.classifyLemma(wordform, lexiconTag, lexiconTag, false);
@@ -254,7 +261,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				{
 					lemma = c.bestLemma;
 					lastRule = c.rule;
-					
+
 					lemmaLog.addToLog(wordform, lemma, lexiconTag, corpusTag, MatchType.Guesser);
 					foundHeuristicMatch = true;
 				}
@@ -301,11 +308,13 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			Set<WordForm> lemmata = lexicon.findLemmata(wordform);
 			if (lemmata == null)
 				lemmata = lexicon.findLemmata(wordform.toLowerCase());
+
 			if (lemmata != null)
 			{
+				// try without conversion first...
 				for (WordForm w: lemmata)
 				{
-					if (tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag, w.tag, true))
+					if (tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag, w.tag, false))
 					{
 						lemma = w.lemma;
 						lemmaCache.put(wordform, corpusTag, w.lemma);
@@ -313,8 +322,22 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 						foundMatchInLexicon = true;
 						//break;
 					}
-					// todo: transcategorizations.. anders anderen --> and, etc!!!
 				}
+
+				if (!foundMatchInLexicon)
+				{
+					for (WordForm w: lemmata)
+					{
+						if (tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag, w.tag, true))
+						{
+							lemma = w.lemma;
+							lemmaCache.put(wordform, corpusTag, w.lemma);
+							lemmaLog.addToLog(wordform, w.lemma, w.tag, corpusTag, MatchType.LexiconWithConversion);
+							foundMatchInLexicon = true;
+						}
+					}
+				}
+
 				if (!foundMatchInLexicon && !corpusTag.contains("NOU-P"))
 				{
 					System.err.println("Word in lexicon, maar niet met passende tag.. " + wordform + ":" + corpusTag + " " + lemmata);
@@ -326,19 +349,14 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 	protected void testWordform(WordForm wf, TestDutchLemmatizer t)
 	{
-		//if (!wf.tag.contains("part")) return;
-		//String answer = classifierWithoutPoS.classifyInstance(features.makeTestInstance(wf.wordform));
-		//Distribution outcomes = classifierWithoutPoS.distributionForInstance(features.makeTestInstance(wf.wordform));
-
+		lastRule = null;
 		String lemma = this.findLemmaWithTag(wf.wordform, wf.tag);
 
 		if (lemma.equals(wf.lemma))
 			t.nCorrect++;
-		else if (wf.tag.startsWith("NOU"))
+		else if (true || wf.tag.startsWith("NOU"))
 		{
 			System.err.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
-			//System.err.println(LemmaLog.getLastLines(5));
-			//System.err.println(classifiersPerTag.allPossibleLabelsForTag(wf.tag));
 		}
 		t.nItems++;
 		//checkResult(wf, answer, outcomes, t);
@@ -390,29 +408,68 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			String wordform = c.getAttributeAt("word", 0);
 			String corpusTag = c.getAttributeAt("tag", 0);
 			String assignedLemma = m.get("lemma");
-			
+
 			String trueLemma = c.getAttributeAt("lemma", 0);
 			boolean teltMee = trueLemma != null && trueLemma.length() > 0 && !trueLemma.equals("_");
 			if (trueLemma == null)
 				trueLemma = "null";
-			
-			boolean misser = teltMee && !trueLemma.equalsIgnoreCase(assignedLemma);
+
+			boolean mismatch = teltMee && !trueLemma.equalsIgnoreCase(assignedLemma);
 			String pm = trueLemma.equalsIgnoreCase(assignedLemma)?"+=":"!=";
 			if (!teltMee)
 				pm = "~";
-			
-			
-			String extra = "";
-			if (teltMee|| misser)
+
+			String mismatchType = "";
+			if (mismatch)
 			{
-				extra = lemmaLog.getLoggedMatches(wordform, corpusTag) + "";
+				mismatchType="OTHER";
+
+				String cgnTag = c.getAttributeAt("cgnTag", 0);
+
+				if (cgnTag.startsWith("WW"))
+				{
+					if (corpusTag.startsWith("NOU"))
+					{
+						mismatchType = "probableConversion-VRB-NOU";
+					}
+					if (corpusTag.startsWith("AA"))
+					{
+						mismatchType = "probableConversion-VRB-ADJ";
+					}
+				}
+
+				if (cgnTag.startsWith("ADJ"))
+				{
+					if (corpusTag.startsWith("NOU"))
+					{
+						mismatchType = "probableConversion-ADJ-NOU";
+					}
+				}
+
+				if  (!corpusTag.matches("^(NOU|AA|VRB|NUM).*"))
+				{
+					//System.err.println(corpusTag);
+					//System.exit(1);
+					mismatchType = "probably-functionword-mismatch";
+				}
+
+				if (cgnTag.contains("dim"))
+				{
+					mismatchType = "probably-dim-issue";
+				}
+			}
+
+			String extra = "";
+			if (teltMee || mismatch)
+			{
+				extra = mismatchType +  " " + lemmaLog.getLoggedMatches(wordform, corpusTag) + "";
 				if (extra.equals("null"))
 				{
 					System.err.println("No log information for " + wordform + ":" + corpusTag);
 					//System.exit(1);
 				}
 			}
-	
+
 			System.out.println(
 					c.getAttributeAt("word", 0) 
 					+ "\t" + c.getAttributeAt("cgnTag", 0)
@@ -420,12 +477,12 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					+ "\t" + assignedLemma + pm + trueLemma + "\t" + extra);
 		}
 	}
-	
+
 	public static void main(String[] args)
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(args[0]);
-		
+
 		boolean lexiconTest = true;
 		if (args.length > 1)
 			lexiconTest = false;

@@ -53,6 +53,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		
 		String corpusPoS = corpusTag.getValues("pos");
 		String lexiconPoS = lexiconTag.getValues("pos");
+		
 		if (corpusPoS.equals("NOU-C")) // denk ook aan "anderen" etc....
 		{
 			if (lexiconPoS.equals("AA"))
@@ -65,6 +66,10 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 				return corpusTag.hasFeature("number","sg")
 						 && lexiconTag.hasFeature("finiteness",  "inf");
 			}
+			if (lexiconPoS.equals("PD")) // allow use of pronoun as noun (dubious)
+			{
+				return true;
+			}
 		}
 		
 		if (corpusPoS.equals("AA"))
@@ -72,6 +77,10 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 			if (lexiconPoS.equals("VRB")) // ahem -- liever niet
 			{
 				return lexiconTag.hasFeature("finiteness","part");
+			}
+			if (lexiconPoS.equals("PD")) // allow use of determiner as adjective
+			{
+				return true;
 			}
 		}
 		return false;
@@ -91,6 +100,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		{
 			if (allowConversion) return possibleConversion(tag1,tag2); else return false;
 		}
+		
 		if (corpusPoS.equals("NOU-C") || corpusPoS.equals("NOU-P"))
 		{
 			return intersects(tag1.get("number"), tag2.get("number"));
@@ -122,7 +132,6 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		String s;
 		while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 		{
-			// System.err.println(s);
 			String[] p = s.split("\\s+");
 			System.err.println(r.corpusTagCompatibleWithLexiconTag(p[0],p[1], true));
 		}

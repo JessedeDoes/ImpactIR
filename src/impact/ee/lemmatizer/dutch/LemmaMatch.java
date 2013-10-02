@@ -5,7 +5,7 @@ public class LemmaMatch
 	String wordform;
 	String lemma;
 	String corpusTag;
-	enum MatchType {Lexicon, Guesser, Unknown};
+	enum MatchType {Lexicon, LexiconWithConversion, Guesser, Unknown};
 	MatchType type;
 	String lexiconTag;
 	
