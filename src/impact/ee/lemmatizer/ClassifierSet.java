@@ -68,7 +68,7 @@ public class ClassifierSet
 	{
 		for (String tag: datasetsPerTag.keySet())
 		{
-			System.err.println("Build classifier for " + tag);
+			//System.err.println("Build classifier for " + tag);
 			Dataset d = datasetsPerTag.get(tag);
 			Classifier c = null;
 			try

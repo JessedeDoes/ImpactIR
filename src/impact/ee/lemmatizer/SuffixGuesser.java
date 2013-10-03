@@ -163,7 +163,7 @@ public class SuffixGuesser implements Classifier
 		double theta0 = 0;
 		for (Distribution.Outcome i: d0.outcomes) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
 
-		System.err.println("theta0 =  " + theta0);
+		//System.err.println("theta0 =  " + theta0);
 		//System.exit(0);
 		for (int i=0; i <=  M; i++)
 			theta[i] = theta0;
