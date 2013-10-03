@@ -1,6 +1,6 @@
 package impact.ee.lemmatizer.dutch;
 
-public class LemmaMatch 
+public class LemmaMatch
 {
 	String wordform;
 	String lemma;
