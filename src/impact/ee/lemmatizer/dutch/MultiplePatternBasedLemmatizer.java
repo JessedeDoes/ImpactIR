@@ -104,10 +104,12 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 		for (WordForm w: lexicon) 
 		{
+			// replacements
 			w.tag = w.tag.replaceAll("NA=", "number=");
 			w.tag = w.tag.replaceAll("PA=", "person=");
 			w.tag = w.tag.replaceAll("/","|");
 
+			
 			if (w.tag.matches("VRB.*[23].*") && !w.tag.contains("1"))
 			{
 				if (w.wordform.endsWith("t") && !w.lemma.endsWith("ten")) // ahem moet; omvat; .....
@@ -117,6 +119,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				}
 			}
 
+			
 			if (w.tag.matches("AA.*") && w.wordform.endsWith("e") && !w.lemma.endsWith("e"))
 			{
 				w.tag = w.tag.replaceAll("\\)", ",formal=infl-e)");
@@ -129,6 +132,18 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				//System.err.println(w);
 			}
 
+			
+			// additions
+			
+			if (w.tag.matches("AA.*comp.*") && !w.wordform.matches(".*e$"))
+			{
+				WordForm w1 = new WordForm();
+				w1.wordform = w.wordform + "e";
+				w1.lemma = w.lemma;
+				w1.lemmaPoS =w.lemmaPoS;
+				w1.tag="AA(degree=comp,formal=infl-e)"; 
+			}
+			
 			if (w.tag.matches("VRB.*inf.*"))
 			{
 				WordForm w1 = new WordForm();
@@ -146,6 +161,13 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				w2.tag="VRB(finiteness=part,tense=pres,formal=infl-e)";
 				additions.add(w2);
 
+				w2 = new WordForm();
+				w2.wordform = w.wordform + "den";
+				w2.lemma = w.lemma;
+				w2.lemmaPoS =w.lemmaPoS;
+				w2.tag="VRB(finiteness=part,tense=pres,formal=infl-en)";
+				additions.add(w2);
+				
 				WordForm w3 = new WordForm(); // not needed anymore??
 				w3.wordform = w.wordform;
 				w3.lemma = w.lemma;
@@ -164,6 +186,14 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					w1.tag="AA(degree=pos,formal=infl-e)";
 					additions.add(w1);
 
+
+					WordForm w2 = new WordForm();
+					w2.wordform = w.wordform + "e"; 
+					w2.lemma = w.lemma;
+					w2.lemmaPoS =w.lemmaPoS;
+					w2.tag="VRB(finiteness=part,tense=past,formal=infl-e)";
+					additions.add(w2);
+					
 					w1 = new WordForm(); // hier nog een transcatversie van maken....
 					w1.wordform = w.wordform + "en";
 					w1.lemma = w.wordform;
@@ -171,11 +201,12 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					w1.tag="NOU-C(number=pl)";
 					additions.add(w1);
 				
-					WordForm w2 = new WordForm();
-					w2.wordform = w.wordform + "e"; 
+
+					w2 = new WordForm();
+					w2.wordform = w.wordform + "en"; 
 					w2.lemma = w.lemma;
 					w2.lemmaPoS =w.lemmaPoS;
-					w2.tag="VRB(finiteness=part,tense=past,formal=infl-e)";
+					w2.tag="VRB(finiteness=part,tense=past,formal=infl-en)";
 					additions.add(w2);
 					System.err.println("Is dit de w2 die je zoekt??? " + w2);
 				}
@@ -479,6 +510,8 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		String[] testCorpusAttributes = {"word", "cgnTag", "tag", "lemma"};
 		SimpleCorpus testCorpus = new SimpleCorpus(corpusFileName, testCorpusAttributes);
 		int nItems=0;
+		int nContentWords = 0;
+		int nNotRecalledContentWords=0;
 		int nErrors=0;
 		int nHasCorrect=0;
 		Counter<String> errorTypeCounter = new Counter<String>();
@@ -489,6 +522,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			String corpusTag = c.getAttributeAt("tag", 0);
 			String assignedLemma = m.get("lemma");
 			List<String> lemmata = null;
+			boolean isContentWord = false;
 			String assignedLemmata = assignedLemma;
 
 			if (findMultiple)
@@ -514,6 +548,11 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				if (!foundAsCandidate && !mismatch)
 				{
 					System.err.println("Dit kan niet " + wordform + "/"  + trueLemma + " assigned lemma=" + assignedLemma + " lemmata = "  + assignedLemmata);
+				}
+				if (corpusTag.matches("^(NOU|AA|VRB|NUM).*"))
+				{
+					isContentWord = true;
+					nContentWords++;
 				}
 			}
 
@@ -549,9 +588,18 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					}
 				}
 
+				if (corpusTag.matches("NUM.*ord.*"))
+				{
+					mismatchType = "probably-ordinal-lemma-issue";
+				}
+				
 				if  (!corpusTag.matches("^(NOU|AA|VRB|NUM).*"))
 				{
 					mismatchType = "probably-functionword-mismatch";
+				} else
+				{
+					if (!foundAsCandidate)
+						nNotRecalledContentWords++;
 				}
 
 				if (cgnTag.contains("dim"))
@@ -579,6 +627,11 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					+ "\t" + assignedLemmata + pm + trueLemma + "\t" + extra);
 		}
 		System.err.println("items " + nItems +  " errors "  + nErrors + " heeft correct  " + nHasCorrect +  " is correct " + (nItems - nErrors));
+		System.err.println("error percentage: " + (nErrors) / (double) nItems);
+		System.err.println("recall percentage: " + (nHasCorrect) / (double) nItems);
+		System.err.println("unrecalled content words: " + nNotRecalledContentWords);
+		System.err.println("recall percentage for content words: " + 
+				(nContentWords - nNotRecalledContentWords) / (double) nContentWords);
 		System.err.println(errorTypeCounter);
 	}
 

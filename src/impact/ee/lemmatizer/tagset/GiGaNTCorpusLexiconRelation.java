@@ -63,9 +63,14 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 			
 			if (lexiconPoS.equals("VRB"))
 			{
-				return corpusTag.hasFeature("number","sg")
-						 && lexiconTag.hasFeature("finiteness",  "inf");
+				return 
+						corpusTag.hasFeature("number","sg") && lexiconTag.hasFeature("finiteness",  "inf") 
+						|| lexiconTag.hasFeature("finiteness",  "part")
+				             && 
+				             (corpusTag.hasFeature("number",  "sg") && !lexiconTag.hasFeature("formal", "infl-en")
+						      || corpusTag.hasFeature("number",  "pl")  && lexiconTag.hasFeature("formal", "infl-en"));
 			}
+			
 			if (lexiconPoS.equals("PD")) // allow use of pronoun as noun (dubious)
 			{
 				return true;
