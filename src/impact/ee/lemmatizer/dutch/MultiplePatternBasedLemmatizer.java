@@ -49,7 +49,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 	private Map<String,Set<String>> matchInformation = new HashMap<String,Set<String>>();
 	LemmaMatchLog lemmaLog = new LemmaMatchLog();
 	boolean findMultiple = true;
-
+	boolean logGuesses = true; // the lexicon matches need to be logged for ambiguous lemma assignment
 	boolean noHeuristics = false;
 	boolean reduceNounGender = true; 
 
@@ -287,7 +287,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 	{
 		if (corpusTag == null)
 		{
-			lemmaLog.addToLog(wordform, wordform.toLowerCase(), "_none_", "no_tag", MatchType.Unknown);
+			if (logGuesses) lemmaLog.addToLog(wordform, wordform.toLowerCase(), "_none_", "no_tag", MatchType.Unknown);
 			return wordform.toLowerCase();
 		}
 
@@ -301,7 +301,8 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 		if (!corpusTagset.isInflectingPoS(corpusTag))
 		{
-			lemmaLog.addToLog(wordform, wordform.toLowerCase(), "_none_", corpusTag, MatchType.Unknown);
+			if (logGuesses)
+				lemmaLog.addToLog(wordform, wordform.toLowerCase(), "_none_", corpusTag, MatchType.Unknown);
 			return wordform.toLowerCase();
 		}
 
@@ -324,8 +325,8 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				{
 					lemma = c.bestLemma;
 					lastRule = c.rule;
-
-					lemmaLog.addToLog(wordform, lemma, lexiconTag, corpusTag, MatchType.Guesser);
+					if (logGuesses)
+						lemmaLog.addToLog(wordform, lemma, lexiconTag, corpusTag, MatchType.Guesser);
 					foundHeuristicMatch = true;
 				}
 			}  else
@@ -333,7 +334,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 			}
 		}
-		if (!foundHeuristicMatch)
+		if (!foundHeuristicMatch && logGuesses)
 		{
 			lemmaLog.addToLog(wordform, lemma, "_none_", corpusTag, MatchType.Unknown);
 		}
