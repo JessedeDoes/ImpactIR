@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.util.Options;
+import impact.ee.lemmatizer.dutch.MultiplePatternBasedLemmatizer;
 import impact.ee.lemmatizer.dutch.SimplePatternBasedLemmatizer;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.tagger.Tagger;
@@ -66,11 +67,11 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
         args = options.commandLine.getArgs();
 		Tagger taggerLemmatizer = 
-				SimplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
+				MultiplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
 		ImpactTaggerLemmatizerClient xmlLemmatizer = 
 				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,3);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,Runtime.getRuntime().availableProcessors()-1);
 		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
 		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);
 		m.shutdown();

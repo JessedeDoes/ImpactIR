@@ -208,7 +208,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					w2.lemmaPoS =w.lemmaPoS;
 					w2.tag="VRB(finiteness=part,tense=past,formal=infl-en)";
 					additions.add(w2);
-					System.err.println("Is dit de w2 die je zoekt??? " + w2);
+					//System.err.println("Is dit de w2 die je zoekt??? " + w2);
 				}
 			}  
 		}
@@ -315,7 +315,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		{			
 			if (this.tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag,lexiconTag,false)) // problem: there may be multiple possibilities...
 			{
-				System.err.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
+				//System.err.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
 
 				theFormHandler c =  new theFormHandler();
 				classifiersPerTag.callback = c;
@@ -403,7 +403,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 				if (!foundMatchInLexicon && !corpusTag.contains("NOU-P"))
 				{
-					System.err.println("Word in lexicon, maar niet met passende tag.. " + wordform + ":" + corpusTag + " " + lemmata);
+					//System.err.println("Word in lexicon, maar niet met passende tag.. " + wordform + ":" + corpusTag + " " + lemmata);
 				}
 			} 
 		}
@@ -633,6 +633,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		System.err.println("unrecalled content words: " + nNotRecalledContentWords);
 		System.err.println("recall percentage for content words: " + 
 				(nContentWords - nNotRecalledContentWords) / (double) nContentWords);
+		System.err.println(lemmaLog.getGuesserPoSMatches());
 		System.err.println(errorTypeCounter);
 	}
 

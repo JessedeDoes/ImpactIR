@@ -216,8 +216,9 @@ public class SuffixGuesser implements Classifier
 		
 		Trie.TrieNode myNode = path[i];
 		String suffix = s.substring(s.length()-i);
-		LemmaLog.addToLog("suffix:" + suffix + " ... " + myNode.production());
-		//System.err.println(s + " match suffix length:  " + i);
+		// LemmaLog.addToLog("suffix:" + suffix + " ... " + myNode.production());
+		// System.err.println(s + " match suffix length:  " + i);
+		
 		Distribution d = zeroDistribution;
 		if (applySmoothing)
 		{
@@ -228,6 +229,7 @@ public class SuffixGuesser implements Classifier
 		}
 		
 		int suffixLength=0;
+		
 		for (int j=1; j  < M && path[j] != null;  j++)
 		{
 			Distribution dnext = observedDistributionAtNode(path[j]);

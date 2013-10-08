@@ -4,7 +4,7 @@ import java.util.*;
 public class LemmaLog 
 {
 	static List<String> log = new ArrayList<String>();
-	public static boolean active = true;
+	public static boolean active = false;
 	public static void addToLog(String s)
 	{
 		if (active)

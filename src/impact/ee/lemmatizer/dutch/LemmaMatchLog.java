@@ -3,6 +3,8 @@ import impact.ee.lemmatizer.dutch.LemmaMatch.MatchType;
 
 import java.util.*;
 
+import nl.namescape.evaluation.Counter;
+
 public class LemmaMatchLog 
 {
 	Map<String, Set<LemmaMatch>> log = new HashMap<String, Set<LemmaMatch>>();
@@ -36,5 +38,19 @@ public class LemmaMatchLog
 	{
 		String key = wordform + ":" + corpusTag;
 		return log.get(key);
+	}
+	
+	Counter<String> getGuesserPoSMatches()
+	{
+		Counter<String> c = new Counter<String>();
+		for (Set<LemmaMatch> V: this.log.values())
+		{
+			for (LemmaMatch lm: V)
+			{
+			   if (lm.type == MatchType.Guesser)
+				   c.increment(lm.corpusTag  + "~" + lm.lexiconTag);   
+			}
+		}
+		return c;
 	}
 }
