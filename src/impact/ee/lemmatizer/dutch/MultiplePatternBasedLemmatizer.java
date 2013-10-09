@@ -72,7 +72,8 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		boolean sampling = false;
 		addPresentParticleToLexicon(lexicon); // and other hacks as well....
 		for (WordForm w: lexicon)
-		{
+		{	
+			//System.err.println(w);
 			w.tag = simplifyTag(w.tag); 
 
 			if (heldOutSet != null && heldOutSet.contains(w)) 
@@ -465,7 +466,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 		HashMap<String,String> m = new HashMap<String,String>();
 
-		for (String key: c.getAttributes())
+		if (c.getAttributes() != null) for (String key: c.getAttributes())
 		{
 			m.put(key, c.getAttributeAt(key, 0));
 		}

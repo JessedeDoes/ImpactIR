@@ -72,6 +72,7 @@ public class WordForm implements Serializable
 	public WordForm clone()
 	{
 		WordForm w = new WordForm();
+		w.lemma = this.lemma;
 		w.wordform = this.wordform;
 		w.tag = this.tag;
 		w.lemmaPoS = this.lemmaPoS;
