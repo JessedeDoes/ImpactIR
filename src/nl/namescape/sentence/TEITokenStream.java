@@ -26,6 +26,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ranges.DocumentRange;
 import org.w3c.dom.ranges.Range;
 
+/**
+ * Todo: separate 2 functionalities
+ * - sentence splitting
+ * - support for tagging by implementing the "Corpus" interface
+ * @author jesse
+ *
+ */
 public class TEITokenStream implements TokenWindow, Corpus
 {
 	Document document;
@@ -36,6 +43,11 @@ public class TEITokenStream implements TokenWindow, Corpus
 	int currentPosition=-1;
     Map<Element,TEIToken> element2TokenMap = new HashMap<Element,TEIToken>();
 
+    
+    public TEITokenStream()
+    {
+    	
+    }
     
 	public TEITokenStream(Document d)
 	{
@@ -55,7 +67,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 				t = new TEIPunctuation(e);
 			}
 			element2TokenMap.put(e,t);
-			tokens.add(t);
+			tokens.add(t); // zinsgrenzen.......
 		}
 		
 		// mark all last elements of <p>-like as sentence final

@@ -68,4 +68,17 @@ public class WordForm implements Serializable
 	{
 		return lemma.hashCode() + wordform.hashCode() + tag.hashCode();
 	}
+	
+	public WordForm clone()
+	{
+		WordForm w = new WordForm();
+		w.wordform = this.wordform;
+		w.tag = this.tag;
+		w.lemmaPoS = this.lemmaPoS;
+		w.lemmaFrequency = this.lemmaFrequency;
+		w.lemmaID = this.lemmaID;
+		w.modernWordform = this.modernWordform;
+		w.neLabel = this.neLabel;
+		return w;
+	}
 }

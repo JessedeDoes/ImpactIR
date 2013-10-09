@@ -426,15 +426,16 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
 	{
-
+		boolean reuseTagLexicon = true;
 		BasicTagger tagger = new BasicTagger();
 
 		tagger.loadModel(taggingModel);
 
 		InMemoryLexicon l = null;
-		try
+		if (reuseTagLexicon) try
 		{
 			l = (InMemoryLexicon) TaggerFeatures.getNamedObject("tagLexicon");
+			l = l.clone(); // better: clone it!
 		} catch (Exception e)
 		{
 			e.printStackTrace();

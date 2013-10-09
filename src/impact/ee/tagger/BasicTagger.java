@@ -83,6 +83,7 @@ public class BasicTagger implements Serializable, Tagger
 	boolean useLexicon = true;
 	boolean stripPoS = false;
 	boolean useShapes = true;
+	boolean logFeatures = false;
 	Set<String> knownWords = new HashSet<String>();
 	double proportionOfTrainingToUse = 1;
 	
@@ -169,6 +170,14 @@ public class BasicTagger implements Serializable, Tagger
 		features.gatherStatistics((Iterator<Object>) statsCorpus);
 	}
 	
+	/**
+	 * Wat gebeurt er nu precies met zinsgrenzen???? niets????
+	 * attributen over de zinsgrens heen lijken niet door te komen....
+	 * dat doen ze in de plain text tester schijnbaar ook niet,
+	 * in de XML versie weer wel.....
+	 * @param trainingCorpus
+	 */
+	
 	public void train(Corpus trainingCorpus)
 	{		
 		Dataset d = new Dataset("trainingCorpus");
@@ -252,15 +261,16 @@ public class BasicTagger implements Serializable, Tagger
 			nItems++;
 			if (nItems % 100 ==0)
 			{
-				System.err.println(features.itemToString(instance));
-				System.err.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
+				//System.err.println(features.itemToString(instance));
+				//System.err.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
 			}
 			if (!known)
 			{
 				nUnknownItems++;
 			}
 			Boolean correct = truth.equals(outcome);
-			System.out.println(word + "\t" + outcome + "\t" + truth + "\t"  + correct);
+			String extra = logFeatures?("\t" + features.itemToString(instance)): "";
+			System.out.println(word + "\t" + outcome + "\t" + truth + "\t"  + correct + extra);
 		}
 		System.err.println("nItems: " + nItems + 
 				" errors: "  + nErrors / (double) nItems +  
@@ -339,6 +349,8 @@ public class BasicTagger implements Serializable, Tagger
 			{
 				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}
+			if (logFeatures)
+				m.put("features", features.itemToString(instance));
 		} else
 		{
 			c.setAttributeAt(taggedAttribute, "O", 0);

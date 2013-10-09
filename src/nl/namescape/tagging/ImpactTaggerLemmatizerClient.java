@@ -17,6 +17,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 {
 	String taggingModel = null;
 	String lexiconPath = null;
+	boolean logFeatures = false;
 	
 	public ImpactTaggerLemmatizerClient()
 	{
@@ -41,6 +42,9 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 			String tag = m.get("tag");
 			if (tag != null)
 				e.setAttribute("type", tag);
+			String features = m.get("features");
+			if (this.logFeatures && features != null)
+				e.setAttribute("features", features);
 		} else // pc
 		{
 			e.removeAttribute("lemma");

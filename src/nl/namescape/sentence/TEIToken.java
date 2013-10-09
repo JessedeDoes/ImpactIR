@@ -13,6 +13,12 @@ public class TEIToken extends HashMap<String,String> implements Token
 	Element e;
 	boolean isEOS=false;
 	
+	public TEIToken()
+	{
+		
+	}
+	
+	
 	
 	public TEIToken(Element el)
 	{

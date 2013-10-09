@@ -44,6 +44,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 	class SimpleLineParser extends LineParser<Map<String,String>>
 	{
 		TabSeparatedFile tabjes = null;
+		
 		String[] fieldNames = {"word", "tag"};
 		
 		public SimpleLineParser(BufferedReader b, String[] fieldNames) 
@@ -66,6 +67,11 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 			try
 			{
 				String[] f = l.split("\t");
+				if (l.matches("^\\s*$") || f.length ==0 || f[0].equals(SentenceBoundary.SentenceBoundarySymbol))
+				{
+					//System.err.println("__EOS__!");
+					return new SentenceBoundary();
+				}
 				for (int j=0; j < f.length && j < fieldNames.length; j++)
 					m.put(fieldNames[j], f[j]);
 			} catch (Exception e)
@@ -78,7 +84,6 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 	
 	public class Context implements impact.ee.tagger.Context
 	{
-
 		@Override
 		public String getAttributeAt(String featureName, int relativePosition) 
 		{
@@ -94,7 +99,15 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 					}
 				}
 				Map<String,String> m = enumerationWithContext.get(relativePosition);
-				return m.get(featureName);
+				String v =  m.get(featureName);
+				if (featureName.equals("word") && v == null)
+				{
+					System.err.println("NO WORD in map at position: " + relativePosition +  " map= " + m);
+					// System.err.println(m.getClass().getName());
+					// ok dit gaat dus fout bij het doorgeven van alle ingevulde features in apply...
+					//System.exit(1);
+				}
+				return v;
 			} catch (Exception e)
 			{
 				// System.err.println("failed to get " + featureName + " at " + relativePosition);

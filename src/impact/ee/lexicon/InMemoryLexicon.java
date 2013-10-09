@@ -186,4 +186,14 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public InMemoryLexicon clone()
+	{
+		InMemoryLexicon l = new InMemoryLexicon();
+		for (WordForm w: this)
+		{
+			l.addWordform(w.clone());
+		}
+		return l;
+	}
 }

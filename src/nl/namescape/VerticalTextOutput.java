@@ -122,8 +122,11 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 
 				String lemma = t.getAttribute("lemma");
 				String word = t.getTextContent();
-
-				out.println(word + "\t" + tag + "\t"  + lemma);
+				String features = t.getAttribute("features");
+				if (features == null || features.length() == 0)
+					out.println(word + "\t" + tag + "\t"  + lemma);
+				else
+					out.println(word + "\t" + tag + "\t"  + features);
 			}
 			out.println("</s>");
 		}

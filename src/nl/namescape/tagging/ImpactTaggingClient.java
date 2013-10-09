@@ -7,6 +7,7 @@ import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.sentence.TEITokenStream;
+import nl.namescape.sentence.TEITokenStreamWithSentenceBounds;
 
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Options;
@@ -62,7 +63,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 				if (eek)
 					System.err.println("eek!!!");
 			}
-			TEITokenStream inputCorpus = new TEITokenStream(d);
+			TEITokenStream inputCorpus = new TEITokenStreamWithSentenceBounds(d);
 			Corpus out = tagger.tag(inputCorpus);
 			Map<String, Map<String,String>> tagMap = new HashMap<String, Map<String,String>>();
 			for (Context c : out.enumerate()) 
