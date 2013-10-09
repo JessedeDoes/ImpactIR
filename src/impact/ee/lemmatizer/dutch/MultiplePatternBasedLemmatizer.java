@@ -85,9 +85,15 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			Rule rule = findRule(w); 
 
 			if (rule != null)
+			{
+				boolean fallbackToSimplePattern = false;
+				if (!rule.pattern.getClass().getName().contains("DutchPattern" ))
+				{
+					fallbackToSimplePattern = true;
+					nFallbacks++;
+				}
 				this.classifiersPerTag.addItem(w.tag, w.wordform, "rule." + rule.id, rule);
-			if (!rule.pattern.getClass().getName().contains("DutchPattern" ))
-				nFallbacks++;
+			}
 			nWords ++;
 		};
 
