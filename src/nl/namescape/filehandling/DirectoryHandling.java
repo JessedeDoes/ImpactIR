@@ -179,7 +179,52 @@ public class DirectoryHandling
 			}
 		}
 	}
-	 
+	
+	public static void traverseDirectory(SimpleInputOutputProcess p, String folderName, 
+			String outputDirectory, FileFilter fileFilter) 
+	{
+		File f = new File(folderName);
+		
+		if (!f.exists())
+		{
+			try 
+			{
+				URL u = new URL(folderName);
+				File downloaded = DirectoryHandling.downloadURL(folderName);
+				if (downloaded != null)
+				{
+				   p.handleFile(downloaded.getCanonicalPath(), outputDirectory);
+				   downloaded.delete();
+				}
+			} catch (Exception e)
+			{
+				
+				e.printStackTrace();
+			}
+		}
+		
+		boolean saveToZip = false;
+		
+
+		if (f.isFile())
+		{
+			String base = f.getName();
+			File outFile = new File(outputDirectory);
+			System.err.println("eek");
+			if (!outFile.isDirectory())
+			{
+				try 
+				{
+					p.handleFile(f.getCanonicalPath(), outputDirectory);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		traverseDirectory(p, f, new File(outputDirectory), null);
+	}
+	
 	public static void traverseDirectory(DoSomethingWithFile action, String folderName)
 	{
 

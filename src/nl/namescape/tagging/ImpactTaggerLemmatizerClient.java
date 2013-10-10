@@ -77,7 +77,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,Runtime.getRuntime().availableProcessors()-1);
 		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
-		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);
+		DirectoryHandling.traverseDirectory(m, args[2], args[3], null);
 		m.shutdown();
 	}
 }
