@@ -143,6 +143,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 		List<Element> tokenElements = 
 				XML.getElementsByTagname(p, TEITagClasses.tokenTagNames, false);
 		
+		boolean reattachDots  = false;
 		if (tokenElements.size() > 0)
 		{
 			int sStart=0;
@@ -165,7 +166,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 						sStart = k+1;
 					}
 				} // ToDo improve re-attach dot if non-sentence-final .....
-				else if (!t.isWord())
+				else if (reattachDots && !t.isWord()) // should keep this for the end...
 				{
 					String s = t.getContent();
 					if (s.equals(".") && k > 0)

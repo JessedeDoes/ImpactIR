@@ -39,7 +39,7 @@ public class TEITokenStreamWithSentenceBounds extends TEITokenStream
 
 		// mark all last elements of <p>-like as sentence final
 		// BUT: need to decide on a good set of sentence splitting elements
-
+		// dit hoeft hier eigenlijk helemaal niet meer....
 		for (Element p: sentenceSplittingElements)
 		{
 			List<Element> tokzInP = XML.getElementsByTagname(p, 
@@ -47,7 +47,11 @@ public class TEITokenStreamWithSentenceBounds extends TEITokenStream
 			if (tokzInP.size() > 0)
 			{
 				Element te = tokzInP.get(tokzInP.size()-1);
-				element2TokenMap.get(te).setIsEOS(true);
+				Token t = element2TokenMap.get(te);
+				if (t != null)
+				{
+					element2TokenMap.get(te).setIsEOS(true);
+				}
 			}
 		}	
 		currentPosition=0;
