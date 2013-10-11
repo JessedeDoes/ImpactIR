@@ -143,12 +143,13 @@ public class TEITokenStream implements TokenWindow, Corpus
 		List<Element> tokenElements = 
 				XML.getElementsByTagname(p, TEITagClasses.tokenTagNames, false);
 		
-		boolean reattachDots  = false;
+		boolean reattachDots  = true;
 		if (tokenElements.size() > 0)
 		{
 			int sStart=0;
 			int sEnd=-1;
 			int k=0;
+			Set<Element> reattachableDots = new HashSet<Element>();
 			for (Element e: tokenElements)
 			{
 				Token t = element2TokenMap.get(e); // silly really
@@ -170,11 +171,19 @@ public class TEITokenStream implements TokenWindow, Corpus
 				{
 					String s = t.getContent();
 					if (s.equals(".") && k > 0)
-					{
-						Element prev = tokenElements.get(k-1);
-						e.getParentNode().removeChild(e);
-						prev.setTextContent(prev.getTextContent() + s);
-					}
+					    reattachableDots.add(e);		
+				}
+				k++;
+			}
+			k=0;
+			if (reattachDots) for (Element e: tokenElements)
+			{
+				if (reattachableDots.contains(e))
+				{
+					String s = e.getTextContent();
+					Element prev = tokenElements.get(k-1);
+					e.getParentNode().removeChild(e);
+					prev.setTextContent(prev.getTextContent() + s);
 				}
 				k++;
 			}
