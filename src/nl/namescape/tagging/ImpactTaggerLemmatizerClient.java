@@ -68,14 +68,33 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 	
 	public static void main(String[] args)
 	{
-		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args)
+		{
+			@Override
+			public void defineOptions()
+			{
+				super.defineOptions();
+				options.addOption("n", "nThreads", true, "Number of threads");
+			}
+		};
         args = options.commandLine.getArgs();
+        int nThreads = Runtime.getRuntime().availableProcessors()-1;
+        if (options.getOption("nThreads") != null)
+        {
+        	try
+        	{
+        		nThreads = Integer.parseInt(options.getOption("nThreads"));
+        	} catch (Exception e)
+        	{
+        		System.err.println("Error in threads option");
+        	}
+        }
 		Tagger taggerLemmatizer = 
 				MultiplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
 		ImpactTaggerLemmatizerClient xmlLemmatizer = 
 				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,Runtime.getRuntime().availableProcessors()-1);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,nThreads);
 		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
 		DirectoryHandling.traverseDirectory(m, args[2], args[3], null);
 		m.shutdown();

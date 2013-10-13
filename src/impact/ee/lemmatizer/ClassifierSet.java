@@ -124,6 +124,11 @@ public class ClassifierSet
 	}
 	
 	public void classifyLemma(String lemma, String lemmaPoS, String tag, boolean checkPoS)
+	{ 
+		this.classifyLemma(lemma,lemmaPoS,tag,checkPoS,this.callback);
+	}
+	
+	public void classifyLemma(String lemma, String lemmaPoS, String tag, boolean checkPoS, FoundFormHandler theCallback)
 	{
 		if (tag == null)
 		{
@@ -161,9 +166,9 @@ public class ClassifierSet
 			// System.err.println(r + " " + lemmaPoS + " "  + r.lemmaPoS);
 			if (p > cumulativeP/MIN_PROBABILITY && (!checkPoS || r.lemmaPoS.equals(lemmaPoS)))
 			{
-				if (callback != null)
+				if (theCallback != null)
 				{
-					callback.foundForm(lemma, tag, lemmaPoS, r, p, rank);
+					theCallback.foundForm(lemma, tag, lemmaPoS, r, p, rank);
 				} else
 				{
 					String wf = r.pattern.applyConverse(lemma);

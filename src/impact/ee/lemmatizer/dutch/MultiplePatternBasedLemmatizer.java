@@ -325,8 +325,8 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				//System.err.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
 
 				theFormHandler c =  new theFormHandler();
-				classifiersPerTag.callback = c;
-				classifiersPerTag.classifyLemma(wordform, lexiconTag, lexiconTag, false);
+				//classifiersPerTag.callback = c; // oops..... should synchronize this in a different way....
+				classifiersPerTag.classifyLemma(wordform, lexiconTag, lexiconTag, false,c);
 
 				if (c.bestLemma != null)
 				{
@@ -400,8 +400,11 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					{
 						if (tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag, w.tag, true))
 						{
-							if (!foundMatchInLexicon) lemma = w.lemma;
-							lemmaCache.put(wordform, corpusTag, w.lemma);
+							if (!foundMatchInLexicon) 
+							{
+								lemma = w.lemma;
+								lemmaCache.put(wordform, corpusTag, w.lemma);
+							}
 							lemmaLog.addToLog(wordform, w.lemma, w.tag, corpusTag, MatchType.LexiconWithConversion); 
 							foundMatchInLexicon = true;
 						}
