@@ -77,7 +77,7 @@ public class WordList
 		}
 	}
 
-	public void incrementFrequency(String s, int f) 
+	public synchronized void incrementFrequency(String s, int f) 
 	{
 		sorted = false;
 		
@@ -94,7 +94,7 @@ public class WordList
 		caseInsensitiveTypeFrequency.put(w,f+y);
 	}
 	
-	public int getFrequency(String w)
+	public synchronized int getFrequency(String w)
 	{
 		Integer f = caseInsensitiveTypeFrequency.get(w.toLowerCase());
 		if (f == null)
@@ -103,7 +103,7 @@ public class WordList
 			return f;
 	}
 	
-	public int getFrequency(String w, boolean sensitive)
+	public synchronized int getFrequency(String w, boolean sensitive)
 	{
 		Map<String,Integer> h = sensitive?this.typeFrequency:caseInsensitiveTypeFrequency;
 		Integer f = h.get(sensitive?w:w.toLowerCase());

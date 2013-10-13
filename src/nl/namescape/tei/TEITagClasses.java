@@ -255,4 +255,13 @@ public class TEITagClasses
 				XML.getElementsByTagname(e, elNames, false);
 		return l;
 	}
+
+	public static boolean isTokenElement(Element c) 
+	{
+		// TODO Auto-generated method stub
+		for (int i=0; i < tokenTagNames.length; i++)
+			if (tokenTagNames[i].equals(c.getNodeName()))
+				return true;
+		return false;
+	}
 }

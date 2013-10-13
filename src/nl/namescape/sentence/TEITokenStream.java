@@ -144,12 +144,15 @@ public class TEITokenStream implements TokenWindow, Corpus
 				XML.getElementsByTagname(p, TEITagClasses.tokenTagNames, false);
 		
 		boolean reattachDots  = true;
+		boolean unwrappedWords = false;
 		if (tokenElements.size() > 0)
 		{
 			int sStart=0;
 			int sEnd=-1;
 			int k=0;
 			Set<Element> reattachableDots = new HashSet<Element>();
+			int nWrappedWords=0;
+			
 			for (Element e: tokenElements)
 			{
 				Token t = element2TokenMap.get(e); // silly really
@@ -159,13 +162,16 @@ public class TEITokenStream implements TokenWindow, Corpus
 					nSentences++;
 					if (nSentences % 100 == 0)
 					{
-						String sentence = s!=null?s.getTextContent():"(null)";
-						System.err.println("sentence splitting:... "  + nSentences + " : " + sentence.replaceAll("\\s+"," "));
+						//String sentence = s!=null?s.getTextContent():"(null)";
+						//System.err.println("sentence splitting:... "  + nSentences + " : " + sentence.replaceAll("\\s+"," "));
 					}
-					if (true || s != null) // indien gefaald, dan maken we de zin maar langer (?)
+					if (s != null)
+						nWrappedWords += k - sStart +1;
+					if (true || s != null) // Arbitraty lengthening of sentences will not work...
 					{
 						sStart = k+1;
 					}
+					
 				} // ToDo improve re-attach dot if non-sentence-final .....
 				else if (reattachDots && !t.isWord()) // should keep this for the end...
 				{
@@ -174,6 +180,11 @@ public class TEITokenStream implements TokenWindow, Corpus
 					    reattachableDots.add(e);		
 				}
 				k++;
+			}
+			if (nWrappedWords < k)
+			{
+				// System.err.println("!!problem in (nW=" +  nWrappedWords + ",k= " + k   + "): " + XML.NodeToString(n));
+				unwrappedWords = true;
 			}
 			k=0;
 			if (reattachDots) for (Element e: tokenElements)
@@ -187,8 +198,48 @@ public class TEITokenStream implements TokenWindow, Corpus
 				}
 				k++;
 			}
+			if (unwrappedWords)
+			{
+				wrapStrayWordsIn((Element) n);
+			}
 		}
 		return true;
+	}
+	
+	private void wrapStrayWordsIn(Element n)
+	{
+		if (n.getNodeName().equals("s"))
+			return;
+		
+		List<Element> children = XML.getAllSubelements(n, false);
+		boolean inWordGroup = false;
+		int startOfGroup = -1;
+		for (int k=0; k < children.size(); k++)
+		{
+			Element c = children.get(k);
+			if (TEITagClasses.isTokenElement(c))
+			{
+				if (!inWordGroup)
+					startOfGroup = k;
+				inWordGroup = true;
+			} else
+			{
+				if (inWordGroup)
+				{
+					Element s = makeSentenceElement(children, startOfGroup,k-1);
+					if (s != null)
+						System.err.println("created sentence chunk: " + XML.NodeToString(s));
+					inWordGroup = false;
+				}
+				wrapStrayWordsIn(c);
+			}
+		}
+		if (inWordGroup)
+		{
+			Element s = makeSentenceElement(children, startOfGroup,children.size()-1);
+			if (s != null)
+				System.err.println("created sentence chunk: " + XML.NodeToString(s));
+		}
 	}
 	
 	// ToDo: probeer op te lossen as surroundContent faalt!

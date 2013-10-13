@@ -89,7 +89,7 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 	public static void main(String[] args)
 	{
 		WordCounter x = new WordCounter();
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,Runtime.getRuntime().availableProcessors());
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		System.out.println(x.nWords + " words in "  + x.nFiles + " files");

@@ -10,6 +10,9 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.filehandling.MultiThreadedFileHandler;
+import nl.namescape.sentence.TEISentenceSplitter;
+import nl.namescape.util.Options;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
@@ -41,6 +44,10 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 		try
 		{
 			Document d = XML.parse(fileName);
+			if (!TEISentenceSplitter.allWordsAreInSentences(d))
+			{
+				System.err.println("Unwrapped words in " + fileName);
+			}
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 			for (Element e: tokens)
 			{
@@ -48,6 +55,7 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 			}
 		} catch (Exception e)
 		{
+			System.err.println("Parse error in " + fileName);
 			e.printStackTrace();
 		}
 	}
@@ -81,12 +89,33 @@ public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingW
 	public static void main(String[] args)
 	{
 		MakeFrequencyList s = new MakeFrequencyList();
+		Options o = new Options(args)
+		{
+			public void defineOptions() 
+			{
+				options.addOption("t", "type", true, "word");
+			}
+		};
+		args = o.commandLine.getArgs();
 		s.type = Type.word;
+		String t;
 		
+		if ((t = o.getOption("type")) != null)
+		{
+			if (t.equals("word"))
+				s.type = Type.word;
+			if (t.equals("lemma"))
+				s.type = Type.lemma;
+			if (t.equals("lwt"))
+				s.type = Type.lwt;
+		}
+		
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(s,Runtime.getRuntime().availableProcessors()-1);
 		if (args.length > 0)
 		{
 			for (String d: args)
-				DirectoryHandling.traverseDirectory(s,d);
+				DirectoryHandling.traverseDirectory(m,d);
+			m.shutdown();
 			s.print();
 		}
 		else
