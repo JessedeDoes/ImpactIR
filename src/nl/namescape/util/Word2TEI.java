@@ -8,6 +8,7 @@ import java.util.Properties;
 import impact.ee.util.Resource;
 
 import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
@@ -73,7 +74,10 @@ public class Word2TEI implements SimpleInputOutputProcess
 	{
 		Word2TEI x = new Word2TEI();
 		
-		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
+		//DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
+		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,nThreads);
+		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
+		
 		DirectoryHandling.traverseDirectory(x, new File(args[0]), new File(args[1]), null);
 		//x.dinges("/mnt/Projecten/Taalbank/Werkfolder_Redactie/Jesse/Projecten/Papiamento/Mosaiko 5 HV Kap 1 vershon 2012 10 28.doc");
 	}
