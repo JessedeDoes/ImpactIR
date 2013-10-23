@@ -67,6 +67,7 @@ public class TEITokenizer extends DefaultHandler
 		for (String t: tagNames)
 			inlineTags.add(t);
 	}
+	
 	public void addMilestoneTags(String [] tagNames)
 	{
 		for (String t: tagNames)
@@ -562,6 +563,8 @@ public class TEITokenizer extends DefaultHandler
 	public static void main(String[] args)
 	{
 		Proxy.setProxy();
-		new TEITokenizer().preTokenizeFile(args[0]); // getTokenizedDocument(args[0],true);
+		Document d =  new TEITokenizer().getTokenizedDocument(args[0], true);
+		System.out.println(XML.documentToString(d));
+		//new TEITokenizer().preTokenizeFile(args[0]); // getTokenizedDocument(args[0],true);
 	}
 }
