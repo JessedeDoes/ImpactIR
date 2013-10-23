@@ -56,13 +56,13 @@ public class LinePerLineOutput implements nl.namescape.filehandling.SimpleInputO
 			boolean printed = false;
 			for (int i=k; i < k+chunkLength && i < tokens.size(); i++)
 			{
-				stdout.print(tokens.get(i).getTextContent() + " ");
+				out.print(tokens.get(i).getTextContent() + " ");
 				printed = true;
 			}
 			k += chunkLength;
 			if (printed && chunkLength > 0)
 			{
-				stdout.print("\n");
+				out.print("\n");
 			}
 		}
 		
@@ -144,7 +144,7 @@ public class LinePerLineOutput implements nl.namescape.filehandling.SimpleInputO
 		int len = Integer.parseInt(args[0]);
 		if (args.length > 2)
 		{
-			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new LinePerLineOutput(len), args[0], 
+			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new LinePerLineOutput(len), args[1], 
 				args[2]);
 		} else
 		{
