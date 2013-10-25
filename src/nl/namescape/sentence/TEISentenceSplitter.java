@@ -2,9 +2,12 @@ package nl.namescape.sentence;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
@@ -14,6 +17,7 @@ import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 
 
@@ -22,6 +26,7 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 {
 	SentenceSplitter splitter=null;
 	private Properties properties;
+	boolean tokenize = true;
 	
 	public TEISentenceSplitter(SentenceSplitter splitter)
 	{
@@ -45,11 +50,29 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 	public void handleFile(String in, String out) 
 	{
 		// TODO Auto-generated method stub
-		boolean tokenize = false;
+		
+		
 		Document d = null;
 		
-		TEITokenizer tok = new TEITokenizer();
-		d = tok.getTokenizedDocument(in, true);
+		if (this.tokenize)
+		{
+			TEITokenizer tok = new TEITokenizer();
+			d = tok.getTokenizedDocument(in, true);
+		} else
+		{
+			try {
+				d = XML.parse(in);
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		this.splitSentences(d);
 		
 		try 
@@ -96,6 +119,9 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 	{
 		Proxy.setProxy();
 		TEISentenceSplitter s = new TEISentenceSplitter(new JVKSentenceSplitter());
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
+        args = options.commandLine.getArgs();
+        s.tokenize = options.getOptionBoolean("tokenize", true);
 		DirectoryHandling.tagAllFilesInDirectory(s, args[0], args[1]);
 	}
 }
