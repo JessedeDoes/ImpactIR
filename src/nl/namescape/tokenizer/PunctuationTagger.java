@@ -1,7 +1,18 @@
 package nl.namescape.tokenizer;
+import impact.ee.tagger.BasicTagger;
+
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
+import java.util.Properties;
 
 
+import nl.namescape.filehandling.DirectoryHandling;
+import nl.namescape.filehandling.SimpleInputOutputProcess;
+import nl.namescape.sentence.JVKSentenceSplitter;
+import nl.namescape.sentence.TEISentenceSplitter;
+import nl.namescape.tagging.ImpactTaggingClient;
+import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
 
 import org.w3c.dom.Document;
@@ -22,10 +33,12 @@ import org.w3c.dom.ranges.Range;
 * 2) More intelligent attachment strategy
 */
 
-public class PunctuationTagger 
+public class PunctuationTagger  implements SimpleInputOutputProcess
 {
 	SimpleTokenizer t = new SimpleTokenizer();
 	int N=1;
+	boolean tokenize = false;
+	private Properties properties;
 	
 	public void tagPunctuation (Document d)
 	{
@@ -162,5 +175,63 @@ public class PunctuationTagger
 				return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void handleFile(String in, String out) 
+	{
+		Document d = null;
+		if (tokenize)
+		{
+			try
+			{
+				TEITokenizer tok = new TEITokenizer();
+				d = tok.getTokenizedDocument(in, true);
+				new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
+				System.err.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		} else
+		{
+			System.err.println("NOT tokenizing " + in);
+			try 
+			{
+				d = XML.parse(in);
+			} catch (Exception e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		try 
+		{
+			PrintStream pout = new PrintStream(new FileOutputStream(out));
+			tagPunctuation(d);
+			
+			pout.print(XML.documentToString(d));
+			pout.close();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void setProperties(Properties properties) 
+	{
+		// TODO Auto-generated method stub
+		this.properties = properties;
+	}
+	
+	public static void main(String[] args)
+	{
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
+        args = options.commandLine.getArgs();
+		
+        PunctuationTagger xmlTagger = new PunctuationTagger();
+		xmlTagger.tokenize = options.getOptionBoolean("tokenize", false);
+		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
 }
