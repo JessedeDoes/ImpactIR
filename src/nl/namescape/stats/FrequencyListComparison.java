@@ -49,6 +49,7 @@ public class FrequencyListComparison
 	{
 		List<TypeFrequency> l1 = w1.keyList(true);
 		List<TypeFrequency> l2 = w2.keyList(true);
+		System.err.println("W1 " + w1.nTokens +  "  W2 " + w2.nTokens);
 		 // even een vies hackje omdat w1 niet volledig is?
 		for (TypeFrequency t:l1)
 		{
@@ -92,9 +93,9 @@ public class FrequencyListComparison
 	public static void main(String[] args)
 	{
 		WordList w1 = new WordList(args[0]);
-		w1.nTokens = (int) 8e6; // FOEI! een HACK!
+		//w1.nTokens = (int) 8e6; // FOEI! een HACK!
 		WordList w2 = new WordList(args[1]);
-		System.err.println("oink");
+		System.err.println("oink (?) ....");
 		FrequencyListComparison fc = new FrequencyListComparison();
 		fc.compare(w1, w2, 10, 10); // voor surinaams corpusje nu 10, 10 gebruikt
 	}

@@ -12,6 +12,14 @@ import nl.namescape.stats.WordList.TypeFrequency;
 
 public class Counter<T> extends ConcurrentHashMap<T,Integer>
 {
+	public int getSumOfCounts()
+	{
+		int x=0;
+		for (Integer i: this.values())
+			x += i;
+		return x;
+	}
+	
 	@Override
 	public Integer get(Object key)
 	{

@@ -44,6 +44,15 @@ public class TEITagClasses
 					nameTags.add(s);
 	};
 	
+	static class IdGenerator
+	{
+		static int seq = 1;
+		static public String getUniqueId()
+		{
+			return new Long(seq++).toString();
+		}
+	}
+	
 	public static boolean isSentenceSplittingElement(Element e)
 	{
 		return splitTags.contains(e.getNodeName());
@@ -145,6 +154,43 @@ public class TEITagClasses
 		return eek;
 	}
 	
+	/**
+	 * Geef unieke ids aan elementen, met gebruimaking van een document id
+	 */
+	
+	public static void assignIds(Document d, Set<String> tagNames)
+	{
+		//String baseId = XML.getElementContent(d.getDocumentElement(), "idno");
+		List<Element> l = XML.getElementsByTagnameAndAttribute(d.getDocumentElement(), 
+				"interpGrp", "type", "idno", false);
+		Element e = l.get(0);
+		Element i = XML.findFirstChild(e,"interp");
+		String baseId = i.getTextContent();
+		if (baseId == null || baseId.length() == 0)
+		{
+			baseId = i.getAttribute("value");
+		}
+		System.err.println("Base id: " + baseId);
+		assignIds(d.getDocumentElement(), tagNames, baseId);
+	}
+	
+	public static void assignIds(Document d, Set<String> tagNames, String baseId)
+	{
+		assignIds(d.getDocumentElement(), tagNames, baseId);
+	}
+	
+	public static void assignIds(Element e, Set<String> tagNames, String baseId)
+	{
+		if (tagNames.contains(e.getNodeName()))
+		{
+			e.setAttribute("xml:id", baseId + "." + IdGenerator.getUniqueId());
+		}
+		
+		for (Element c: XML.getAllSubelements(e, false))
+		{
+			assignIds(c, tagNames, baseId);
+		}
+	}
 	/**
 	  Zinsplitsende tags: natuurlijk het lijstje hierboven gegeven.
 	  maar dat is vast niet alles.

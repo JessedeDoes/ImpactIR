@@ -105,7 +105,7 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 			for (Element e1: selectedElements)
 				sentences.addAll(TEITagClasses.getSentenceElements(e1));
 		}
-		
+		boolean documentHasSentences = false;
 		for (Element s: sentences)
 		{
 			List<Element> words = 	nl.namescape.tei.TEITagClasses.getWordElements(s);
@@ -113,24 +113,35 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 				continue;
 			out.println("<s>");
 			List<Element> tokens = 	nl.namescape.tei.TEITagClasses.getTokenElements(s);
-			for (Element t: tokens)
-			{
-
-				String tag = t.getAttribute("type");
-				if (useCTAG)
-					tag = t.getAttribute("ctag");
-
-				String lemma = t.getAttribute("lemma");
-				String word = t.getTextContent();
-				String features = t.getAttribute("features");
-				if (features == null || features.length() == 0)
-					out.println(word + "\t" + tag + "\t"  + lemma);
-				else
-					out.println(word + "\t" + tag + "\t"  + features);
-			}
+			printTokens(out, tokens);
 			out.println("</s>");
+			documentHasSentences = true;
+		}
+		if (!documentHasSentences)
+		{
+			List<Element> tokens = 	nl.namescape.tei.TEITagClasses.getTokenElements(e);
+			printTokens(out, tokens);
 		}
 		out.println("</doc>");
+	}
+
+	protected void printTokens(PrintStream out, List<Element> tokens)
+	{
+		for (Element t: tokens)
+		{
+
+			String tag = t.getAttribute("type");
+			if (useCTAG)
+				tag = t.getAttribute("ctag");
+
+			String lemma = t.getAttribute("lemma");
+			String word = t.getTextContent();
+			String features = t.getAttribute("features");
+			if (features == null || features.length() == 0)
+				out.println(word + "\t" + tag + "\t"  + lemma);
+			else
+				out.println(word + "\t" + tag + "\t"  + features);
+		}
 	}
 
 

@@ -29,6 +29,8 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 	private Properties properties;
 	PrintStream stdout = new PrintStream(System.out);
 	boolean printLemmata = false;
+	boolean printIds = false;
+	boolean onlyDecentSentences = false;
 	
 	public void printSentences(Document d, PrintStream out)
 	{
@@ -67,8 +69,12 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 				first = false;
 			}
 			
-			if (firstIsUpper && nLowercase / (double) nCharacters > 0.7)
+			if (!onlyDecentSentences || firstIsUpper && nLowercase / (double) nCharacters > 0.7)
 			{
+				if (printIds)
+				{
+					out.print(s.getAttribute("xml:id") + "|");
+				}
 				out.println(outLine);
 			} else
 				nSkippedLines++;
@@ -117,6 +123,7 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 			Document d = XML.parse(in);
 			PrintStream pout = new PrintStream(new FileOutputStream(out));
 			printSentences(d, pout);
+			pout.close();
 		} catch (Exception e) 
 		{
 			
@@ -149,13 +156,26 @@ public class SentencePerLineOutput implements nl.namescape.filehandling.SimpleIn
 	
 	public static void main(String[] args)
 	{
+		nl.namescape.util.Options options = new nl.namescape.util.Options(args)
+		{
+			@Override
+			public void defineOptions()
+			{
+				super.defineOptions();
+				options.addOption("n", "nThreads", true, "Number of threads");
+				options.addOption("i", "printIds", true, "Print Ids");
+			}
+		};
+		SentencePerLineOutput spl = new SentencePerLineOutput();
+		spl.printIds = options.getOptionBoolean("printIds", false);
+        args = options.commandLine.getArgs();
 		if (args.length > 1)
 		{
-			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new SentencePerLineOutput(), args[0], 
+			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(spl, args[0], 
 				args[1]);
 		} else
 		{
-			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(new SentencePerLineOutput(), args[0]);
+			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(spl, args[0]);
 		}
 	}
 }

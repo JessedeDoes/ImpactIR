@@ -24,7 +24,7 @@ public class MolechaserMetadataPrinter implements DoSomethingWithFile
 	public void handleFile(String fileName) 
 	{
 		// TODO Auto-generated method stub
-		//System.err.println(N + ": "+ fileName);
+		// System.err.println(N + ": "+ fileName);
 		try
 		{
 			Document d = XML.parse(fileName,false);

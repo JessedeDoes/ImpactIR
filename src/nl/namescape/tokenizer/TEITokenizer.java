@@ -194,7 +194,7 @@ public class TEITokenizer extends DefaultHandler
 			return;
 		}
 		
-		if (isMilestoneTag(qName))
+		if (isMilestoneTag(qName)) // dit werkt dus niet....
 		{
 			printEmptyTag(e);
 			return;

@@ -40,12 +40,15 @@ public class Metadata
 				String fieldName = grp.getAttribute("type");
 				//System.err.println("interpGrp type=" + fieldName);
 				Set<String> values = m.get(fieldName);
+				
 				if (values == null)
 				{
 					values = new HashSet<String>();
 					m.put(fieldName, values);
 				}
+				
 				List<Element> intrps = XML.getElementsByTagname(grp, "interp", false);
+				
 				for (Element i: intrps)
 				{
 					String value = i.getAttribute("value");

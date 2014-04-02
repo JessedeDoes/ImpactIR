@@ -51,6 +51,16 @@ public class WordList
 		// TODO Auto-generated constructor stub
 	}
 
+	public int size()
+	{
+		return this.typeFrequency.keySet().size();
+	}
+	
+	public Set<String> keySet()
+	{
+		return this.typeFrequency.keySet();
+	}
+	
 	public void readList(String fileName)
 	{
 		try 
