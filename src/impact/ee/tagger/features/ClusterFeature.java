@@ -22,7 +22,7 @@ public class ClusterFeature extends Feature
 	
 	// maybe it is better not to have a transient map, just store the stuff in the model?
 	
-	Map<String,String> word2cluster = new HashMap<String,String>();
+	public Map<String,String> word2cluster = new HashMap<String,String>();
 	private boolean initialized = false;
 
 	static final String SandersClusterFile = 
@@ -31,8 +31,8 @@ public class ClusterFeature extends Feature
 	static Map<String, Map<String,String>> lexiconMap = 
 			new  HashMap<String, Map<String,String>>();
 
-	int k;
-	int depth;
+	public int k;
+	public int depth;
 	
 	public ClusterFeature(String fileName, int depth, int k)
 	{

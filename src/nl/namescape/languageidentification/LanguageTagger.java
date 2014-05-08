@@ -35,7 +35,6 @@ import java.util.*;
  *
  */
 
-
 public class LanguageTagger implements SimpleInputOutputProcess
 {
 	static String[] priorLanguages = {"nl", "en", "de", "fr", "it", "es"};
@@ -44,33 +43,39 @@ public class LanguageTagger implements SimpleInputOutputProcess
 	String MainLanguage = "en"; // nl
 	boolean usePriors = false;
 	boolean tagNTokens = true;
+
 	private Properties properties;
 	
 	static
 	{
-		
 		try 
 		{
 			DetectorFactory.loadProfileFromJar();
 			List<String> langs = DetectorFactory.getLangList();
-			double sum=0;
-			for (int i=0; i < priorLanguages.length; i++) 	
-				sum += priorProbabilities[i];
-				
-			for (int i=0; i < priorLanguages.length; i++) 
-			{
-				String lang= priorLanguages[i];
-				priorMap.put(lang,priorProbabilities[i] / sum);
-			}
-			for (String lang: langs)
-			{
-				if (priorMap.get(lang) == null)
-					priorMap.put(lang,0.0);
-			}
+			setPriorProbabilities(langs);
 		} catch (LangDetectException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+
+	protected static void setPriorProbabilities(List<String> langs)
+	{
+		double sum=0;
+		for (int i=0; i < priorLanguages.length; i++) 	
+			sum += priorProbabilities[i];
+			
+		for (int i=0; i < priorLanguages.length; i++) 
+		{
+			String lang= priorLanguages[i];
+			priorMap.put(lang,priorProbabilities[i] / sum);
+		}
+		for (String lang: langs)
+		{
+			if (priorMap.get(lang) == null)
+				priorMap.put(lang,0.0);
 		}
 	}
 

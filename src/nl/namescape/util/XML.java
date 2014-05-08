@@ -10,21 +10,25 @@ package nl.namescape.util;
 import java.util.*;
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.*;
 
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+
 import java.util.HashSet;
 
 public class XML extends Object
@@ -407,7 +411,8 @@ public class XML extends Object
 		return trimmed;
 	}
 	
-	public static Document parse(String aFilename, boolean namespaceAware) throws ParserConfigurationException, SAXException, IOException
+	public static Document parse(String aFilename, boolean namespaceAware) throws 
+		ParserConfigurationException, SAXException, IOException
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(namespaceAware);
@@ -415,7 +420,14 @@ public class XML extends Object
 		factory.setFeature( "http://apache.org/xml/features/dom/defer-node-expansion", false );
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		URI u = new File(aFilename).toURI();
-		Document document = builder.parse(u.toString());
+		//There is a bug related to 4 byte UTF8 ... which has to be worked around
+		// https://issues.apache.org/jira/browse/XERCESJ-1257
+		BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(aFilename)));
+	    InputStreamReader isr = new java.io.InputStreamReader(fis, "UTF-8");
+	    InputSource is = new InputSource(isr);
+		Document document = builder.parse(is);
+		//Document document = builder.parse(fis);
+		
 		return document;
 	}
 	
@@ -443,6 +455,23 @@ public class XML extends Object
 		return null;
 	}
 	
+	public static Document parseStream(InputStream inputStream, boolean namespaceAware)
+	{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(namespaceAware);
+		try
+		{
+			factory.setFeature( "http://apache.org/xml/features/dom/defer-node-expansion", false );
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			
+			Document document = builder.parse(inputStream);
+			return document;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static Document parseString(String inputString)
 	{
 		return parseString(inputString, true);

@@ -34,7 +34,7 @@ public class TEITokenizer extends DefaultHandler
 	private boolean insideTokenizedElement = false;
 	private String pendingToken="";
 	private boolean deferOpenTags = true;
-	private boolean deleteIntermediate  = true;
+	private boolean deleteIntermediate  =  false;
 	private boolean needWhite = false;
 	private boolean onlyInTextElement = true;
 	Document currentDocument = null;
@@ -176,7 +176,7 @@ public class TEITokenizer extends DefaultHandler
 	{
 		Element e = currentDocument.createElement(qName);
 		//System.err.println(localName);
-		if (qName.equals("text"))
+		if (qName.equals("text") || qName.equals("osisText"))
 		{
 			//System.err.println("OK....");
 			insideTokenizedElement=true;
@@ -484,12 +484,14 @@ public class TEITokenizer extends DefaultHandler
 			double step1Time = (System.currentTimeMillis() - startTok) / 1000.0;
 			System.err.println("pretokenization time: "  + step1Time);
 			Document d = null;
+			
 			try
 			{
-				d = XML.parse(pretokenizedFile.getCanonicalPath());
+				d = XML.parse(pretokenizedFile.getCanonicalPath(),true);
 			} catch (Exception e)
 			{
-				System.err.println("error in pretokenized file" + pretokenizedFile.getCanonicalPath() );
+				System.err.println("error in pretokenized file " + pretokenizedFile.getCanonicalPath() );
+				e.printStackTrace();
 				//System.exit(1);
 				//java.nio.file.Files.copy("aap", "noot");
 			}

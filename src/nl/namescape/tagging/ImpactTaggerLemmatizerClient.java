@@ -31,14 +31,40 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * final boolean isOtherSymbol = 
+      ( int ) Character.OTHER_SYMBOL
+       == Character.getType( character.charAt( 0 ) );
+    final boolean isNonUnicode = isOtherSymbol 
+      && character.getBytes()[ 0 ] == ( byte ) 63;
+      
+      The lemmatizer sometimes inserts unicode illegal characters.
+      If lemma does not pass this test, do not tag it in the TEI file
+	 */
+	
+	public boolean CheckIllegalCharacters(String s)
+	{
+		for (int i=0; i < s.length(); i++)
+		{
+			if (Character.getType(s.charAt(i)) == Character.OTHER_SYMBOL)
+			{
+				System.err.printf("dangerous character in %s\n", s);
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);
 		if (e.getNodeName().contains("w"))
 		{
-			String lemma = m.get("lemma");
-			if (lemma != null)
+			String lemma = m.get("lemma"); // to do check for illegal characters....
+			if (lemma != null && CheckIllegalCharacters(lemma))
 				e.setAttribute("lemma", lemma);
+			else
+				e.setAttribute("lemma", "_NONE_");
 			String tag = m.get("tag");
 			if (tag != null)
 				e.setAttribute("type", tag);

@@ -26,6 +26,8 @@ public class NEREvaluation
 	Counter<String> falseNegativeCounter = new Counter<String>();
 	Set<String> neTypes = new HashSet<String>();
 	
+	boolean verbose = false;
+	
 	static String ANY = "Segmentation";
 	static String ALL = "Overall";
 	
@@ -57,13 +59,13 @@ public class NEREvaluation
 			Entity e1 = tagged.getEntityAt(location);
 			if (e1 != null)
 			{
-				System.err.println("Found " + e1);
+				if (verbose) System.err.println("Found " + e1);
 				truePositiveCounter.increment(ANY);
 				(e1.type.equals(e.type)?truePositiveCounter:falseNegativeCounter).increment(e.type);
 				(e1.type.equals(e.type)?truePositiveCounter:falseNegativeCounter).increment(ALL);
 			} else
 			{
-				System.err.println("Missed: " + e +  " at " + location);
+				if (verbose) System.err.println("Missed: " + e +  " at " + location);
 				falseNegativeCounter.increment(ANY);
 				falseNegativeCounter.increment(ALL);
 				falseNegativeCounter.increment(e.type);
@@ -83,7 +85,7 @@ public class NEREvaluation
 				if (!e1.type.equals(e.type)) { falsePositiveCounter.increment(e.type);	falsePositiveCounter.increment(ALL); }	
 			} else
 			{
-				System.err.println("False positive: " + e +  " at " + location);
+				if (verbose) System.err.println("False positive: " + e +  " at " + location);
 				falsePositiveCounter.increment(ANY);
 				falsePositiveCounter.increment(ALL);
 				falsePositiveCounter.increment(e.type);

@@ -299,7 +299,7 @@ public class LibSVMClassifier implements Classifier, Serializable
 						svm_node n = new svm_node();
 						x.add(n);
 						n.index = index+1;
-						n.value = 1; // TODO werkt o.p nou helemaal niet? (pfft dit klopte dus niet!)
+						n.value = o.p; // TODO werkt o.p nou helemaal niet? (pfft dit klopte dus niet!)
 						k++;
 					}
 				}
@@ -358,6 +358,7 @@ public class LibSVMClassifier implements Classifier, Serializable
 			return null;
 		}
 	}
+	
 	public void load(String fileName)
 	{
 		try 

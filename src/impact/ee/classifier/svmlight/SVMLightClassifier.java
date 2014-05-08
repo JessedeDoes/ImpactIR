@@ -235,8 +235,10 @@ public class SVMLightClassifier implements Classifier, Serializable
 			{
 				this.multiClassifier = new MultiClassifier();
 			}
+			String modelDirectory=null;
 			for (File mf : modelFiles) 
 			{
+				modelDirectory = mf.getParent();
 				try 
 				{
 					SVMLightModel model = SVMLightModel
@@ -260,7 +262,8 @@ public class SVMLightClassifier implements Classifier, Serializable
 						modelMap.put(className, model);
 						validateModel(model, p, d);
 					}
-				} catch (ParseException e) 
+					mf.delete();
+				} catch (Exception e) 
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -269,6 +272,11 @@ public class SVMLightClassifier implements Classifier, Serializable
 			if (useMultiClassifier)
 			{
 				this.multiClassifier.noLists();
+			}
+			if (modelDirectory != null)
+			{
+				File md = new File(modelDirectory);
+				md.delete();
 			}
 		} catch (Exception e) 
 		{	

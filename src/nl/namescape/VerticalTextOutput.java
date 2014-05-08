@@ -133,8 +133,12 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 			String tag = t.getAttribute("type");
 			if (useCTAG)
 				tag = t.getAttribute("ctag");
-
+			if (t.getNodeName().equals("c"))
+			{
+				continue;
+			}
 			String lemma = t.getAttribute("lemma");
+			
 			String word = t.getTextContent();
 			String features = t.getAttribute("features");
 			if (features == null || features.length() == 0)
