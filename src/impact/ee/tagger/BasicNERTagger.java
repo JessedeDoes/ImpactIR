@@ -40,13 +40,14 @@ public class BasicNERTagger implements Serializable, Tagger
 	boolean useLexicon = false;
 	boolean doeEvenRaar = false;
 	boolean useShapes = true;
+	boolean useVectors = true;
 	Set<String> knownWords = new HashSet<String>();
 	double proportionOfTrainingToUse = 1;
 	public String taggedAttribute = "tag";
 	
 	public static String[] defaultAttributeNames = {"word", "tag"};
 	public String[] attributeNames = defaultAttributeNames;
-	public boolean onlyUseContextInsideSentence = false;
+	public boolean onlyUseContextInsideSentence = true;
 	
 	public void setClassifier(String className)
 	{
@@ -106,8 +107,8 @@ public class BasicNERTagger implements Serializable, Tagger
 		// features.addFeature(new GazetteerFeature(GazetteerFeature.LOC));
 	}
 
-	void initializeFeatures() {
-		features = TaggerFeatures.getMoreFeatures(useFeedback);
+	protected void initializeFeatures() {
+		features = TaggerFeatures.getMoreFeatures(useFeedback, false);
 		if (useLexicon)
 		{
 			features.addStochasticFeature(new HasTagFeature(0));
@@ -122,6 +123,10 @@ public class BasicNERTagger implements Serializable, Tagger
 			Set<Feature> shapeFeatures = ShapeFeature.getShapeFeatures();
 			for (Feature f: shapeFeatures)
 				features.addFeature(f);
+		}
+		if (useVectors)
+		{
+			features.addStochasticFeature(new WordVectorFeature(0));
 		}
 	}
 	
@@ -261,7 +266,7 @@ public class BasicNERTagger implements Serializable, Tagger
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames); // set chunking if needed ?
 			if (t.onlyUseContextInsideSentence)
-				trainingCorpus.setChunking();
+				trainingCorpus.setChunking(true);
 			t.train(trainingCorpus);
 			t.saveModel(args[1]); 
 		}
@@ -276,7 +281,7 @@ public class BasicNERTagger implements Serializable, Tagger
 			BasicNERTagger t = new BasicNERTagger(p);
 			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames); // set chunking if needed
 			if (t.onlyUseContextInsideSentence)
-				testCorpus.setChunking();
+				testCorpus.setChunking(true);
 			//t.loadModel(args[0]);
 			t.test(testCorpus);
 		}

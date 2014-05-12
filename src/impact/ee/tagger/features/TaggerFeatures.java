@@ -74,9 +74,9 @@ public class TaggerFeatures
 	 * @param useFeedback
 	 * @return
 	 */
-	public static FeatureSet getMoreFeatures(boolean useFeedback)
+	public static FeatureSet getMoreFeatures(boolean useFeedback, boolean useClusters)
 	{
-		FeatureSet f = getBasicNERFeatures(useFeedback);
+		FeatureSet f = getBasicNERFeatures(useFeedback, useClusters);
 		f.addStochasticFeature(getPoSDistributionAt(1));
 		f.addStochasticFeature(getPoSDistributionAt(-1));
 		// f.addStochasticFeature(getPreviousWordDistributionAt(0)); // silly... only makes sense if pruned...
@@ -97,6 +97,11 @@ public class TaggerFeatures
 	}
 
 	public static FeatureSet getBasicNERFeatures(boolean useFeedback)
+	{
+		return getBasicNERFeatures(useFeedback, false); // was: TRUE (Mei 2014) om word2vec features te testen!
+	}
+	
+	public static FeatureSet getBasicNERFeatures(boolean useFeedback, boolean useClusters)
 	{
 		FeatureSet fs = new FeatureSet();
 		for (int i=1; i < 10; i++)
@@ -125,8 +130,11 @@ public class TaggerFeatures
 		{
 			fs.addFeature(new CapitalFirstFeature(i));
 			fs.addFeature(new SentenceInternalCapitalFeature(i));
-			fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,4,i));
-			fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,8,i));
+			if (useClusters)
+			{
+				fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,4,i));
+				fs.addFeature(new ClusterFeature(ClusterFeature.SandersClusterFile,8,i));
+			}
 			//fs.addFeature(new InitialFeature(i));
 		}
 		if (useFeedback)

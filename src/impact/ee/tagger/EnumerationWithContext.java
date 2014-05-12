@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 /*
  * Werkt nog niet goed als bestand heel kort is!
+ * !? Waar is de implementatie als capacity overschreden wordt??????
  */
 public class EnumerationWithContext<T> implements Iterator<T>// T is the token-with-attributes type
 {
@@ -63,7 +64,7 @@ public class EnumerationWithContext<T> implements Iterator<T>// T is the token-w
 		{
 			buffer[offset+windowSize] = x;
 			offset ++;
-		} else
+		} else // OK hier als we uit capaciteit lopen
 		{
 			for (int i = 1; i <= windowSize - 1; i++)
 			{
@@ -79,7 +80,10 @@ public class EnumerationWithContext<T> implements Iterator<T>// T is the token-w
 	{
 		if (offset+focus+i < 0)
 			return defaultT;
-		return buffer[offset+focus+i];
+		T z = buffer[offset+focus+i];
+		if (z == null)
+			return defaultT;
+		return z;
 	}
 	
 	void set(int i, T t)

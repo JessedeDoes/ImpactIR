@@ -11,6 +11,7 @@ import impact.ee.tagger.features.HasPoSFeature;
 import impact.ee.tagger.features.HasTagFeature;
 import impact.ee.tagger.features.ShapeFeature;
 import impact.ee.tagger.features.TaggerFeatures;
+import impact.ee.tagger.features.WordVectorFeature;
 import impact.ee.util.Pair;
 import impact.ee.util.Serialize;
 
@@ -90,6 +91,7 @@ public class BasicTagger implements Serializable, Tagger
 	public String taggedAttribute = "tag";
 	public static String[] defaultAttributeNames = {"word", "tag"};
 	public String[] attributeNames = defaultAttributeNames;
+	boolean useVectors = true;
 	
 	public void setClassifier(String className)
 	{
@@ -152,8 +154,9 @@ public class BasicTagger implements Serializable, Tagger
 		this.initializeFeatures();
 	}
 
-	private void initializeFeatures() {
-		features = TaggerFeatures.getMoreFeatures(useFeedback);
+	private void initializeFeatures() 
+	{
+		features = TaggerFeatures.getMoreFeatures(useFeedback, true);
 		if (useLexicon)
 		{
 			features.addStochasticFeature(new HasTagFeature(0));
@@ -162,6 +165,10 @@ public class BasicTagger implements Serializable, Tagger
 			//context potential PoS does not appear to contribute much
 			//features.addStochasticFeature(new LexiconBasedFeature.HasPoSFeature(1));
 			//features.addStochasticFeature(new LexiconBasedFeature.HasPoSFeature(-1));
+		}
+		if (useVectors)
+		{
+			features.addStochasticFeature(new WordVectorFeature(0));
 		}
 	}
 	

@@ -446,7 +446,8 @@ public class TEITokenStream implements TokenWindow, Corpus
 	public Iterable<Context> enumerate() 
 	{
 		EnumerationWithContext e = 
-				new EnumerationWithContext(Map.class, new IteratorEnumeration(this.tokens.iterator()), new DummyMap());
+				new EnumerationWithContext(Map.class, 
+						new IteratorEnumeration(this.tokens.iterator()), new DummyMap());
 		SimpleCorpus sc = new SimpleCorpus(e);
 		// TODO Auto-generated method stub
 		return sc;

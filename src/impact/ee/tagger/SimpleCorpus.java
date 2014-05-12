@@ -15,28 +15,34 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import nl.namescape.sentence.SentenceBoundaryToken;
+
 
 public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>, Iterator<impact.ee.tagger.Context> 
 {
 	EnumerationWithContext<Map<String,String>> enumerationWithContext;
 	boolean supportsReset = false;
 	List<String> attributeList = new ArrayList<String>();
-	Chunker chunker = null; // usually a sentence splitting criterion
+	Chunker chunker = new Chunker(); // usually a sentence splitting criterion
+	static Class chunkBoundaryClass = SentenceBoundary.class;
 	
 	static class Chunker // default implementation
 	{
 		public boolean isChunkBoundary(Map<String,String> c)
 		{
-			String w = c.get("word");
-			if (w != null && (w.equals(".") || w.equals("?") || w.equals("?")))
-			{
-				return true;
-			}
-			return false;
+			return c != null && c instanceof SentenceBoundary;
 		}
 	}
 	
-	public void setChunking()
+	public void setChunking(boolean b)
+	{
+		if (b) 
+			setChunker();
+		else
+			this.chunker = null;
+	}
+	
+	private  void setChunker()
 	{
 		chunker = new Chunker();
 	}
@@ -67,7 +73,9 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 			try
 			{
 				String[] f = l.split("\t");
-				if (l.matches("^\\s*$") || f.length ==0 || f[0].equals(SentenceBoundary.SentenceBoundarySymbol))
+				if (l.matches("^\\s*$") ||
+						f.length ==0 || 
+						f[0].equals(SentenceBoundary.SentenceBoundarySymbol))
 				{
 					//System.err.println("__EOS__!");
 					return new SentenceBoundary();
@@ -89,17 +97,13 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		{
 			try
 			{
-				if (chunker != null && relativePosition != 0)
-				{
-					int increment = relativePosition > 0?1:-1;
-					for (int i=increment; relativePosition>0?i<=relativePosition:i>=relativePosition; i+= increment)
-					{
-						if (chunker.isChunkBoundary(enumerationWithContext.get(relativePosition)))
-							return enumerationWithContext.defaultT.get(featureName);
-					}
-				}
+			
 				Map<String,String> m = enumerationWithContext.get(relativePosition);
+				
+				m = dealWithBoundaryConditions(relativePosition, m);
+				
 				String v =  m.get(featureName);
+				
 				if (featureName.equals("word") && v == null)
 				{
 					System.err.println("NO WORD in map at position: " + relativePosition +  " map= " + m);
@@ -110,9 +114,62 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 				return v;
 			} catch (Exception e)
 			{
-				// System.err.println("failed to get " + featureName + " at " + relativePosition);
+				//System.err.println("failed to get " + featureName + " at " + relativePosition);
 				return Feature.Unknown;
 			}
+		}
+
+		/** If there is a chunk boundary
+		 * (strictly) between 0 and relativePosition, return the dummy context 
+		 * Also: when we 'just' run out of context (fallback object)
+		 * we want to return the chunk boundary? Hm??
+		 * So Dummy Dummy SB <real word>
+		 * and <real word> SB Dummy Dummy?
+		 * But why not just the dummies???
+		 */
+		
+		protected Map<String, String> dealWithBoundaryConditions( int relativePosition, Map<String, String> m)
+		{
+			//System.err.println(m + " at " + relativePosition);
+			if (chunker != null)
+			{
+				if (relativePosition != 0)
+				{
+					int increment = relativePosition > 0 ? 1: -1;
+					for (int i=increment; 
+							relativePosition>0?
+										i<relativePosition
+										:i>relativePosition; 
+							i+= increment)
+					{
+						if (chunker.isChunkBoundary(enumerationWithContext.get(i)))
+						{
+							//System.err.println("Ha!"  + relativePosition + " i = " + i);
+							return enumerationWithContext.defaultT;
+						}
+					}
+				}
+				// if m is a dummy, but one closer to focus is not, return a sentence boundary symbol
+				if (m != null && enumerationWithContext.defaultT.equals(m))
+				{
+					if (relativePosition >= 1  && !
+							enumerationWithContext.get(relativePosition -1).equals(enumerationWithContext.defaultT) )
+					{
+						//System.err.println("set SB at " + relativePosition + " / " +  enumerationWithContext.get(relativePosition -1));
+						m = new SentenceBoundaryToken();
+					} else if (relativePosition <= -1  && !
+							enumerationWithContext.get(relativePosition +1).equals(enumerationWithContext.defaultT) )
+					{
+						//System.err.println(enumerationWithContext.defaultT);
+						//System.err.println("set SB at " + relativePosition +   " / " +  enumerationWithContext.get(relativePosition +1));
+						m = new SentenceBoundaryToken();
+					} else
+					{
+						//System.err.println("Keep dummy  at "+ relativePosition);
+					}
+				} 
+			}
+			return m;
 		}
 
 		@Override
@@ -220,18 +277,20 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		try 
 		{
 			BufferedReader b = new BufferedReader(new FileReader(new File(args[0])));
-			LineParser<String> lp = new LineParser<String>(b) { public String parseLine(String s) { return s;} } ;
-			EnumerationWithContext<String> corpusje = 
-					new EnumerationWithContext(String.class, lp, "DUMMY");
+			String[] atts = {"word"};
+	
 			
-			while (corpusje.moveNext())
+		
+			SimpleCorpus simpleCorpus = new SimpleCorpus(args[0], atts);
+		for   (impact.ee.tagger.Context c: simpleCorpus.enumerate())
 			{
-				String foc = corpusje.get(0);
-				String before =corpusje.get(-1);
-				String beforebefore =corpusje.get(-2);
-				String after = corpusje.get(1);
-				String afterafter = corpusje.get(2);
-				System.out.println(corpusje.lineNumber + "/" + corpusje.offset + ": " + beforebefore + "-" + foc + "-" + afterafter);
+			
+				String focWord = c.getAttributeAt("word", 0);
+				String before = c.getAttributeAt("word", -1);
+				String beforebefore =  c.getAttributeAt("word", -2);
+				String after =  c.getAttributeAt("word", 1 );
+				String afterafter = c.getAttributeAt("word", 2);
+				System.out.println(beforebefore + ", "  + before + "-<" + focWord + ">-" + after + "," + afterafter);
 			}
 		} catch (FileNotFoundException e) 
 		{
