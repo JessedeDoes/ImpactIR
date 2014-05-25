@@ -168,7 +168,9 @@ public class BasicTagger implements Serializable, Tagger
 		}
 		if (useVectors)
 		{
+			features.addStochasticFeature(new WordVectorFeature(-1));
 			features.addStochasticFeature(new WordVectorFeature(0));
+			features.addStochasticFeature(new WordVectorFeature(1));
 		}
 	}
 	

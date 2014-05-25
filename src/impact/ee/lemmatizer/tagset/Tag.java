@@ -35,6 +35,12 @@ public class Tag extends ConcurrentHashMap<String, Set<String>>
 		return StringUtils.join(get(name), multiValueSeparator+"");
 	}
 	
+	@Override
+	public Set<String> keySet()
+	{
+		return super.keySet();
+	}
+	
 	public String toString()
 	{
 		String pos = this.getValues("pos");

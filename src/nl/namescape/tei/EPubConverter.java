@@ -38,7 +38,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 		transformer = new XSLTTransformer(xslStream);
 	}
 	
-	public void createPath(String fileName)
+	public static  void createPath(String fileName)
 	{
 		String [] parts  = fileName.split(File.separator);
 		String path = parts[0];
@@ -53,7 +53,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 		}
 	}
 	
-	public void getZipFiles(String filename, String destinationFolder)
+	public static void getZipFiles(String filename, String destinationFolder)
 	{
 		try
 		{
@@ -120,7 +120,7 @@ public class EPubConverter implements SimpleInputOutputProcess
 			renameNamespaceRecursive(doc, list.item(i), namespace);
 		}
 	}
-	private void cleanupHTML(String entryName) // this should be done better -- jtidy to remove textnodes hanging around, etc??
+	private static void cleanupHTML(String entryName) // this should be done better -- jtidy to remove textnodes hanging around, etc??
 	{
 		// TODO Auto-generated method stub
 		Document d = TagSoupParser.parse2DOM(entryName);

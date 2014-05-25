@@ -48,11 +48,29 @@ HEIGHT="35">
 </xsl:template>
 
 
+<!-- how to handle hyphenation 
+
+
+<String ID="String190" CONTENT="on" HEIGHT="23" WIDTH="52" HPOS="1282" VPOS="1733" WC="1" CC="000" SUBS_TYPE="HypPart1" SUBS_CONTENT="onbefchaamdheid,"/>
+<String ID="String191" CONTENT="befchaamdheid," HEIGHT="43" WIDTH="279" HPOS="394" VPOS="1779" WC="1" CC="00000000000000" SUBS_TYPE="HypPart2" SUBS_CONTENT="onbefchaamdheid,"/>
+
+
+-->
+
+<xsl:template match="alto:String[@SUBS_TYPE='HypPart1']">
+<reg>
+<xsl:attribute name="orig"><xsl:value-of select="@CONTENT"/>|<xsl:variable name="s1"><xsl:value-of select="@CONTENT"/></xsl:variable><xsl:variable name="s2"><xsl:value-of select="@SUBS_CONTENT"/></xsl:variable><xsl:value-of select="substring-after($s2,$s1)"/></xsl:attribute>
+<w>
+<xsl:attribute name="xml:id"><xsl:value-of select="@ID"/></xsl:attribute>
+<xsl:value-of select="@SUBS_CONTENT"/>
+</w>
+</reg>
+</xsl:template>
+<xsl:template match="alto:String[@SUBS_TYPE='HypPart2']"/>
+
 <xsl:template match="alto:String">
 <w><xsl:attribute name="xml:id"><xsl:value-of select="@ID"/></xsl:attribute> 
-<!-- <xsl:text> </xsl:text> -->
 <xsl:value-of select="@CONTENT"/>
-<!-- <xsl:text> </xsl:text> -->
 </w>
 </xsl:template>
 

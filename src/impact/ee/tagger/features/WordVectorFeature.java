@@ -22,7 +22,7 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 	
 	public WordVectorFeature(String vectorFileName, int k)
 	{
-		vectors = ConvertVectors.readVectors(vectorFileName);
+		readVectors(vectorFileName);
 		this.k = k;
 		this.name = 	"vectors" + k;
 		this.vectorFileName = vectorFileName;
@@ -33,6 +33,14 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 		this(SonarVectors,k);
 	}
 
+	static synchronized void readVectors(String vectorFileName)
+	{
+		if (WordVectorFeature.vectors == null)
+		{
+			vectors = ConvertVectors.readVectors(vectorFileName);
+		}
+	}
+	
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -42,10 +50,7 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 		Distribution d = new Distribution();
 		String w = c.getAttributeAt("word", k);
 		
-		if (WordVectorFeature.vectors == null)
-		{
-			vectors = ConvertVectors.readVectors(vectorFileName);
-		}
+       readVectors(vectorFileName);
 		
 		if  (w != null)
 		{

@@ -26,7 +26,7 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 	String fileName=null;
 	public boolean initialized=false;
 	Distribution allLC = new Distribution();
-	
+	Distribution allUC = new Distribution();
 	public CaseProfileFeature(String fileName)
 	{
 		this.fileName = fileName;
@@ -37,6 +37,13 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 	
 	public void init()
 	{
+		if (allLC.size() == 0)
+		{
+			allLC.addOutcome("lc",1);
+			allLC.addOutcome("uc",0);
+			allUC.addOutcome("uc", 1);
+			allUC.addOutcome("lc", 0);
+		}
 		if (initialized)
 			return;
 		System.err.println("Initializing case profile -- are you training or serialization did not quite work??");
@@ -59,8 +66,7 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 			d.addOutcome("uc", p);
 			profileMap.put(w, d);
 		}
-		allLC.addOutcome("lc",1);
-		allLC.addOutcome("uc",0);
+	
 		initialized = true;
 	}
 	
@@ -76,9 +82,20 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 			{
 				return d;
 			}
-			return allLC;  
+			
+			String lower = w.toLowerCase();
+			if (lower.equals(w))
+			{
+				return allLC;
+			} else
+			{
+				return allUC;
+			}
+			
+			
 			// this is extremely BAD for new (unknown) words!!
-			// should at least add the current value.....
+			// should at least add the current value....
+			// best would be to profile with the whole text...
 		} catch (Exception e)
 		{
 			

@@ -58,12 +58,12 @@ public class ImpactNERTaggingClient extends ImpactTaggingClient
 		nl.namescape.util.Options options = 
 				new nl.namescape.util.Options(args);
 		args = options.commandLine.getArgs();
-
+		 int nThreads = Runtime.getRuntime().availableProcessors()-1;
 		Tagger namePartTagger = 
 				NamePartTagger.getNamePartTagger(args[0], args[1]);
 		ImpactNERTaggingClient x = new ImpactNERTaggingClient(namePartTagger);
 		x.tokenize = options.getOptionBoolean("tokenize", true);
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,4);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,nThreads);
 		DirectoryHandling.tagAllFilesInDirectory(m, args[2], args[3]);
 		m.shutdown();
 	}
