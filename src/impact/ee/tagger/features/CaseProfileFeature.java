@@ -76,15 +76,15 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 		try
 		{
 			Context c = (Context) o;
-			String w = c.getAttributeAt("word", 0).toLowerCase();
+			String w0 = c.getAttributeAt("word", 0);
+			String w  = w0.toLowerCase();
 			Distribution d = profileMap.get(w);
 			if (d != null)
 			{
 				return d;
 			}
 			
-			String lower = w.toLowerCase();
-			if (lower.equals(w))
+			if (w.equals(w0))
 			{
 				return allLC;
 			} else
