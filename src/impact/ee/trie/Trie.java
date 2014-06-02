@@ -152,9 +152,15 @@ public class Trie implements java.io.Serializable
 		loadWordlist(filename,false,false);
 	}
 	
-	public boolean contains(String s)
+	public boolean contains(String s) // this should be containsPrefix!
 	{
 		return root.findNode(s) != null; 
+	}
+	
+	public boolean hasWord(String s)
+	{
+		TrieNode n = root.findNode(s);
+		return (n != null && n.isFinal);
 	}
 	
 	public boolean contains(String s, boolean addWordBoundaries)
