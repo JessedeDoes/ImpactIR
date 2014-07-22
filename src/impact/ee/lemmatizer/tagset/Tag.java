@@ -44,6 +44,7 @@ public class Tag extends ConcurrentHashMap<String, Set<String>>
 	public String toString()
 	{
 		String pos = this.getValues("pos");
+		
 		List<String> l = new ArrayList<String>();
 		for (String name: this.keySet())
 		{

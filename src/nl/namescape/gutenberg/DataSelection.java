@@ -9,7 +9,8 @@ import java.util.*;
 public class DataSelection implements DoSomethingWithFile
 {
 	public String rdfDir = "N:/transcriptorium/Corpora/German/Gutenberg/cache";
-
+	 public String targetLanguage="de";
+	 
 	class Author
 	{
 		String name;
@@ -41,9 +42,10 @@ public class DataSelection implements DoSomethingWithFile
 					possibleURLS.add(f.getAttribute("rdf:about"));
 				}
 			};
-			if (urlOfHTML != null && getLanguage(root).equals("de"))
+			String l = getLanguage(root);
+			if (urlOfHTML != null && (true || getLanguage(root).equals(targetLanguage)))
 			{
-				System.err.println(urlOfHTML + "\t" + getTitle(root).replaceAll("\\s+",  " ") + "\t" + getAuthors(root) + "\t" + possibleURLS);
+				System.out.println(l + "\t" + urlOfHTML + "\t" + getTitle(root).replaceAll("\\s+",  " ") + "\t" + getAuthors(root) + "\t" + possibleURLS);
 			}
 		} catch (Exception e)
 		{
@@ -60,7 +62,7 @@ public class DataSelection implements DoSomethingWithFile
 	public String getLanguage(Element e)
 	{
 		Element t = XML.getElementByTagname(e, "dcterms:language");
-		return t.getTextContent();
+		return t.getTextContent().trim();
 	}
 
 	public List<Author> getAuthors(Element e)
@@ -88,9 +90,15 @@ public class DataSelection implements DoSomethingWithFile
 	public static void main(String[] args)
 	{
 		DataSelection ds = new DataSelection();
-		String dir = ds.rdfDir;
+		String dir;
 		if (args.length > 0)
-			dir = args[0];
-		DirectoryHandling.traverseDirectory(ds, dir);
+			ds.rdfDir = args[0];
+		
+		if (args.length > 1)
+			ds.targetLanguage = args[1];
+		
+
+		
+		DirectoryHandling.traverseDirectory(ds, ds.rdfDir);
 	}
 }

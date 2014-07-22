@@ -42,6 +42,7 @@ public class BIOFile implements NETaggedDocument
 	public void read(String fileName)
 	{
 		TabSeparatedFile f = new TabSeparatedFile(fileName,fields);
+		f.setSeparator("\\s+");
 		String[] line = null;
 		int entityStart=0;
 		Entity currentEntity=null;

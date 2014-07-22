@@ -43,6 +43,38 @@
          </jar>
     </target>
 
+    <target name="nerEval" depends="compile">
+       <copy todir="nerEval/nl/namescape/evaluation">
+          <fileset dir="${build}/nl/namescape/evaluation"/>
+       </copy>
+       <copy todir="nerEval/nl/namescape/util">
+           <fileset dir="${build}/nl/namescape/util"/>
+       </copy>
+       <copy todir="nerEval/nl/namescape">
+           <fileset file="${build}/nl/namescape/Entity.class"/>
+           <fileset file="${build}/nl/namescape/Nym.class"/>
+       </copy> 
+       <jar basedir="nerEval" destfile="${dist}/NEREVal.jar">
+           <manifest>
+                  <attribute name="Main-Class" value="nl.namescape.evaluation.NEREvaluation"/>
+            </manifest>
+       </jar>
+    </target> 
+
+   <target name="tagger" depends="compile">
+         <jar destfile="${dist}/DutchTaggerLemmatizer.jar">
+              <fileset dir= "${build}"/>
+              <fileset dir="resources"/>
+              <zipgroupfileset dir="lib" includes="*.jar"/>
+              <zipgroupfileset dir="lib/commons-math3-3.2" includes="*.jar"/>
+              <zipgroupfileset dir="lib/poi" includes="*.jar"/>
+              <zipgroupfileset dir="lib/neo" includes="*.jar"/>
+             <manifest>
+                  <attribute name="Main-Class" value="nl.namescape.tagging.ImpactTaggerLemmatizerClient"/>
+            </manifest>
+         </jar>
+    </target>
+
     <target name="dist" depends="compile">
         <jar destfile="${dist}/spellingvariation.jar">
               <fileset dir= "${build}"/>

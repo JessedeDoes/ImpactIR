@@ -34,7 +34,7 @@ public class TEITokenizer extends DefaultHandler
 	private boolean insideTokenizedElement = false;
 	private String pendingToken="";
 	private boolean deferOpenTags = true;
-	private boolean deleteIntermediate  =  false;
+	private boolean deleteIntermediate  =  true;
 	private boolean needWhite = false;
 	private boolean onlyInTextElement = true;
 	Document currentDocument = null;

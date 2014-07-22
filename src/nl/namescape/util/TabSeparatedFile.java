@@ -11,9 +11,13 @@ public class TabSeparatedFile
 	BufferedReader b =null;
 	public String[] fieldNames;
 	public String[] currentRow = null;
-	String separator = "\t";
+	public String separator = "\t";
 	Map<String,Integer> fieldNumbers = new HashMap<String,Integer>();
 	
+	public void setSeparator(String s)
+	{
+		this.separator = s;
+	}
 	public TabSeparatedFile(String fileName, String[] fields)
 	{
 		try {

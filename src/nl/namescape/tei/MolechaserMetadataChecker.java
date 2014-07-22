@@ -131,7 +131,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 
 		String witnessYear_from = m.getValue("witnessYear_from").trim();
 		String witnessYear_to = m.getValue("witnessYear_to").trim();
-		String idno = m.getValue("idno").trim();
+		String sourceId = m.getValue("sourceID").trim();
 		String provenance = m.getValue("corpusProvenance");
 		checkMinimumLength(d,fileName);
 		if (provenance == null || provenance.equals(""))
@@ -150,20 +150,20 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 
 		if (checkIdno)
 		{
-			if (idno == null || idno.equals(""))
+			if (sourceId == null || sourceId.equals(""))
 			{
 				System.err.println("No idno in file:  " + fileName);
 				String newIdno = MolechaserMetadataFixer.createIdno(m, d, fileName);
 				System.err.println("Attempt to assign idno: " + newIdno);
-				idno = newIdno;
+				sourceId = newIdno;
 			}
 
-			Set<String> filesWithThisId = idmap.get(idno);
+			Set<String> filesWithThisId = idmap.get(sourceId);
 
 			if (filesWithThisId == null)
 			{
 				filesWithThisId = new HashSet<String>();
-				idmap.put(idno, filesWithThisId);
+				idmap.put(sourceId, filesWithThisId);
 			} else
 			{
 				filesWithThisId.add(fileName);
@@ -245,7 +245,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 	{
 		Proxy.setProxy();
 		MolechaserMetadataChecker d = new MolechaserMetadataChecker();
-		MultiThreadedFileHandler m = new MultiThreadedFileHandler(d,4);
+		MultiThreadedFileHandler m = new MultiThreadedFileHandler(d,11);
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		d.printDuplicateInfo();
