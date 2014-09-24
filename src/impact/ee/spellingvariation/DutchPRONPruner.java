@@ -23,16 +23,24 @@ package impact.ee.spellingvariation;
 public class DutchPRONPruner implements MultigramPruner
 {
 
-  public boolean lengthOneOrTwo(String s, String t)
+  public boolean lengthOneOrTwo(String s, String t) // hier zijn veel uitzonderingen
   {
-    return (s != null && t != null && ((s.length()==1 && t.length()==1) || (s.length() ==1 && t.length() == 2 || t.length() ==1 && s.length() ==2)));
+    return (s != null && t != null && 
+    		((s.length()==1 && t.length()==1) || 
+    				(s.length() ==1 && t.length() == 2 || 
+    				t.length() ==1 && s.length() ==2)));
   }
 
   public boolean isOK(JointMultigram m) // TODO: lhs all vowels <-> rhs all vowels
   {
-    boolean x =  m.isSingleton() || lengthOneOrTwo(m.lhs,m.rhs);
-    System.err.println(x + " " + m);
-    return x;
+     boolean x =  m.isSingleton() ||
+    		 lengthOneOrTwo(m.lhs,m.rhs) 
+    		 || m.rhs.equals("eau") ||  m.rhs.equals("ieu")  || 
+    		 m.rhs.equals("eeu")   || m.rhs.equals("ill") ;
+     
+     System.err.println(x + ": " + m);
+     
+     return x;
   }
 
 	//@Override

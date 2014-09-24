@@ -14,7 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.poi.hwpf.HWPFDocumentCore;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
 import org.apache.poi.hwpf.converter.WordToHtmlUtils;
-import org.apache.poi.xwpf.*; // xwpf is voor word 2010 etc.
+import org.apache.poi.xwpf; // xwpf is voor word 2010 etc.
 //import org.apache.poi.
 import org.w3c.dom.Document;
 
