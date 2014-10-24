@@ -8,7 +8,7 @@ import org.apache.commons.cli.HelpFormatter;
 
 public class Options
 {
-	Properties properties = new Properties();
+	public Properties properties = new Properties();
 	public org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
 	org.apache.commons.cli.GnuParser parser = new org.apache.commons.cli.GnuParser();
 	public CommandLine commandLine;

@@ -16,7 +16,7 @@ public class Proxy
 		{
 			// username, password
 			// sets http authentication
-			return new PasswordAuthentication("does", "b1c3.g8f6".toCharArray());
+			return new PasswordAuthentication("does", "p4p5p7p5!".toCharArray());
 		}
 	}
 

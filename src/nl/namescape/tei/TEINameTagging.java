@@ -61,6 +61,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	public  static String namePartTag = "ns:nePart";
 	private NymListBuilder nymListBuilder = new NymListBuilder();
 	private Properties properties;
+	private boolean extraStuff = false;
 	private static boolean addNormalizedForm = true;
 
 	/**
@@ -131,7 +132,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:ns", namescapeURI);
 
 		addEntityTags(d);
-		nymListBuilder.addNormalizedFormsAndNyms(d);
+		if (extraStuff ) nymListBuilder.addNormalizedFormsAndNyms(d);
 
 		for (Element w: XML.getElementsByTagname(d.getDocumentElement(), nl.namescape.tei.TEITagClasses.tokenTagNames, false))
 		{
@@ -139,7 +140,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 			w.removeAttribute("nePartLabel");
 		}
 		// experimental ...
-		new CooccurrenceGraph().processDocument(d);
+		if (extraStuff) new CooccurrenceGraph().processDocument(d);
 		// tei.Various.fixNamespaceStuff(d);
 	}	
 

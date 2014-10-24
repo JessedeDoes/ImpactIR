@@ -15,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 
 public class StanfordAPIClient extends DocumentTagger implements SentenceTagger 
 {
@@ -46,6 +47,26 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/*
+	 * Hm is this going to work???
+	Voorbeeld aanroep
+	java -mx8000m -jar $NERT -e -loadClassifier $MODEL -testFile test.in -o test.out -in BIO -out BIO 
+	-sv -svphontrans $DATADIR/phonTrans.txt -svlist $DATADIR/NE_identifiers_succeed.txt
+	 */
+	
+	public void addNERTClassifier(Properties props)
+	{
+		ImpactCRFClassifier nert = new ImpactCRFClassifier(props);
+		props.list(System.out);
+		nert.loadClassifierNoExceptions(props.getProperty("loadClassifier"), props);
+		listOfTaggers.add(nert);
+	}
+	
+	public void addClassifier(CRFClassifier classifier)
+	{
+		listOfTaggers.add(classifier);
 	}
 	
 	@Override
