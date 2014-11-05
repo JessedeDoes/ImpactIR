@@ -91,7 +91,7 @@ public class BasicTagger implements Serializable, Tagger
 	public String taggedAttribute = "tag";
 	public static String[] defaultAttributeNames = {"word", "tag"};
 	public String[] attributeNames = defaultAttributeNames;
-	boolean useVectors = true;
+	boolean useVectors = false;
 	
 	public void setClassifier(String className)
 	{

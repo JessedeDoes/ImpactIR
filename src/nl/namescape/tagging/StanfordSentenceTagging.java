@@ -69,6 +69,21 @@ public class StanfordSentenceTagging
 		return intermediate;
 	}
 	
+	/**
+	 * 
+	 * @param input
+	 * @param asc
+	 * @return
+	 * 
+	 * For NERT, we need to call, before classification, loadWordsFromBioString and 
+	 * findSpelVars from the spelvar module first
+	 * besides, we should return the inputTokens, not the transformed ones, but that
+	 * does not matter anyway here.t
+	 * 
+	 * best solution: put tagSentence in NERT, not here...
+	 * 
+	 */
+	
 	public static String tagSentence(String input, AbstractSequenceClassifier asc) 
 	{
 		String line="";

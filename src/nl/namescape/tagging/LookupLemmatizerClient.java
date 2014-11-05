@@ -1,6 +1,7 @@
 package nl.namescape.tagging;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.w3c.dom.Element;
 
@@ -20,6 +21,24 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 		super(ll2);
 	}
 
+	public LookupLemmatizerClient()
+	{
+		
+	}
+
+	public void setProperties(Properties p)
+	{
+		impact.ee.lemmatizer.Lemmatizer lemmatizer = new Lemmatizer(
+				p.getProperty("patternInput"),
+				p.getProperty("modernLexicon"), 
+				p.getProperty("historicalLexicon"), 
+				p.getProperty("lexiconTrie"));
+        LookupLemmatizer ll = new LookupLemmatizer(lemmatizer);
+        this.tagger = ll;
+        this.tokenize = true;
+        		//p.getProperty("tokenize").equalsIgnoreCase("true");
+	}
+	
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);

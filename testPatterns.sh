@@ -10,4 +10,4 @@ do
   export CLASSPATH="$PWD/$x:$CLASSPATH";
 done
 popd
-java spellingvariation.MemorylessMatcher $*
+java impact.ee.spellingvariation.MemorylessMatcher $*

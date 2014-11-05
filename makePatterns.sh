@@ -10,4 +10,4 @@ do
   export CLASSPATH="$PWD/$x:$CLASSPATH";
 done
 popd
-java spellingvariation.MultigramTransducer $*
+java impact.ee.spellingvariation.MultigramTransducer $*

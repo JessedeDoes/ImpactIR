@@ -35,6 +35,7 @@ public class Lemmatizer
 	boolean useMatcher = true;
 	boolean modernWordformAsLemma = false;
 	boolean simplify = false;
+	boolean believeExactMatches = true;
 	
 	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
@@ -188,7 +189,7 @@ public class Lemmatizer
 			x.wordformFrequency = wf.wordformFrequency;
 			matches.add(x);
 		}
-		if (useMatcher)
+		if (useMatcher && !(believeExactMatches && matches.size() > 0))
 		{
 			matcher.setCallback(new candidateCollector(matches));
 			matcher.matchWordToLexicon(lexiconTrie, w.toLowerCase());

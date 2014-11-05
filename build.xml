@@ -62,17 +62,22 @@
     </target> 
 
    <target name="tagger" depends="compile">
-         <jar destfile="${dist}/DutchTaggerLemmatizer.jar">
+         <jar destfile="${dist}/DutchTaggerLemmatizer.step1.jar">
               <fileset dir= "${build}"/>
               <fileset dir="resources"/>
-              <zipgroupfileset dir="lib" includes="*.jar"/>
+              <zipgroupfileset dir="lib" includes="*.jar" excludes="META-INF/*.SF"/>
+<!--
               <zipgroupfileset dir="lib/commons-math3-3.2" includes="*.jar"/>
-              <zipgroupfileset dir="lib/poi" includes="*.jar"/>
-              <zipgroupfileset dir="lib/neo" includes="*.jar"/>
+-->
+              <zipgroupfileset dir="lib/poi" includes="*.jar" excludes="META-INF/*.SF"/>
+              <zipgroupfileset dir="lib/neo" includes="*.jar" excludes="META-INF/*.SF"/>
+            </jar>
+            <jar destfile="${dist}/DutchTaggerLemmatizer.jar">
+             <zipfileset src="${dist}/DutchTaggerLemmatizer.step1.jar" excludes="META-INF/*.SF" />
              <manifest>
                   <attribute name="Main-Class" value="nl.namescape.tagging.ImpactTaggerLemmatizerClient"/>
             </manifest>
-         </jar>
+            </jar>
     </target>
 
     <target name="dist" depends="compile">
