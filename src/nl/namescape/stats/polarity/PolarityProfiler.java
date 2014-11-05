@@ -30,10 +30,12 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 	int windowSize = 5;
 	int maxWordsToPrint = 10000;
 	int frequencyThreshold=20;
-	boolean useLemmata = false;
-	String tagToLookFor = "WW";
+	boolean useLemmata = true;
+	boolean lowercaseLemmata = true;
+	String tagToLookFor = "ADJ" ; // "WW";
 	Integer yearFrom= null; // 1850;
 	Integer yearTo= null; // 1940;
+	public boolean filterDocuments = false;
 	
 	public void print()
 	{
@@ -101,7 +103,7 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 		try
 		{
 			Document d = XML.parse(fileName);
-			if (!filter(d))
+			if (filterDocuments && !filter(d))
 			{
 				return;
 			} else
@@ -109,6 +111,11 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 				if (yearFrom != null) System.err.println("filter accepts " + fileName);
 			}
 			List<Element> sentences = nl.namescape.tei.TEITagClasses.getSentenceElements(d.getDocumentElement());
+			if (sentences.size() == 0)
+			{
+				System.err.println("no sentences, just using element text!");
+				sentences = XML.getElementsByTagname(d.getDocumentElement(), "text", false);
+			}
 			for (Element s: sentences)
 			{
 				List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(s);
@@ -121,9 +128,16 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 					
 					String wordform = w.getTextContent();
 					String lemma = useLemmata?w.getAttribute("lemma"):wordform;
-					String tag = w.getAttribute("type");
+					if (this.lowercaseLemmata) lemma = lemma.toLowerCase();
+					String tag = w.getAttribute("function");
+					if (tag == null || tag.isEmpty())
+					  tag = w.getAttribute("type");
 				
 					
+					if (tag == null || tag.isEmpty())
+						tag = w.getAttribute("ctag");
+				
+					//System.err.println(wordform + " " + lemma + " " + tag);
 					SentimentLexicon.Polarity p;
 					if ((p = lexicon.getPolarity(lemma)) != null)
 					{
@@ -135,18 +149,18 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 							combinedNegativeFrequency++;
 						}
 					}
-					if (useLemmata && !tag.startsWith(tagToLookFor))
+					if (useLemmata && !tag.startsWith(tagToLookFor)) // ahem, this is not needed....
 					{
 						continue;
 					}
 					wordCounter.increment(lemma);
-					for (int j=i-1; j >=0; j--)
+					for (int j=i-1; j >=0 && i-j <= windowSize; j--)
 					{ 
 						Element w1 = tokens.get(j);
 						considerContextWord(lemma, w1);
 					}
 					
-					for (int j=i+1; j < tokens.size(); j++)
+					for (int j=i+1; j < tokens.size() && j-i <= windowSize; j++)
 					{ 
 						Element w1 = tokens.get(j);
 						considerContextWord(lemma, w1);
@@ -163,6 +177,7 @@ public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWi
 	private void considerContextWord(String lemma, Element w1) 
 	{
 		String lemma1 = useLemmata?w1.getAttribute("lemma"):w1.getTextContent().trim();
+		if (this.lowercaseLemmata) lemma1 = lemma1.toLowerCase();
 		SentimentLexicon.Polarity p1;
 		if ((p1 = lexicon.getPolarity(lemma1)) != null)
 		{
