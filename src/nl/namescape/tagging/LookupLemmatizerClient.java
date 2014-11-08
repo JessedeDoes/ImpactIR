@@ -42,7 +42,7 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);
-		System.err.println(m);
+		// System.err.println(m);
 		String tag = m.get("tag");
 		
 		if (tag != null)

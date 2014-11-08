@@ -73,7 +73,7 @@ public class LookupLemmatizer implements Tagger
 					}
 				}
 			}
-			System.err.println(w + "-->" + bestMatch.wordform);
+			// System.err.println(w + "-->" + bestMatch.wordform);
 			
 			m.put("lemma", bestMatch.wordform.lemma);
 			if (m.get("tag") == null)
@@ -83,9 +83,12 @@ public class LookupLemmatizer implements Tagger
 			{
 				String corpusTag = m.get("tag");
 				String lexiconTag = bestMatch.wordform.lemmaPoS;
-				m.put("tag", "corpus:"  + corpusTag + ",lexicon:"  + lexiconTag  + ",matching:" + foundCompatible);
+				//m.put("tag", "corpus:"  + corpusTag + ",lexicon:"  + lexiconTag  + ",matching:" + foundCompatible);
+				m.put("tag", lexiconTag);
 			}
-			m.put("mform",  bestMatch.wordform.modernWordform);
+			// laat die mform maar zitten, slaat alleen ergens op als een match met het modern lexicon bereikt is
+			
+			// m.put("mform",  bestMatch.wordform.modernWordform);
 			
 			//test.incrementCount(bestMatch.type);
 			/*

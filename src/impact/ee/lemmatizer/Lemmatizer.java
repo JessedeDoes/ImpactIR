@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -36,7 +36,12 @@ public class Lemmatizer
 	boolean modernWordformAsLemma = false;
 	boolean simplify = false;
 	boolean believeExactMatches = true;
+	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
 	
+	public void finalize()
+	{
+		
+	}
 	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
 		this.historicalLexicon = h;
@@ -160,6 +165,10 @@ public class Lemmatizer
 	public List<WordMatch> lookupWordform(String w0)
 	{
 		String w = impact.ee.spellingvariation.Ligatures.replaceLigatures(w0);
+		
+		List<WordMatch> cached = cache.get(w);
+		if (cached != null)
+			return cached;
 		Set<WordForm> exactMatches = (historicalLexicon == null)? new HashSet<WordForm>() :historicalLexicon.findLemmata(w);
 		Set<WordForm> modernMatches = (modernLexicon == null)? 
 				new HashSet<WordForm>(): modernLexicon.findLemmata(w);
@@ -189,11 +198,16 @@ public class Lemmatizer
 			x.wordformFrequency = wf.wordformFrequency;
 			matches.add(x);
 		}
+		
+		//System.err.println("for:  " + w0 + ", found before matching: " + matches.size());
+		
 		if (useMatcher && !(believeExactMatches && matches.size() > 0))
-		{
+		{	
+			//System.err.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
 			matcher.setCallback(new candidateCollector(matches));
 			matcher.matchWordToLexicon(lexiconTrie, w.toLowerCase());
 		}
+		
 		if (modernWordformAsLemma) // the German situation: only modern word form annotated
 		{
 			for (WordMatch wm: matches)
@@ -207,7 +221,7 @@ public class Lemmatizer
 				}
 			}
 		}
-	
+		cache.put(w, matches);
 		return matches;
 	}
 

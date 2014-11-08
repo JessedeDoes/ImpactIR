@@ -21,6 +21,12 @@ import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 
+/**
+ * 
+ * @author jesse
+ * This was not a very practical idea.
+ * Lexica are huge and not very fast in this way
+ */
 public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 {
 	
@@ -40,7 +46,11 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	GraphDatabaseService graphDb = null;
 	private Index<Node> nodeIndex = null;
 
-
+	protected void finalize()
+	{
+		this.graphDb.shutdown(); // this might help??
+	}
+	
 	public NeoLexicon(String dbPath, boolean createNew)
 	{
 		DB_PATH=dbPath;
