@@ -25,8 +25,13 @@ import java.util.*;
 public class ImpactTaggingClient implements SimpleInputOutputProcess
 {
 	Tagger tagger;
-	boolean tokenize = true;
+	public boolean tokenize = true;
 	protected Properties properties;
+	
+	public void setTokenizing(boolean b)
+	{
+		this.tokenize = b;
+	}
 	
 	public ImpactTaggingClient()
 	{

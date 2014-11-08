@@ -30,20 +30,24 @@ HEIGHT="35">
 <text>
 <body>
 <div>
-<xsl:apply-templates select=".//alto:Layout/*"/>
+<xsl:apply-templates select=".//*[local-name()='Layout']"/>
 </div>
 </body>
 </text>
 </TEI>
 </xsl:template>
 
-<xsl:template match="alto:TextBlock">
+<xsl:template match="*[local-name()='Layout']">
+<xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="*[local-name()='TextBlock']">
 <ab>
 <xsl:apply-templates/>
 </ab>
 </xsl:template>
 
-<xsl:template match="alto:TextLine">
+<xsl:template match="*[local-name()='TextLine']">
 <xsl:apply-templates/> <lb/>
 </xsl:template>
 
@@ -57,7 +61,11 @@ HEIGHT="35">
 
 -->
 
-<xsl:template match="alto:String[@SUBS_TYPE='HypPart1']">
+<xsl:template match="*[local-name()='SP']">
+<xsl:text> </xsl:text>
+</xsl:template>
+
+<xsl:template match="*[local-name()='String'][@SUBS_TYPE='HypPart1']">
 <reg>
 <xsl:attribute name="orig"><xsl:value-of select="@CONTENT"/>|<xsl:variable name="s1"><xsl:value-of select="@CONTENT"/></xsl:variable><xsl:variable name="s2"><xsl:value-of select="@SUBS_CONTENT"/></xsl:variable><xsl:value-of select="substring-after($s2,$s1)"/></xsl:attribute>
 <w>
@@ -66,9 +74,10 @@ HEIGHT="35">
 </w>
 </reg>
 </xsl:template>
-<xsl:template match="alto:String[@SUBS_TYPE='HypPart2']"/>
 
-<xsl:template match="alto:String">
+<xsl:template match="*[local-name()='String'][@SUBS_TYPE='HypPart2']"/>
+
+<xsl:template match="*[local-name()='String']">
 <w><xsl:attribute name="xml:id"><xsl:value-of select="@ID"/></xsl:attribute> 
 <xsl:value-of select="@CONTENT"/>
 </w>
