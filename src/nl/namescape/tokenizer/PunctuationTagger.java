@@ -234,4 +234,10 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 		xmlTagger.tokenize = options.getOptionBoolean("tokenize", false);
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

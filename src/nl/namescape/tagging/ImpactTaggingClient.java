@@ -161,4 +161,10 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess
 		xmlTagger.tokenize = options.getOptionBoolean("tokenize", true);
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

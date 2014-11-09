@@ -315,4 +315,10 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 				args[1]);
 
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -276,5 +276,11 @@ public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOut
 		XSLTTransformer p = new XSLTTransformer(args[0]);
 		DirectoryHandling.tagAllFilesInDirectory(p, args[1], args[2]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

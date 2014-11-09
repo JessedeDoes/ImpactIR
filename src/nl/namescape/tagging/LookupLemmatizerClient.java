@@ -16,6 +16,7 @@ import impact.ee.util.Options;
 public class LookupLemmatizerClient extends ImpactTaggingClient
 {
 	LookupLemmatizer ll = null;
+	Lemmatizer lemmatizer = null;
 	public LookupLemmatizerClient(LookupLemmatizer ll2) 
 	{
 		super(ll2);
@@ -33,6 +34,13 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 				p.getProperty("modernLexicon"), 
 				p.getProperty("historicalLexicon"), 
 				p.getProperty("lexiconTrie"));
+		
+		String m = p.getProperty("useMatcher");
+		
+		if (m != null)
+			lemmatizer.setUseMatcher(m.equalsIgnoreCase("true"));
+		
+		this.lemmatizer = lemmatizer;
         LookupLemmatizer ll = new LookupLemmatizer(lemmatizer);
         this.tagger = ll;
         this.tokenize = true;
@@ -56,6 +64,11 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 			e.setAttribute("mform", lemma);
 	}
 	
+	public void close()
+	{
+		if (this.lemmatizer != null)
+			this.lemmatizer.close();
+	}
 	public static void main(String[] args)
 	{
 		System.err.println(args[0]);
@@ -71,8 +84,10 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
         LookupLemmatizer ll = new LookupLemmatizer(lemmatizer);
         LookupLemmatizerClient x = new LookupLemmatizerClient(ll);
         x.tokenize = Options.getOptionBoolean("tokenize", true);
+        
 		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,3);
-		System.err.println("Start tagging from " + args[0] + " to " + args[1]);
+
+        System.err.println("Start tagging from " + args[0] + " to " + args[1]);
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 		//m.shutdown();
 	}

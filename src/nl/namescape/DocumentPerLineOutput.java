@@ -165,4 +165,10 @@ public class DocumentPerLineOutput implements nl.namescape.filehandling.SimpleIn
 			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(new DocumentPerLineOutput(), args[0]);
 		}
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

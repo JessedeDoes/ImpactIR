@@ -98,4 +98,10 @@ public class IDGenerator implements nl.namescape.filehandling.SimpleInputOutputP
 			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(spl, args[0]);
 		}
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

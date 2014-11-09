@@ -201,4 +201,11 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		// TODO Auto-generated method stub
 		this.properties = properties;
 	}
+
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -63,8 +63,8 @@ public class DatrieMatcher
 	protected static final double costScale = 100.0;
 	static final int BONUS=0;
 	int MAX_SUGGESTIONS = 1;
-	static int MAX_ITEMS=50000;
-	static int MAX_PENALTY = 3000;
+	static int MAX_ITEMS= 50000;
+	private int MAX_PENALTY = 3000;
 	int MAX_PENALTY_INCREMENT=300;
 
 	double MIN_JOINT_PROBABILITY=1e-6;
@@ -133,7 +133,7 @@ public class DatrieMatcher
 				this.MAX_SUGGESTIONS = Integer.parseInt(maxSuggestions);
 			String maxPenalty = Options.getOption("maximumPenalty");
 			if (maxPenalty != null)
-				DatrieMatcher.MAX_PENALTY = Integer.parseInt(maxPenalty);
+				this.setMaximumPenalty(Integer.parseInt(maxPenalty));
 			addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", addWordBoundaries);
 		} catch (Exception e)
 		{
@@ -487,7 +487,7 @@ public class DatrieMatcher
 			{
 				// output suggestie
 
-				if (item.cost <= MAX_PENALTY && penaltyIncrement <= MAX_PENALTY_INCREMENT)
+				if (item.cost <= getMaximumPenalty() && penaltyIncrement <= MAX_PENALTY_INCREMENT)
 				{
 					found = true; 
 					outputSuggestion(item);
@@ -495,7 +495,7 @@ public class DatrieMatcher
 				}
 			}
 			// queue.size() was activeItems.size
-			if (nofSuggestions >= MAX_SUGGESTIONS || queue.size() > MAX_ITEMS || item.cost > MAX_PENALTY)
+			if (nofSuggestions >= MAX_SUGGESTIONS || queue.size() > MAX_ITEMS || item.cost > getMaximumPenalty())
 			{
 				break;
 			}
@@ -640,5 +640,13 @@ public class DatrieMatcher
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public int getMaximumPenalty() {
+		return MAX_PENALTY;
+	}
+
+	public void setMaximumPenalty(int mAX_PENALTY) {
+		MAX_PENALTY = mAX_PENALTY;
 	}
 }

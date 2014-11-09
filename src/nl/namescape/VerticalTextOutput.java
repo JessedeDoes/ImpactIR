@@ -203,4 +203,10 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		 nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
 				args[1]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

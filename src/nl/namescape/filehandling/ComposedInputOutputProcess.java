@@ -6,6 +6,13 @@ import java.io.*;
 public class ComposedInputOutputProcess implements SimpleInputOutputProcess
 {
 	List<SimpleInputOutputProcess> steps = new ArrayList<SimpleInputOutputProcess>();
+	
+	
+	public List<SimpleInputOutputProcess> getSteps()
+	{
+		return steps;
+	}
+	
 	public ComposedInputOutputProcess(SimpleInputOutputProcess s1, SimpleInputOutputProcess s2)
 	{
 		steps.add(s1);
@@ -51,5 +58,11 @@ public class ComposedInputOutputProcess implements SimpleInputOutputProcess
 	public void setProperties(Properties properties) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
 	}
 }

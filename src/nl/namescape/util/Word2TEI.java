@@ -81,4 +81,10 @@ public class Word2TEI implements SimpleInputOutputProcess
 		DirectoryHandling.traverseDirectory(x, new File(args[0]), new File(args[1]), null);
 		//x.dinges("/mnt/Projecten/Taalbank/Werkfolder_Redactie/Jesse/Projecten/Papiamento/Mosaiko 5 HV Kap 1 vershon 2012 10 28.doc");
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

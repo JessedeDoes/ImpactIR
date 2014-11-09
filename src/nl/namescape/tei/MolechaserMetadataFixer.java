@@ -155,4 +155,10 @@ public class MolechaserMetadataFixer implements SimpleInputOutputProcess
 			return provenance + "." + getPlainTextMD5(d, fileName);
 		}
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -155,4 +155,10 @@ public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutpu
 		
 		DirectoryHandling.tagAllFilesInDirectory(p, args[0], args[1]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

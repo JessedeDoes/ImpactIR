@@ -32,23 +32,30 @@ public class Lemmatizer
 	public ILexicon historicalLexicon = null;
 	public ILexicon modernLexicon = null;
 	ITrie<Object> lexiconTrie = null;
-	boolean useMatcher = true;
+	private boolean useMatcher = true;
 	boolean modernWordformAsLemma = false;
 	boolean simplify = false;
 	boolean believeExactMatches = true;
 	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
 	
-	public void finalize()
+	public void close()
 	{
-		
+		if (historicalLexicon instanceof NeoLexicon)
+			((NeoLexicon) historicalLexicon).close();
+		if (modernLexicon instanceof NeoLexicon)
+			((NeoLexicon) modernLexicon).close();
 	}
+	
 	public Lemmatizer(String patternFilename, ILexicon m, ILexicon h, ITrie<Object> trie)
 	{
 		this.historicalLexicon = h;
 		this.modernLexicon = m;
 		this.matcher = new DatrieMatcher(patternFilename);
-		matcher.setMaxPenaltyIncrement(10000);
-		matcher.setMaxSuggestions(5);
+		
+		//matcher.setMaxPenaltyIncrement(10000);
+		matcher.setMaxSuggestions(3);
+		matcher.setMaximumPenalty(1000);
+		//matcher.
 		this.lexiconTrie = trie;
 	}
 
@@ -88,7 +95,7 @@ public class Lemmatizer
 		try 
   		{
 			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
-			System.err.println("loaded lexicon from " + trieFilename);
+			System.err.println("Loaded lexicon from " + trieFilename);
 		} catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
@@ -201,7 +208,7 @@ public class Lemmatizer
 		
 		//System.err.println("for:  " + w0 + ", found before matching: " + matches.size());
 		
-		if (useMatcher && !(believeExactMatches && matches.size() > 0))
+		if (isUseMatcher() && !(believeExactMatches && matches.size() > 0))
 		{	
 			//System.err.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
 			matcher.setCallback(new candidateCollector(matches));
@@ -302,5 +309,13 @@ public class Lemmatizer
 		{
 			e.printStackTrace();
 		}
+	}
+
+	boolean isUseMatcher() {
+		return useMatcher;
+	}
+
+	public void setUseMatcher(boolean useMatcher) {
+		this.useMatcher = useMatcher;
 	}
 }

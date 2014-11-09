@@ -162,4 +162,11 @@ public class BIOOutput implements nl.namescape.filehandling.SimpleInputOutputPro
 			e.printStackTrace();
 		}
 	}
+
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

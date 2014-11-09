@@ -46,8 +46,9 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 	GraphDatabaseService graphDb = null;
 	private Index<Node> nodeIndex = null;
 
-	protected void finalize()
+	public void close()
 	{
+		System.err.println("Yes!!! finalize is called. Great!");
 		this.graphDb.shutdown(); // this might help??
 	}
 	
@@ -343,6 +344,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		//System.err.println("found items: "  + wordforms.size());
 		return wordforms;
 	}
+	
 	public void lookupWord(String word)
 	{
 		Set<WordForm> lookup1 = findLemmata(word,true);
@@ -411,7 +413,9 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			{
 				s = s.split("\\s+")[0];
 				// System.err.println(s);
-				findLemmata(s);
+				Set<WordForm> ws = findLemmata(s);
+				for (WordForm w: ws)
+					System.out.println(w);
 			}
 		} catch (Exception e)
 		{

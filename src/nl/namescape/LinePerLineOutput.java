@@ -151,4 +151,10 @@ public class LinePerLineOutput implements nl.namescape.filehandling.SimpleInputO
 			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(new LinePerLineOutput(len), args[1]);
 		}
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -204,4 +204,10 @@ public class EPubConverter implements SimpleInputOutputProcess
 		DirectoryHandling.tagAllFilesInDirectory(b, args[0], args[1]);
 	}
 
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

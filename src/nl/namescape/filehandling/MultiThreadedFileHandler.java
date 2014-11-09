@@ -125,4 +125,10 @@ public class MultiThreadedFileHandler implements DoSomethingWithFile, SimpleInpu
 		if (this.baseHandler2 != null)
 			this.baseHandler2.setProperties(properties);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

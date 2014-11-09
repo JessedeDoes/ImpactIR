@@ -71,4 +71,10 @@ public class Text2TEI implements SimpleInputOutputProcess
 
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }

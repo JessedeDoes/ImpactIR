@@ -124,4 +124,10 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
         s.tokenize = options.getOptionBoolean("tokenize", true);
 		DirectoryHandling.tagAllFilesInDirectory(s, args[0], args[1]);
 	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 }
