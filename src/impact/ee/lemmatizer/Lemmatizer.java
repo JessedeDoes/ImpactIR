@@ -36,6 +36,7 @@ public class Lemmatizer
 	boolean modernWordformAsLemma = false;
 	boolean simplify = false;
 	boolean believeExactMatches = true;
+	boolean preferHistorical = true;
 	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
 	
 	public void close()
@@ -177,12 +178,16 @@ public class Lemmatizer
 		if (cached != null)
 			return cached;
 		Set<WordForm> exactMatches = (historicalLexicon == null)? new HashSet<WordForm>() :historicalLexicon.findLemmata(w);
-		Set<WordForm> modernMatches = (modernLexicon == null)? 
+		Set<WordForm> modernMatches = new HashSet<WordForm>();
+		if (!this.preferHistorical || exactMatches.size() == 0)
+			modernMatches = (modernLexicon == null)? 
 				new HashSet<WordForm>(): modernLexicon.findLemmata(w);
+				
 		if (exactMatches == null)
 			exactMatches = new HashSet<WordForm>();
 		if (modernMatches == null)
 			modernMatches = new HashSet<WordForm>();
+		
 		List<WordMatch> matches = new ArrayList<WordMatch>();
 		
 		for (WordForm wf: modernMatches)

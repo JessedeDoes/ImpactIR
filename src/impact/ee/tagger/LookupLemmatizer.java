@@ -12,6 +12,7 @@ import impact.ee.lemmatizer.WordMatch;
 import impact.ee.lemmatizer.WordMatchComparator;
 import impact.ee.lemmatizer.tagset.Brown2OED;
 import impact.ee.lemmatizer.tagset.TagRelation;
+import impact.ee.lexicon.WordForm;
 
 public class LookupLemmatizer implements Tagger 
 {
@@ -52,19 +53,23 @@ public class LookupLemmatizer implements Tagger
 		{     
 			//System.out.println(""  + w + " ");
 		
-			ArrayList<WordMatch> asList = new ArrayList<WordMatch>(s);
-			Collections.sort(asList, new WordMatchComparator());
+			ArrayList<WordMatch> wordMatchList = new ArrayList<WordMatch>(s);
+			Collections.sort(wordMatchList, new WordMatchComparator());
+			String allMatchesAsXML = makeXMLFromList(wordMatchList);
+			m.put("allMatches", allMatchesAsXML);
 			if (simplify) // simplify after sorting?
 			{
 				s = WordMatch.simplify(s, true);
 			}
-			WordMatch bestMatch = asList.get(0);
+			
+			WordMatch bestMatch = wordMatchList.get(0);
 			boolean foundCompatible = false;
+			
 			if (tagRelation != null) // look for best compatible tag...
 			{
-				for (int i=0; i < asList.size(); i++)
+				for (int i=0; i < wordMatchList.size(); i++)
 				{
-					WordMatch x = asList.get(i);
+					WordMatch x = wordMatchList.get(i);
 					if (tagRelation.corpusTagCompatibleWithLexiconTag(m.get("tag"), x.wordform.lemmaPoS,false))
 					{
 						bestMatch = x;
@@ -100,6 +105,29 @@ public class LookupLemmatizer implements Tagger
 			*/
 		}
 		return m;
+	}
+
+	private String interp(String type, String content)
+	{
+		return "<interp type=\"" + type + "\">" + content + "</interp>";
+	}
+	private String makeXMLFromList(ArrayList<WordMatch> wordMatchList) 
+	{
+		// TODO Auto-generated method stub
+		String xml = "<document>";
+		for (WordMatch wm: wordMatchList)
+		{
+			WordForm w = wm.wordform;
+			xml += "<interpGrp type=\"lexiconMatch\">";
+			xml += interp("matchType", wm.type.toString());
+			xml += interp("lemma", w.lemma); // this is risky, may result in incorrect xml...
+			xml += interp("lemmaId", w.lemmaID);
+			xml += interp("partOfSpeech", w.lemmaPoS);
+			xml += interp("matchScore", wm.matchScore + "");
+			xml += "</interpGrp>";
+		}
+		xml += "</document>";
+		return xml;
 	}
 
 	@Override

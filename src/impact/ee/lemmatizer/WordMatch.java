@@ -26,7 +26,7 @@ public class WordMatch
 	@XmlElement
 	public String getAlignment() { return alignment.replace("->", "/"); }
 	@XmlAttribute(name="type")
-	MatchType type;
+	public MatchType type;
 	
 	InMemoryLexicon lexicon;
 	int lemmaFrequency=0;
