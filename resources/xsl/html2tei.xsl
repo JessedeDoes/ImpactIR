@@ -309,7 +309,9 @@
 <xsl:call-template name="fetchStyle"><xsl:with-param name="class"><xsl:value-of select="$class"/></xsl:with-param></xsl:call-template>
 </xsl:if>
 </xsl:variable>
-<xsl:message>Class:<xsl:value-of select="$class"/>--:<xsl:value-of select="$style"/></xsl:message>
+<!--
+<xsl:message>Class:<xsl:value-of select="$class"/>-&gt;:<xsl:value-of select="$style"/></xsl:message>
+-->
 <xsl:choose>
 <xsl:when test="$style!=''">
 <hi>
