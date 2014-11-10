@@ -34,7 +34,7 @@ public class Lemmatizer
 	ITrie<Object> lexiconTrie = null;
 	private boolean useMatcher = true;
 	boolean modernWordformAsLemma = false;
-	boolean simplify = false;
+	boolean simplify = true;
 	boolean believeExactMatches = true;
 	boolean preferHistorical = true;
 	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
@@ -233,6 +233,8 @@ public class Lemmatizer
 				}
 			}
 		}
+		if (simplify)
+			matches = WordMatch.simplify(matches, true);
 		cache.put(w, matches);
 		return matches;
 	}
