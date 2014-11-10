@@ -33,6 +33,12 @@ public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInpu
 		this.splitter = splitter;
 	}
 	
+	// Add default constructor!
+	public TEISentenceSplitter()
+	{
+		splitter = new JVKSentenceSplitter();
+	}
+	
 	public void splitSentences(Document d)
 	{
 		TEITokenStream t = new TEITokenStream(d);
