@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import nl.namescape.evaluation.Counter;
-
 import impact.ee.lemmatizer.dutch.LemmaMatch.MatchType;
 import impact.ee.lemmatizer.tagset.*;
-
 import impact.ee.classifier.Classifier;
 import impact.ee.classifier.Distribution;
 import impact.ee.classifier.FeatureSet;
@@ -23,7 +21,6 @@ import impact.ee.lemmatizer.Rule;
 import impact.ee.lemmatizer.SimpleFeatureSet;
 import impact.ee.lemmatizer.tagset.GiGaNTCorpusLexiconRelation;
 import impact.ee.lemmatizer.tagset.GiGaNTTagSet;
-
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.tagger.BasicNERTagger;
@@ -436,6 +433,11 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
 	{
+		return getTaggerLemmatizer(taggingModel, lexiconPath, "impact.ee.lemmatizer.dutch.MultiplePatternBasedLemmatizer");
+	}
+	
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath, String className)
+	{
 		boolean reuseTagLexicon = true;
 		BasicTagger tagger = new BasicTagger();
 
@@ -458,7 +460,14 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		}
 
 
-		MultiplePatternBasedLemmatizer lemmatizer = new MultiplePatternBasedLemmatizer();
+		MultiplePatternBasedLemmatizer lemmatizer=null;
+		try {
+			lemmatizer = (MultiplePatternBasedLemmatizer) Class.forName(className).newInstance();
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		lemmatizer.train(l);
 
 

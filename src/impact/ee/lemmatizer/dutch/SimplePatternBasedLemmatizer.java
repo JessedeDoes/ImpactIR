@@ -65,9 +65,9 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	Map<String, Rule> ruleID2Rule = new HashMap<String,Rule>();
 	Map<Pattern, Pattern> patterns  = new HashMap<Pattern, Pattern>();
 	Map<Rule, Rule> rules = new HashMap<Rule, Rule>();
-	TagRelation tagRelation = new CGN2Parole();
+	protected TagRelation tagRelation = new CGN2Parole();
 	LemmaCache lemmaCache = new LemmaCache();
-	TagSet corpusTagset = new CGNTagSet();
+	protected TagSet corpusTagset = new CGNTagSet();
 	ILexicon lexicon = null;
 
 	int ruleId = 1;
@@ -310,7 +310,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		{
 			for (WordForm w: lemmata)
 			{
-				if (tagRelation.corpusTagCompatibleWithLexiconTag(tag, w.tag, false))
+				if (tagRelation == null || tagRelation.corpusTagCompatibleWithLexiconTag(tag, w.tag, false))
 				{
 					lemmaCache.put(wordform, tag, w.lemma);
 					return w.lemma;
