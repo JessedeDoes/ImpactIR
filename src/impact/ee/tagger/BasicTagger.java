@@ -80,8 +80,10 @@ public class BasicTagger implements Serializable, Tagger
 	
 	FeatureSet features = new FeatureSet();
 	Classifier classifier = new SVMLightClassifier(); // .svmlight.SVMLightClassifier();
-	boolean useFeedback = true;
-	boolean useLexicon = true;
+	
+	TaggerOptions taggerOptions = new TaggerOptions();
+	
+	//boolean useLexicon = true;
 	boolean stripPoS = false;
 	boolean useShapes = true;
 	boolean logFeatures = false;
@@ -91,7 +93,7 @@ public class BasicTagger implements Serializable, Tagger
 	public String taggedAttribute = "tag";
 	public static String[] defaultAttributeNames = {"word", "tag"};
 	public String[] attributeNames = defaultAttributeNames;
-	boolean useVectors = false;
+	//boolean useVectors = false;
 	
 	public void setClassifier(String className)
 	{
@@ -156,8 +158,8 @@ public class BasicTagger implements Serializable, Tagger
 
 	private void initializeFeatures() 
 	{
-		features = TaggerFeatures.getMoreFeatures(useFeedback, true);
-		if (useLexicon)
+		features = TaggerFeatures.getMoreFeatures(taggerOptions.useFeedback, true);
+		if (taggerOptions.useLexicon)
 		{
 			features.addStochasticFeature(new HasTagFeature(0));
 			features.addStochasticFeature(new HasTagFeature(-1));
@@ -166,7 +168,7 @@ public class BasicTagger implements Serializable, Tagger
 			//features.addStochasticFeature(new LexiconBasedFeature.HasPoSFeature(1));
 			//features.addStochasticFeature(new LexiconBasedFeature.HasPoSFeature(-1));
 		}
-		if (useVectors)
+		if (taggerOptions.useVectors)
 		{
 			features.addStochasticFeature(new WordVectorFeature(-1));
 			features.addStochasticFeature(new WordVectorFeature(0));
@@ -246,7 +248,7 @@ public class BasicTagger implements Serializable, Tagger
 		
 			String outcome = classifier.classifyInstance(instance);
 
-			if (useFeedback)
+			if (taggerOptions.useFeedback)
 			{
 				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}
@@ -354,7 +356,7 @@ public class BasicTagger implements Serializable, Tagger
 			//System.err.println(features.itemToString(instance));
 			String outcome = classifier.classifyInstance(instance);
 			m.put(taggedAttribute, outcome);
-			if (useFeedback)
+			if (taggerOptions.useFeedback)
 			{
 				c.setAttributeAt(taggedAttribute, outcome, 0);
 			}

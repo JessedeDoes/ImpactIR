@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import impact.ee.lemmatizer.Lemmatizer;
+import impact.ee.lemmatizer.MatchType;
 import impact.ee.lemmatizer.WordMatch;
 import impact.ee.lemmatizer.WordMatchComparator;
 import impact.ee.lemmatizer.tagset.Brown2OED;
@@ -111,6 +112,7 @@ public class LookupLemmatizer implements Tagger
 	{
 		return "<interp type=\"" + type + "\">" + content + "</interp>";
 	}
+	
 	private String makeXMLFromList(ArrayList<WordMatch> wordMatchList) 
 	{
 		// TODO Auto-generated method stub
@@ -120,10 +122,12 @@ public class LookupLemmatizer implements Tagger
 			WordForm w = wm.wordform;
 			xml += "<interpGrp type=\"lexiconMatch\">";
 			xml += interp("matchType", wm.type.toString());
-			xml += interp("lemma", w.lemma); // this is risky, may result in incorrect xml...
-			xml += interp("lemmaId", w.lemmaID);
+			xml += interp("lemma", w.lemma); // this is risky, and may result in incorrect xml...
+			if (w.lemmaID != null && w.lemmaID.length() > 0)
+				xml += interp("lemmaId", w.lemmaID);
 			xml += interp("partOfSpeech", w.lemmaPoS);
-			xml += interp("matchScore", wm.matchScore + "");
+			if (wm.type == MatchType.ModernWithPatterns)
+				xml += interp("matchScore", wm.matchScore + "");
 			xml += "</interpGrp>";
 		}
 		xml += "</document>";
