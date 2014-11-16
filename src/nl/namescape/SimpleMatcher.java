@@ -9,6 +9,7 @@ import java.util.*;
 import nl.namescape.tokenizer.SimpleTokenizer;
 public class SimpleMatcher implements EntityMatcher
 {
+	private static final int IDENTIFICATION_THRESHOLD = 2;
 	SimpleTokenizer tokenizer = new SimpleTokenizer();
 	Set<Nym> nymSet = new HashSet<Nym>();
 	
@@ -46,10 +47,10 @@ public class SimpleMatcher implements EntityMatcher
 			if (e.nym == null)
 			{
 				Entity e1 = findDominatingEntity(e,e,0);
-				if (e1 == null)
+				if (e1 == null || e1.frequency < IDENTIFICATION_THRESHOLD)
 				{ 
 					createNym(e);
-				} else
+				} else // TODO do this ONLY if some frequency threshold for e1 is met..
 				{
 					e.nym = e1.nym;
 					e.nym.instances.add(e);
@@ -84,7 +85,7 @@ public class SimpleMatcher implements EntityMatcher
 		{
 			return e;
 		}
-		else
+		else // similarities should be sorted in some way
 		{
 			Entity e2 = e.similarities.get(0).e2;
 			if (e2 == e0 || depth > MAX_DEPTH)
