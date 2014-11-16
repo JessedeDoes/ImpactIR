@@ -19,14 +19,18 @@
 <sourceDesc>
 <listBibl id="inlMetadata">
 <bibl>
+<!--
 <interpGrp type="idno"><interp value="$IDNO"/></interpGrp>
 <interpGrp type="author"><interp value="unknown"/></interpGrp>
+-->
 <interpGrp type="title">
 <interp><xsl:attribute name="value"><xsl:value-of select="//title"/></xsl:attribute></interp>
 </interpGrp>
+<!--
 <interpGrp type="yearFrom"><interp value="unknown"/></interpGrp>
 <interpGrp type="yearTo"><interp value="unknown"/></interpGrp>
 <interpGrp type="source"><interp value="unknown"/></interpGrp>
+-->
 </bibl>
 </listBibl>
 
