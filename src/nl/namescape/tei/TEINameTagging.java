@@ -62,6 +62,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	private NymListBuilder nymListBuilder = new NymListBuilder();
 	private Properties properties;
 	private boolean extraStuff = false;
+	private boolean makeNymLists = true;
 	private static boolean addNormalizedForm = true;
 
 	/**
@@ -132,7 +133,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:ns", namescapeURI);
 
 		addEntityTags(d);
-		if (extraStuff ) nymListBuilder.addNormalizedFormsAndNyms(d);
+		if (this.makeNymLists) nymListBuilder.addNormalizedFormsAndNyms(d);
 
 		for (Element w: XML.getElementsByTagname(d.getDocumentElement(), nl.namescape.tei.TEITagClasses.tokenTagNames, false))
 		{

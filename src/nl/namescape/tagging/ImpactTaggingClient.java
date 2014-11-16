@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.*;
 
-public class ImpactTaggingClient implements SimpleInputOutputProcess
+public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWithOptions
 {
 	Tagger tagger;
 	public boolean tokenize = true;

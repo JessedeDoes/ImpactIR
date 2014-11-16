@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 
-public class StanfordAPIClient extends DocumentTagger implements SentenceTagger 
+public class StanfordAPIClient extends DocumentTagger implements SentenceTagger, TaggerWithOptions 
 {
 	boolean english = false;
 	public StanfordAPIClient(SentenceTagger st) 
@@ -179,5 +179,12 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger
 		dt.tokenize = options.getOptionBoolean("tokenize", true);
 		dt.splitSentences = options.getOptionBoolean("sentences", false);
 		DirectoryHandling.tagAllFilesInDirectory(stan, input, output);
+	}
+
+	@Override
+	public void setTokenizing(boolean b) 
+	{
+		// TODO Auto-generated method stub
+		this.tokenize = b;
 	}
 }
