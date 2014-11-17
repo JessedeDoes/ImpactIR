@@ -11,21 +11,6 @@ import java.util.*;
  * @author jesse
  *
  */
-public class TaggerOptions 
-{
-	boolean useVectors=true;
-	String vectorFileName;
-	boolean useLexicon = true;
-	String lexiconFileName;
-	String modelFileName;
-	boolean useFeedback = true;
-	
-	public TaggerOptions()
-	{
-	}
-	
-	public TaggerOptions(Properties p)
-	{
-		
-	}
-}
+
+
+
