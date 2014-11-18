@@ -235,6 +235,7 @@ public class Lemmatizer
 		}
 		if (simplify)
 			matches = WordMatch.simplify(matches, true);
+		Collections.sort(matches, new WordMatchComparator()); // OK this was missing. No more kemmen now??
 		cache.put(w, matches);
 		return matches;
 	}
