@@ -39,6 +39,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 	int N=1;
 	boolean tokenize = false;
 	private Properties properties;
+	private boolean splitAtApos = true;
 	
 	public void tagPunctuation (Document d)
 	{
@@ -158,6 +159,21 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			{
 				postPC.getParentNode().removeChild(postPC);
 				XML.insertChildAfter(we.getParentNode(), we, postPC);
+			}
+			if (splitAtApos)
+			{
+				String w0 = we.getTextContent();
+				if (w0.contains("'")) // todo windows apos
+				{
+					String[] parts = w0.split("'");
+					String p0 = parts[0] + "'";
+					String p1 = parts[1];
+					we.setTextContent(p0);
+					Element wAfter = d.createElement("w");
+					wAfter.setTextContent(p1);
+					assignId(wAfter);
+					XML.insertChildAfter(we.getParentNode(), we, wAfter);
+				}
 			}
 		} catch (Exception e) 
 		{
