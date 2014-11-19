@@ -13,7 +13,7 @@ public class PerseusTagset extends TagSet
 	@Override
 	public Tag parseTag(String tag) {
 		// TODO Auto-generated method stub
-		return null;
+		return Tag.parseParoleStyleTag(tag);
 	}
 
 }

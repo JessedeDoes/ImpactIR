@@ -11,9 +11,12 @@ import impact.ee.lemmatizer.Lemmatizer;
 import impact.ee.lemmatizer.MatchType;
 import impact.ee.lemmatizer.WordMatch;
 import impact.ee.lemmatizer.WordMatchComparator;
+import impact.ee.lemmatizer.dutch.MultiplePatternBasedLemmatizer;
 import impact.ee.lemmatizer.tagset.Brown2OED;
 import impact.ee.lemmatizer.tagset.TagRelation;
+import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.lexicon.WordForm;
+import impact.ee.tagger.features.TaggerFeatures;
 
 public class LookupLemmatizer implements Tagger 
 {
@@ -144,9 +147,10 @@ public class LookupLemmatizer implements Tagger
 		return new SimpleCorpus(ewc);
 	}
 
+
 	@Override
-	public void setProperties(Properties properties) {
-		// TODO Auto-generated method stub
+	public void setProperties(Properties properties) 
+	{
 		
 	}
 }

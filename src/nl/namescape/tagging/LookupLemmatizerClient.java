@@ -87,6 +87,7 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 		if (this.lemmatizer != null)
 			this.lemmatizer.close();
 	}
+	
 	public static void main(String[] args)
 	{
 		System.err.println(args[0]);
