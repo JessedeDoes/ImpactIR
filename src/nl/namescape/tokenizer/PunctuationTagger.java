@@ -25,13 +25,13 @@ import org.w3c.dom.ranges.Range;
 
 
 /*
-* Currently cannot deal with "<i>Hello.</i>..."
-* One would need a surroundcontent method which can split up (inline) tags.
-* BUG: isolated "." after name end tag is not tagged as "postpuncuation"
-* should be attached:
-* 1) in TEITokenizer, do not add space after names
-* 2) More intelligent attachment strategy
-*/
+ * Currently cannot deal with "<i>Hello.</i>..."
+ * One would need a surroundcontent method which can split up (inline) tags.
+ * BUG: isolated "." after name end tag is not tagged as "postpuncuation"
+ * should be attached:
+ * 1) in TEITokenizer, do not add space after names
+ * 2) More intelligent attachment strategy
+ */
 
 public class PunctuationTagger  implements SimpleInputOutputProcess
 {
@@ -40,7 +40,8 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 	boolean tokenize = false;
 	private Properties properties;
 	private boolean splitAtApos = true;
-	
+	String[] apos = {"’", "'"};
+
 	public void tagPunctuation (Document d)
 	{
 		N=1;
@@ -48,12 +49,12 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 		for (Element we: wordElements)
 			tagPunctuation(we);
 	}
-	
+
 	private void assignId(Element e)
 	{
 		e.setAttribute("xml:id", "pc." + String.format("%06d", N++));
 	}
-	
+
 	public void tagPunctuation(Element we)
 	{
 		try 
@@ -65,7 +66,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			int postLen = t.postPunctuation.length();
 			Element prePC = null;
 			Element postPC = null;
-			
+
 			/*
 			 * Probleem met semi-inline tags (zoals "name")<x>aap</x>.
 			 */
@@ -77,7 +78,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 				XML.flattenElementContents(we);
 				return;
 			}
-			
+
 			if (t.trimmedToken.equals(w)) 
 			{
 				// do nothing
@@ -163,16 +164,19 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			if (splitAtApos)
 			{
 				String w0 = we.getTextContent();
-				if (w0.contains("'")) // todo windows apos
+				for (String p: apos)
 				{
-					String[] parts = w0.split("'");
-					String p0 = parts[0] + "'";
-					String p1 = parts[1];
-					we.setTextContent(p0);
-					Element wAfter = d.createElement("w");
-					wAfter.setTextContent(p1);
-					assignId(wAfter);
-					XML.insertChildAfter(we.getParentNode(), we, wAfter);
+					if (w0.contains(p)) // todo windows apos: ’
+					{
+						String[] parts = w0.split(p);
+						String p0 = parts[0] + "'";
+						String p1 = parts[1];
+						we.setTextContent(p0);
+						Element wAfter = d.createElement("w");
+						wAfter.setTextContent(p1);
+						assignId(wAfter);
+						XML.insertChildAfter(we.getParentNode(), we, wAfter);
+					}
 				}
 			}
 		} catch (Exception e) 
@@ -180,7 +184,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			System.err.println("Warning: nesting error in punctuation handling");			
 		}
 	}
-	
+
 	boolean hasTagsInToken(Element w)
 	{
 		NodeList l = w.getChildNodes();
@@ -192,7 +196,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void handleFile(String in, String out) 
 	{
@@ -225,7 +229,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 		{
 			PrintStream pout = new PrintStream(new FileOutputStream(out));
 			tagPunctuation(d);
-			
+
 			pout.print(XML.documentToString(d));
 			pout.close();
 		} catch (Exception e) 
@@ -233,20 +237,20 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void setProperties(Properties properties) 
 	{
 		// TODO Auto-generated method stub
 		this.properties = properties;
 	}
-	
+
 	public static void main(String[] args)
 	{
 		nl.namescape.util.Options options = new nl.namescape.util.Options(args);
-        args = options.commandLine.getArgs();
-		
-        PunctuationTagger xmlTagger = new PunctuationTagger();
+		args = options.commandLine.getArgs();
+
+		PunctuationTagger xmlTagger = new PunctuationTagger();
 		xmlTagger.tokenize = options.getOptionBoolean("tokenize", false);
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
@@ -254,6 +258,6 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

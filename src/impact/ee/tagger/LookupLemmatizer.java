@@ -25,6 +25,11 @@ public class LookupLemmatizer implements Tagger
 	
 	TagRelation tagRelation = new Brown2OED();
 	
+	public void setTagRelation(TagRelation tr)
+	{
+		this.tagRelation = tr;
+	}
+	
 	public LookupLemmatizer(impact.ee.lemmatizer.Lemmatizer baseLemmatizer)
 	{
 		this.baseLemmatizer = baseLemmatizer;
@@ -61,20 +66,22 @@ public class LookupLemmatizer implements Tagger
 			Collections.sort(wordMatchList, new WordMatchComparator());
 			String allMatchesAsXML = makeXMLFromList(wordMatchList);
 			m.put("allMatches", allMatchesAsXML);
+			
 			if (simplify) // simplify after sorting?
 			{
 				s = WordMatch.simplify(s, true);
 			}
 			
 			WordMatch bestMatch = wordMatchList.get(0);
+			
 			boolean foundCompatible = false;
 			
-			if (tagRelation != null) // look for best compatible tag...
+			if (tagRelation != null) // look for best compatible tag....
 			{
 				for (int i=0; i < wordMatchList.size(); i++)
 				{
 					WordMatch x = wordMatchList.get(i);
-					if (tagRelation.corpusTagCompatibleWithLexiconTag(m.get("tag"), x.wordform.lemmaPoS,false))
+					if (tagRelation.corpusTagCompatibleWithLexiconTag(m.get("tag"), x.wordform.lemmaPoS, false))
 					{
 						bestMatch = x;
 						foundCompatible = true;
@@ -88,12 +95,12 @@ public class LookupLemmatizer implements Tagger
 			if (m.get("tag") == null)
 			{
 				m.put("tag",  bestMatch.wordform.lemmaPoS);
-			} else
+			} else // believe the corpus tagger....
 			{
 				String corpusTag = m.get("tag");
 				String lexiconTag = bestMatch.wordform.lemmaPoS;
-				//m.put("tag", "corpus:"  + corpusTag + ",lexicon:"  + lexiconTag  + ",matching:" + foundCompatible);
-				m.put("tag", lexiconTag);
+				// m.put("tag", "corpus:"  + corpusTag + ", lexicon:"  + lexiconTag  + ",matching:" + foundCompatible);
+				//m.put("tag", lexiconTag);
 			}
 			// laat die mform maar zitten, slaat alleen ergens op als een match met het modern lexicon bereikt is
 			

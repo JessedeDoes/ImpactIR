@@ -1,6 +1,7 @@
 package nl.namescape.tagging;
 
 import impact.ee.lemmatizer.Lemmatizer;
+import impact.ee.lemmatizer.tagset.WNTCorpusLexiconRelation;
 import impact.ee.tagger.ChainOfTaggers;
 import impact.ee.tagger.LookupLemmatizer;
 import impact.ee.tagger.BasicTagger;
@@ -30,6 +31,7 @@ public class TaggerLookupLemmatizerClient extends LookupLemmatizerClient
 		this.lemmatizer = lemmatizer;
 		
 		LookupLemmatizer ll = new LookupLemmatizer(lemmatizer);
+		ll.setTagRelation(new WNTCorpusLexiconRelation());
 		
 		this.tokenize = true;
 		ChainOfTaggers t = new ChainOfTaggers();

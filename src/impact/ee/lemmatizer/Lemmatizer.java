@@ -37,6 +37,8 @@ public class Lemmatizer
 	boolean simplify = true;
 	boolean believeExactMatches = true;
 	boolean preferHistorical = true;
+	boolean toLowerCaseBeforeLookup = true;
+	
 	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
 	
 	public void close()
@@ -173,7 +175,8 @@ public class Lemmatizer
 	public List<WordMatch> lookupWordform(String w0)
 	{
 		String w = impact.ee.spellingvariation.Ligatures.replaceLigatures(w0);
-		
+		if (this.toLowerCaseBeforeLookup) 
+			w = w.toLowerCase();
 		List<WordMatch> cached = cache.get(w);
 		if (cached != null)
 			return cached;
