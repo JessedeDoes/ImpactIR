@@ -159,9 +159,16 @@ public class MapDBLexicon implements ILexicon
 		return null;
 	}
 	
+	public void close()
+	{
+		db.commit();
+		//db.compact();
+		db.close();
+	}
+	
 	public static void main(String[] args)
 	{
-		MapDBLexicon l = new MapDBLexicon("molex.testdb");
+		MapDBLexicon l = new MapDBLexicon("/home/jesse/Data/LemmatizerIMPACT/Historical.mapdb");
 		//l.readFromFile("resources/exampledata/molexDump.txt");
 		InMemoryLexicon iml = new InMemoryLexicon();
 		iml.readFromFile("resources/exampledata/molexDump.txt");
@@ -169,7 +176,7 @@ public class MapDBLexicon implements ILexicon
 		Set<String> lookmeup = new HashSet<String>();
 		for (WordForm w: iml)
 		{
-			if (w.lemma.contains("s"))
+			if (w.lemma.contains("aan"))
 			{
 				lookmeup.add(w.lemma);
 			}
@@ -182,7 +189,7 @@ public class MapDBLexicon implements ILexicon
 			{
 				Set<WordForm> x = l.findForms(lem, null);
 				N++;
-				//System.out.println(x);
+				System.out.println(x);
 			}
 		}
 		long et = System.currentTimeMillis();

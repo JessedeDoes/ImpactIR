@@ -4,6 +4,7 @@ package impact.ee.lemmatizer;
 
 import impact.ee.lexicon.ILexicon;
 import impact.ee.lexicon.LexiconDatabase;
+import impact.ee.lexicon.MapDBLexicon;
 import impact.ee.lexicon.NeoLexicon;
 import impact.ee.lexicon.WordForm;
 import impact.ee.spellingvariation.DatrieMatcher;
@@ -17,12 +18,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.Set;
-import java.util.HashSet;
-
-//import lexicon.InMemoryLexicon;
-import java.util.Collections;
-import java.util.ArrayList;
 
 
 
@@ -38,6 +33,10 @@ public class Lemmatizer
 	boolean believeExactMatches = true;
 	boolean preferHistorical = true;
 	boolean toLowerCaseBeforeLookup = true;
+	
+	static enum StorageType { NEO, MAPDB, IN_MEMORY, JDBC };
+	
+	static StorageType defaultStorageBackend = StorageType.MAPDB;
 	
 	Map<String, List<WordMatch>> cache = new HashMap<String, List<WordMatch>>();
 	
@@ -67,8 +66,42 @@ public class Lemmatizer
 			String historicalLexiconFilename,
 			String trieFilename)
 	{
+		this(patternFilename, modernLexiconFilename, historicalLexiconFilename, trieFilename, defaultStorageBackend);
+	}
+	
+	public Lemmatizer(String patternFilename, 
+			String modernLexiconFilename,
+			String historicalLexiconFilename,
+			String trieFilename, StorageType storageType)
+	{
 		this.modernWordformAsLemma = Options.getOptionBoolean("modernWordformAsLemma", 
 				false);
+		
+		switch (storageType)
+		{
+			case NEO: loadLexicaNeo(modernLexiconFilename, historicalLexiconFilename); break;
+			case MAPDB: loadLexicaMapDB(modernLexiconFilename, historicalLexiconFilename); break;
+		}
+
+		System.err.println("finished reading lexicon text files");
+		this.matcher = new DatrieMatcher(patternFilename);
+		// this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
+		try 
+  		{
+			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
+			System.err.println("Loaded lexicon from " + trieFilename);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.err.println("created trie from modern lexicon content");
+		//this.matcher ..
+	}
+
+	private void loadLexicaNeo(String modernLexiconFilename,
+			String historicalLexiconFilename) 
+	{
 		try
 		{
 			this.modernLexicon = new NeoLexicon(modernLexiconFilename, false);
@@ -91,21 +124,33 @@ public class Lemmatizer
 		{
 			e.printStackTrace();
 		}
-
-		System.err.println("finished reading lexicon text files");
-		this.matcher = new DatrieMatcher(patternFilename);
-		// this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
-		try 
-  		{
-			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
-			System.err.println("Loaded lexicon from " + trieFilename);
-		} catch (IOException e) 
+	}
+	
+	private void loadLexicaMapDB(String modernLexiconFilename,
+			String historicalLexiconFilename) 
+	{
+		try
 		{
-			// TODO Auto-generated catch block
+			this.modernLexicon = new MapDBLexicon(modernLexiconFilename);
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
-		//System.err.println("created trie from modern lexicon content");
-		//this.matcher ..
+		try
+		{
+			File f = new File(historicalLexiconFilename);
+			if (f.exists())
+			{
+				this.historicalLexicon =
+						new MapDBLexicon(historicalLexiconFilename);
+			} else
+			{
+				this.historicalLexicon = new LexiconDatabase("svowim02", "EE3_5");
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	class candidateCollector extends DatrieMatcher.Callback
