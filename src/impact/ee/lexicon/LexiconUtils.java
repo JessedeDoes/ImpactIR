@@ -76,6 +76,7 @@ public class LexiconUtils
 
 	// wordform lemma PoS lemmaPOS lemmafrequency wordformfrequency
 	
+	// toDo no lemma Id parsed!
 	public static WordForm getWordformFromLine(String s) 
 	{
 		String[] parts = s.split("\t");
