@@ -263,7 +263,7 @@ public class Lemmatizer
 		
 		if (isUseMatcher() && !(believeExactMatches && matches.size() > 0))
 		{	
-			//System.err.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
+			// System.err.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
 			matcher.setCallback(new candidateCollector(matches));
 			matcher.matchWordToLexicon(lexiconTrie, w.toLowerCase());
 		}

@@ -125,6 +125,8 @@ public class MapDBLexicon implements ILexicon
 	{
 		// TODO Auto-generated method stub
 		Set<WordForm> V = this.lemma2forms.get(lemma);
+		if (V == null)
+			V = new HashSet<WordForm>();
 		if (tag == null)
 			return V;
 		Set<WordForm> V1 = new HashSet<WordForm>();
@@ -141,7 +143,10 @@ public class MapDBLexicon implements ILexicon
 	public Set<WordForm> findLemmata(String wordform) 
 	{
 		// TODO Auto-generated method stub
-		return this.form2lemmata.get(wordform);
+		Set<WordForm> V  =  this.form2lemmata.get(wordform);
+		if (V != null)
+			return V;
+		else return new HashSet<WordForm>();
 	}
 
 
