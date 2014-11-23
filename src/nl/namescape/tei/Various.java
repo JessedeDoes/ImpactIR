@@ -13,7 +13,44 @@ import org.w3c.dom.Node;
 
 public class Various 
 {
-
+	// header / fileDesc / editionStmt / respStmt: [edition, respStmt]*
+	public static void encodeTagger(Document d, String taggerName)
+	{
+		String[] path = { "teiHeader", "fileDesc", "editionStmt", "edition"};
+		Element edition = createOrFindPath(d,d.getDocumentElement(), path);
+		String[] path0 = { "teiHeader", "fileDesc", "editionStmt"};
+		Element editionStmt = createOrFindPath(d,d.getDocumentElement(), path0);
+		String s = edition.getTextContent();
+		if (s == null || s.length() == 0)
+			edition.setTextContent("linguistic processing: " + taggerName  + ".");
+		else
+			edition.setTextContent(s + " " + " linguistic processing: " + taggerName);
+		String[] path1 = { "teiHeader", "fileDesc", "editionStmt", "respStmt"};
+		Element respStmt = d.createElement("respStmt");
+		editionStmt.appendChild(respStmt);
+		Element e;
+		respStmt.appendChild(e = d.createElement("resp"));
+		e.setTextContent("linguistic annotation");
+		respStmt.appendChild(e = d.createElement("name"));
+		e.setTextContent(taggerName);
+	}
+	
+	public static Element createOrFindPath(Document d, Element start, String[] elementNames)
+	{
+		Element p = start;
+		for (String e: elementNames)
+		{
+			Element c = XML.getElementByTagname(p, e);
+			if (c == null)
+			{
+				c = d.createElement(e);
+				p.appendChild(c);
+			}
+			p = c;
+		}
+		return p;
+	}
+	
 	public static Element getEnclosingBlock(Element w)
 	{
 		Node p = w.getParentNode();
