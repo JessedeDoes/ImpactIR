@@ -85,27 +85,54 @@ public class MapDBLexicon implements ILexicon
 		db.commit();
 	}
 	
+	/** 
+	 * Take heed: mapdb cannot automatically update a changed object (in case the set here)
+	 * So we have to force the refresh vy first removing and then re-inserting
+	 * @param w
+	 */
+	
 	private void addToIndexes(WordForm w)
 	{
 		if (w == null)
 			return;
+		
+		// add to lemma index (niet goed genoeg)...
+		
 		Set<WordForm> wfz = lemma2forms.get(w.lemma);
 		if (wfz == null)
-			lemma2forms.put(w.lemma, (wfz =new 	HashSet<WordForm>()));
-
+			wfz =new HashSet<WordForm>();
+		else
+			lemma2forms.remove(w.lemma);
 		wfz.add(w);
+		lemma2forms.put(w.lemma, wfz);
 		
-		Set<WordForm> lemz = form2lemmata.get(w.wordform.toLowerCase());
+		
+		// add to wordform index
+		String wkey = w.wordform.toLowerCase();
+		Set<WordForm> lemz = form2lemmata.get(wkey);
 		if (lemz == null)
-			form2lemmata.put(w.wordform.toLowerCase(), (lemz =new HashSet<WordForm>()));
+			lemz =new HashSet<WordForm>();
+		else
+			form2lemmata.remove(wkey);	// needed for update???
+			
+
+		if (lemz.contains(w))
+		{
+			//System.err.println("I already had this: " + w);
+		}
 		lemz.add(w);
+		form2lemmata.put(wkey,lemz);
+		
 		
 		if (!w.wordform.toLowerCase().equals(w.wordform))
 		{
 			Set<WordForm> lemzz = form2lemmata.get(w.wordform);
 			if (lemzz == null)
-				form2lemmata.put(w.wordform, (lemzz =new HashSet<WordForm>()));
+				lemzz =new HashSet<WordForm>();
+			else
+				form2lemmata.remove(w.wordform);
 			lemzz.add(w);
+			form2lemmata.put(w.wordform,lemzz);
 		}
 	}
 	

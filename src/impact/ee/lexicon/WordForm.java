@@ -47,6 +47,7 @@ public class WordForm implements Serializable
 		return wordform + "\t" + lemma + "\t" + tag + "\t" + lemmaPoS;
 	}
 	
+	@Override
 	public boolean equals(Object other)
 	{
 		try
