@@ -86,7 +86,7 @@ public class MapDBLexicon implements ILexicon
 	}
 	
 	/** 
-	 * Take heed: mapdb cannot automatically update a changed object (in case the set here)
+	 * Take heed: mapdb cannot automatically update a changed object (the set of words here)
 	 * So we have to force the refresh vy first removing and then re-inserting
 	 * @param w
 	 */
