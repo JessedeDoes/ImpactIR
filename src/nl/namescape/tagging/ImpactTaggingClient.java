@@ -149,6 +149,8 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 	{
 		// TODO Auto-generated method stub
 		this.properties = properties;
+                this.tagger = new BasicTagger();
+                b.loadModel(properties.getProperty("taggingModel"));
 	}
 	
 	public static void main(String[] args)
