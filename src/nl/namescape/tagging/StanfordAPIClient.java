@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Properties;
 
 import nl.inl.impact.ner.stanfordplus.ImpactCRFClassifier;
-import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.Options;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

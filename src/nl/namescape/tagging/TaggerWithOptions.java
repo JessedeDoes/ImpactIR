@@ -1,6 +1,6 @@
 package nl.namescape.tagging;
 
-import nl.namescape.filehandling.SimpleInputOutputProcess;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
 public interface TaggerWithOptions extends SimpleInputOutputProcess 
 {

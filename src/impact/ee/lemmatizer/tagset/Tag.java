@@ -35,10 +35,16 @@ public class Tag extends ConcurrentHashMap<String, Set<String>>
 		return StringUtils.join(get(name), multiValueSeparator+"");
 	}
 	
-	@Override
-	public Set<String> keySet()
+	//@Override
+	public Set<String> keySetX()
 	{
-		return super.keySet();
+		Set<String> Z = new HashSet<String>();
+		for (String s: super.keySet())
+		{
+			Z.add(s);
+		}
+	    return Z;
+		//return super.keySet();
 	}
 	
 	public String toString()
@@ -46,7 +52,7 @@ public class Tag extends ConcurrentHashMap<String, Set<String>>
 		String pos = this.getValues("pos");
 		
 		List<String> l = new ArrayList<String>();
-		for (String name: this.keySet())
+		for (String name: super.keySet())
 		{
 			if (!name.equals("pos"))
 			{

@@ -3,10 +3,10 @@ package nl.namescape.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.util.WordTableConverter.Cell;
 import nl.namescape.util.WordTableConverter.Row;
 import nl.namescape.util.WordTableConverter.Table;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

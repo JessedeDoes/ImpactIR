@@ -7,14 +7,15 @@ import java.io.OutputStreamWriter;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import java.util.*;
 
 /**

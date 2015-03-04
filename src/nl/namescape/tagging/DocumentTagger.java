@@ -16,8 +16,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.SAXParser;
 
-
-import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.tei.TEITagClasses;
@@ -26,6 +24,7 @@ import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Options;
 import nl.namescape.util.Progress;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

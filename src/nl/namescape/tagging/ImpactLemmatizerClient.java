@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 import impact.ee.lemmatizer.dutch.SimplePatternBasedLemmatizer;
 import impact.ee.lexicon.InMemoryLexicon;
 import impact.ee.tagger.Tagger;

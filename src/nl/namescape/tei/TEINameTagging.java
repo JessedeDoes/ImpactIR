@@ -51,7 +51,7 @@ import org.w3c.dom.ranges.*;
  * @author does
  *
  */
-public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class TEINameTagging implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	public static final String namescapeURI = "http://www.namescape.nl/";
 	private static boolean tagWithNameAndType = true;
@@ -312,7 +312,7 @@ public class TEINameTagging implements nl.namescape.filehandling.SimpleInputOutp
 	}
 	public static void main(String[] args)
 	{
-		nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new TEINameTagging(), args[0], 
+		nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(new TEINameTagging(), args[0], 
 				args[1]);
 
 	}

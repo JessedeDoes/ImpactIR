@@ -3,10 +3,10 @@ package nl.namescape.tagging;
 import java.util.Map;
 import java.util.Properties;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.tei.TEINameTagging;
 import nl.namescape.util.Options;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

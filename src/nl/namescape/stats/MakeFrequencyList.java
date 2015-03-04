@@ -9,11 +9,11 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.util.Options;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
  * d1 = n1 + (N-nf)
  */
 
-public class MakeFrequencyList implements nl.namescape.filehandling.DoSomethingWithFile
+public class MakeFrequencyList implements nl.openconvert.filehandling.DoSomethingWithFile
 {
 	WordList tf = new WordList();
 	int nTokens = 0;

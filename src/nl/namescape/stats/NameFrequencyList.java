@@ -12,10 +12,10 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 import nl.namescape.evaluation.Counter;
-import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.MultiMap;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  * examples (all occurrences) to stderr
  */
 
-public class NameFrequencyList implements nl.namescape.filehandling.DoSomethingWithFile
+public class NameFrequencyList implements nl.openconvert.filehandling.DoSomethingWithFile
 {
 	WordList tf = new WordList();
 	int nTokens = 0;

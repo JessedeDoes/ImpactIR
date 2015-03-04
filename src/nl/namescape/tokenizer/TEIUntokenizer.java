@@ -8,12 +8,12 @@ import java.util.Properties;
 
 import org.w3c.dom.Document;
 
-import nl.namescape.filehandling.*;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.tagging.ImpactTaggingClient;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.*;
 
 
 public class TEIUntokenizer implements SimpleInputOutputProcess

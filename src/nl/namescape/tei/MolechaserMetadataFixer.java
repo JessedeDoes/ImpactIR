@@ -1,14 +1,13 @@
 package nl.namescape.tei;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
-import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.util.*;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
 import org.w3c.dom.*;
 import org.w3c.dom.ranges.DocumentRange;
 import org.w3c.dom.ranges.Range;
-
 
 import java.io.File;
 import java.io.FileOutputStream;

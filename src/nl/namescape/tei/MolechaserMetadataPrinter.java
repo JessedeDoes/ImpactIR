@@ -1,5 +1,5 @@
 package nl.namescape.tei;
-import nl.namescape.filehandling.*;
+
 
 
 import java.util.*;
@@ -8,7 +8,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import nl.namescape.util.Proxy;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.*;
+
 import org.w3c.dom.*;
+
 import java.security.*;
 
 

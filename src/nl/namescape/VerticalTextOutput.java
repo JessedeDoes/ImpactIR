@@ -33,7 +33,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class VerticalTextOutput implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	boolean tagParts = true;
 	boolean useCTAG = false;
@@ -197,10 +197,10 @@ public class VerticalTextOutput implements nl.namescape.filehandling.SimpleInput
 		{
 			System.err.println("Using xpath query!: " + args[0]);
 			v.xpathQuery = args[0];
-			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[1], 
+			nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[1], 
 					args[2]);
 		} else
-		 nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
+		 nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[0], 
 				args[1]);
 	}
 

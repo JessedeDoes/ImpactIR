@@ -1,15 +1,15 @@
 package nl.namescape.stats.colloc;
 import nl.namescape.SentencePerLineOutput;
 import nl.namescape.evaluation.Counter;
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.stats.CaseProfile;
 import nl.namescape.stats.WordList;
 //import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.Util;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 
 import org.w3c.dom.*;
 

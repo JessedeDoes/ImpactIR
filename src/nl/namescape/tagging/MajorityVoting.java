@@ -14,8 +14,8 @@ import java.util.*;
 import org.w3c.dom.*;
 
 import nl.namescape.evaluation.*;
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.SimpleInputOutputProcess;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 public class MajorityVoting implements SimpleInputOutputProcess
 {
 	NameFrequencyList withType = new NameFrequencyList();

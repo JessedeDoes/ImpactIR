@@ -1,14 +1,10 @@
 package nl.namescape.tagging;
 
 import impact.ee.tagger.*;
-
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.sentence.TEITokenStream;
 import nl.namescape.sentence.TEITokenStreamWithSentenceBounds;
-
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Options;
 import nl.namescape.util.XML;
@@ -16,6 +12,8 @@ import nl.namescape.util.XML;
 import org.w3c.dom.*;
 
 import nl.namescape.tei.TEITagClasses;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -149,7 +147,8 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 	{
 		// TODO Auto-generated method stub
 		this.properties = properties;
-                this.tagger = new BasicTagger();
+		 BasicTagger b = new BasicTagger();
+                this.tagger = b;
                 b.loadModel(properties.getProperty("taggingModel"));
 	}
 	

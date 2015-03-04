@@ -28,7 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import nl.namescape.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * artikel om in HTML.
  */
 
-public class XSLTTransformer implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class XSLTTransformer implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	/** our Transformer object */
 	private Transformer transformer = null;

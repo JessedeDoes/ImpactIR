@@ -17,11 +17,15 @@
         <pathelement path="lib/jnisvmlight.jar"/>
         <pathelement path="lib/libsvm.jar"/>
         <pathelement path="lib/jgrapht-jdk1.6.jar"/>
-	<pathelement path="lib/stanford-ner.jar"/>
+	<pathelement path="lib/stanford/stanford-ner-2012-07-09.jar"/>
         <pathelement path="lib/weka.jar"/>
-   		<pathelement path="lib/commons-cli-1.2.jar"/>
+	<pathelement path="lib/commons-cli-1.2.jar"/>
         <pathelement path="lib/mysql-connector-java-3.0.17-ga-bin.jar"/>
         <pathelement path="lib/commons-logging-1.1.1.jar"/>
+        <pathelement path="lib/OpenConvert.jar"/>
+        <pathelement path="lib/langdetect.jar"/>
+        <pathelement path="lib/nert-3.01.jar"/>
+        <pathelement path="lib/mapdb-1.0.7.jar"/>
 	</path>
 	
      <target name="init">  
@@ -69,8 +73,16 @@
 <!--
               <zipgroupfileset dir="lib/commons-math3-3.2" includes="*.jar"/>
 -->
+<!--
               <zipgroupfileset dir="lib/poi" includes="*.jar" excludes="META-INF/*.SF"/>
+-->
+<!-- kan neo er uit nu? -->
+<!--
               <zipgroupfileset dir="lib/neo" includes="*.jar" excludes="META-INF/*.SF"/>
+-->
+<!--
+              <zipgroupfileset dir="lib" includes="OpenConvert*.jar" excludes="META-INF/*.SF"/>
+-->
             </jar>
             <jar destfile="${dist}/DutchTaggerLemmatizer.jar">
              <zipfileset src="${dist}/DutchTaggerLemmatizer.step1.jar" excludes="META-INF/*.SF" />

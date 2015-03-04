@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import nl.namescape.evaluation.Counter;
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.stats.MakeFrequencyList;
 import nl.namescape.stats.WordList;
 import nl.namescape.stats.WordList.TypeFrequency;
 import nl.namescape.tei.Metadata;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class PolarityProfiler implements nl.namescape.filehandling.DoSomethingWithFile
+public class PolarityProfiler implements nl.openconvert.filehandling.DoSomethingWithFile
 {
 	int nTokens = 0;
 	SentimentLexicon lexicon = new SentimentLexicon(SentimentLexicon.douman);

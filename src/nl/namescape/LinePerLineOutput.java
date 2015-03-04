@@ -10,12 +10,12 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DoSomethingWithFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 import java.util.Set;
 
-public class LinePerLineOutput implements nl.namescape.filehandling.SimpleInputOutputProcess, DoSomethingWithFile
+public class LinePerLineOutput implements nl.openconvert.filehandling.SimpleInputOutputProcess, DoSomethingWithFile
 {
 	boolean tagParts = true;
 	private Properties properties;
@@ -144,11 +144,11 @@ public class LinePerLineOutput implements nl.namescape.filehandling.SimpleInputO
 		int len = Integer.parseInt(args[0]);
 		if (args.length > 2)
 		{
-			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new LinePerLineOutput(len), args[1], 
+			nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(new LinePerLineOutput(len), args[1], 
 				args[2]);
 		} else
 		{
-			nl.namescape.filehandling.DirectoryHandling.traverseDirectory(new LinePerLineOutput(len), args[1]);
+			nl.openconvert.filehandling.DirectoryHandling.traverseDirectory(new LinePerLineOutput(len), args[1]);
 		}
 	}
 

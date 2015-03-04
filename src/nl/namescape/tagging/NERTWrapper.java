@@ -3,7 +3,8 @@ package nl.namescape.tagging;
 import java.util.Properties;
 
 
-import nl.namescape.filehandling.DirectoryHandling;
+
+import nl.openconvert.filehandling.DirectoryHandling;
 
 public class NERTWrapper
 {

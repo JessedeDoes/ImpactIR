@@ -9,11 +9,11 @@ import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.Proxy;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 
 
 
-public class TEISentenceSplitter implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class TEISentenceSplitter implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	SentenceSplitter splitter=null;
 	private Properties properties;

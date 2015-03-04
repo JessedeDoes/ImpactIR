@@ -6,14 +6,13 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
-
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.SimpleInputOutputProcess;
 import nl.namescape.sentence.JVKSentenceSplitter;
 import nl.namescape.sentence.TEISentenceSplitter;
 import nl.namescape.tagging.ImpactTaggingClient;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

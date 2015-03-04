@@ -10,9 +10,9 @@ import impact.ee.lemmatizer.Lemmatizer;
 import impact.ee.lemmatizer.dutch.SimplePatternBasedLemmatizer;
 import impact.ee.tagger.LookupLemmatizer;
 import impact.ee.tagger.Tagger;
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.MultiThreadedFileHandler;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.MultiThreadedFileHandler;
 import impact.ee.util.Options;
 
 public class LookupLemmatizerClient extends ImpactTaggingClient

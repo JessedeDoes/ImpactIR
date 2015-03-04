@@ -10,13 +10,12 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
 
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
-
 
 import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.PropertyMapBuilder;

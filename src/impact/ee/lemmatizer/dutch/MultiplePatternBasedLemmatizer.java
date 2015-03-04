@@ -463,8 +463,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		MultiplePatternBasedLemmatizer lemmatizer=null;
 		try {
 			lemmatizer = (MultiplePatternBasedLemmatizer) Class.forName(className).newInstance();
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
+		} catch (Exception  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -14,7 +14,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Properties;
 
-import nl.namescape.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.ccil.cowan.tagsoup.Parser;
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 
-public class TagSoupParser implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class TagSoupParser implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	static
 	{

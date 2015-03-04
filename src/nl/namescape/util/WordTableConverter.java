@@ -3,8 +3,8 @@ package nl.namescape.util;
 import java.sql.Connection;
 import java.util.*;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
 
 import org.w3c.dom.*;
 /**

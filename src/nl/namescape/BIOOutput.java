@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 
 import java.util.Set;
 
-public class BIOOutput implements nl.namescape.filehandling.SimpleInputOutputProcess
+public class BIOOutput implements nl.openconvert.filehandling.SimpleInputOutputProcess
 {
 	boolean tagParts = true;
 	private Properties properties; 
@@ -155,7 +155,7 @@ public class BIOOutput implements nl.namescape.filehandling.SimpleInputOutputPro
 		
 		try
 		{
-			nl.namescape.filehandling.DirectoryHandling.tagAllFilesInDirectory(new BIOOutput(), args[0], 
+			nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(new BIOOutput(), args[0], 
 				args[1]);
 		} catch (Exception e)
 		{

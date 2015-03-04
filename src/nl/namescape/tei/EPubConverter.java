@@ -16,9 +16,10 @@ import nl.namescape.util.Proxy;
 import nl.namescape.util.TagSoupParser;
 import nl.namescape.util.XML;
 import nl.namescape.util.XSLTTransformer;
-import nl.namescape.filehandling.*;
+import nl.openconvert.filehandling.*;
 
 import java.util.zip.*;
+
 import org.w3c.dom.*;
 public class EPubConverter implements SimpleInputOutputProcess
 {

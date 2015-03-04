@@ -2,13 +2,14 @@ package nl.namescape.stats;
 
 import java.util.List;
 
-import nl.namescape.filehandling.DirectoryHandling;
 import nl.namescape.stats.MakeFrequencyList.Type;
 import nl.namescape.stats.WordList.TypeFrequency;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 
 
 
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class CaseProfile  implements java.io.Serializable, 
-	nl.namescape.filehandling.DoSomethingWithFile
+	nl.openconvert.filehandling.DoSomethingWithFile
 {
 	WordList tf = new WordList();
 	int nTokens = 0;

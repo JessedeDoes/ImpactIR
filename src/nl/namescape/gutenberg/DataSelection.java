@@ -1,9 +1,11 @@
 package nl.namescape.gutenberg;
 
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.util.*;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
+
 import org.w3c.dom.*; 
+
 import java.util.*;
 
 public class DataSelection implements DoSomethingWithFile

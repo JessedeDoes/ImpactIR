@@ -8,12 +8,12 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import nl.namescape.evaluation.Counter;
-import nl.namescape.filehandling.DirectoryHandling;
-import nl.namescape.filehandling.DoSomethingWithFile;
 import nl.namescape.nelexicon.database.ObjectRelationalMapping;
 import nl.namescape.tei.TEITagClasses;
 import nl.namescape.tokenizer.TEITokenizer;
 import nl.namescape.util.XML;
+import nl.openconvert.filehandling.DirectoryHandling;
+import nl.openconvert.filehandling.DoSomethingWithFile;
 
 import org.w3c.dom.*;
 
