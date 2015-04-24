@@ -79,6 +79,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 	{
 		return lemmataSeenInTrainingData.containsKey(lemma + ":" + lemmaPoS);
 	}	
+	
 	public PrefixSuffixGuesser()
 	{
 		FeatureSet fs1 = new FeatureSet.ReversedDummy();
@@ -87,6 +88,8 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 		ClassifierSet cs1 = new ClassifierSet(fs1, "impact.ee.lemmatizer.SuffixGuesser");
 		ClassifierSet cs2 = new ClassifierSet(fs2, "impact.ee.lemmatizer.SuffixGuesser");
 
+		// these should not be independent!
+		
 		initialExpander = new ReverseLemmatizer(new InitialPatternFinder(), cs1);
 		finalExpander = new ReverseLemmatizer(new FinalPatternFinder(), cs2);
 
@@ -150,6 +153,9 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 
 	Knutselaar knutselaar = new Knutselaar();
 
+	/**
+	 * This is completely wrong ...
+	 */
 	public void findInflectionPatterns(InMemoryLexicon lexicon, Set<WordForm> heldOutSet)
 	{
 		initialExpander.findInflectionPatterns(lexicon, heldOutSet);
@@ -223,10 +229,14 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 		knutselaar.currentBag = knutselaar.finalBag;
 		finalExpander.expandWordForm(w);
 		ScoredRule r = knutselaar.knutsel();
+		//System.err.println(r);
 		if (r !=  null)
 		{
 			callback.foundForm(w.lemma, w.tag, w.lemmaPoS, r.rule, r.p, r.rank);
-		} 
+		} else
+		{
+			System.err.println("Could not expand: " + w);
+		}
 	}
 
 	class FinalPatternFinder implements PatternFinder
@@ -276,6 +286,9 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 		{
 			System.out.println(String.format("%s\t%s\t%s\t%s\t%f\t[%d]\t%s=%s", wf,
 					lemma,tag,lemmaPoS, p, rank, r.id, r.toString()));
+		} else
+		{
+			System.err.println("Unable to apply " + r.pattern + " to " + lemma);
 		}
 	}	
 	

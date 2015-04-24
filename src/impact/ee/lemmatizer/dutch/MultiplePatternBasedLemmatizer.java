@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import nl.namescape.evaluation.Counter;
@@ -256,6 +257,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 		if (tag.startsWith("VRB"))
 		{
+			Set<String> remove = new HashSet<String>();
 			Tag t = corpusTagset.parseTag(tag);
 
 			Set<String> fnames = t.keySet();
@@ -263,14 +265,17 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			{
 				if (!coreFeatures.contains(fname))
 				{
-					t.remove(fname);
+					remove.add(fname);
 				}
 			}
+			for (String fname: remove)
+			t.remove(fname);
 			return t.toString();
 		}
 
 		if (reduceNounGender && tag.startsWith("NOU-C"))
 		{
+			Set<String> remove = new HashSet<String>();
 			Tag t = corpusTagset.parseTag(tag);
 
 			Set<String> fnames = t.keySet();
@@ -278,9 +283,11 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			{
 				if (!coreFeatures.contains(fname))
 				{
-					t.remove(fname);
+					remove.add(fname);
 				}
 			}
+			for (String fname: remove)
+				t.remove(fname);
 			return t.toString();
 		}
 		return tag;
@@ -431,15 +438,15 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		t.nItems++;
 	}
 
-	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath, Properties p)
 	{
-		return getTaggerLemmatizer(taggingModel, lexiconPath, "impact.ee.lemmatizer.dutch.MultiplePatternBasedLemmatizer");
+		return getTaggerLemmatizer(taggingModel, lexiconPath, "impact.ee.lemmatizer.dutch.MultiplePatternBasedLemmatizer", p);
 	}
 	
-	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath, String className)
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath, String className, Properties p)
 	{
 		boolean reuseTagLexicon = true;
-		BasicTagger tagger = new BasicTagger();
+		BasicTagger tagger = new BasicTagger(p, false);
 
 		tagger.loadModel(taggingModel);
 

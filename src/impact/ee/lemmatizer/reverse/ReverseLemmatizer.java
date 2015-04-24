@@ -294,7 +294,7 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
 		try
 		{
 			classifiers.buildClassifiers();
-			classifiers.saveToDirectory("/tmp/modelz");
+			//classifiers.saveToDirectory("/tmp/modelz");
 		} catch (Exception e)
 		{
 			e.printStackTrace();

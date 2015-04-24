@@ -9,7 +9,8 @@ public class SimplePattern implements Pattern
 	String leftPrefix, rightPrefix, leftSuffix, rightSuffix;
 	SimplePattern converse=null;
 	boolean finalOnly = true;
-
+	public boolean canBeInfix = true;
+	
 	public SimplePattern converse()
 	{
 		if (converse != null)
@@ -90,6 +91,9 @@ public class SimplePattern implements Pattern
 			if (s.startsWith(leftPrefix))
 			{
 				image = this.rightPrefix + s.substring(leftPrefix.length());
+			} else if (canBeInfix && s.contains(leftPrefix))
+			{
+				image =s.replace(leftPrefix, rightPrefix);
 			} else
 			{
 				return null;

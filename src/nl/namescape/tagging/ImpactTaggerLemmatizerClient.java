@@ -86,9 +86,16 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 	{
 		 taggingModel = p.getProperty("taggingModel");
 		 lexiconPath = p.getProperty("lexiconPath");
+		  String t = p.getProperty("tokenize");
+		 
+		  if (t != null && t.equalsIgnoreCase( "true"))
+			  this.tokenize  = true;
+		  if (t != null && t.equalsIgnoreCase( "false"))
+			  this.tokenize  =  false;
+		  
 		 Tagger taggerLemmatizer = 
-					SimplePatternBasedLemmatizer.getTaggerLemmatizer(taggingModel,
-							lexiconPath);
+					MultiplePatternBasedLemmatizer.getTaggerLemmatizer(taggingModel,
+							lexiconPath, p);
 		 this.tagger = taggerLemmatizer;
 	}
 	
@@ -100,9 +107,10 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 			public void defineOptions()
 			{
 				super.defineOptions();
-				options.addOption("n", "nThreads", true, "Number of threads");
+				options.addOption("n",  "nThreads", true, "Number of threads");
 			}
 		};
+		
         args = options.commandLine.getArgs();
         int nThreads = Runtime.getRuntime().availableProcessors()-1;
         if (options.getOption("nThreads") != null)
@@ -116,7 +124,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
         	}
         }
 		Tagger taggerLemmatizer = 
-				MultiplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1]);
+				MultiplePatternBasedLemmatizer.getTaggerLemmatizer(args[0], args[1], options.properties);
 		ImpactTaggerLemmatizerClient xmlLemmatizer = 
 				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);

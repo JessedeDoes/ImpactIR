@@ -37,6 +37,7 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 	{
 		if (WordVectorFeature.vectors == null)
 		{
+			System.err.println("reading vectors from " + vectorFileName);
 			vectors = ConvertVectors.readVectors(vectorFileName);
 		}
 	}
@@ -50,7 +51,7 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 		Distribution d = new Distribution();
 		String w = c.getAttributeAt("word", k);
 		
-       readVectors(vectorFileName);
+       readVectors(SonarVectors); // ugly change, but otherwise model is not transportable without rebuilding
 		
 		if  (w != null)
 		{

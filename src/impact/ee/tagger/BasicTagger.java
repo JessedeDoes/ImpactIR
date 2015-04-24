@@ -153,9 +153,30 @@ public class BasicTagger implements Serializable, Tagger
 		{
 			TaggerFeatures.setLexiconFileName(p.getProperty("tagLexicon"));
 		}
+		if (p.getProperty("word2vecFile") != null)
+		{
+			WordVectorFeature.SonarVectors =  p.getProperty("word2vecFile");
+		}
 		this.initializeFeatures();
 	}
 
+	public BasicTagger(Properties p, boolean create)
+	{
+		if (p.getProperty("tagLexicon") != null)
+		{
+			TaggerFeatures.setLexiconFileName(p.getProperty("tagLexicon"));
+		}
+		
+		if (p.getProperty("word2vecFile") != null)
+		{
+			WordVectorFeature.SonarVectors =  p.getProperty("word2vecFile");
+			System.err.println("vector file name set to " +WordVectorFeature.SonarVectors );
+		}
+		
+		if (create)
+			this.initializeFeatures();
+	}
+	
 	private void initializeFeatures() 
 	{
 		features = TaggerFeatures.getMoreFeatures(taggerOptions.useFeedback, true);
@@ -396,7 +417,8 @@ public class BasicTagger implements Serializable, Tagger
 	}
 
 	@Override
-	public void setProperties(Properties properties) {
+	public void setProperties(Properties properties) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

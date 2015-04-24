@@ -26,6 +26,7 @@
         <pathelement path="lib/langdetect.jar"/>
         <pathelement path="lib/nert-3.01.jar"/>
         <pathelement path="lib/mapdb-1.0.7.jar"/>
+        <pathelement path="lib/LAML-1.5.jar"/>
 	</path>
 	
      <target name="init">  

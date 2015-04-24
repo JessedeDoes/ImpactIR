@@ -84,13 +84,13 @@ public class ConvertVectors {
 			vectors = new float[words][];
 			vocabVects = new String[words];
 
-			System.out.println("" + words + " words with size " + size + " per vector.");
+			System.err.println("Read " + words + " words with size " + size + " per vector from "  + vectorFileName);
 
 			byte[] orig = new byte[4];
 			byte[] buf = new byte[4];
 			for (int w = 0; w < words; w++) {
 				if (w % (words / 10) == 0) {
-					System.out.println("Read " + w + " words");
+					System.err.println("Read " + w + " words");
 				}
 
 				sb.setLength(0);

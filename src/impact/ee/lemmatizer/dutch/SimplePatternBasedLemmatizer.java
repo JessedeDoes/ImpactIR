@@ -351,10 +351,10 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		return new SimpleCorpus(ewc);
 	}
 
-	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath)
+	public static Tagger getTaggerLemmatizer(String taggingModel, String lexiconPath, Properties p)
 	{
 		
-		BasicTagger tagger = new BasicTagger();
+		BasicTagger tagger = new BasicTagger(p, false);
 		
 		tagger.loadModel(taggingModel);
 		

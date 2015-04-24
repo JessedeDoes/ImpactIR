@@ -4,9 +4,9 @@ import impact.ee.util.StringUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.collections.MultiMap;
+//import org.apache.commons.collections.MultiMap;
 
-public class Tag extends ConcurrentHashMap<String, Set<String>> 
+public class Tag extends HashMap<String, Set<String>> 
 {
 	public static String multiValueSeparator="|"; 
 	

@@ -14,7 +14,7 @@ public class LatinTaggerLemmatizer extends ImpactTaggerLemmatizerClient
 		 lexiconPath = p.getProperty("lexiconPath");
 		 Tagger taggerLemmatizer = 
 					LatinLemmatizer.getTaggerLemmatizer(taggingModel,
-							lexiconPath, "impact.ee.lemmatizer.latin.LatinLemmatizer");
+							lexiconPath, "impact.ee.lemmatizer.latin.LatinLemmatizer", new java.util.Properties());
 		 this.tagger = taggerLemmatizer;
 	}
 
