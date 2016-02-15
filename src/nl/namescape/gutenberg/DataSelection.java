@@ -10,8 +10,8 @@ import java.util.*;
 
 public class DataSelection implements DoSomethingWithFile
 {
-	public String rdfDir = "N:/transcriptorium/Corpora/German/Gutenberg/cache";
-	 public String targetLanguage="de";
+	public String rdfDir = "/datalokaal/Corpus/Gutenberg-NE/RDF/cache"; // "N:/transcriptorium/Corpora/German/Gutenberg/cache";
+	 public String targetLanguage="nl";
 	 
 	class Author
 	{
@@ -45,7 +45,7 @@ public class DataSelection implements DoSomethingWithFile
 				}
 			};
 			String l = getLanguage(root);
-			if (urlOfHTML != null && (true || getLanguage(root).equals(targetLanguage)))
+			if (urlOfHTML != null && (true || 	getLanguage(root).equals(targetLanguage)))
 			{
 				System.out.println(l + "\t" + urlOfHTML + "\t" + getTitle(root).replaceAll("\\s+",  " ") + "\t" + getAuthors(root) + "\t" + possibleURLS);
 			}
