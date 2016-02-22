@@ -60,12 +60,12 @@ public class NEClassifier implements java.io.Serializable
 				impact.ee.classifier.Instance instance = features.makeTestInstance(chunk);
 				
 				String outcome = classifier.classifyInstance(instance);
-				System.err.println(outcome + " " + chunk + " features: " + features.itemToString(instance));
+				nl.openconvert.log.ConverterLog.defaultLog.println(outcome + " " + chunk + " features: " + features.itemToString(instance));
 				if (!outcome.equalsIgnoreCase(chunk.label)) nErrors++;
 				nItems++;
 			}
 		}
-		System.err.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
+		nl.openconvert.log.ConverterLog.defaultLog.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
 	}
 
 	public static class Trainer

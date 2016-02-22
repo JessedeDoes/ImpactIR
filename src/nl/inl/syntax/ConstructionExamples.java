@@ -13,11 +13,11 @@ public class ConstructionExamples
 		
 		Counter<String> c = atb.getProductionVocabulary();
 		//List<String> l = c.keyList();
-		System.err.println("search exampes for: <" + args[1] + ">");
+		nl.openconvert.log.ConverterLog.defaultLog.println("search exampes for: <" + args[1] + ">");
 		Set<String> examples = atb.allExamples.get(args[1]);
 		if (examples == null)
 		{
-			System.err.println("none found...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("none found...");
 			System.exit(0);
 		}
 		

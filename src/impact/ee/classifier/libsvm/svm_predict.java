@@ -101,7 +101,7 @@ class svm_predict {
 
 	private static void exit_with_help()
 	{
-		System.err.print("usage: svm_predict [options] test_file model_file output_file\n"
+		nl.openconvert.log.ConverterLog.defaultLog.print("usage: svm_predict [options] test_file model_file output_file\n"
 		+"options:\n"
 		+"-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet\n");
 		System.exit(1);
@@ -122,7 +122,7 @@ class svm_predict {
 					predict_probability = atoi(argv[i]);
 					break;
 				default:
-					System.err.print("Unknown option: " + argv[i-1] + "\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Unknown option: " + argv[i-1] + "\n");
 					exit_with_help();
 			}
 		}
@@ -137,7 +137,7 @@ class svm_predict {
 			{
 				if(svm.svm_check_probability_model(model)==0)
 				{
-					System.err.print("Model does not support probabiliy estimates\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Model does not support probabiliy estimates\n");
 					System.exit(1);
 				}
 			}

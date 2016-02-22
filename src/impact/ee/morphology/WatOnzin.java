@@ -55,7 +55,7 @@ public class WatOnzin
 			 {
 				 //if (l.matches(".*(^|[^aoeiujy])[^aeijuoy]*i[^aeioujy]*i[^aeiujoy]*i[^aeiojuy]*i([^aeiujy]|$).*"))
 				 {
-					// System.err.println( l);
+					// nl.openconvert.log.ConverterLog.defaultLog.println( l);
 				 }
 				 Trie.TrieNode n = t.root;
 				 int nAnalyses = 0;
@@ -70,11 +70,11 @@ public class WatOnzin
 						 String[] parts = a.split("_");
 						 for (String p: parts)
 						 {
-							 //System.err.println(p);
+							 //nl.openconvert.log.ConverterLog.defaultLog.println(p);
 							 Set<String> Ap = this.analyses(p,2);
 							 if (Ap.size() != 0)
 							 {
-							   //System.err.println("Dump " + a  + "  : "  + Ap);
+							   //nl.openconvert.log.ConverterLog.defaultLog.println("Dump " + a  + "  : "  + Ap);
 							   ok = false;
 							 }
 						 }

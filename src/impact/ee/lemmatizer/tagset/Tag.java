@@ -17,7 +17,7 @@ public class Tag extends HashMap<String, Set<String>>
 		if (v == null || v.isEmpty()) 
 			super.put(name, v = new HashSet<String>());
 		v.add(value);
-		///System.err.println("just added to set for " + name + "  " + ",  now "  + get(name) +  " value = "  + value);
+		///nl.openconvert.log.ConverterLog.defaultLog.println("just added to set for " + name + "  " + ",  now "  + get(name) +  " value = "  + value);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class Tag extends HashMap<String, Set<String>>
 				}
 			}
 		}
-		//System.err.println(t);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(t);
 		return t;
 	}
 

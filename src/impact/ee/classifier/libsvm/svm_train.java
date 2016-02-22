@@ -98,7 +98,7 @@ class svm_train {
 
 		if(error_msg != null)
 		{
-			System.err.print("ERROR: "+error_msg+"\n");
+			nl.openconvert.log.ConverterLog.defaultLog.print("ERROR: "+error_msg+"\n");
 			System.exit(1);
 		}
 
@@ -124,7 +124,7 @@ class svm_train {
 		double d = Double.valueOf(s).doubleValue();
 		if (Double.isNaN(d) || Double.isInfinite(d))
 		{
-			System.err.print("NaN or Infinity in input\n");
+			nl.openconvert.log.ConverterLog.defaultLog.print("NaN or Infinity in input\n");
 			System.exit(1);
 		}
 		return(d);
@@ -212,7 +212,7 @@ class svm_train {
 					nr_fold = atoi(argv[i]);
 					if(nr_fold < 2)
 					{
-						System.err.print("n-fold cross validation: n must >= 2\n");
+						nl.openconvert.log.ConverterLog.defaultLog.print("n-fold cross validation: n must >= 2\n");
 						exit_with_help();
 					}
 					break;
@@ -234,7 +234,7 @@ class svm_train {
 					param.weight[param.nr_weight-1] = atof(argv[i]);
 					break;
 				default:
-					System.err.print("Unknown option: " + argv[i-1] + "\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Unknown option: " + argv[i-1] + "\n");
 					exit_with_help();
 			}
 		}
@@ -304,12 +304,12 @@ class svm_train {
 			{
 				if (prob.x[i][0].index != 0)
 				{
-					System.err.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
 					System.exit(1);
 				}
 				if ((int)prob.x[i][0].value <= 0 || (int)prob.x[i][0].value > max_index)
 				{
-					System.err.print("Wrong input format: sample_serial_number out of range\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Wrong input format: sample_serial_number out of range\n");
 					System.exit(1);
 				}
 			}

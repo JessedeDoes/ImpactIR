@@ -34,7 +34,7 @@ public class MapDBLexicon implements ILexicon
 	    ConcurrentNavigableMap<String, WordForm> map = db.getTreeMap("collectionName");
 	    for (String x : map.keySet())
 	    {
-	    	System.err.println(map.get(x));
+	    	nl.openconvert.log.ConverterLog.defaultLog.println(map.get(x));
 	    }
 	    WordForm w = new WordForm();
 	    w.wordform = "apen";
@@ -52,7 +52,7 @@ public class MapDBLexicon implements ILexicon
 
 	public void readFromFile(String fileName)
 	{
-		System.err.println("reading lexicon from: " + fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println("reading lexicon from: " + fileName);
 		if (fileName.startsWith("database:"))
 		{
 			String dbName = fileName.substring("database:".length());
@@ -71,7 +71,7 @@ public class MapDBLexicon implements ILexicon
 			
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
-				// System.err.println(s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				WordForm w = LexiconUtils.getWordformFromLine(s);
 				if (w == null || w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
 					continue;
@@ -79,7 +79,7 @@ public class MapDBLexicon implements ILexicon
 			}
 		} catch (Exception e)
 		{
-			System.err.println("s = " + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("s = " + s);
 			e.printStackTrace();
 		}
 		db.commit();
@@ -118,7 +118,7 @@ public class MapDBLexicon implements ILexicon
 
 		if (lemz.contains(w))
 		{
-			//System.err.println("I already had this: " + w);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("I already had this: " + w);
 		}
 		lemz.add(w);
 		form2lemmata.put(wkey,lemz);
@@ -213,7 +213,7 @@ public class MapDBLexicon implements ILexicon
 				lookmeup.add(w.lemma);
 			}
 		}
-		System.err.println("done reading lexicon!");
+		nl.openconvert.log.ConverterLog.defaultLog.println("done reading lexicon!");
 		long st = System.currentTimeMillis();
 		int N=0;
 		for (String lem: lookmeup)
@@ -227,7 +227,7 @@ public class MapDBLexicon implements ILexicon
 		long et = System.currentTimeMillis();
 		long d = et -st;
 		double tpa = d / (double) N;
-		System.err.println("N=" + N + " d = " + d + " tpa = " + tpa);
+		nl.openconvert.log.ConverterLog.defaultLog.println("N=" + N + " d = " + d + " tpa = " + tpa);
 		
 	}
 }

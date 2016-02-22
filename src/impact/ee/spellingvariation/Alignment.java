@@ -114,7 +114,7 @@ public class Alignment
 				Transition e = restrictedGraph.getEdge(source, target);
 				if (e == null)
 				{
-					   /* System.err.printf("Add edge from [%d,%d] to [%d,%d] symbol [%d=%c/%c] weight=%f\n",
+					   /* nl.openconvert.log.ConverterLog.defaultLog.printf("Add edge from [%d,%d] to [%d,%d] symbol [%d=%c/%c] weight=%f\n",
 					   source.lpos, source.rpos, target.lpos, target.rpos, edge.symbol,
 					   t.inputAlphabet.decode(t.symbolPairs[edge.symbol].lhs),
 					   t.outputAlphabet.decode(t.symbolPairs[edge.symbol].rhs),
@@ -128,7 +128,7 @@ public class Alignment
 			}
 			//positions[i] = (Position) p.getEndVertex();
 			//condensedPathList.add(positions);
-			//System.err.println(p.getEdgeList().size() + " " +  p.getWeight());
+			//nl.openconvert.log.ConverterLog.defaultLog.println(p.getEdgeList().size() + " " +  p.getWeight());
 		}
 		restrictedGraph.startPosition = this.getVertexAt(0, 0);  
 		restrictedGraph.endPosition = this.getVertexAt(m,n);
@@ -232,7 +232,7 @@ public class Alignment
 			pathList.add(p);
 		}
 		
-		// System.err.println(x + ", " + y + ": " + pathList.get(0).getWeight() + "-" + pathList.get(pathList.size()-1).getWeight());
+		// nl.openconvert.log.ConverterLog.defaultLog.println(x + ", " + y + ": " + pathList.get(0).getWeight() + "-" + pathList.get(pathList.size()-1).getWeight());
 
 		for (GraphPath<Position,Transition> p: pathList)
 		{
@@ -245,7 +245,7 @@ public class Alignment
 			}
 			positions[i] = (Position) p.getEndVertex();
 			condensedPathList.add(positions);
-			//System.err.println(p.getEdgeList().size() + " " +  p.getWeight());
+			//nl.openconvert.log.ConverterLog.defaultLog.println(p.getEdgeList().size() + " " +  p.getWeight());
 		}
 		constructRestrictedGraph();
 	
@@ -259,10 +259,10 @@ public class Alignment
 	private void printSummary() 
 	{
 		{
-			System.err.println("Full graph has " 
+			nl.openconvert.log.ConverterLog.defaultLog.println("Full graph has " 
 					+ fullGraph.vertexSet().size() + " vertices and "
 					+ fullGraph.edgeSet().size() + " edges.");
-			System.err.println("Restricted graph has " 
+			nl.openconvert.log.ConverterLog.defaultLog.println("Restricted graph has " 
 					+ restrictedGraph.vertexSet().size() + " vertices and "
 					+ restrictedGraph.edgeSet().size() + " edges.");
 		}

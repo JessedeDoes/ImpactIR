@@ -17,7 +17,7 @@ public class  WholeStringFeature extends Feature
 	public String getValue(Object o) // never called???
 	{
 		String s = (String) o;
-		//System.err.println(s);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(s);
 		return s;
 	}
 }

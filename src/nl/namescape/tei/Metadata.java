@@ -33,12 +33,12 @@ public class Metadata
 		}
 		for (Element b: bibls)
 		{
-			//System.err.println(b);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(b);
 			List<Element> grps = XML.getElementsByTagname(b, "interpGrp", false);
 			for (Element grp: grps)
 			{
 				String fieldName = grp.getAttribute("type");
-				//System.err.println("interpGrp type=" + fieldName);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("interpGrp type=" + fieldName);
 				Set<String> values = m.get(fieldName);
 				
 				if (values == null)
@@ -54,7 +54,7 @@ public class Metadata
 					String value = i.getAttribute("value");
 					String content = i.getTextContent();
 					
-					//System.err.println(fieldName + ":"  + content);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(fieldName + ":"  + content);
 					if (value != null && value.length() > 0) 
 						values.add(value);
 					if (content != null  && content.length() > 0)

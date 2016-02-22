@@ -52,7 +52,7 @@ public class SyllableData
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			System.err.println("!Error parsing " + ana);
+			nl.openconvert.log.ConverterLog.defaultLog.println("!Error parsing " + ana);
 		}
 		return w;
 	}

@@ -104,7 +104,7 @@ public class Trie implements java.io.Serializable
 				node = allStates.get(targetIndex);
 			} catch (Exception e)
 			{
-				System.err.println("hola " + allStates + " " + targetIndex);
+				nl.openconvert.log.ConverterLog.defaultLog.println("hola " + allStates + " " + targetIndex);
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -185,7 +185,7 @@ public class Trie implements java.io.Serializable
 				if (addWordBoundaries)
 					word = impact.ee.spellingvariation.Alphabet.initialBoundaryString + word + impact.ee.spellingvariation.Alphabet.finalBoundaryString;
 				if (nWords % 10000 == 0)
-					System.err.printf("%s\n",word);
+					nl.openconvert.log.ConverterLog.defaultLog.printf("%s\n",word);
 				if (assumeOrdered)
 					this.putOrdered(word);
 				else
@@ -194,13 +194,13 @@ public class Trie implements java.io.Serializable
 			} 
 		} catch (Exception e)
 		{
-			System.err.println("could not load word list from " + filename); 
+			nl.openconvert.log.ConverterLog.defaultLog.println("could not load word list from " + filename); 
 			e.printStackTrace();
 		}
 
 		this.root.reset();
 		this.root.number(0);
-		System.err.printf("this trie has %d nodes and %d words\n", 
+		nl.openconvert.log.ConverterLog.defaultLog.printf("this trie has %d nodes and %d words\n", 
 				this.root.nodesBelow, nWords);
 	}
 
@@ -581,9 +581,9 @@ public class Trie implements java.io.Serializable
 		try
 		{
 			t.saveToFile("/tmp/trie.out");
-			System.err.println("saved...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("saved...");
 			t = Trie.readFromFile("/tmp/trie.out");
-			System.err.println("restored...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("restored...");
 		} catch (Exception e)
 		{
 			e.printStackTrace();

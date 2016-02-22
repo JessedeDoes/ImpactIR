@@ -102,7 +102,7 @@ public class DatabaseMapping
 			return o;
 		} else
 		{
-			//System.err.println("Ah.. seen before: o");
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Ah.. seen before: o");
 			return m.get(o);
 		}
 	}

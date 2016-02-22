@@ -21,7 +21,7 @@ public class BagOfWordsFeature extends ExistentialFeature
 		Chunk c = (Chunk) o;
 		Distribution d = new Distribution();
 		d.setExistential(true);
-		//System.err.println(c);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(c);
 		for (int i=0; i < c.length; i++)
 		{
 			ArrayList<String> w = new ArrayList<String>();
@@ -29,12 +29,12 @@ public class BagOfWordsFeature extends ExistentialFeature
 			{
 				w.add(c.context.getAttributeAt("word", j));
 				String value = StringUtils.join(w, "_");
-				//System.err.println(value);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(value);
 				d.incrementCount(value);
 			}
 		}	
 		d.computeProbabilities();
-		//System.err.println(d);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(d);
 		return d;
 	}
 }

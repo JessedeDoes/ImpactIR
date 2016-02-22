@@ -16,7 +16,7 @@ public class DummyContext implements Context
 	public void setAttributeAt(String attributeName, String attributeValue,
 			int relativePosition) 
 	{
-		System.err.println("Trying to set attribute on dummy context...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Trying to set attribute on dummy context...");
 	}
 	
 	public Set<String> getAttributes()

@@ -25,7 +25,7 @@ public class StanfordNamePartTagger extends NERServletClient
 			w.setAttribute("nePartLabel", parts[2]);
 		} catch (Exception e)
 		{
-			System.err.println(line);
+			nl.openconvert.log.ConverterLog.defaultLog.println(line);
 			e.printStackTrace();
 		}
 	}

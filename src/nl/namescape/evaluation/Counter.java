@@ -26,7 +26,7 @@ public class Counter<T> extends ConcurrentHashMap<T,Integer>
 		Integer z = super.get(key);
 		if (z == null)
 			return 0;
-		//System.err.println("Found " + key + " --> " + z);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("Found " + key + " --> " + z);
 		return z;
 	}
 	

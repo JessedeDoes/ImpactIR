@@ -30,7 +30,7 @@ public class TrainingDataSplitter
 			Document d = XML.parse(fileName);
 			Pair<Document,Document> p = split(d);
 			System.out.println(XML.documentToString(p.first));
-			System.err.println(XML.documentToString(p.second));
+			nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(p.second));
 		} catch (Exception e)
 		{ 
 			e.printStackTrace();

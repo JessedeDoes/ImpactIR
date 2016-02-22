@@ -70,7 +70,7 @@ public class LibSVMClassifier implements Classifier, Serializable
 	public String classifyInstance(Instance i)
 	{
 		// int m = getNumberOfKnownFeatures(i);
-		// System.err.println(m + " in " + i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(m + " in " + i);
 		// svm_node[] x = new svm_node[m];
 		List<svm_node> xList = new ArrayList<svm_node>();
 		Double L = handleItem(i, xList, false);
@@ -117,7 +117,7 @@ public class LibSVMClassifier implements Classifier, Serializable
 
 		if(error_msg != null)
 		{
-			System.err.print("ERROR: "+error_msg+"\n");
+			nl.openconvert.log.ConverterLog.defaultLog.print("ERROR: "+error_msg+"\n");
 			System.exit(1);
 		}
 		
@@ -200,12 +200,12 @@ public class LibSVMClassifier implements Classifier, Serializable
 			{
 				if (problem.x[i][0].index != 0)
 				{
-					System.err.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Wrong kernel matrix: first column must be 0:sample_serial_number\n");
 					System.exit(1);
 				}
 				if ((int)problem.x[i][0].value <= 0 || (int)problem.x[i][0].value > max_index)
 				{
-					System.err.print("Wrong input format: sample_serial_number out of range\n");
+					nl.openconvert.log.ConverterLog.defaultLog.print("Wrong input format: sample_serial_number out of range\n");
 					System.exit(1);
 				}
 			}

@@ -64,7 +64,7 @@ public class ConditionalFeature extends StochasticFeature
 					o.count=0;
 				} else
 				{
-				   // System.err.println("keep " + o);
+				   // nl.openconvert.log.ConverterLog.defaultLog.println("keep " + o);
 				   newOutcomes.add(o);
 				}
 			}

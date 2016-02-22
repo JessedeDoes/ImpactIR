@@ -25,10 +25,10 @@ public class Brown2OED implements TagRelation
 				String oedTags = fields[1].trim().toLowerCase();
 				for (String oedTag: oedTags.split("\\|"))
 				{
-					//System.err.println(brownTag + "~" + oedTag);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(brownTag + "~" + oedTag);
 					for (String brownTag: brownTags.split("\\|"))
 					{
-						//System.err.println(brownTag + "~" + oedTag);
+						//nl.openconvert.log.ConverterLog.defaultLog.println(brownTag + "~" + oedTag);
 						compatible.add(brownTag + "~" + oedTag);
 					}
 				}

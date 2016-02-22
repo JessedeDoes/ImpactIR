@@ -76,7 +76,7 @@ public class CelexFile
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			System.err.println("!Error parsing " + ana);
+			nl.openconvert.log.ConverterLog.defaultLog.println("!Error parsing " + ana);
 		}
 		w.closed = true;
 		//w.addMorphemes();

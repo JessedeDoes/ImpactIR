@@ -65,7 +65,7 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 		try 
 		{
 			connection = (new ConnectorSimple()).connect(mysqlurl, mysqluser, mysqlpasswd);
-			System.err.println("Connection: " + this.connection);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Connection: " + this.connection);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -78,7 +78,7 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 		String[] parts = createSimpleWordformTableSQL.split(";");
 		for (String q: parts)
 		{
-			System.err.println(q);
+			nl.openconvert.log.ConverterLog.defaultLog.println(q);
 			this.runQuery(q);
 		}
 	}
@@ -89,7 +89,7 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 		for (String q: parts)
 		{
 			q = q.replace("EE3_5", this.mysqldbname);
-			System.err.println("<QUERY>\n" +  q + "\n</QUERY>");
+			nl.openconvert.log.ConverterLog.defaultLog.println("<QUERY>\n" +  q + "\n</QUERY>");
 			this.runQuery(q);
 		}
 	}
@@ -191,8 +191,8 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 	
 	public static void main(String[] args) throws Exception
 	{
-		//System.err.println(createSimpleWordformTableSQL);
-		System.err.println("load database...");
+		//nl.openconvert.log.ConverterLog.defaultLog.println(createSimpleWordformTableSQL);
+		nl.openconvert.log.ConverterLog.defaultLog.println("load database...");
 	
 		LexiconDatabase l = new LexiconDatabase(args[0], args[1]);
 		// l.createRandomSelections();
@@ -211,7 +211,7 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 		
 		l.useSimpleWordformsOnly = true;
 		l.dumpWithFrequenciesAndDerivations = true;
-		System.err.println("database loaded");
+		nl.openconvert.log.ConverterLog.defaultLog.println("database loaded");
 		int k=0;
 		OutputStreamWriter out = new OutputStreamWriter(System.out,"UTF-8");
 		for (WordForm w: l)
@@ -220,7 +220,7 @@ public class LexiconDatabase extends impact.ee.util.Database implements Iterable
 			k++;
 		}
 		out.flush();
-		System.err.println("#wordforms; " + k);
+		nl.openconvert.log.ConverterLog.defaultLog.println("#wordforms; " + k);
 		//java.io.PrintWriter out = new java.io.PrintWriter(System.out);
 	}
 }

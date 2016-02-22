@@ -25,7 +25,7 @@ public class HTTP
 			}
 
 
-			// System.err.println("PostData: " + postData);
+			// nl.openconvert.log.ConverterLog.defaultLog.println("PostData: " + postData);
 			URLConnection conn = url.openConnection(); // iets met caching afzetten (zie stackoverflow); persistent connection sneller?
 			conn.setDoOutput(true);
 			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());

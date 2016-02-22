@@ -71,7 +71,7 @@ public class TrainingParameters {
     if (argv.length > 1 && (argv.length % 2) == 0) {
       m_lp.argv = argv;
     } else {
-      System.err.println("Wrong number of arguments!");
+      nl.openconvert.log.ConverterLog.defaultLog.println("Wrong number of arguments!");
     }
   }
 }

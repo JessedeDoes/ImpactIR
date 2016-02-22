@@ -30,7 +30,7 @@ public class ElementConcordancer
 		{
 			String text = ancestor.getTextContent().trim();
 			String[] words = text.split("\\s+");
-			System.err.println("SIZE "  + words.length);
+			nl.openconvert.log.ConverterLog.defaultLog.println("SIZE "  + words.length);
 			if (words.length > this.quotationLength || 
 					TEITagClasses.isSentenceSplittingElement(ancestor))
 			{
@@ -58,7 +58,7 @@ public class ElementConcordancer
 			tokenizedParagraphHash.put(ancestor.getAttribute("xml:id"), tokenizedElement); // OK dan hebben niet alle NE's hierin een ID!
 		}
 		
-		// System.err.println(XML.documentToString(tokenizedElement));
+		// nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(tokenizedElement));
 		
 		List<Element> nameInContextx = XML.getElementsByTagnameAndAttribute(tokenizedElement.getDocumentElement(), 
 				n.getTagName(), "xml:id", n.getAttribute("xml:id"), false);
@@ -66,7 +66,7 @@ public class ElementConcordancer
 		if (nameInContextx.size() == 0)
 		{
 			
-			System.err.println(n.getAttribute("xml:id") +  " NOT FOUND IN " + XML.documentToString(tokenizedElement));
+			nl.openconvert.log.ConverterLog.defaultLog.println(n.getAttribute("xml:id") +  " NOT FOUND IN " + XML.documentToString(tokenizedElement));
 			return "";
 		}
 		Element nameInContext = nameInContextx.get(0);
@@ -105,7 +105,7 @@ public class ElementConcordancer
 				concordance += " ";
 			}
 		}
-		System.err.println("CONC: " + concordance);
+		nl.openconvert.log.ConverterLog.defaultLog.println("CONC: " + concordance);
 		return concordance;
 	}
 

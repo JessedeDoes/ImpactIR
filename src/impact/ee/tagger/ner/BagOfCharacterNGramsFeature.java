@@ -34,7 +34,7 @@ public class BagOfCharacterNGramsFeature extends ExistentialFeature
 			}
 		}	
 		d.computeProbabilities();
-		// System.err.println(c + " " + d);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(c + " " + d);
 		return d;
 	}
 }

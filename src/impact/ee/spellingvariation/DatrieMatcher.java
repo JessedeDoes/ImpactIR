@@ -200,7 +200,7 @@ public class DatrieMatcher
 			e.printStackTrace();
 			return false;
 		}
-		//System.err.printf( "XXX %d\n", ruletrie.root.nofTransitions());
+		//nl.openconvert.log.ConverterLog.defaultLog.printf( "XXX %d\n", ruletrie.root.nofTransitions());
 		return true;
 	}
 
@@ -302,7 +302,7 @@ public class DatrieMatcher
 		{	
 			if (newCost < nextitem.cost)
 			{
-				//System.err.printf("decrease cost of item at pos %d from %d to %d\n", pos, nextitem.cost, newCost);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("decrease cost of item at pos %d from %d to %d\n", pos, nextitem.cost, newCost);
 
 				queue.remove(nextitem); nextitem.cost = newCost; queue.offer(nextitem);
 
@@ -314,10 +314,10 @@ public class DatrieMatcher
 		{
 			if (rule != null)
 			{
-				//System.err.printf("new item at pos %d, cost %d (%d), rule %s.%s !!!\n", pos, newCost, item.cost, rule.lhs, rule.rhs);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("new item at pos %d, cost %d (%d), rule %s.%s !!!\n", pos, newCost, item.cost, rule.lhs, rule.rhs);
 			} else
 			{
-				//System.err.printf("new item at pos %d, cost %d (%d), character '%c' !!!\n", pos, newCost, item.cost, targetWord[pos-1]);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("new item at pos %d, cost %d (%d), character '%c' !!!\n", pos, newCost, item.cost, targetWord[pos-1]);
 			}
 			nextitem = new SearchState(lexnode, pos);
 			nextitem.cost = newCost;
@@ -338,7 +338,7 @@ public class DatrieMatcher
 		{
 			RuleInfo  rule = (RuleInfo) lhsNode.data;
 			int newCost = incrementCost(rule, cost);
-			// System.err.printf("found rule at %d: '%s'->'%s' (%d->%d)\n", pos, rule.lhs, rule.rhs, rule.cost, newCost);
+			// nl.openconvert.log.ConverterLog.defaultLog.printf("found rule at %d: '%s'->'%s' (%d->%d)\n", pos, rule.lhs, rule.rhs, rule.cost, newCost);
 			if (rule != null)
 			{
 				//if (newCost <= MAX_PENALTY)
@@ -346,7 +346,7 @@ public class DatrieMatcher
 			}
 			else
 			{
-				System.err.println("Fatal error:  final node in rule trie without rule information");	
+				nl.openconvert.log.ConverterLog.defaultLog.println("Fatal error:  final node in rule trie without rule information");	
 				System.exit(1);
 				//tryNewItem(item, lexnode, pos + 1, newCost, rule); // TODO why this?? can this happen?
 			}
@@ -358,7 +358,7 @@ public class DatrieMatcher
 			Object nextNodeInLexicon;
 			if (!lexiconTrie.isFailState(nextNodeInLexicon = lexiconTrie.delta(lexnode,t.character)))
 			{
-				//System.err.println(lexnode + " " + nextNodeInLexicon + " "  + t.character);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(lexnode + " " + nextNodeInLexicon + " "  + t.character);
 				lhsRecursion(item, t.node, nextNodeInLexicon, pos, cost);
 			}
 		}
@@ -383,7 +383,7 @@ public class DatrieMatcher
 			if (lhstrie != null && rhsNode.isFinal) // right hand side of some rule is triggered
 			{
 				TrieNode lhsNode = lhstrie.root;
-				//System.err.printf("recognized right hand side of some rule at %d-%d\n", item.pos, pos);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("recognized right hand side of some rule at %d-%d\n", item.pos, pos);
 				lhsRecursion(item, lhsNode, item.lexnode, item.position, item.cost); // pos die je door moet geven??
 			}
 			if (positionInWord >= targetWord.length()) break;
@@ -454,7 +454,7 @@ public class DatrieMatcher
 		if (this.addWordBoundaries)
 			this.targetWord = Alphabet.initialBoundaryString + this.targetWord + Alphabet.finalBoundaryString;
 		//this.queue =  fh_makekeyheap();
-		//System.err.println("match word to lexicon: " + this.targetWord);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("match word to lexicon: " + this.targetWord);
 		SearchState startitem = new SearchState(lexiconTrie.getStartState(), 0);
 		activeItems.addElement(startitem);
 		startitem.cost = 0;
@@ -475,8 +475,8 @@ public class DatrieMatcher
 			SearchState item = queue.poll();
 			if (item == null) break;
 
-			//System.err.printf("######\nextracted item has pos %d of %d, cost %d\n", item.position, L, item.cost);
-			//if (item == startitem) { System.err.printf("Hola: weer startitem, DIT KAN NIET\n"); }
+			//nl.openconvert.log.ConverterLog.defaultLog.printf("######\nextracted item has pos %d of %d, cost %d\n", item.position, L, item.cost);
+			//if (item == startitem) { nl.openconvert.log.ConverterLog.defaultLog.printf("Hola: weer startitem, DIT KAN NIET\n"); }
 			int penaltyIncrement = 0;
 			if (found)
 				penaltyIncrement = item.cost - bestCost;
@@ -508,12 +508,12 @@ public class DatrieMatcher
 		//fh_deleteheap(queue);
 		queue.clear();
 		return found;
-		//System.err.printf("took %u msec\n", (endUsecs - startUsecs)/1000);
+		//nl.openconvert.log.ConverterLog.defaultLog.printf("took %u msec\n", (endUsecs - startUsecs)/1000);
 	}
 
 	public static void usage()
 	{
-		System.err.println("Usage: java spellingvariation.DatrieMatcherer <pattern file> <word list> [<input file>]");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Usage: java spellingvariation.DatrieMatcherer <pattern file> <word list> [<input file>]");
 	}
 
 	class TestCallback extends Callback
@@ -529,7 +529,7 @@ public class DatrieMatcher
 				correctMatches++;
 			} else
 			{
-				System.err.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
+				nl.openconvert.log.ConverterLog.defaultLog.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
 			}
 			System.out.printf("%s -> %s %s %e %d\n" ,targetWord, matchedWord, matchInfo, p, cost);
 		}
@@ -559,7 +559,7 @@ public class DatrieMatcher
 					cb.noMatch++;
 				}
 			}
-			System.err.println("Items tested: " + cb.itemsTested + " correct:  " + cb.correctMatches + " no match: " +cb.noMatch);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Items tested: " + cb.itemsTested + " correct:  " + cb.correctMatches + " no match: " +cb.noMatch);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -607,7 +607,7 @@ public class DatrieMatcher
 		
 		if (cmd != null && cmd.equals("test"))
 		{
-			System.err.println("testing on labeled input");
+			nl.openconvert.log.ConverterLog.defaultLog.println("testing on labeled input");
 			matcher.test(lexicon, stdin);
 			System.exit(0);
 		}

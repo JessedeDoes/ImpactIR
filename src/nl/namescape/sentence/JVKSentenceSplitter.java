@@ -168,12 +168,12 @@ public class JVKSentenceSplitter implements SentenceSplitter
 			Token t = w.getToken(i);
 			if (t != null)
 			{
-				System.err.print(t.getContent());
+				nl.openconvert.log.ConverterLog.defaultLog.print(t.getContent());
 				if (t.getIsEOS())
-					System.err.print("|");
-				System.err.print(" ");
+					nl.openconvert.log.ConverterLog.defaultLog.print("|");
+				nl.openconvert.log.ConverterLog.defaultLog.print(" ");
 			}
 		}
-		System.err.println("");
+		nl.openconvert.log.ConverterLog.defaultLog.println("");
 	}
 }

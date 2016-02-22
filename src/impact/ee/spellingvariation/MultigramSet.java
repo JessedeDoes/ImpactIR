@@ -101,7 +101,7 @@ public class MultigramSet implements java.io.Serializable,
 		}
 		TreeSet<JointMultigram> s = new TreeSet<JointMultigram>(new scoreComparison());
 		s.addAll(multigramMap.keySet());
-		//System.err.println("multigrams in set/map " + s.size() +  " " + multigramMap.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("multigrams in set/map " + s.size() +  " " + multigramMap.size());
 		Iterator<JointMultigram> i = s.iterator();
 		return i;
 	}
@@ -300,7 +300,7 @@ public class MultigramSet implements java.io.Serializable,
 			scoreTable.setElementAt(w + old, multigramId);
 		} catch (Exception e)
 		{
-			System.err.println(multigramId + "/"  + scoreTable.size());
+			nl.openconvert.log.ConverterLog.defaultLog.println(multigramId + "/"  + scoreTable.size());
 			scoreTable.setElementAt(w,multigramId);
 		}
 	}
@@ -317,7 +317,7 @@ public class MultigramSet implements java.io.Serializable,
 			scoreTable.setElementAt(w, multigramId);
 		} catch (Exception e)
 		{
-			System.err.println(multigramId + "/"  + scoreTable.size());
+			nl.openconvert.log.ConverterLog.defaultLog.println(multigramId + "/"  + scoreTable.size());
 			scoreTable.setElementAt(w,multigramId);
 		}
 	}
@@ -342,7 +342,7 @@ public class MultigramSet implements java.io.Serializable,
 		{
 			if (this.multigramVector.get(i).id != i)
 			{
-				System.err.println("RAMP" + this.multigramVector.get(i));
+				nl.openconvert.log.ConverterLog.defaultLog.println("RAMP" + this.multigramVector.get(i));
 				System.exit(1);
 			}
 		}
@@ -488,7 +488,7 @@ public class MultigramSet implements java.io.Serializable,
 			for (Dataitem item: d)
 			{
 				String s= item.target;
-				//System.err.println(s);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				totalLengthRHS+= s.length();
 				countSubstrings(rhsFrequencies,s,1);
 				if (bestMatch)

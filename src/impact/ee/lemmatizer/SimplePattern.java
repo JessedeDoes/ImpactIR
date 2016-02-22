@@ -58,8 +58,8 @@ public class SimplePattern implements Pattern
 						leftSuffix.equals(o.leftSuffix) && rightSuffix.equals(o.rightSuffix));
 			} catch (Exception e)
 			{
-				System.err.println(this);
-				System.err.println(o);
+				nl.openconvert.log.ConverterLog.defaultLog.println(this);
+				nl.openconvert.log.ConverterLog.defaultLog.println(o);
 				System.exit(1);
 			}
 			return false;
@@ -77,7 +77,7 @@ public class SimplePattern implements Pattern
 			return leftPrefix.hashCode()+ rightPrefix.hashCode() + leftSuffix.hashCode() + rightSuffix.hashCode();
 		} catch (Exception e)
 		{
-			System.err.println(this);
+			nl.openconvert.log.ConverterLog.defaultLog.println(this);
 			System.exit(1);
 		}
 		return 0;

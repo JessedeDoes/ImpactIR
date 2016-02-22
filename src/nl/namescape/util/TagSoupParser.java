@@ -50,7 +50,7 @@ public class TagSoupParser implements nl.openconvert.filehandling.SimpleInputOut
 			
 			
 			//= f.toURI().toURL();
-			//System.err.println(url);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(url);
 			p.setFeature(Parser.namespacesFeature, false);
 			p.setFeature(Parser.namespacePrefixesFeature, false);
 			sax2dom = new SAX2DOM();
@@ -59,7 +59,7 @@ public class TagSoupParser implements nl.openconvert.filehandling.SimpleInputOut
 			
 			p.parse(new InputSource(new InputStreamReader(getInputStream(url),"UTF-8")));
 			doc = sax2dom.getDOM();
-			//System.err.println(doc);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(doc);
 		} catch (Exception e) 
 		{
 			// TODO handle exception
@@ -95,7 +95,7 @@ public class TagSoupParser implements nl.openconvert.filehandling.SimpleInputOut
 			p.setContentHandler(sax2dom);
 			p.parse(new InputSource(new StringReader(htmlText)));
 			doc = sax2dom.getDOM();
-			//System.err.println(doc);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(doc);
 		} catch (Exception e) 
 		{
 			// TODO handle exception

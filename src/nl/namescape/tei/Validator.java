@@ -64,7 +64,7 @@ public class Validator implements DoSomethingWithFile
 			builder.put(ValidateProperty.ERROR_HANDLER, errorCounter);
 			//NOTE: Validator is NOT thread safe
 			thaiValidator = schema.createValidator(builder.toPropertyMap());
-			System.err.println("created validator from " + url + " : "  + thaiValidator);
+			nl.openconvert.log.ConverterLog.defaultLog.println("created validator from " + url + " : "  + thaiValidator);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class Validator implements DoSomethingWithFile
 					new SAXResult(thaiValidator.getContentHandler()));
 			if ((errorCount = errorCounter.getErrorCount()) > 0)
 			{
-				// System.err.println("Errors: " + errorCounter.getErrorCount());
+				// nl.openconvert.log.ConverterLog.defaultLog.println("Errors: " + errorCounter.getErrorCount());
 				valid = false;
 			} else
 			{

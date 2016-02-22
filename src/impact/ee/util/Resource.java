@@ -39,7 +39,7 @@ public class Resource
 						this.getClass().getResourceAsStream("/"+ s);  
 				if (is != null)
 				{
-					System.err.println("found in jar!!");
+					nl.openconvert.log.ConverterLog.defaultLog.println("found in jar!!");
 					return is;
 				}
 			} catch (Exception e)
@@ -49,7 +49,7 @@ public class Resource
 			ClassLoader loader = getClass().getClassLoader();
 			//Enumeration<java.net.URL> urls = loader.getResources(arg0);
 			java.net.URL url = getClass().getClassLoader().getResource(resourceFolder + "/" + s);
-			System.err.println("jar url " + url);
+			nl.openconvert.log.ConverterLog.defaultLog.println("jar url " + url);
 			// or URL from web
 			if (url == null) url = new java.net.URL(s);
 			java.net.URLConnection site = url.openConnection();
@@ -57,7 +57,7 @@ public class Resource
 			return is;
 		} catch (IOException ioe)
 		{
-			System.err.println("Could not open " + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Could not open " + s);
 			return null;
 		}
 	}

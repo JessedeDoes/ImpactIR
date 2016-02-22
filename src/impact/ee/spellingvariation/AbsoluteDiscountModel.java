@@ -77,7 +77,7 @@ java.io.Serializable
 			
 			if (backoffState != null)
 			{
-				//System.err.println("backing off: " + getEnclosingModelOrder(state) + ":"
+				//nl.openconvert.log.ConverterLog.defaultLog.println("backing off: " + getEnclosingModelOrder(state) + ":"
 				//		+ state + " -> " + getEnclosingModelOrder(backoffState) +  ": " + backoffState);
 				return delta(backoffState,c, false); // this may back off more steps if necessary
 			} else
@@ -135,7 +135,7 @@ java.io.Serializable
 			discountedSum += p1;
 		}
 		s.lambda = 1 - discountedSum;
-		System.err.println(s + ": evidence= " +  s.evidence + ": lambda =  " + s.lambda);
+		nl.openconvert.log.ConverterLog.defaultLog.println(s + ": evidence= " +  s.evidence + ": lambda =  " + s.lambda);
 	}
 	
 	private double evidenceOf(State s)
@@ -169,7 +169,7 @@ java.io.Serializable
 		State s = unsmoothedModels.get(modelNumber).histories.getStateById(index);
 		if (s.index != index || getStateId(s) != id)
 		{
-			System.err.println("Ramp");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Ramp");
 			System.exit(1);
 		}
 		return s;
@@ -197,7 +197,7 @@ java.io.Serializable
 		int N = h.MODEL_ORDER;
 		for (State s: h.allStates)
 		{
-			System.err.println(s + ": " + evidenceOf(s));
+			nl.openconvert.log.ConverterLog.defaultLog.println(s + ": " + evidenceOf(s));
 			if (evidenceOf(s) <= 1 && evidenceOf(s) > 0)
 				n1[N]++;
 		  else if  (evidenceOf(s) <= 2)
@@ -257,7 +257,7 @@ java.io.Serializable
 			AbsoluteDiscountModel t = (AbsoluteDiscountModel) in.readObject();
 			//t.checkConnections();
 			in.close();
-			System.err.println(" " + t.discounts[t.MODEL_ORDER]);
+			nl.openconvert.log.ConverterLog.defaultLog.println(" " + t.discounts[t.MODEL_ORDER]);
 			return t;
 		} catch (Exception e)
 		{
@@ -277,7 +277,7 @@ java.io.Serializable
 				State b = getBackoffState(s);
 				if (b != null)
 				{
-					System.err.println("backoff" + s + " -> " + b);
+					nl.openconvert.log.ConverterLog.defaultLog.println("backoff" + s + " -> " + b);
 				}
 			}
 		}

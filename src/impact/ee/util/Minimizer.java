@@ -8,7 +8,7 @@ class NRutil
 {
 	static public void nrerror(String s)
 	{
-		System.err.println(s);
+		nl.openconvert.log.ConverterLog.defaultLog.println(s);
 		try
 		{
 			throw new Exception();

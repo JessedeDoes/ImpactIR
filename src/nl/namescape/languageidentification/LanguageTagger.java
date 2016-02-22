@@ -106,12 +106,12 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		int totalTokens = 0;
 		for (Element  z: paragraphLike)
 		{
-			// System.err.println(z);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(z);
 			
 			String s = z.getTextContent();
 			L += s.length();
 			
-			// System.err.println("Paragraph content: " + s);
+			// nl.openconvert.log.ConverterLog.defaultLog.println("Paragraph content: " + s);
 			
 			String lang = detectLanguage(s);
 			int nTokens = TEITagClasses.getWordElements(z).size();
@@ -127,11 +127,11 @@ public class LanguageTagger implements SimpleInputOutputProcess
 				
 				if (!lang.equalsIgnoreCase(MainLanguage) && s.length() > 100)
 				{
-					// System.err.println(lang + " IN " + s);
+					// nl.openconvert.log.ConverterLog.defaultLog.println(lang + " IN " + s);
 				}
 			} else
 			{	
-				// System.err.println("No language found for " + s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("No language found for " + s);
 			}
 		}
 		
@@ -139,21 +139,21 @@ public class LanguageTagger implements SimpleInputOutputProcess
 		
 		for (String lang: c.keyList())
 		{
-			System.err.println(lang + "\t"  + c.get(lang));
+			nl.openconvert.log.ConverterLog.defaultLog.println(lang + "\t"  + c.get(lang));
 			if (c.get(lang) > 0.5  *L)
 			{
 				mainLanguage = lang;
 				d.getDocumentElement().setAttribute("xml:lang", mainLanguage);
 				if (!lang.equalsIgnoreCase(MainLanguage))
 				{
-					System.err.println("Document has nondutch main lang: "  + lang);
+					nl.openconvert.log.ConverterLog.defaultLog.println("Document has nondutch main lang: "  + lang);
 				}
 			}
 		}
 		
 		if (mainLanguage.equals("unknown"))
 		{
-			System.err.println("No main language found! Text length in chars: " + L);
+			nl.openconvert.log.ConverterLog.defaultLog.println("No main language found! Text length in chars: " + L);
 		}
 		return mainLanguage;
 	}
@@ -169,7 +169,7 @@ public class LanguageTagger implements SimpleInputOutputProcess
 			String main = tagLanguages(d);
 			if (!main.equals(MainLanguage))
 			{
-				System.err.println("Nondutch doc: " + main + " : "  + in);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Nondutch doc: " + main + " : "  + in);
 			}
 		} catch (Exception e) 
 		{

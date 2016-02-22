@@ -26,7 +26,7 @@ package impact.ee.spellingvariation;
 			set.multigramVector.add(this);
 			this.id = set.nMultigrams;
 			set.nMultigrams++;
-			System.err.println("Boe?? " + this.getClass() + " size now: " + set.nMultigrams);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Boe?? " + this.getClass() + " size now: " + set.nMultigrams);
 		}
 
 		public JointMultigram() {		}
@@ -73,7 +73,7 @@ package impact.ee.spellingvariation;
 					}
 				}
 			}
-			//System.err.println(lhs + "->" + rhs);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(lhs + "->" + rhs);
 		}
 
 		public boolean isSingleton()

@@ -65,7 +65,7 @@ public class TestORM
 		{
 			try
 			{
-				System.err.println(orm.primaryKeyField.get(o) + " --> " + o);
+				nl.openconvert.log.ConverterLog.defaultLog.println(orm.primaryKeyField.get(o) + " --> " + o);
 			} catch (Exception e)
 			{
 				e.printStackTrace();

@@ -107,7 +107,7 @@ public class TEINameTagging implements nl.openconvert.filehandling.SimpleInputOu
 				String z = id2tag.get(w.getAttribute("id"));
 				if (z != null)
 				{
-					//System.err.println(z);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(z);
 					w.setAttribute("neLabel", z);
 				}
 			}
@@ -265,7 +265,7 @@ public class TEINameTagging implements nl.openconvert.filehandling.SimpleInputOu
 			ex.printStackTrace();
 		}
 
-		// System.err.println(e.getParentNode() + " " + e.getTextContent());
+		// nl.openconvert.log.ConverterLog.defaultLog.println(e.getParentNode() + " " + e.getTextContent());
 		range.detach();
 	}
 
@@ -275,7 +275,7 @@ public class TEINameTagging implements nl.openconvert.filehandling.SimpleInputOu
 		{
 			List<Element> parts = XML.getElementsByTagname(e, "ns:nePart", false);
 			List<String> subtypes = new ArrayList<String>();
-			//System.err.println(parts.size() + " in " + XML.NodeToString(e));
+			//nl.openconvert.log.ConverterLog.defaultLog.println(parts.size() + " in " + XML.NodeToString(e));
 			if (parts != null)
 			{
 				for (Element p: parts)

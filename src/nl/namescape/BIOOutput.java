@@ -40,7 +40,7 @@ public class BIOOutput implements nl.openconvert.filehandling.SimpleInputOutputP
 				String type = n.getAttribute("type");
 				if (tokens.size() > 5)
 				{
-					System.err.println("Suspect: Long entity: " + n.getTextContent());
+					nl.openconvert.log.ConverterLog.defaultLog.println("Suspect: Long entity: " + n.getTextContent());
 				}
 				int nWordsSeen=0;
 				int nWords = nl.namescape.tei.TEITagClasses.getWordElements(n).size();
@@ -151,7 +151,7 @@ public class BIOOutput implements nl.openconvert.filehandling.SimpleInputOutputP
 	}
 	public static void main(String[] args)
 	{
-		System.err.println("hi there!");
+		nl.openconvert.log.ConverterLog.defaultLog.println("hi there!");
 		
 		try
 		{

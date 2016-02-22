@@ -77,7 +77,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 						f.length ==0 || 
 						f[0].equals(SentenceBoundary.SentenceBoundarySymbol))
 				{
-					//System.err.println("__EOS__!");
+					//nl.openconvert.log.ConverterLog.defaultLog.println("__EOS__!");
 					return new SentenceBoundary();
 				}
 				for (int j=0; j < f.length && j < fieldNames.length; j++)
@@ -106,15 +106,15 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 				
 				if (featureName.equals("word") && v == null)
 				{
-					System.err.println("NO WORD in map at position: " + relativePosition +  " map= " + m);
-					// System.err.println(m.getClass().getName());
+					nl.openconvert.log.ConverterLog.defaultLog.println("NO WORD in map at position: " + relativePosition +  " map= " + m);
+					// nl.openconvert.log.ConverterLog.defaultLog.println(m.getClass().getName());
 					// ok dit gaat dus fout bij het doorgeven van alle ingevulde features in apply...
 					//System.exit(1);
 				}
 				return v;
 			} catch (Exception e)
 			{
-				//System.err.println("failed to get " + featureName + " at " + relativePosition);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("failed to get " + featureName + " at " + relativePosition);
 				return Feature.Unknown;
 			}
 		}
@@ -130,7 +130,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 		
 		protected Map<String, String> dealWithBoundaryConditions( int relativePosition, Map<String, String> m)
 		{
-			//System.err.println(m + " at " + relativePosition);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(m + " at " + relativePosition);
 			if (chunker != null)
 			{
 				if (relativePosition != 0)
@@ -144,7 +144,7 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 					{
 						if (chunker.isChunkBoundary(enumerationWithContext.get(i)))
 						{
-							//System.err.println("Ha!"  + relativePosition + " i = " + i);
+							//nl.openconvert.log.ConverterLog.defaultLog.println("Ha!"  + relativePosition + " i = " + i);
 							return enumerationWithContext.defaultT;
 						}
 					}
@@ -155,17 +155,17 @@ public class SimpleCorpus implements Corpus,  Iterable<impact.ee.tagger.Context>
 					if (relativePosition >= 1  && !
 							enumerationWithContext.get(relativePosition -1).equals(enumerationWithContext.defaultT) )
 					{
-						//System.err.println("set SB at " + relativePosition + " / " +  enumerationWithContext.get(relativePosition -1));
+						//nl.openconvert.log.ConverterLog.defaultLog.println("set SB at " + relativePosition + " / " +  enumerationWithContext.get(relativePosition -1));
 						m = new SentenceBoundaryToken();
 					} else if (relativePosition <= -1  && !
 							enumerationWithContext.get(relativePosition +1).equals(enumerationWithContext.defaultT) )
 					{
-						//System.err.println(enumerationWithContext.defaultT);
-						//System.err.println("set SB at " + relativePosition +   " / " +  enumerationWithContext.get(relativePosition +1));
+						//nl.openconvert.log.ConverterLog.defaultLog.println(enumerationWithContext.defaultT);
+						//nl.openconvert.log.ConverterLog.defaultLog.println("set SB at " + relativePosition +   " / " +  enumerationWithContext.get(relativePosition +1));
 						m = new SentenceBoundaryToken();
 					} else
 					{
-						//System.err.println("Keep dummy  at "+ relativePosition);
+						//nl.openconvert.log.ConverterLog.defaultLog.println("Keep dummy  at "+ relativePosition);
 					}
 				} 
 			}

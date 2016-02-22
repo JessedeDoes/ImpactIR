@@ -37,7 +37,7 @@ public class ShortestPath<VertexClass extends ShortestPath.BasicState, EdgeClass
 			}
 		} else
 		{
-			//System.err.println("eek " + e);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("eek " + e);
 			ms = new MatchState(target);
 			ms.cost = source.cost + cost;
 			ms.parentState = source;

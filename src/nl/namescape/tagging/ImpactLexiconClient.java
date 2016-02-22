@@ -39,7 +39,7 @@ public class ImpactLexiconClient implements SentenceTagger
 	@Override
 	public String tagString(String in) 
 	{
-		//System.err.println("Tagging: "  + in);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("Tagging: "  + in);
 		requestParameters.put("input", in);
 		return nl.namescape.util.HTTP.postRequest(url, requestParameters);
 	}
@@ -54,7 +54,7 @@ public class ImpactLexiconClient implements SentenceTagger
 			w.setAttribute("lemma", parts[2]);
 		} catch (Exception e)
 		{
-			System.err.println(line);
+			nl.openconvert.log.ConverterLog.defaultLog.println(line);
 			e.printStackTrace();
 		}
 	}

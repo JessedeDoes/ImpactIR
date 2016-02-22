@@ -41,13 +41,13 @@ public class LBJAPIClient
 		sw.start();
 		Document d = new TEITokenizer().getTokenizedDocument(inputFile, false);
 		sw.stop();
-		System.err.println("document tokenized: " + sw.getElapsedTimeSecs());
+		nl.openconvert.log.ConverterLog.defaultLog.println("document tokenized: " + sw.getElapsedTimeSecs());
 		sw.start();
 		Vector<LinkedVector> data= parseXML(d);
 		sw.stop();
 		
 	
-		System.err.println("tokenized document parsed: " + sw.getElapsedTimeSecs());
+		nl.openconvert.log.ConverterLog.defaultLog.println("tokenized document parsed: " + sw.getElapsedTimeSecs());
 	
 		/*
 		 * Hier starten we de eigenlijke NER
@@ -56,7 +56,7 @@ public class LBJAPIClient
 		sw.start();
 		NETester.annotateBothLevels(data, tagger1, tagger2); 
 		sw.stop();
-		System.err.println("NER performed: " + sw.getElapsedTimeSecs());
+		nl.openconvert.log.ConverterLog.defaultLog.println("NER performed: " + sw.getElapsedTimeSecs());
 	
 		/*
 		 * De NE tagging zit in de NEWords die we in de tagger gestop hebben
@@ -67,7 +67,7 @@ public class LBJAPIClient
 			NEWord z = wordMap.get(w.getAttribute("id"));
 			if (z != null)
 			{
-				//System.err.println(z);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(z);
 				w.setAttribute("neLabel", z.neTypeLevel2);
 			}
 		}
@@ -121,7 +121,7 @@ public class LBJAPIClient
 					v = Reuters2003Parser.splitWord(word);
 				} catch (Exception e)
 				{
-					System.err.println("error parsing token " + token + " word: "  + word);
+					nl.openconvert.log.ConverterLog.defaultLog.println("error parsing token " + token + " word: "  + word);
 					e.printStackTrace();
 					continue;
 				}

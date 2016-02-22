@@ -41,7 +41,7 @@ public class ZeroOrderAligner
 		double r =  Math.max(x,y);
 		if (r == Double.NaN)
 		{
-			System.err.printf("Huh\n");
+			nl.openconvert.log.ConverterLog.defaultLog.printf("Huh\n");
 			return Double.NEGATIVE_INFINITY;
 		}
 		return r;
@@ -79,7 +79,7 @@ public class ZeroOrderAligner
 		if (Double.isInfinite(oldCost)) return Double.NEGATIVE_INFINITY;
 		if (delta == 0.0)
 		{
-			// System.err.println("this should not happen " + Math.log(delta)); // je moet oneindig terug geven
+			// nl.openconvert.log.ConverterLog.defaultLog.println("this should not happen " + Math.log(delta)); // je moet oneindig terug geven
 			return Double.NEGATIVE_INFINITY;
 		}
 		double r =  oldCost + 1.0 * Math.log(delta);
@@ -99,7 +99,7 @@ public class ZeroOrderAligner
 	{
 		if (Double.isNaN(d))
 		{
-			System.err.printf("NaN at %d %d\n", a, b);
+			nl.openconvert.log.ConverterLog.defaultLog.printf("NaN at %d %d\n", a, b);
 		}
 		costMatrix[a][b] = d;
 	}

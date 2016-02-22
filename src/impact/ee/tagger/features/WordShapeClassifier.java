@@ -238,7 +238,7 @@ public class WordShapeClassifier
         sb.append("k");
       }
     }
-    // System.err.println("wordShapeDan2: " + s + " became " + sb);
+    // nl.openconvert.log.ConverterLog.defaultLog.println("wordShapeDan2: " + s + " became " + sb);
     return sb.toString();
   }
 
@@ -653,7 +653,7 @@ public class WordShapeClassifier
         classifierToUse = lookupShaper(args[1]);
         i += 2;
       } else {
-        System.err.println("Unknown flag: " + args[0]);
+        nl.openconvert.log.ConverterLog.defaultLog.println("Unknown flag: " + args[0]);
         i++;
       }
     }

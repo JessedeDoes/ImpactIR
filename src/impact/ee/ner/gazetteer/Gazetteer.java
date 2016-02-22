@@ -65,7 +65,7 @@ public class Gazetteer
 	
 	public void readFromFile(String fileName)
 	{
-		System.err.println("reading gazetteer: " + fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println("reading gazetteer: " + fileName);
 		try
 		{
 			BufferedReader b = new BufferedReader(new FileReader(new File(fileName)));
@@ -78,7 +78,7 @@ public class Gazetteer
 		{
 			e.printStackTrace();
 		}
-		System.err.println("finished reading gazetteer: " + fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println("finished reading gazetteer: " + fileName);
 	}
 	
 	public void insert(String line)
@@ -182,7 +182,7 @@ public class Gazetteer
 		for (int i=0; i < words.length; i++)
 		{
 			Map<TrieNode,ScanState> next = delta(state,words[i]);
-			// System.err.println(i + " " + next.size());
+			// nl.openconvert.log.ConverterLog.defaultLog.println(i + " " + next.size());
 			for (ScanState snext: next.values())
 			{
 				if (snext.isFinal())
@@ -190,7 +190,7 @@ public class Gazetteer
 					Set<String> V = new HashSet<String>();
 					V.add("#");
 					Set<String> V1 = snext.prolongMatches(words, i, V);
-					System.err.println("Complete Match " + V1);
+					nl.openconvert.log.ConverterLog.defaultLog.println("Complete Match " + V1);
 				} 
 			}
 			state = next;
@@ -205,7 +205,7 @@ public class Gazetteer
 	public static void main(String[] args)
 	{
 		Gazetteer g = new Gazetteer(args[0]);
-		System.err.println(g.nEntries());
+		nl.openconvert.log.ConverterLog.defaultLog.println(g.nEntries());
 		g.findMatches("Ik ken Edsger W. Dijkstra heel goed gelukkig !");
 	}
 }

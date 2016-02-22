@@ -36,7 +36,7 @@ public class Sentence
 
 			}
 		}
-		//System.err.println(words);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(words);
 	}
 	
 	public String makeProductionExample(Element n)

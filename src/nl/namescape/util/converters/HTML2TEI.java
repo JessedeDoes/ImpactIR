@@ -46,7 +46,7 @@ public class HTML2TEI implements SimpleInputOutputProcess
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		Document htmlDocument = TagSoupParser.parse2DOM(docFile);
-		//System.err.println(XML.documentToString(htmlDocument));
+		//nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(htmlDocument));
 		Document teiDocument  = transformer.transformDocument(htmlDocument);
 		
 		

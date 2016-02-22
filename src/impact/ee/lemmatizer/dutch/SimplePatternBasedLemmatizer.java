@@ -108,7 +108,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 			{
 				if (heldOutSet != null && heldOutSet.contains(w)) continue;
 				Rule rule = findRule(w);
-				System.err.println(w + " " + rule);
+				nl.openconvert.log.ConverterLog.defaultLog.println(w + " " + rule);
 
 				trainingSet.addInstance(w.wordform, "rule." + rule.id);
 			}
@@ -143,7 +143,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		{
 			testWordform(wf, testResults);
 		}
-		System.err.println(testResults);
+		nl.openconvert.log.ConverterLog.defaultLog.println(testResults);
 	}
 
 	protected void testWordform(WordForm wf, TestDutchLemmatizer t) 
@@ -160,19 +160,19 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 		Rule r = this.ruleID2Rule.get(answer);
 		if (r == null)
 		{
-			System.err.println("HUH?: " + answer);
+			nl.openconvert.log.ConverterLog.defaultLog.println("HUH?: " + answer);
 		} else if (true || !wf.wordform.equals(wf.lemma))
 		{
-			//System.err.println(r);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(r);
 			String guessedLemma = r.pattern.apply(wf.wordform);
 			if (guessedLemma == null)
 			{
-				System.err.println("Dit kan dus niet:.... " + r);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Dit kan dus niet:.... " + r);
 				return;
 			}
 			boolean isOK = guessedLemma.equalsIgnoreCase(wf.lemma);
 			if (isOK) t.nCorrect++;
-			System.err.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
+			nl.openconvert.log.ConverterLog.defaultLog.println("First choice: (" + isOK + ") " + wf + " (" +  r +  ") " + r.PoS + " : " + wf.wordform + " --> " + guessedLemma);
 			if (guessedLemma == null || !guessedLemma.equals(wf.lemma))
 			{
 				boolean foundPoSMatch = false;
@@ -182,7 +182,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 					Rule r1 =  this.ruleID2Rule.get(o.label);
 					if (r1 == null)
 					{
-						System.err.println("Vreemd hoor!!!" + o.label);
+						nl.openconvert.log.ConverterLog.defaultLog.println("Vreemd hoor!!!" + o.label);
 						continue;
 					}
 					String guess = r1.pattern.apply(wf.wordform);
@@ -192,14 +192,14 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 					if (r1.PoS.equals(wf.tag) && !foundTagMatch)
 					{
 						foundTagMatch = true;
-						System.err.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  " " +  r1);
+						nl.openconvert.log.ConverterLog.defaultLog.println("\tguess with complete tag information: ("  + okNOW + ") " + guess +  " " +  r1);
 						if (okNOW)
 							t.nCorrectGivenTag++;
 					} 
 					if (r1.PoS.startsWith(wf.lemmaPoS) && !foundPoSMatch)
 					{
 						foundPoSMatch = true;
-						System.err.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  " " + r1);
+						nl.openconvert.log.ConverterLog.defaultLog.println("\tguess with main PoS information: ("  + okNOW + ") " + guess +  " " + r1);
 						if (okNOW)
 							t.nCorrectGivenPoS++;
 					}
@@ -236,7 +236,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	{
 		Pattern p = null;
 		Pattern r = patternFinder.findPattern(w.wordform,w.lemma,w.lemmaPoS);
-		//System.err.println(r);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(r);
 		p = patterns.get(r);
 		if (p == null)
 		{
@@ -385,7 +385,7 @@ public class SimplePatternBasedLemmatizer implements java.io.Serializable, Tagge
 	{
 		InMemoryLexicon l = new InMemoryLexicon();
 		l.readFromFile(args[0]);
-		//System.err.println(l.findLemmata("is"));
+		//nl.openconvert.log.ConverterLog.defaultLog.println(l.findLemmata("is"));
 		//System.exit(1);
 		SimplePatternBasedLemmatizer lemmatizer = new SimplePatternBasedLemmatizer();
 		lemmatizer.train(l);

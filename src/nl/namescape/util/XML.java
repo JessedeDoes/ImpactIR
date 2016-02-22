@@ -313,12 +313,12 @@ public class XML extends Object
 			{
 				if (afterAfter.getParentNode() != n)
 				{
-					System.err.println("neee - dat MEEEN je niet");
+					nl.openconvert.log.ConverterLog.defaultLog.println("neee - dat MEEEN je niet");
 				}
 				n.insertBefore(newChild, afterAfter);
 			} catch (Exception e)
 			{
-				System.err.println(n + ""  + 
+				nl.openconvert.log.ConverterLog.defaultLog.println(n + ""  + 
 						afterAfter + "" +  
 						afterAfter.getParentNode() + "" + newChild);
 				e.printStackTrace();
@@ -508,7 +508,7 @@ public class XML extends Object
 		for (int i = 0; i < filenames.size(); i++)
 		{
 			String f = filenames.get(i);
-			System.err.println(i + ":" + f);
+			nl.openconvert.log.ConverterLog.defaultLog.println(i + ":" + f);
 			if (!f.startsWith("#"))
 			{
 				//System.out.println("File " + (i + 1) + " van " + filenames.size());

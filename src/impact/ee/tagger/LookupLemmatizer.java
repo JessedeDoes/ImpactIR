@@ -89,7 +89,7 @@ public class LookupLemmatizer implements Tagger
 					}
 				}
 			}
-			// System.err.println(w + "-->" + bestMatch.wordform);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(w + "-->" + bestMatch.wordform);
 			
 			m.put("lemma", bestMatch.wordform.lemma);
 			if (m.get("tag") == null)

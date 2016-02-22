@@ -45,7 +45,7 @@ public class NameFrequencyList implements nl.openconvert.filehandling.DoSomethin
 	
 	public void handleFile(String fileName) 
 	{
-		System.err.println(fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println(fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
@@ -139,7 +139,7 @@ public class NameFrequencyList implements nl.openconvert.filehandling.DoSomethin
 				{
 					Element s = i.next();
 					String sentence = s.getTextContent().replaceAll("\\s+", " ").trim();
-					System.err.println(exNo + "\t" + idNo + "\t"  + sentence);
+					nl.openconvert.log.ConverterLog.defaultLog.println(exNo + "\t" + idNo + "\t"  + sentence);
 					exNo++;
 				}
 			}

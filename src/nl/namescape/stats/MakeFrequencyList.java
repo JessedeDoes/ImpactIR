@@ -46,7 +46,7 @@ public class MakeFrequencyList implements nl.openconvert.filehandling.DoSomethin
 			Document d = XML.parse(fileName);
 			if (!TEISentenceSplitter.allWordsAreInSentences(d))
 			{
-				System.err.println("Unwrapped words in " + fileName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Unwrapped words in " + fileName);
 			}
 			List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(d.getDocumentElement());
 			for (Element e: tokens)
@@ -55,7 +55,7 @@ public class MakeFrequencyList implements nl.openconvert.filehandling.DoSomethin
 			}
 		} catch (Exception e)
 		{
-			System.err.println("Parse error in " + fileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Parse error in " + fileName);
 			e.printStackTrace();
 		}
 	}

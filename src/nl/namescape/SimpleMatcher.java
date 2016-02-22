@@ -90,7 +90,7 @@ public class SimpleMatcher implements EntityMatcher
 			Entity e2 = e.similarities.get(0).e2;
 			if (e2 == e0 || depth > MAX_DEPTH)
 			{
-				System.err.println("possible cycle!!.... " + depth + " " + e0);
+				nl.openconvert.log.ConverterLog.defaultLog.println("possible cycle!!.... " + depth + " " + e0);
 				return null;
 			} else return (findDominatingEntity(e0, e2, depth+1));
 		}

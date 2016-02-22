@@ -90,7 +90,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 		{
 			while ((line = in.readLine()) != null)
 			{
-				/// System.err.println("received" + line);
+				/// nl.openconvert.log.ConverterLog.defaultLog.println("received" + line);
 				answer.add(line);
 				taggedSentence += line + "\n";
 				if (line.equals("READY"))
@@ -106,7 +106,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 		int x = sentence.charAt(0);
 		
 		String[] inputTokens = sentence.split("\\p{Zs}+");
-		// System.err.println(String.format("%x",x) + ":" + sentence);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(String.format("%x",x) + ":" + sentence);
 		String fixed = checkAlignment(inputTokens,answer);
 			if (fixed != null) taggedSentence = fixed;
 		return taggedSentence;
@@ -124,8 +124,8 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 		{
 			if (tw.size() <= i || !tw.get(i).token.equals(inputTokens[i]))
 			{
-				System.err.println(tw.get(i).token + "?" + inputTokens[i]);
-				// System.err.println("problem in sentence: at " + i + "\n" + util.Util.join(answer, "\n") + "\n\n");
+				nl.openconvert.log.ConverterLog.defaultLog.println(tw.get(i).token + "?" + inputTokens[i]);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("problem in sentence: at " + i + "\n" + util.Util.join(answer, "\n") + "\n\n");
 				allOk=false;
 				break;
 			}
@@ -139,7 +139,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 			List<TaggedWord> r[] = new ArrayList[inputTokens.length];
 			for (int i=0; i < r.length; i++)
 				r[i] = new ArrayList<TaggedWord>();
-			System.err.println("trying to fix....");
+			nl.openconvert.log.ConverterLog.defaultLog.println("trying to fix....");
 			int k = 0; // position in inputTokens array
 			int p = 0; // position in current token.
 			
@@ -150,7 +150,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 				if (k >= inputTokens.length)
 				{
 					canBeFixed=false;
-					System.err.println("failure [tw te groot]  while fixing!!!!");
+					nl.openconvert.log.ConverterLog.defaultLog.println("failure [tw te groot]  while fixing!!!!");
 					break;
 				}
 				if (inputTokens[k].equals(lookFor))
@@ -173,7 +173,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 						}
 					} else
 					{
-						System.err.println("failure while fixing!!!! " + i +  " " + lookFor + " " + k);
+						nl.openconvert.log.ConverterLog.defaultLog.println("failure while fixing!!!! " + i +  " " + lookFor + " " + k);
 						canBeFixed=false;
 						
 						//r.add(null);
@@ -186,7 +186,7 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 			}
 			if (canBeFixed)
 			{
-				System.err.println("sentence could be fixed");
+				nl.openconvert.log.ConverterLog.defaultLog.println("sentence could be fixed");
 				fixedResult="";
 				for (int i=0; i < inputTokens.length; i++)
 				{
@@ -205,9 +205,9 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 						ana += ((ana=="")?"":"+") + w.analysis;
 					}
 					fixedResult += (i+1) + "\t" + tok + "\t" + lemma + "\t" + ana  + "\t" + tag + "\n";
-					// System.err.println(i + " " + tok + " " + tag);
+					// nl.openconvert.log.ConverterLog.defaultLog.println(i + " " + tok + " " + tag);
 				}
-				// System.err.println("FIXED:" + fixedResult);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("FIXED:" + fixedResult);
 				return fixedResult;
 			}
 		}
@@ -225,11 +225,11 @@ public class FrogClient extends DocumentTagger implements SentenceTagger
 					socket.getInputStream()));
 		} catch (UnknownHostException e) 
 		{
-			System.err.println("Unknown host: " + server);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Unknown host: " + server);
 			System.exit(1);
 		} catch  (IOException e) 
 		{
-			System.err.println("No I/O: " + e);
+			nl.openconvert.log.ConverterLog.defaultLog.println("No I/O: " + e);
 			//System.exit(1);
 		}
 	}

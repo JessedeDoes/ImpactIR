@@ -134,7 +134,7 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 		this.lexiconDatabase = lexiconDatabase;
 		if (!this.lexiconDatabase.tableExists("simple_analyzed_wordforms"))
 		{
-			System.err.println("NO SIMPLE ANALYZED WORDFORMS!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("NO SIMPLE ANALYZED WORDFORMS!");
 			//System.exit(1);
 			query = query.replaceAll("simple_analyzed_wordforms", "analyzed_wordforms");
 		}
@@ -206,8 +206,8 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 	
 	public static void main(String[] args) throws Exception
 	{
-		//System.err.println(createSimpleWordformTableSQL);
-		System.err.println("load database...");
+		//nl.openconvert.log.ConverterLog.defaultLog.println(createSimpleWordformTableSQL);
+		nl.openconvert.log.ConverterLog.defaultLog.println("load database...");
 	
 		LexiconDatabase l = new LexiconDatabase("svowim02", "EE3_5");
 		// l.createRandomSelections();
@@ -218,11 +218,11 @@ public class QuotationCorpus implements impact.ee.tagger.Corpus, Iterable<Contex
 		int N=0;
 		for (Context c: corpus.enumerate())
 		{
-			System.err.println(N + " " +  c.getAttributeAt("word",-1)  + "_" + c.getAttributeAt("word", 0) +  "_" + 
+			nl.openconvert.log.ConverterLog.defaultLog.println(N + " " +  c.getAttributeAt("word",-1)  + "_" + c.getAttributeAt("word", 0) +  "_" + 
 					c.getAttributeAt("word",1) + " LEMMA:" + c.getAttributeAt("lemma" , 0) + " " + c.getAttributeAt("quote", 0));
 			N++;
 		}
-		System.err.println("N= " + N);
+		nl.openconvert.log.ConverterLog.defaultLog.println("N= " + N);
 		System.exit(0);
 	}
 }

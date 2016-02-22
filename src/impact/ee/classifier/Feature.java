@@ -63,7 +63,7 @@ public class Feature implements Serializable
 			} else
 			{
 				valueCounts.remove(v);
-				// System.err.println("pruning away:" + this.name + "=" + v + " " + valueCounts.get(v));
+				// nl.openconvert.log.ConverterLog.defaultLog.println("pruning away:" + this.name + "=" + v + " " + valueCounts.get(v));
 				if (!seenUnknown)
 					newValues.addElement(Feature.Unknown); // logischer toch, anders features die er wel zijn onvergelijkbaar (?? maar waarom maakt het niets uit?)
 				seenUnknown = true;

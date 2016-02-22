@@ -151,7 +151,7 @@ public class AlignmentSegmenter
 					e = segmentation.addEdge(from, to);
 				//.setEdgeWeight(e,fullGraph.getEdgeWeight(edge));
 					e.multigramId = n.multigramId;
-					//if (false) System.err.println("Yep transition from " + from + " to " + to + " on " + multigramTrie.getMultigramById(e.multigramId));
+					//if (false) nl.openconvert.log.ConverterLog.defaultLog.println("Yep transition from " + from + " to " + to + " on " + multigramTrie.getMultigramById(e.multigramId));
 				}
 			}
 			findSegmentationsFrom(to);

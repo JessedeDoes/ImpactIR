@@ -69,7 +69,7 @@ public class DocumentTagger implements SimpleInputOutputProcess
 		{
 			sentence += words.get(i) + ((i<words.size()-1)?" ":"");
 		}
-		// System.err.println(sentence);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(sentence);
 		return sentenceTagger.tagString(sentence);
 		
 	}
@@ -130,7 +130,7 @@ public class DocumentTagger implements SimpleInputOutputProcess
 			{
 				//reconnect();
 				double elapsed = (System.currentTimeMillis() - startTime) / 1000.0;
-				System.err.println("seconds: "  + elapsed + " sentences: " + nSentences + " words: "  + nWords + " .....  ");
+				nl.openconvert.log.ConverterLog.defaultLog.println("seconds: "  + elapsed + " sentences: " + nSentences + " words: "  + nWords + " .....  ");
 			}
 			if (tokens.size() > 0)
 			{
@@ -150,10 +150,10 @@ public class DocumentTagger implements SimpleInputOutputProcess
 
 				if (taggedWords.size() < tokens.size())
 				{ 
-					System.err.println("TAGGING ERROR IN SENTENCE #" 
+					nl.openconvert.log.ConverterLog.defaultLog.println("TAGGING ERROR IN SENTENCE #" 
 							+ s.getTextContent().replaceAll("\\s+", " ") + "#");
-					System.err.println("tagged response size: "  + taggedWords.size() + " < " + tokens.size());
-					System.err.println("response: " + flat(taggedWords));
+					nl.openconvert.log.ConverterLog.defaultLog.println("tagged response size: "  + taggedWords.size() + " < " + tokens.size());
+					nl.openconvert.log.ConverterLog.defaultLog.println("response: " + flat(taggedWords));
 					s.setAttribute("failed", "miserably");
 					reconnect();
 					continue;
@@ -185,9 +185,9 @@ public class DocumentTagger implements SimpleInputOutputProcess
 		long interval = endTime - startTime;
 		double secs = interval / 1000.0;
 		double wps = nWords / secs;
-		System.err.println("tokens " + nWords);
-		System.err.println("seconds " + secs);
-		System.err.println("tokens per second " + wps);
+		nl.openconvert.log.ConverterLog.defaultLog.println("tokens " + nWords);
+		nl.openconvert.log.ConverterLog.defaultLog.println("seconds " + secs);
+		nl.openconvert.log.ConverterLog.defaultLog.println("tokens per second " + wps);
 		sentenceTagger.postProcessDocument(d);
 	}
 	
@@ -304,7 +304,7 @@ public class DocumentTagger implements SimpleInputOutputProcess
 			for (File x: entries)
 			{
 				String base = x.getName();
-				System.err.println(base);
+				nl.openconvert.log.ConverterLog.defaultLog.println(base);
 				if (x.isFile())
 				{
 					if (!x.getName().endsWith(".xml"))

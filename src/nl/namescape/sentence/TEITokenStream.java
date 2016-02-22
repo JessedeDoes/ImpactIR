@@ -163,7 +163,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 					if (nSentences % 100 == 0)
 					{
 						//String sentence = s!=null?s.getTextContent():"(null)";
-						//System.err.println("sentence splitting:... "  + nSentences + " : " + sentence.replaceAll("\\s+"," "));
+						//nl.openconvert.log.ConverterLog.defaultLog.println("sentence splitting:... "  + nSentences + " : " + sentence.replaceAll("\\s+"," "));
 					}
 					if (s != null)
 						nWrappedWords += k - sStart +1;
@@ -183,7 +183,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 			}
 			if (nWrappedWords < k)
 			{
-				// System.err.println("!!problem in (nW=" +  nWrappedWords + ",k= " + k   + "): " + XML.NodeToString(n));
+				// nl.openconvert.log.ConverterLog.defaultLog.println("!!problem in (nW=" +  nWrappedWords + ",k= " + k   + "): " + XML.NodeToString(n));
 				unwrappedWords = true;
 			}
 			k=0;
@@ -228,7 +228,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 				{
 					Element s = makeSentenceElement(children, startOfGroup,k-1);
 					if (s != null)
-						System.err.println("created sentence chunk: " + XML.NodeToString(s));
+						nl.openconvert.log.ConverterLog.defaultLog.println("created sentence chunk: " + XML.NodeToString(s));
 					inWordGroup = false;
 				}
 				wrapStrayWordsIn(c);
@@ -238,7 +238,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 		{
 			Element s = makeSentenceElement(children, startOfGroup,children.size()-1);
 			if (s != null)
-				System.err.println("created sentence chunk: " + XML.NodeToString(s));
+				nl.openconvert.log.ConverterLog.defaultLog.println("created sentence chunk: " + XML.NodeToString(s));
 		}
 	}
 	
@@ -323,7 +323,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 				if (found1 && found2)
 				{
 					/*
-					System.err.println("HOERA: "  + XML.NodeToString(startNode) + " -- "
+					nl.openconvert.log.ConverterLog.defaultLog.println("HOERA: "  + XML.NodeToString(startNode) + " -- "
 							 + XML.NodeToString(endNode));
 					*/
 					Element s = this.createSentenceFromTo((Element) commonAncestor, (Element) startNode, (Element) endNode);
@@ -334,8 +334,8 @@ public class TEITokenStream implements TokenWindow, Corpus
 					// TODO: as a last resort, split the sentence in parts
 					// which can be tagged.
 					
-					System.err.println("AHOOPS: failed to tag sentence from "  + word1 + " to "  + word2);
-					System.err.println("common ancestor: " + commonAncestor);
+					nl.openconvert.log.ConverterLog.defaultLog.println("AHOOPS: failed to tag sentence from "  + word1 + " to "  + word2);
+					nl.openconvert.log.ConverterLog.defaultLog.println("common ancestor: " + commonAncestor);
 					
 					//XML.NodeToString(commonAncestor));
 				}
@@ -345,7 +345,7 @@ public class TEITokenStream implements TokenWindow, Corpus
 			}
 		} catch (Exception e)
 		{
-			System.err.println("Warning: failed to tag sentence because of hierarchy conflict");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Warning: failed to tag sentence because of hierarchy conflict");
 		}
 		return null;
 	}
@@ -373,11 +373,11 @@ public class TEITokenStream implements TokenWindow, Corpus
 		} catch (Exception ex)
 		{
 			ex.printStackTrace();
-			System.err.println("Problem: s=" + XML.NodeToString(s));
-			System.err.println("p1 = " + XML.NodeToString(p1));
-			System.err.println("e1 = " + XML.NodeToString(e1));
-			System.err.println("e2 = " + XML.NodeToString(e2));
-			System.err.println("after= " + after  +  " -- " + after.getParentNode());
+			nl.openconvert.log.ConverterLog.defaultLog.println("Problem: s=" + XML.NodeToString(s));
+			nl.openconvert.log.ConverterLog.defaultLog.println("p1 = " + XML.NodeToString(p1));
+			nl.openconvert.log.ConverterLog.defaultLog.println("e1 = " + XML.NodeToString(e1));
+			nl.openconvert.log.ConverterLog.defaultLog.println("e2 = " + XML.NodeToString(e2));
+			nl.openconvert.log.ConverterLog.defaultLog.println("after= " + after  +  " -- " + after.getParentNode());
 		}
 		return s;
 	}

@@ -41,7 +41,7 @@ public class RandomParagraphSelector
 		{
 			try 
 			{
-				System.err.println("parsing: " + fn);
+				nl.openconvert.log.ConverterLog.defaultLog.println("parsing: " + fn);
 				Document d = XML.parse(fn);
 				List<Element> paragraphs = 
 						XML.getElementsByTagname(d.getDocumentElement(), "p", false);
@@ -105,7 +105,7 @@ public class RandomParagraphSelector
 				e.printStackTrace();
 			} 
 		}
-		System.err.println("Selected: " + nTokens + " tokens");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Selected: " + nTokens + " tokens");
 	}
 	
 	

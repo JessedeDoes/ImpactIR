@@ -46,7 +46,7 @@ public class eBookFixer implements DoSomethingWithFile
 					{
 						if (wrapping)
 						{
-							System.err.println("Stop wrapping at "  + c);
+							nl.openconvert.log.ConverterLog.defaultLog.println("Stop wrapping at "  + c);
 							rangesToWrapInP.add(new Pair<Node, Node>(firstToWrap,lastToWrap));
 							firstToWrap = lastToWrap = null;
 						}
@@ -56,7 +56,7 @@ public class eBookFixer implements DoSomethingWithFile
 						if (!wrapping)
 						{
 							wrapping = true;
-							System.err.println("Start wrapping at "  + c);
+							nl.openconvert.log.ConverterLog.defaultLog.println("Start wrapping at "  + c);
 							firstToWrap = lastToWrap = c;
 						} else
 						{
@@ -110,7 +110,7 @@ public class eBookFixer implements DoSomethingWithFile
 			ex.printStackTrace();
 		}
 		
-		// System.err.println(e.getParentNode() + " " + e.getTextContent());
+		// nl.openconvert.log.ConverterLog.defaultLog.println(e.getParentNode() + " " + e.getTextContent());
 		range.detach();
 	}
 	
@@ -129,11 +129,11 @@ public class eBookFixer implements DoSomethingWithFile
 			Document d = XML.parse(fileName);
 			if (!validator.validate(d))
 			{
-				System.err.println("try to fix " + fileName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("try to fix " + fileName);
 				fixDocument(d);
 				if (validator.validate(d))
 				{
-					System.err.println("Opgelapt!!!" + fileName);
+					nl.openconvert.log.ConverterLog.defaultLog.println("Opgelapt!!!" + fileName);
 				}
 			}
 		} catch (Exception e)

@@ -29,7 +29,7 @@ public class Rule
 	@Override
 	public boolean equals(Object o1)
 	{
-		//System.err.println(this +  " ?=? " + o1);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(this +  " ?=? " + o1);
 		if (o1 instanceof Rule)
 		{
 			Rule o = (Rule) o1;

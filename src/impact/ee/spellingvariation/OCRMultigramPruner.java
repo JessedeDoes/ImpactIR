@@ -45,7 +45,7 @@ public class OCRMultigramPruner implements MultigramPruner
   {
     boolean x =  m.isSingleton() || lengthOneOrTwo(m.lhs,m.rhs);
     boolean y = isContextPattern(m.lhs,m.rhs);
-    System.err.println("x=" + x + ", y=" + y + ", m= " + m);
+    nl.openconvert.log.ConverterLog.defaultLog.println("x=" + x + ", y=" + y + ", m= " + m);
     return x && !y;
   }
 

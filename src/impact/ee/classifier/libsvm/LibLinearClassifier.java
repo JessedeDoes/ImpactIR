@@ -62,7 +62,7 @@ public class LibLinearClassifier implements Classifier
 	public String classifyInstance(Instance i)
 	{
 		//int m = getNumberOfKnownFeatures(i);
-		// System.err.println(m + " in " + i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(m + " in " + i);
 		//FeatureNode[] x = new FeatureNode[m];
 		List<FeatureNode> xList = new ArrayList<FeatureNode>();
 		Double L = handleItem(i, xList, false);
@@ -109,7 +109,7 @@ public class LibLinearClassifier implements Classifier
 
 		if(error_msg != null)
 		{
-			System.err.print("ERROR: "+error_msg+"\n");
+			nl.openconvert.log.ConverterLog.defaultLog.print("ERROR: "+error_msg+"\n");
 			System.exit(1);
 		}
 		*/
@@ -298,7 +298,7 @@ public class LibLinearClassifier implements Classifier
 		{
 			if (n.getIndex() <= indexBefore) 
 			{
-				System.err.println(n.getIndex() + "  <= " + indexBefore);
+				nl.openconvert.log.ConverterLog.defaultLog.println(n.getIndex() + "  <= " + indexBefore);
 				throw new IllegalArgumentException("feature nodes must be sorted by index in ascending order");
 			}
 			indexBefore = n.getIndex();

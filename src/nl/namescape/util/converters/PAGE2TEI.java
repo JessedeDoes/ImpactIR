@@ -52,7 +52,7 @@ public class PAGE2TEI implements SimpleInputOutputProcess
 		try 
 		{
 			Document htmlDocument = XML.parse(docFile);
-			//System.err.println(XML.documentToString(htmlDocument));
+			//nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(htmlDocument));
 			Document teiDocument  = transformer.transformDocument(htmlDocument);
 			PrintStream pout = new PrintStream(new FileOutputStream(outFilename));
 			pout.print(XML.documentToString(teiDocument));

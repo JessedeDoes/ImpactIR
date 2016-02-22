@@ -97,12 +97,12 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		double AlphaMN = alpha[x.size][y.size]; // Kan dit negatief worden?
 		if (Double.isNaN(AlphaMN))
 		{
-			System.err.println("Fatal error: Joint probability undefined!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Fatal error: Joint probability undefined!");
 			System.exit(1);
 		}
 		if (AlphaMN < 0)
 		{
-			System.err.println("Warning: Joint probability < 0 (" + x + ", " + y + ")");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Warning: Joint probability < 0 (" + x + ", " + y + ")");
 		}
 		return AlphaMN;
 	}
@@ -121,7 +121,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 	 double r = delta[s][t];
 	 if (Double.isNaN(r))
 	 {
-		System.err.println("Error: Bad delta value for:" + s + ","  + t + 
+		nl.openconvert.log.ConverterLog.defaultLog.println("Error: Bad delta value for:" + s + ","  + t + 
 				input_alphabet.decode(s) + " " + output_alphabet.decode(t));
 	 }
 	 return r * α;
@@ -139,7 +139,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		init();
 		for(int i=0; i < this.MAX_ITERATIONS; i++)
 		{
-			System.err.println("Iteration: round " + i);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Iteration: round " + i);
 			expectationMaximization(d);
 		}
                 //dumpAlignments(d);
@@ -166,14 +166,14 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 	{
 		this.dataset = d;
 		int m = d.size();
-		//System.err.println("piep " + m);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("piep " + m);
 		double [][]Γ = impact.ee.util.Matrix.newMatrix(256,256); //HOHO: alphabet sizes meenemen
 
 		for (int i=0; i < nSymbolPairs; i++) Γ[symbolPairs[i].lhs][symbolPairs[i].rhs] = 0;
 		double Γ_stop = 0.0;
 
 
-		System.err.println("Expectation steps");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Expectation steps");
 
 		for (int i=0; i < m; i++)
 		{
@@ -222,7 +222,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 			}
 			if (!pickedBestMatch)
 			{
-				System.err.println("no best match picked for:" + dataset.items.get(i).target);
+				nl.openconvert.log.ConverterLog.defaultLog.println("no best match picked for:" + dataset.items.get(i).target);
 			}
 		}
 	}
@@ -252,7 +252,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 
 		if (alpha[T][V] == 0.0 || Double.isInfinite(1/alpha[T][V])) 
 		{
-			//System.err.println("alpha[T][V] zero after forward evaluation!!\n");
+			//nl.openconvert.log.ConverterLog.defaultLog.println("alpha[T][V] zero after forward evaluation!!\n");
 			return Γ_stop;
 		}
 
@@ -268,7 +268,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 				double norm = scale * lambda * beta[t][v] / alpha[T][V]; // dit kan mis gaan
 				if (Double.isNaN(norm) || Double.isInfinite(norm))
 				{
-					System.err.println("norm boem " + norm +  " "  + alpha[T][V]);
+					nl.openconvert.log.ConverterLog.defaultLog.println("norm boem " + norm +  " "  + alpha[T][V]);
 					System.exit(1);
 				}
 				// moet som over alphatjes van alternatieven zijn? scale = zo ongeveer alpha[T][V] / som(alpha), dit is gek
@@ -292,7 +292,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		}  
 		if (debug)
 		{
-			System.err.println("Dump gamma:\n");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Dump gamma:\n");
 			// dump_params(Γ,safestrlen( (String ) A),safestrlen( (unsigned String ) B));
 		}
 		return Γ_stop;
@@ -304,7 +304,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 
 	private void maximizationStep(double[][] Γ, double Γ_stop) // stop_d was reference
 	{
-		System.err.println("Maximization step");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Maximization step");
 
 		
 		double N = Γ_stop; // now this is nonsense
@@ -318,7 +318,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 				Γ[symbolPairs[i].lhs][symbolPairs[i].rhs]/N; // ??
 			if (Double.isNaN(delta[symbolPairs[i].lhs][symbolPairs[i].rhs]))
 			{
-				System.err.println("boem " + N);
+				nl.openconvert.log.ConverterLog.defaultLog.println("boem " + N);
 				System.exit(1);
 			}
 		}
@@ -350,7 +350,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 					α[t][v] += delta[x.get(t-1)][y.get(v-1)] * α[t-1][v-1];
 				if (Double.isNaN(α[t][v])) 
 				{
-					System.err.printf("Error: bad alpha value computed:... %d %d %s = %s\n", t, v, 
+					nl.openconvert.log.ConverterLog.defaultLog.printf("Error: bad alpha value computed:... %d %d %s = %s\n", t, v, 
 							x, y);
 					System.exit(1);
 				}
@@ -359,7 +359,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		α[T][V] *= stoppingProbability; 
 		if (Double.isNaN(α[T][V]))
 		{
-			System.err.println("Fatal error: unstable forward evaluation; dump α matrix\n");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Fatal error: unstable forward evaluation; dump α matrix\n");
 			dumpParameters(α,T+1,V+1);
 			System.exit(1);
 		}
@@ -427,7 +427,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 			double d = Util.drandom();
 			CodePair e = symbolPairs[i];
 			CodePair2SymbolId[e.lhs][e.rhs] = i;
-			//System.err.printf("%d: d('%d','%d')=%f\n",i,E[i].a,E[i].b,d);
+			//nl.openconvert.log.ConverterLog.defaultLog.printf("%d: d('%d','%d')=%f\n",i,E[i].a,E[i].b,d);
 			delta[e.lhs][e.rhs] = d;
 
 			if (e.lhs == e.rhs)
@@ -446,7 +446,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		int j1 = symbolPairs[r].rhs;
 		if (i != i1 || j != j1)
 		{
-			System.err.println("inconsistency!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("inconsistency!");
 			System.exit(1);
 		}
 		return CodePair2SymbolId[i][j];
@@ -486,7 +486,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		{
 			N += delta[this.symbolPairs[i].lhs][this.symbolPairs[i].rhs];
 		}
-		System.err.println("symbolpairs: " + nSymbolPairs + " N= "  + N);
+		nl.openconvert.log.ConverterLog.defaultLog.println("symbolpairs: " + nSymbolPairs + " N= "  + N);
 		try
 		{
 			java.io.PrintStream f = new java.io.PrintStream(filename);
@@ -514,9 +514,9 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 		{
 			for (int j=0; j < n; j++)
 			{
-				System.err.print(" " +  x[i][j] + " ");
+				nl.openconvert.log.ConverterLog.defaultLog.print(" " +  x[i][j] + " ");
 			}
-			System.err.print("\n");
+			nl.openconvert.log.ConverterLog.defaultLog.print("\n");
 		}
 	}
 
@@ -540,7 +540,7 @@ public class UnigramTransducer implements java.io.Serializable, CodeToStringPair
 
 		Dataset d = new Dataset();
 		d.read_from_file(argv[0]);
-		System.err.println("Data read: " + d.size() + " items");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Data read: " + d.size() + " items");
 
 		UnigramTransducer t = new UnigramTransducer();
 		t.estimateParameters(d);

@@ -80,7 +80,7 @@ public class DocumentPerLineOutput implements nl.openconvert.filehandling.Simple
 			nLines++;
 		}
 		out.print("\n");
-		System.err.println("skipped " + nSkippedLines + " of " + nLines);
+		nl.openconvert.log.ConverterLog.defaultLog.println("skipped " + nSkippedLines + " of " + nLines);
 		
 	}
 	

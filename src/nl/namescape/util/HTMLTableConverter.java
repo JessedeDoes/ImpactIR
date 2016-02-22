@@ -18,7 +18,7 @@ public class HTMLTableConverter extends WordTableConverter
 	public void handleFile(String fileName)
 	{
 		// TODO Auto-generated method stub
-		System.err.println(fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println(fileName);
 	
 		try
 		{

@@ -111,7 +111,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 	public void handleFile(String fileName) 
 	{
 		// TODO Auto-generated method stub
-		//System.err.println(N + ": "+ fileName);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(N + ": "+ fileName);
 		try
 		{
 			Document d = XML.parse(fileName,false);
@@ -139,25 +139,25 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		checkMinimumLength(d,fileName);
 		if (provenance == null || provenance.equals(""))
 		{
-			System.err.println("No corpusProvenance in file:  " + fileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println("No corpusProvenance in file:  " + fileName);
 		}
 		
 		if (!isYear(witnessYear_from))
 		{
-			System.err.println("invalid year in " + fileName + " : " + witnessYear_from);
+			nl.openconvert.log.ConverterLog.defaultLog.println("invalid year in " + fileName + " : " + witnessYear_from);
 		}
 		if (!isYear(witnessYear_to))
 		{
-			System.err.println("invalid year in " + fileName + " : " + witnessYear_to);
+			nl.openconvert.log.ConverterLog.defaultLog.println("invalid year in " + fileName + " : " + witnessYear_to);
 		}
 
 		if (checkIdno)
 		{
 			if (sourceId == null || sourceId.equals(""))
 			{
-				System.err.println("No idno in file:  " + fileName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("No idno in file:  " + fileName);
 				String newIdno = MolechaserMetadataFixer.createIdno(m, d, fileName);
-				System.err.println("Attempt to assign idno: " + newIdno);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Attempt to assign idno: " + newIdno);
 				sourceId = newIdno;
 			}
 
@@ -170,7 +170,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			} else
 			{
 				filesWithThisId.add(fileName);
-				//System.err.println("Error: duplicate idno "  + idno + " " + filesWithThisId);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Error: duplicate idno "  + idno + " " + filesWithThisId);
 			}
 			filesWithThisId.add(fileName);
 		}
@@ -179,13 +179,13 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		String l;
 		if (languages == null || languages.size() != 1)
 		{
-			System.err.println("Wrong number of language variants: " + languages + ":  " + fileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Wrong number of language variants: " + languages + ":  " + fileName);
 		} else
 		{
 			l = languages.iterator().next();
 			if (!l.equals("NN") && !l.equals("BN"))
 			{
-				System.err.println("Wrong language variant: " + l +  ":  " + fileName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Wrong language variant: " + l +  ":  " + fileName);
 			}
 		}
 
@@ -194,7 +194,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			Set<String> values = m.metadata.get(name);
 			if (values.size() > 1 && !multiProperties.containsKey(name))
 			{
-				System.err.println("Multiply defined property " + name +  " in " + fileName +  " :  " + values);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Multiply defined property " + name +  " in " + fileName +  " :  " + values);
 				multiProperties.put(name,name);
 			}
 		}
@@ -211,7 +211,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 			} else
 			{
 				filesWithThisKey.add(fileName);
-				//System.err.println("Error: duplicate content? "  +key + " " + filesWithThisKey);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Error: duplicate content? "  +key + " " + filesWithThisKey);
 			}
 			filesWithThisKey.add(fileName);
 		}
@@ -237,7 +237,7 @@ public class MolechaserMetadataChecker implements DoSomethingWithFile
 		String author=authorLevel1.equals("")?authorLevel2:authorLevel1;
 		String title=authorLevel1.equals("")?titleLevel2:titleLevel1;
 
-		System.err.println(N + "\t" + corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
+		nl.openconvert.log.ConverterLog.defaultLog.println(N + "\t" + corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
 				+ author + "\t" + title + "\t" + 
 				witnessYear_from + "\t"+ witnessYear_to + "\t" + 
 				authorLevel1 + "\t" +  authorLevel2 + "\t" 

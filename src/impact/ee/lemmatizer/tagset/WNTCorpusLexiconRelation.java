@@ -13,7 +13,7 @@ public class WNTCorpusLexiconRelation implements TagRelation {
 			boolean allowConversions) 
 	{
 		// TODO Auto-generated method stub
-		//System.err.println("CHECK: <" + t1 + "> ? <" + t2 + ">");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("CHECK: <" + t1 + "> ? <" + t2 + ">");
 		if (t2 == null)
 			return true;
 		return t2.contains(t1.trim());

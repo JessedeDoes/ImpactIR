@@ -170,7 +170,7 @@ public class TEITagClasses
 		{
 			baseId = i.getAttribute("value");
 		}
-		System.err.println("Base id: " + baseId);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Base id: " + baseId);
 		assignIds(d.getDocumentElement(), tagNames, baseId);
 	}
 	
@@ -244,7 +244,7 @@ public class TEITagClasses
 						sss.add(e);
 						ssl.add(e);
 						/*
-						System.err.println("Adding instance of " + 
+						nl.openconvert.log.ConverterLog.defaultLog.println("Adding instance of " + 
 						 	e.getNodeName() + " to sentence splitters!" + 
 								ParseUtils.NodeToString(e)); */
 						foundGoodAncestor = true;
@@ -255,7 +255,7 @@ public class TEITagClasses
 			
 			if (!foundGoodAncestor)
 			{
-				System.err.println("No good ancestor found for token: "  + XML.NodeToString(t));
+				nl.openconvert.log.ConverterLog.defaultLog.println("No good ancestor found for token: "  + XML.NodeToString(t));
 			}
 			previousParent = parent;
 		}

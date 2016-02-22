@@ -73,7 +73,7 @@ public class ClusterFeature extends Feature
 		{
 			if (!initialized)
 			{
-				System.err.println("reading cluster file " + fileName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("reading cluster file " + fileName);
 				word2cluster = readClusters(fileName);
 				lexiconMap.put(fileName, word2cluster);
 			}

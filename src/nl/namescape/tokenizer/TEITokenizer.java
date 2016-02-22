@@ -167,7 +167,7 @@ public class TEITokenizer extends DefaultHandler
 				inToken = true;
 				outputCharacterData(t);
 				pendingToken = "";
-				//System.err.println("\nPending... <" + t + "> in <" + s + ">");
+				//nl.openconvert.log.ConverterLog.defaultLog.println("\nPending... <" + t + "> in <" + s + ">");
 			}
 		}
 	}
@@ -175,10 +175,10 @@ public class TEITokenizer extends DefaultHandler
 	public  void startElement(String uri, String localName, String qName, Attributes attributes) 
 	{
 		Element e = currentDocument.createElement(qName);
-		//System.err.println(localName);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(localName);
 		if (qName.equals("text") || qName.equals("osisText"))
 		{
-			//System.err.println("OK....");
+			//nl.openconvert.log.ConverterLog.defaultLog.println("OK....");
 			insideTokenizedElement=true;
 			//System.exit(1);
 		}
@@ -224,7 +224,7 @@ public class TEITokenizer extends DefaultHandler
 			}
 			else
 			{
-				//System.err.println("milestone: " + qName);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("milestone: " + qName);
 				printStartTag(e);
 				openElementStack.push(e);
 			}
@@ -462,7 +462,7 @@ public class TEITokenizer extends DefaultHandler
       
 	        // Get the temporary directory and print it.
 	      String tempDir = System.getProperty(property);
-	      System.err.println("OS current temporary directory is " + tempDir);
+	      nl.openconvert.log.ConverterLog.defaultLog.println("OS current temporary directory is " + tempDir);
 	      return tempDir;
 	}
 	
@@ -482,7 +482,7 @@ public class TEITokenizer extends DefaultHandler
 			}
 			tokenizeFile(fileName, pretokenizedFile.getCanonicalPath());
 			double step1Time = (System.currentTimeMillis() - startTok) / 1000.0;
-			System.err.println("pretokenization time: "  + step1Time);
+			nl.openconvert.log.ConverterLog.defaultLog.println("pretokenization time: "  + step1Time);
 			Document d = null;
 			
 			try
@@ -490,7 +490,7 @@ public class TEITokenizer extends DefaultHandler
 				d = XML.parse(pretokenizedFile.getCanonicalPath(),true);
 			} catch (Exception e)
 			{
-				System.err.println("error in pretokenized file " + pretokenizedFile.getCanonicalPath() );
+				nl.openconvert.log.ConverterLog.defaultLog.println("error in pretokenized file " + pretokenizedFile.getCanonicalPath() );
 				e.printStackTrace();
 				//System.exit(1);
 				//java.nio.file.Files.copy("aap", "noot");
@@ -502,7 +502,7 @@ public class TEITokenizer extends DefaultHandler
 			
 			long endTok = System.currentTimeMillis();
 			double elapsed = (endTok - startTok) / 1000.0;
-			System.err.println("tokenization time: "  + elapsed);
+			nl.openconvert.log.ConverterLog.defaultLog.println("tokenization time: "  + elapsed);
 			return d;
 		} catch (Exception e)
 		{

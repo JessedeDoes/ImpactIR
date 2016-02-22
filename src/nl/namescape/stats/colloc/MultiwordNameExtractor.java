@@ -262,7 +262,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 					int maxSize = indexOfLastCapitalizedWord + 1;
 
 					//if (nGram.toString().contains("Beusekom"))
-					//System.err.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
+					//nl.openconvert.log.ConverterLog.defaultLog.println("looking in "  + nGram  + " minSize " + minSize + " maxSize " + maxSize);
 
 					if (nGram.size() < minSize || maxSize < minSize)
 						continue; // next i
@@ -271,7 +271,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						if (isCapitalized(nGram.get(j-1)))
 						{
 							WordNGram wng  = new WordNGram(nGram,j);
-							// System.err.println("Consider: " + wng + " in " + Util.join(nGram, ", "));
+							// nl.openconvert.log.ConverterLog.defaultLog.println("Consider: " + wng + " in " + Util.join(nGram, ", "));
 							ngramCounter.increment(wng);
 						}
 					}
@@ -343,7 +343,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 
 							if (ngramCounter.containsKey(wn))
 							{
-								//System.err.println("look at parts of " + wn);
+								//nl.openconvert.log.ConverterLog.defaultLog.println("look at parts of " + wn);
 								lengthOfLongestStoredNGram = j;
 								// store right chunks
 								for (int l=1; l < j; l++)
@@ -352,7 +352,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 									if (!isCapitalized(wl) && l < j-2)
 									{
 										WordNGram rightPart = new WordNGram(nGram, l, j);
-										//System.err.println("store right part: " + rightPart);
+										//nl.openconvert.log.ConverterLog.defaultLog.println("store right part: " + rightPart);
 										this.otherNgramCounter.increment(rightPart);
 									}
 								}
@@ -360,14 +360,14 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						} 
 					}
 					// store left chunks for SCP
-					//System.err.println("longest at i=" + i + ": " + lengthOfLongestStoredNGram);
+					//nl.openconvert.log.ConverterLog.defaultLog.println("longest at i=" + i + ": " + lengthOfLongestStoredNGram);
 					for (int j=3; j < lengthOfLongestStoredNGram; j++)
 					{
 						String wj = nGram.get(j-1);
 						if (!isCapitalized(wj))
 						{
 							WordNGram leftPart = new WordNGram(nGram,j);
-							//System.err.println("store left part: " + leftPart);
+							//nl.openconvert.log.ConverterLog.defaultLog.println("store left part: " + leftPart);
 							this.otherNgramCounter.increment(leftPart);
 						}
 					}
@@ -409,15 +409,15 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 						if (j -i > 1)
 						{
 							WordNGram wn = new  WordNGram(nGram,j-i+1);
-							// if (wn.toString().contains("Postma")) System.err.println("count ngram: "  + wn);
+							// if (wn.toString().contains("Postma")) nl.openconvert.log.ConverterLog.defaultLog.println("count ngram: "  + wn);
 							if (this.otherNgramCounter.containsKey(wn))
 							{
-								//System.err.println("Seen again:" + wn);
+								//nl.openconvert.log.ConverterLog.defaultLog.println("Seen again:" + wn);
 								this.otherNgramCounter.increment(wn);
 							} else
 							{
 								// if (wn.parts.get(0).equals("Dirk"))
-								//	System.err.println("Nope " + wn);
+								//	nl.openconvert.log.ConverterLog.defaultLog.println("Nope " + wn);
 							}
 						}
 					} else break;
@@ -459,7 +459,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 				ngramCounter.remove(wn);
 			} 
 		}
-		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
 
 	private void scoreNgrams() 
@@ -471,7 +471,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			int f = ngramCounter.get(wn);
 			double d = SCP(wn);
 			wn.score = d;
-			//System.err.println(f + " " + wn  +  " SCP: " + d);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(f + " " + wn  +  " SCP: " + d);
 		}
 
 		// add the bigrams ...
@@ -493,10 +493,10 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			if (filterLowerCaseAndStuff(wn))
 			{
 				int f = ngramCounter.get(wn);
-				System.err.println(f + " " + wn  +  " SCP: " + wn.score);
+				nl.openconvert.log.ConverterLog.defaultLog.println(f + " " + wn  +  " SCP: " + wn.score);
 			}
 		}
-		System.err.println("We have "  + ngramCounter.size() + " ngrams! ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("We have "  + ngramCounter.size() + " ngrams! ");
 	}
 
 	private boolean filterLowerCaseAndStuff(WordNGram wng)
@@ -534,10 +534,10 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 			}
 		}
 
-		System.err.println("LIST OF TOP LOWER CASE PARTS");
+		nl.openconvert.log.ConverterLog.defaultLog.println("LIST OF TOP LOWER CASE PARTS");
 		for (String s: lowerCaseParts.keyList())
 		{
-			System.err.println(lowerCaseParts.get(s) + "\t" + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println(lowerCaseParts.get(s) + "\t" + s);
 		}
 		return lowerCaseParts;
 	}
@@ -555,7 +555,7 @@ public class MultiwordNameExtractor implements DoSomethingWithFile
 
 	public void handleFile(String fileName) 
 	{
-		System.err.println("Stage " + stage + ": "  + fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Stage " + stage + ": "  + fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
@@ -678,7 +678,7 @@ Ook bijvoorbeeld "Van + zeldzame achternaam"
 				K++;
 			} else
 			{
-				System.err.println("!!Problem at i=" + i + " with " + w + " f1 = "  + f1 + " f2 = "  + f2);
+				nl.openconvert.log.ConverterLog.defaultLog.println("!!Problem at i=" + i + " with " + w + " f1 = "  + f1 + " f2 = "  + f2);
 			}
 		}
 		//double Avp = Tp / (double) (n-1); 
@@ -715,15 +715,15 @@ Ook bijvoorbeeld "Van + zeldzame achternaam"
 
 		if (this.nGramCouldBeName(wng))
 		{
-			//System.err.println("Try as name " + wng);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Try as name " + wng);
 			return this.ngramCounter.get(wng);
 		}
 		else
 		{
-			//System.err.println("Try as nonname " + wng);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Try as nonname " + wng);
 			int f = this.otherNgramCounter.get(wng);
 			if (f == 0)
-				System.err.println("Huh... " + wng  + " in other Ngram hash?: " + otherNgramCounter.containsKey(wng));
+				nl.openconvert.log.ConverterLog.defaultLog.println("Huh... " + wng  + " in other Ngram hash?: " + otherNgramCounter.containsKey(wng));
 			return f;
 		}
 	}
@@ -733,14 +733,14 @@ Ook bijvoorbeeld "Van + zeldzame achternaam"
 		for (Entry<WordNGram,Integer> e: this.otherNgramCounter.entrySet())
 		{
 			e.setValue(0);
-			//System.err.println("Whoops " + e);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Whoops " + e);
 		}
 	}
 
 	public static void main(String[] args)
 	{
 		int processors = Runtime.getRuntime().availableProcessors();
-		System.err.println("Processors: " + processors);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Processors: " + processors);
 		MultiwordNameExtractor mwe = new MultiwordNameExtractor();
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(mwe,processors);
 		DirectoryHandling.traverseDirectory(m, args[0]);

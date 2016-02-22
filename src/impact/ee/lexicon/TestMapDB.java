@@ -18,7 +18,7 @@ public class TestMapDB
 			Set<WordForm> V = l2.findLemmata(w.wordform);
 			if (!V.contains(w))
 			{
-				System.err.println("Missing: " + w);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Missing: " + w);
 			}
 		}
 	}

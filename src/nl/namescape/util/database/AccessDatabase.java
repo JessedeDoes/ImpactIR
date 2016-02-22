@@ -71,7 +71,7 @@ class AccessDatabase
        ps = new PrintStream(System.out, true, "UTF-8");
      } catch (UnsupportedEncodingException error) 
      {
-       System.err.println(error);
+       nl.openconvert.log.ConverterLog.defaultLog.println(error);
        System.exit(0);
      }
 

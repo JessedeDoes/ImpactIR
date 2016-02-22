@@ -68,7 +68,7 @@ public class ClassifierSet
 	{
 		for (String tag: datasetsPerTag.keySet())
 		{
-			//System.err.println("Build classifier for " + tag);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Build classifier for " + tag);
 			Dataset d = datasetsPerTag.get(tag);
 			Classifier c = null;
 			try
@@ -132,7 +132,7 @@ public class ClassifierSet
 	{
 		if (tag == null)
 		{
-			System.err.println("HEY: tag = null for " + lemma);
+			nl.openconvert.log.ConverterLog.defaultLog.println("HEY: tag = null for " + lemma);
 		}
 		if (!tag.startsWith(lemmaPoS))
 		{
@@ -141,7 +141,7 @@ public class ClassifierSet
 		Classifier classifier = classifiersPerTag.get(tag);
 		if (classifier == null)
 		{
-			System.err.println("Error: no classifier trained for "  + tag);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Error: no classifier trained for "  + tag);
 			return;
 		}
 		
@@ -149,7 +149,7 @@ public class ClassifierSet
 		Instance testItem = features.makeTestInstance(lemma);
 
 		Distribution outcomes = classifier.distributionForInstance(testItem);
-		// System.err.println(outcomes);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(outcomes);
 		outcomes.sort();
 		double cumulativeP = 0;
 
@@ -163,7 +163,7 @@ public class ClassifierSet
 			Rule r = ruleID2Rule.get(classId);
 			LemmaLog.addToLog("rule for " + lemma + ":  " + r.toString());
 			cumulativeP += p;
-			// System.err.println(r + " " + lemmaPoS + " "  + r.lemmaPoS);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(r + " " + lemmaPoS + " "  + r.lemmaPoS);
 			if (p > cumulativeP/MIN_PROBABILITY && (!checkPoS || r.lemmaPoS.equals(lemmaPoS)))
 			{
 				if (theCallback != null)

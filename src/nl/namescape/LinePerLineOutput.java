@@ -66,7 +66,7 @@ public class LinePerLineOutput implements nl.openconvert.filehandling.SimpleInpu
 			}
 		}
 		
-		//System.err.println("skipped " + nSkippedLines + " of " + nLines);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("skipped " + nSkippedLines + " of " + nLines);
 		
 	}
 	

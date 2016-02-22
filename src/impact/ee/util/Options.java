@@ -54,7 +54,7 @@ public class Options
 
 		parseCommandLine(args);
 
-		//System.err.println(options);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(options);
 		// properties.list(System.out);
 	}
 

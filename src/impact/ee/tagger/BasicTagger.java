@@ -120,7 +120,7 @@ public class BasicTagger implements Serializable, Tagger
 		this.features = p.second;
 	}
 	
-	public void saveModel(String fileName)
+	public void saveModel(String fileName) throws IOException
 	{
 		try 
 		{
@@ -170,7 +170,7 @@ public class BasicTagger implements Serializable, Tagger
 		if (p.getProperty("word2vecFile") != null)
 		{
 			WordVectorFeature.SonarVectors =  p.getProperty("word2vecFile");
-			System.err.println("vector file name set to " +WordVectorFeature.SonarVectors );
+			nl.openconvert.log.ConverterLog.defaultLog.println("vector file name set to " +WordVectorFeature.SonarVectors );
 		}
 		
 		if (create)
@@ -234,13 +234,13 @@ public class BasicTagger implements Serializable, Tagger
 		features.finalize(); // oehoeps, dit is niet fijn, dat dat expliciet moet, moet anders...
 		//d.pruneInstances();
 		
-		System.err.println("start training, "  + d.size() + " items");
+		nl.openconvert.log.ConverterLog.defaultLog.println("start training, "  + d.size() + " items");
 		
 		// hier zou je de dataset moeten prunen om
 		// irrelevante features (te weinig voorkomende f,v combinaties) weg te gooien
 		// d.pruneInstances();
 		classifier.train(d);
-		System.err.println("finish training...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("finish training...");
 	}
 	
 	protected boolean filter(Context c) 
@@ -260,7 +260,7 @@ public class BasicTagger implements Serializable, Tagger
 			if (!filter(c))
 				continue;
 			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
-			// System.err.println(features.itemToString(item));
+			// nl.openconvert.log.ConverterLog.defaultLog.println(features.itemToString(item));
 			String truth = c.getAttributeAt(taggedAttribute, 0);
 			if (truth == null)
 				continue;
@@ -289,12 +289,12 @@ public class BasicTagger implements Serializable, Tagger
 			String guessedPoS = TaggerFeatures.extractPoS(outcome);
 			if (!truePoS.equals(guessedPoS))
 				nPoSErrors++;
-			// System.err.println(c.getAttributeAt("word", 0) + " " + outcome);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(c.getAttributeAt("word", 0) + " " + outcome);
 			nItems++;
 			if (nItems % 100 ==0)
 			{
-				//System.err.println(features.itemToString(instance));
-				//System.err.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(features.itemToString(instance));
+				//nl.openconvert.log.ConverterLog.defaultLog.println("nItems: " + nItems + " errors: "  + nErrors / (double) nItems);
 			}
 			if (!known)
 			{
@@ -304,25 +304,25 @@ public class BasicTagger implements Serializable, Tagger
 			String extra = logFeatures?("\t" + features.itemToString(instance)): "";
 			System.out.println(word + "\t" + outcome + "\t" + truth + "\t"  + correct + extra);
 		}
-		System.err.println("nItems: " + nItems + 
+		nl.openconvert.log.ConverterLog.defaultLog.println("nItems: " + nItems + 
 				" errors: "  + nErrors / (double) nItems +  
 				" PoS errors: "  + nPoSErrors / (double) nItems );
-		System.err.println("n unknown tems: " + nUnknownItems + 
+		nl.openconvert.log.ConverterLog.defaultLog.println("n unknown tems: " + nUnknownItems + 
 				" errors: "  + nUnknownErrors / (double) nUnknownItems);
 		
 		long endTime = System.currentTimeMillis();
 		long interval = endTime - startTime;
 		double secs = interval / 1000.0;
 		double wps = nItems / secs;
-		System.err.println("tokens " + nItems);
-		System.err.println("seconds " + secs);
-		System.err.println("tokens per second " + wps);
+		nl.openconvert.log.ConverterLog.defaultLog.println("tokens " + nItems);
+		nl.openconvert.log.ConverterLog.defaultLog.println("seconds " + secs);
+		nl.openconvert.log.ConverterLog.defaultLog.println("tokens per second " + wps);
 		
 	}
 	
 	public static class Trainer
 	{
-		public static void main(String[] args)
+		public static void main(String[] args) 
 		{
 			Options o = new Options(args) 
 			{
@@ -341,7 +341,14 @@ public class BasicTagger implements Serializable, Tagger
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.train(trainingCorpus);
-			t.saveModel(args[1]);
+			try
+			{
+				t.saveModel(args[1]);
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -374,7 +381,7 @@ public class BasicTagger implements Serializable, Tagger
 		if (filter(c))
 		{
 			impact.ee.classifier.Instance instance = features.makeTestInstance(c);
-			//System.err.println(features.itemToString(instance));
+			//nl.openconvert.log.ConverterLog.defaultLog.println(features.itemToString(instance));
 			String outcome = classifier.classifyInstance(instance);
 			m.put(taggedAttribute, outcome);
 			if (taggerOptions.useFeedback)

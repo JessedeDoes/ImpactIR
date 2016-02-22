@@ -46,7 +46,7 @@ public class TEISentenceSplitter implements nl.openconvert.filehandling.SimpleIn
 		t.tagSentences();
 		if (!allWordsAreInSentences(d))
 		{
-			System.err.println("Failed to wrap all words!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Failed to wrap all words!");
 		}
 	}
 	

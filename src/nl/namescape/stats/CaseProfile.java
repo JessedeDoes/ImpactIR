@@ -78,7 +78,7 @@ public class CaseProfile  implements java.io.Serializable,
 	
 	public void handleFile(String fileName) 
 	{
-		System.err.println(fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println(fileName);
 		try
 		{
 			Document d = XML.parse(fileName);
@@ -135,7 +135,7 @@ public class CaseProfile  implements java.io.Serializable,
 		for (TypeFrequency t: sensitive)
 		{
 			String lower = t.type.toLowerCase();
-			// System.err.println(lower);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(lower);
 			Counter c = counts.get(lower);
 			if (c == null)
 				counts.put(lower, c = new Counter(lower));

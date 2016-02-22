@@ -95,7 +95,7 @@ public class DutchPattern implements Pattern
 					&& this.inflectionSuffix.equals(op.inflectionSuffix)
 					&& this.lemmaSuffix.equals(op.lemmaSuffix)
 					&& this.stemChange == op.stemChange;
-			//System.err.println("?=?" + this + " " + other + " " + b);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("?=?" + this + " " + other + " " + b);
 			return b;
 		} catch (Exception e)
 		{

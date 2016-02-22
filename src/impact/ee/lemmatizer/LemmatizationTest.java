@@ -51,7 +51,7 @@ public class LemmatizationTest
 	{
 		for (MatchType m: typeHash.keySet())
 		{
-			System.err.println(m + ": " + typeHash.get(m));
+			nl.openconvert.log.ConverterLog.defaultLog.println(m + ": " + typeHash.get(m));
 		}
 	}
 	
@@ -101,7 +101,7 @@ public class LemmatizationTest
 							lemmaInHistoricalLexicon=true;
 						if (l.contains("*****") || simpleLemmatizer.modernLexiconHasLemma(l)) // german wildcard again
 							lemmaInModernLexicon=true;
-						//System.err.println("<" + l + ">");
+						//nl.openconvert.log.ConverterLog.defaultLog.println("<" + l + ">");
 					}
 					correctLemmata = parts[1];
 				}
@@ -109,7 +109,7 @@ public class LemmatizationTest
 					continue;
 				if (englishBehaviour && unfinishedLetter)
 				{
-					System.err.println("skipping " + line);
+					nl.openconvert.log.ConverterLog.defaultLog.println("skipping " + line);
 					continue;
 				}
 				@SuppressWarnings("unused")
@@ -129,7 +129,7 @@ public class LemmatizationTest
 				{
 					if (this.plainTextOutput)
 						out.write(w + "  --> "  + "NoMatch,  reference: " + correctLemmata + "\n");
-					System.err.println("no match for item " + item.n);
+					nl.openconvert.log.ConverterLog.defaultLog.println("no match for item " + item.n);
 					incrementCount(MatchType.None);
 				}
 				

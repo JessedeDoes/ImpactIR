@@ -76,7 +76,7 @@ public class WordConverter
 			serializer.setOutputProperty(OutputKeys.METHOD, "html");
 			serializer.transform(domSource, domResult);
 			out.close();
-			//System.err.println(domResult.getNode());
+			//nl.openconvert.log.ConverterLog.defaultLog.println(domResult.getNode());
 			return (Document) domResult.getNode();
 			
 		} catch (Exception e)

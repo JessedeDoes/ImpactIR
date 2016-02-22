@@ -253,10 +253,10 @@ acarnaniens     acarnanien      adjective(Number=plural,Gender=masculine)       
 			{
 				if (heldOutSet != null && heldOutSet.contains(w))
 				{
-					//System.err.println("SKIP: " + w);
+					//nl.openconvert.log.ConverterLog.defaultLog.println("SKIP: " + w);
 					continue;
 				}
-				// System.err.println("training on: " + w.lemma); 
+				// nl.openconvert.log.ConverterLog.defaultLog.println("training on: " + w.lemma); 
 				ArrayList<WordForm> l = lemmataSeenInTrainingData.get(w.lemma + ":" + w.lemmaPoS);
 				if (l == null)
 					lemmataSeenInTrainingData.put(w.lemma + ":" + w.lemmaPoS, 

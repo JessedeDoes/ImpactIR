@@ -113,7 +113,7 @@ public class Alphabet implements java.io.Serializable
 	} catch (Exception e)
 	{
 	  e.printStackTrace();
-	  System.err.println("Past niet: " + c);
+	  nl.openconvert.log.ConverterLog.defaultLog.println("Past niet: " + c);
 	  return 0;	
 	}
   }

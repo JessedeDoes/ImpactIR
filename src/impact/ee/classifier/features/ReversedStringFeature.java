@@ -16,7 +16,7 @@ public class  ReversedStringFeature extends Feature
 
 	public String getValue(Object o) // never called???
 	{
-		//System.err.println(s);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(s);
 		String s = (String) o;
 		return new StringBuffer(s).reverse().toString();
 	}

@@ -43,7 +43,7 @@ public class MajorityVoting implements SimpleInputOutputProcess
 				Counter<String> typeMap = withoutType.getTypes(s);
 				List<String> sorted = typeMap.keyList();
 				String topType = sorted.get(0);
-				//System.err.println("looking at " + s + " top: " + topType);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("looking at " + s + " top: " + topType);
 				if (typeMap.get(topType) >= minProportion * f) // regard other types as nonsensical
 				{
 					for (Element e: withoutType.getInstances(s))
@@ -51,7 +51,7 @@ public class MajorityVoting implements SimpleInputOutputProcess
 						String typeWas = e.getAttribute("type");
 						if (!typeWas.equals(topType))
 						{
-							System.err.println("VOTING: CHANGE TYPE OF " + s + " FROM "  + typeWas + " TO " + topType + " " + ec.getConcordance(e));
+							nl.openconvert.log.ConverterLog.defaultLog.println("VOTING: CHANGE TYPE OF " + s + " FROM "  + typeWas + " TO " + topType + " " + ec.getConcordance(e));
 							e.setAttribute("type", topType);
 						}
 					}

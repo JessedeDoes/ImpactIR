@@ -9,7 +9,8 @@ public class TaggingOptions
 		return tokenize;
 	}
 
-	public void setTokenize(boolean tokenize) {
+	public void setTokenize(boolean tokenize) 
+	{
 		this.tokenize = tokenize;
 	}
 }

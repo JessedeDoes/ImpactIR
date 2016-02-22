@@ -42,7 +42,7 @@ public class CharacterContextFeature extends ExistentialFeature
 			}
 		}
 		d.computeProbabilities();
-		//System.err.println(p + " -->  " + d);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(p + " -->  " + d);
 		return d;
 	}
 }

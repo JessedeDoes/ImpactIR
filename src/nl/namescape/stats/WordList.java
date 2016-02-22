@@ -165,14 +165,14 @@ public class WordList
 		
 		public ValueComparator(Map<String,Integer> _base) 
 		{
-			//System.err.println(_base);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(_base);
 			this.base = _base;
 		}
 
 		public int compare(TypeFrequency a, TypeFrequency b) 
 		{
 			if (base == null)
-				System.err.println("this is not happening!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("this is not happening!");
 			if(a.frequency < b.frequency) 
 			{
 				return 1;

@@ -70,7 +70,7 @@ public class TEICorpusImporter implements DoSomethingWithFile
 		List<Element> names = 
 				XML.getElementsByTagname(root, "ns:ne", false);
 		
-		System.err.println("TITLE: " + document.title);
+		nl.openconvert.log.ConverterLog.defaultLog.println("TITLE: " + document.title);
 		
 		ElementConcordancer concordancer = new ElementConcordancer();
 		

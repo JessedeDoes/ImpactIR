@@ -56,13 +56,13 @@ public class FrogTagXML
 				String z = id2tag.get(w.getAttribute("id"));
 				if (z != null)
 				{
-					//System.err.println(z);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(z);
 					w.setAttribute("function", z);
 				}
 				String l = id2lemma.get(w.getAttribute("id"));
 				if (l != null)
 				{
-					//System.err.println(z);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(z);
 					w.setAttribute("lemma", l);
 				}
 			}

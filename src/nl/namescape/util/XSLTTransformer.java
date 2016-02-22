@@ -76,7 +76,7 @@ public class XSLTTransformer implements nl.openconvert.filehandling.SimpleInputO
 		loadStylesheet();
 		if (this.transformer == null)
 		{
-			System.err.println("EEK!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("EEK!");
 			System.exit(1);
 		}
 	}
@@ -100,7 +100,7 @@ public class XSLTTransformer implements nl.openconvert.filehandling.SimpleInputO
 		loadStylesheet();
 		if (this.transformer == null)
 		{
-			System.err.println("EEK!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("EEK!");
 			System.exit(1);
 		}
 	}
@@ -210,8 +210,8 @@ public class XSLTTransformer implements nl.openconvert.filehandling.SimpleInputO
 			//Document doc = builder.newDocument();
 			//doc.appendChild(resultNode);
 			return (Document) resultNode;
-			//System.err.println("RESULT: " + resultNode);
-			//System.err.println(XML.NodeToString(resultNode));
+			//nl.openconvert.log.ConverterLog.defaultLog.println("RESULT: " + resultNode);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(XML.NodeToString(resultNode));
 			//return resultNode.getOwnerDocument();
 		} catch (Exception e) 
 		{

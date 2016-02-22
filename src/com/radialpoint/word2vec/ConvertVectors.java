@@ -84,13 +84,13 @@ public class ConvertVectors {
 			vectors = new float[words][];
 			vocabVects = new String[words];
 
-			System.err.println("Read " + words + " words with size " + size + " per vector from "  + vectorFileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Read " + words + " words with size " + size + " per vector from "  + vectorFileName);
 
 			byte[] orig = new byte[4];
 			byte[] buf = new byte[4];
 			for (int w = 0; w < words; w++) {
 				if (w % (words / 10) == 0) {
-					System.err.println("Read " + w + " words");
+					nl.openconvert.log.ConverterLog.defaultLog.println("Read " + w + " words");
 				}
 
 				sb.setLength(0);
@@ -120,7 +120,7 @@ public class ConvertVectors {
 					float f2 =  ByteBuffer.wrap(buf).getFloat();
 					//if (f1 != f2)
 					//{
-						//System.err.println("Niet gelijk: "+ f1 + " != " + f2);
+						//nl.openconvert.log.ConverterLog.defaultLog.println("Niet gelijk: "+ f1 + " != " + f2);
 					//}
 					m[i] = f2;
 					//dis.close();

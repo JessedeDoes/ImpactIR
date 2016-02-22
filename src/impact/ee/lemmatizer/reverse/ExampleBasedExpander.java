@@ -36,7 +36,7 @@ public class ExampleBasedExpander
 				{
 					for (WordForm e: examples)
 					{	
-						//System.err.println(e);
+						//nl.openconvert.log.ConverterLog.defaultLog.println(e);
 						rl.addWordform(e);
 					}
 					pe = new PrefixSuffixGuesser();
@@ -49,12 +49,12 @@ public class ExampleBasedExpander
 					}
 				} else
 				{
-					System.err.println("Nee, niks gevonden voor voorbeeldlemma " + fields[0]);
+					nl.openconvert.log.ConverterLog.defaultLog.println("Nee, niks gevonden voor voorbeeldlemma " + fields[0]);
 				}
 			}
 		} catch (Exception e)
 		{
-			System.err.println("Error expanding " + currentWordForm);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Error expanding " + currentWordForm);
 			e.printStackTrace();
 		}
 	}

@@ -73,11 +73,11 @@ public class SuffixGuesser implements Classifier
 
 			d.incrementCount(cls);
 
-			//System.err.println(d);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(d);
 			Trie.TrieNode nextNode = node.delta(w.charAt(n-1-i));
 			if (nextNode == null) break; else 	node = nextNode;
 		}
-		// System.err.println(w + ":  " + cls + " inserted: " +  i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(w + ":  " + cls + " inserted: " +  i);
 	}
 
 	/**
@@ -109,12 +109,12 @@ public class SuffixGuesser implements Classifier
 					d.computeProbabilities();
 				} else
 				{
-					// System.err.println("no distribution defined at node: " + n);
+					// nl.openconvert.log.ConverterLog.defaultLog.println("no distribution defined at node: " + n);
 				}
 			}
 		};
 		suffixTrie.forAllNodesPreOrder(action);
-		//System.err.println("trie has " + action.N + " nodes");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("trie has " + action.N + " nodes");
 	}
 
 	//@Override
@@ -123,7 +123,7 @@ public class SuffixGuesser implements Classifier
 		// TODO Auto-generated method stub
 		String s = i.values.get(0);
 		Distribution d = distributionForString(s);
-		System.err.println(d);
+		nl.openconvert.log.ConverterLog.defaultLog.println(d);
 		if (d == null || d.outcomes.size() == 0)
 			return null;
 		return d.outcomes.get(0).label;
@@ -163,7 +163,7 @@ public class SuffixGuesser implements Classifier
 		double theta0 = 0;
 		for (Distribution.Outcome i: d0.outcomes) theta0 += (i.p - Pavg) *  (i.p - Pavg); theta0  /= s-1;
 
-		//System.err.println("theta0 =  " + theta0);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("theta0 =  " + theta0);
 		//System.exit(0);
 		for (int i=0; i <=  M; i++)
 			theta[i] = theta0;
@@ -217,7 +217,7 @@ public class SuffixGuesser implements Classifier
 		Trie.TrieNode myNode = path[i];
 		String suffix = s.substring(s.length()-i);
 		// LemmaLog.addToLog("suffix:" + suffix + " ... " + myNode.production());
-		// System.err.println(s + " match suffix length:  " + i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(s + " match suffix length:  " + i);
 		
 		Distribution d = zeroDistribution;
 		if (applySmoothing)
@@ -236,11 +236,11 @@ public class SuffixGuesser implements Classifier
 			
 			if (dnext == null)
 			{
-				// System.err.println("?! No distribution defined for  " + s + " at " + j + " node = "  + path[j]);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("?! No distribution defined for  " + s + " at " + j + " node = "  + path[j]);
 			}
 			else
 			{
-				//System.err.println(d);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(d);
 				suffixLength++;
 				if (!applySmoothing)
 				{
@@ -250,7 +250,7 @@ public class SuffixGuesser implements Classifier
 					d.mergeHigherOrderDistribution(dnext, theta[j]);
 				}
 			}
-			//System.err.println("s= " + s + " j= " + j + " d= " + d);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("s= " + s + " j= " + j + " d= " + d);
 		}
 		LemmaLog.addToLog(s + " " + suffixLength);
 		return d;
@@ -276,7 +276,7 @@ public class SuffixGuesser implements Classifier
 		for (Instance  i: d.instances)
 		{
 			String s = i.values.get(0); // Vieze truc: .... 
-			//System.err.println(s);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(s);
 			String cls = i.classLabel;
 			addWordToSuffixTrie(s,cls);
 		}

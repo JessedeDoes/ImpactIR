@@ -71,7 +71,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		addPresentParticleToLexicon(lexicon); // and other hacks as well....
 		for (WordForm w: lexicon)
 		{	
-			//System.err.println(w);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 			w.tag = simplifyTag(w.tag); 
 
 			if (heldOutSet != null && heldOutSet.contains(w)) 
@@ -95,7 +95,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			nWords ++;
 		};
 
-		System.err.println("Words " + nWords + "  fallbacks " + nFallbacks);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Words " + nWords + "  fallbacks " + nFallbacks);
 		classifiersPerTag.buildClassifiers();
 	}
 	/**
@@ -120,7 +120,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				if (w.wordform.endsWith("t") && !w.lemma.endsWith("ten")) // ahem moet; omvat; .....
 				{
 					w.tag = w.tag.replaceAll("\\)", ",formal=infl-t)");
-					//System.err.println(w);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 				}
 			}
 
@@ -128,13 +128,13 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			if (w.tag.matches("AA.*") && w.wordform.endsWith("e") && !w.lemma.endsWith("e"))
 			{
 				w.tag = w.tag.replaceAll("\\)", ",formal=infl-e)");
-				//System.err.println(w);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 			}
 
 			if (w.tag.matches("AA.*") && w.wordform.endsWith("s") && !w.lemma.endsWith("s"))
 			{
 				w.tag = w.tag.replaceAll("\\)", ",formal=infl-s)");
-				//System.err.println(w);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 			}
 
 			
@@ -213,7 +213,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					w2.lemmaPoS =w.lemmaPoS;
 					w2.tag="VRB(finiteness=part,tense=past,formal=infl-en)";
 					additions.add(w2);
-					//System.err.println("Is dit de w2 die je zoekt??? " + w2);
+					//nl.openconvert.log.ConverterLog.defaultLog.println("Is dit de w2 die je zoekt??? " + w2);
 				}
 			}  
 		}
@@ -326,7 +326,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 		{			
 			if (this.tagRelation.corpusTagCompatibleWithLexiconTag(corpusTag,lexiconTag,false)) // problem: there may be multiple possibilities...
 			{
-				//System.err.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Try classifier for " + lexiconTag + " for " + wordform +  ", corpus tag="  + corpusTag);
 
 				theFormHandler c =  new theFormHandler();
 				//classifiersPerTag.callback = c; // oops..... should synchronize this in a different way....
@@ -417,7 +417,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 
 				if (!foundMatchInLexicon && !corpusTag.contains("NOU-P"))
 				{
-					//System.err.println("Word in lexicon, maar niet met passende tag.. " + wordform + ":" + corpusTag + " " + lemmata);
+					//nl.openconvert.log.ConverterLog.defaultLog.println("Word in lexicon, maar niet met passende tag.. " + wordform + ":" + corpusTag + " " + lemmata);
 				}
 			} 
 		}
@@ -433,7 +433,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 			t.nCorrect++;
 		else if (true || wf.tag.startsWith("NOU"))
 		{
-			System.err.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Error: " + wf + " --> " + lemma + "  " + lastRule);
 		}
 		t.nItems++;
 	}
@@ -524,7 +524,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				m.put("lemmata", StringUtils.join(candidates, "|"));
 			} else
 			{
-				//System.err.println("Nothing logged for " + word +  "/" + tag);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Nothing logged for " + word +  "/" + tag);
 			}
 		}
 
@@ -574,7 +574,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				if (foundAsCandidate) nHasCorrect++;
 				if (!foundAsCandidate && !mismatch)
 				{
-					System.err.println("Dit kan niet " + wordform + "/"  + trueLemma + " assigned lemma=" + assignedLemma + " lemmata = "  + assignedLemmata);
+					nl.openconvert.log.ConverterLog.defaultLog.println("Dit kan niet " + wordform + "/"  + trueLemma + " assigned lemma=" + assignedLemma + " lemmata = "  + assignedLemmata);
 				}
 				if (corpusTag.matches("^(NOU|AA|VRB|NUM).*"))
 				{
@@ -642,7 +642,7 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 				extra = mismatchType +  " " + lemmaLog.getLoggedMatches(wordform, corpusTag) + "";
 				if (extra.equals("null"))
 				{
-					System.err.println("No log information for " + wordform + ":" + corpusTag);
+					nl.openconvert.log.ConverterLog.defaultLog.println("No log information for " + wordform + ":" + corpusTag);
 					//System.exit(1);
 				}
 			}
@@ -653,14 +653,14 @@ public class MultiplePatternBasedLemmatizer extends SimplePatternBasedLemmatizer
 					+ "\t" + c.getAttributeAt("tag", 0)
 					+ "\t" + assignedLemmata + pm + trueLemma + "\t" + extra);
 		}
-		System.err.println("items " + nItems +  " errors "  + nErrors + " heeft correct  " + nHasCorrect +  " is correct " + (nItems - nErrors));
-		System.err.println("error percentage: " + (nErrors) / (double) nItems);
-		System.err.println("recall percentage: " + (nHasCorrect) / (double) nItems);
-		System.err.println("unrecalled content words: " + nNotRecalledContentWords);
-		System.err.println("recall percentage for content words: " + 
+		nl.openconvert.log.ConverterLog.defaultLog.println("items " + nItems +  " errors "  + nErrors + " heeft correct  " + nHasCorrect +  " is correct " + (nItems - nErrors));
+		nl.openconvert.log.ConverterLog.defaultLog.println("error percentage: " + (nErrors) / (double) nItems);
+		nl.openconvert.log.ConverterLog.defaultLog.println("recall percentage: " + (nHasCorrect) / (double) nItems);
+		nl.openconvert.log.ConverterLog.defaultLog.println("unrecalled content words: " + nNotRecalledContentWords);
+		nl.openconvert.log.ConverterLog.defaultLog.println("recall percentage for content words: " + 
 				(nContentWords - nNotRecalledContentWords) / (double) nContentWords);
-		System.err.println(lemmaLog.getGuesserPoSMatches());
-		System.err.println(errorTypeCounter);
+		nl.openconvert.log.ConverterLog.defaultLog.println(lemmaLog.getGuesserPoSMatches());
+		nl.openconvert.log.ConverterLog.defaultLog.println(errorTypeCounter);
 	}
 
 	public static void main(String[] args)

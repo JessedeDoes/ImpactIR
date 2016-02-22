@@ -53,7 +53,7 @@ public class MultiClassifier implements Serializable
 	{
 		if (className == null)
 		{
-			System.err.println("NULL CLASS NAME " + labels.size());
+			nl.openconvert.log.ConverterLog.defaultLog.println("NULL CLASS NAME " + labels.size());
 			//System.exit(1);
 			className = "NULL";
 		}
@@ -65,7 +65,7 @@ public class MultiClassifier implements Serializable
 		Map<Integer,Double> weights = model.getLinearWeightsMap(); // dit werkt dus niet, deze zijn nog niet aangemaakt...
 		if (weights == null)
 		{
-			System.err.println("null weights for class " + className);
+			nl.openconvert.log.ConverterLog.defaultLog.println("null weights for class " + className);
 			return;
 		}
 		for (int i: weights.keySet())
@@ -90,7 +90,7 @@ public class MultiClassifier implements Serializable
 			ArrayList<Weight> a = e.getValue();
 			Weight[] array = new Weight[a.size()];
 			array = a.toArray(array);
-			//System.err.println(e.getKey() + "-->" + array);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(e.getKey() + "-->" + array);
 			weightMap2.put(e.getKey(), array);
 		}
 		noLists = true;
@@ -105,15 +105,15 @@ public class MultiClassifier implements Serializable
 		double best = -10e6;
 		double bestCheck = best;
 		String bestLabelCheck = null;
-		//System.err.println("Classify:"  + labels.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("Classify:"  + labels.size());
 		for (int i =0;  i < labels.size(); i++)
 		{
 			//double check = models.get(i).classify(v);
-			//System.err.println("check" + i + "=" +check  + " "  + bestCheck + " " + bestLabelCheck + "?" + bestLabel + "?" +  	labels.get(i));
+			//nl.openconvert.log.ConverterLog.defaultLog.println("check" + i + "=" +check  + " "  + bestCheck + " " + bestLabelCheck + "?" + bestLabel + "?" +  	labels.get(i));
 			
 			//if (check != delta[i])
 			//{
-			  //System.err.println(labels.get(i) + ":" + check + "!=" + delta[i]);
+			  //nl.openconvert.log.ConverterLog.defaultLog.println(labels.get(i) + ":" + check + "!=" + delta[i]);
 			//}
 			if (delta[i] > best)
 			{
@@ -128,7 +128,7 @@ public class MultiClassifier implements Serializable
 		}
 		//if (!bestLabelCheck.equals(bestLabel))
 		//{
-		//	System.err.println("Oneenigheid! " + bestLabel + "!" + bestLabelCheck);
+		//	nl.openconvert.log.ConverterLog.defaultLog.println("Oneenigheid! " + bestLabel + "!" + bestLabelCheck);
 		//}
 		return bestLabel;
 	}

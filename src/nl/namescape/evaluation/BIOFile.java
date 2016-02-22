@@ -52,7 +52,7 @@ public class BIOFile implements NETaggedDocument
 			lines.add(line);
 			if (line.length >= 2) try
 			{
-				//System.err.println(line[0]);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(line[0]);
 				String[] tagParts = line[1].split("-");
 				if (tagParts[0].equals("B"))
 				{
@@ -73,7 +73,7 @@ public class BIOFile implements NETaggedDocument
 				{
 					if (currentEntity == null)
 					{
-						System.err.println("Unexpected internal entity at: " + l + " : " + line[0]);
+						nl.openconvert.log.ConverterLog.defaultLog.println("Unexpected internal entity at: " + l + " : " + line[0]);
 					}
 					else
 					{
@@ -81,7 +81,7 @@ public class BIOFile implements NETaggedDocument
 						if (currentEntity.type.equals(type))
 							currentEntity.addWord(line[0]);
 						else
-							System.err.println("Inconsistent entity types for I " +l + " : "  + line[0]);
+							nl.openconvert.log.ConverterLog.defaultLog.println("Inconsistent entity types for I " +l + " : "  + line[0]);
 					}
 				}
 			} catch (Exception e)

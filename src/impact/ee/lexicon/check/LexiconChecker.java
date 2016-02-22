@@ -11,7 +11,7 @@ public class LexiconChecker
 			int d = LevenshteinDistance.computeLevenshteinDistance(w.lemma, w.wordform); 
 			if (1.5*d > w.lemma.length())
 			{
-				System.err.println(k++ +  ": (" + d + ") " + w);
+				nl.openconvert.log.ConverterLog.defaultLog.println(k++ +  ": (" + d + ") " + w);
 			}
 		}
 	}

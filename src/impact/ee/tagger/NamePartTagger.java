@@ -9,7 +9,7 @@ public class NamePartTagger extends BasicNERTagger
 	public NamePartTagger()
 	{
 		super();
-		System.err.println("calling constructor without arguments ... are you sure?");
+		nl.openconvert.log.ConverterLog.defaultLog.println("calling constructor without arguments ... are you sure?");
 		init();
 	}
 	

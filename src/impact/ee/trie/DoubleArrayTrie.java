@@ -80,7 +80,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 			File f = new File(filename);
 		} catch (Exception e)
 		{
-			System.err.println("unable to open File " + filename);
+			nl.openconvert.log.ConverterLog.defaultLog.println("unable to open File " + filename);
 			e.printStackTrace();
 		}
 		return loadTrie(new File(filename));
@@ -93,13 +93,13 @@ public class DoubleArrayTrie implements ITrie<Object>
 		DataInputStream dataIn = null;
 		try
 		{
-			System.err.println("loading trie from '" + file.getAbsolutePath()
+			nl.openconvert.log.ConverterLog.defaultLog.println("loading trie from '" + file.getAbsolutePath()
 					+ "'... " + new Date());
 			dataIn = new DataInputStream(new FileInputStream(file));
 			//final long startTime = System.currentTimeMillis();
 			result = loadTrie(dataIn);
 			//final long endTime = System.currentTimeMillis();
-			System.err.println("loaded trie from '" + file + "' " + new Date());
+			nl.openconvert.log.ConverterLog.defaultLog.println("loaded trie from '" + file + "' " + new Date());
 			// + MathUtil.timeString(endTime - startTime, false));
 		} finally
 		{
@@ -322,7 +322,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 					for (int v : check)
 						dataOut.writeInt(v);
 		}
-		System.err.println("Finished writing base and check arrays\n");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Finished writing base and check arrays\n");
 							dataOut.writeInt(tailPool.size());
 							for (Map.Entry<Integer, String> entry : tailPool.entrySet())
 							{
@@ -356,12 +356,12 @@ public class DoubleArrayTrie implements ITrie<Object>
 			int z = ( x >> 24); 
 			if (negative) z += 128;
 			dataBytes[4*i+3] = (byte) (z);
-			//System.err.printf("%d als %d,%d,%d,%d\n", x,
+			//nl.openconvert.log.ConverterLog.defaultLog.printf("%d als %d,%d,%d,%d\n", x,
 			//dataBytes[4*i], dataBytes[4*i+1], dataBytes[4*i+2], dataBytes[4*i+3] );
 			int  u = getInt(dataBytes,i);
 			if (u != xOrg)
 			{
-				System.err.println("Error: retrieving: " + u + " for: " + x);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Error: retrieving: " + u + " for: " + x);
 				System.exit(1);
 			}
 		}
@@ -473,8 +473,8 @@ public class DoubleArrayTrie implements ITrie<Object>
 				check[i] = dataIn.readInt();
 		}
 		final int numTails = dataIn.readInt();
-		System.err.println("Finished reading base and check arrays\n");
-		System.err.println("Number of tails: " + numTails);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Finished reading base and check arrays\n");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Number of tails: " + numTails);
 		for (int i = 0; i < numTails; ++i)
 		{
 			final int index = dataIn.readInt();
@@ -482,7 +482,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 
 			tailPool.put(index, tail);
 		}
-		System.err.println("Finished reading tail pool\n");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Finished reading tail pool\n");
 	}
 	public void setNodeData(int i, Object o)
 	{
@@ -625,7 +625,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 		while (b == -1)
 		{
 			grow();
-			//System.err.println("eek" + c);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("eek" + c);
 			b = findFreeCell(chars);
 		}
 
@@ -759,7 +759,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 	 */
 	final void grow()
 	{
-		System.err.println("grow to .. " + (base.length + SIZE_INC));
+		nl.openconvert.log.ConverterLog.defaultLog.println("grow to .. " + (base.length + SIZE_INC));
 		///System.exit(1);
 		final int[] newBase = new int[base.length + SIZE_INC + 1];
 		final int[] newCheck = new int[check.length + SIZE_INC + 1];
@@ -809,7 +809,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 		final int[] newBase = new int[maxInd + 1];
 		final int[] newCheck = new int[maxInd + 1];
 
-		//System.err.println("maxInd=" + maxInd + "  newBase.length = " + newBase.length + " base.length= " + base.length);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("maxInd=" + maxInd + "  newBase.length = " + newBase.length + " base.length= " + base.length);
 		for (int i = 0; i < newBase.length && i < base.length; i++)
 			newBase[i] = base[i];
 		for (int i = 0; i < newCheck.length && i < check.length; i++)
@@ -1014,7 +1014,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 		for (int i = 1; i < args.length; ++i)
 		{
 			final String inputWordsFile = args[i];
-			System.err.println("verifying '" + inputWordsFile + "'...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("verifying '" + inputWordsFile + "'...");
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new FileInputStream(inputWordsFile), "UTF-8"));
@@ -1025,18 +1025,18 @@ public class DoubleArrayTrie implements ITrie<Object>
 				if (addWordBoundaries) s = "^" + s + "$";
 				if (!trie.contains(s))
 				{
-					System.err.println("\tlost '" + line + "'!");
+					nl.openconvert.log.ConverterLog.defaultLog.println("\tlost '" + line + "'!");
 				}
 			}
 			reader.close();
 		}
 
-		System.err.println("done.");
+		nl.openconvert.log.ConverterLog.defaultLog.println("done.");
 	}
 
 	public void saveToFile(final String outputDatFile) throws FileNotFoundException, IOException 
 	{
-		System.err.println("Writing trie to '" + outputDatFile + "'");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Writing trie to '" + outputDatFile + "'");
 		final DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(
 				outputDatFile));
 		this.dump(dataOut);
@@ -1046,7 +1046,7 @@ public class DoubleArrayTrie implements ITrie<Object>
 	public void readWordsFromFile(String inputWordsFile) throws UnsupportedEncodingException, FileNotFoundException,
 			IOException 
 	{
-		System.err.println("add words from '" + inputWordsFile + "'...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("add words from '" + inputWordsFile + "'...");
 
 		boolean addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", false);
 
@@ -1055,13 +1055,13 @@ public class DoubleArrayTrie implements ITrie<Object>
 		String line = null;
 		while ((line = reader.readLine()) != null)
 		{
-			//System.err.println(line);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(line);
 			String t = line.trim();
 			this.add(addWordBoundaries? "^" + t + "$": t);
 		}
 		reader.close();
 
-		System.err.println("\t" + this);
+		nl.openconvert.log.ConverterLog.defaultLog.println("\t" + this);
 	}
 
 

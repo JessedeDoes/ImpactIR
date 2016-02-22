@@ -59,7 +59,7 @@ class WordFormIterator implements Iterator<WordForm>
 		initializeQuery();
 		try
 		{
-			System.err.println(this.lexiconDatabase.connection);
+			nl.openconvert.log.ConverterLog.defaultLog.println(this.lexiconDatabase.connection);
 			stmt = this.lexiconDatabase.connection.prepareStatement(query ,
 					ResultSet.TYPE_FORWARD_ONLY, 
 					ResultSet.CONCUR_READ_ONLY);
@@ -67,7 +67,7 @@ class WordFormIterator implements Iterator<WordForm>
 		} catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			System.err.println("piep: exception...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("piep: exception...");
 			e.printStackTrace();				
 		}
 	}

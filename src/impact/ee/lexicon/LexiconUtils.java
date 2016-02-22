@@ -43,14 +43,14 @@ public class LexiconUtils
 		for (WordForm w: modernLexicon)
 		{
 			if (k % 10000 == 0) 
-				System.err.println(k + ": " +  w);
+				nl.openconvert.log.ConverterLog.defaultLog.println(k + ": " +  w);
 			words.add(w.wordform);
 			k++;
 		}
 		k=0;
 		for (String w: words)
 		{
-			if (k % 10000 == 0) System.err.println("to trie: " + k + ": " +  w);
+			if (k % 10000 == 0) nl.openconvert.log.ConverterLog.defaultLog.println("to trie: " + k + ": " +  w);
 
 			dat.add(addWordBoundaries? "^" + w + "$": w);
 
@@ -101,7 +101,7 @@ public class LexiconUtils
 				w.lemmaFrequency = Integer.parseInt(parts[4]);
 				if (w.lemmaFrequency > 10000) // Huh???/
 				{
-					System.err.println(s);
+					nl.openconvert.log.ConverterLog.defaultLog.println(s);
 					//System.exit(1);
 				}
 			}
@@ -120,7 +120,7 @@ public class LexiconUtils
 		for (WordForm w: historicalLexicon)
 		{
 			boolean exactMatch = false;
-			//System.err.println(w);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 			Set<WordForm> candidates = modernLexicon.findForms(w.lemma, w. tag);
 			Set<String> forms = new HashSet<String>();
 			for (WordForm c: candidates)

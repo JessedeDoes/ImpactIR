@@ -69,7 +69,7 @@ public class Various
 			String z=null;
 			if ((ns != null && ns.length()==0) || ((z = e.getAttribute("xml:xmlns")) != null) && z.equals("") )
 			{
-				System.err.println("empty namespace for "  + e.getNodeName());
+				nl.openconvert.log.ConverterLog.defaultLog.println("empty namespace for "  + e.getNodeName());
 				e.removeAttribute("xml:xmlns"); // HM werkt dit? nee dus
 			}
 		}

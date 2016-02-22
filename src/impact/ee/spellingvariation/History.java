@@ -186,7 +186,7 @@ public class History implements Iterable<History.State>,
 		{
 			this.insertHistoriesFromGraph(g.next());
 		}
-		System.err.println("histories inserted, start polishing .. ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("histories inserted, start polishing .. ");
 		makeStateModel(); // moet dit niet NA het opschonen van de begintoestanden?
 		int index=0;
 		//Vector<Transition> fromStart = new Vector<Transition>();
@@ -212,7 +212,7 @@ public class History implements Iterable<History.State>,
 			Transition t = startState.prolongations.get(i);
 			if (!t.target.isFinal)
 			{
-				//System.err.println("Neen:" + t.target);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Neen:" + t.target);
 				//startState.transitions.remove(t);
 			} else
 			{
@@ -273,7 +273,7 @@ public class History implements Iterable<History.State>,
 			{
 				int nofBefore = allStates.size(); // ugly hack to check whether we get a new state
 				State s = startState.insertHistory(symbolHistory, 0, p+1);
-				//System.err.println(s);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				if  (from == g.startPosition || p == MODEL_ORDER)
 				{
 					State sp = s.leftParentState;
@@ -293,7 +293,7 @@ public class History implements Iterable<History.State>,
 					}
 					if (target == g.endPosition)
 					{
-						//System.err.println("word final " + s);
+						//nl.openconvert.log.ConverterLog.defaultLog.println("word final " + s);
 						s.setWordFinal(true); 
 					}
 				}
@@ -357,7 +357,7 @@ public class History implements Iterable<History.State>,
 		  	{
 		  		li.remove();
 		  		less += minP;
-		  		// System.err.println("wappp");
+		  		// nl.openconvert.log.ConverterLog.defaultLog.println("wappp");
 		  	}
 		  }
 		  double mult = 1/(1-less);
@@ -528,7 +528,7 @@ public class History implements Iterable<History.State>,
 		{
 			if (rightParentState == null)
 			{
-				//System.err.println("OUCH " + this);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("OUCH " + this);
 			  	stateTransitions = prolongations;
 				return;
 			}
@@ -541,7 +541,7 @@ public class History implements Iterable<History.State>,
 			*/
 			if (this == startState)
 			{
-				System.err.println("impossible!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("impossible!");
 				System.exit(1);
 			}
 			Vector<Transition> vNew = new Vector<Transition>();
@@ -636,7 +636,7 @@ public class History implements Iterable<History.State>,
 			if (downlink >= 0 && History.this.lowerOrderHistory != null)
 			{
 				//State downlink =  History.this.lowerOrderHistory.allStates.get(this.downlink);
-				//System.err.println("Downlink: " + this.getEnclosingHistory().MODEL_ORDER + "  --> " + lowerOrderHistory.MODEL_ORDER);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Downlink: " + this.getEnclosingHistory().MODEL_ORDER + "  --> " + lowerOrderHistory.MODEL_ORDER);
 				return History.this.lowerOrderHistory.allStates.get(this.downlink);
 			}
 			return null;
@@ -757,13 +757,13 @@ public class History implements Iterable<History.State>,
 	{
 		lowerOrder.higherOrderHistory = higherOrder;
 		higherOrder.lowerOrderHistory = lowerOrder;
-		//System.err.println("connecting!! " + lowerOrder.MODEL_ORDER + " " + higherOrder.MODEL_ORDER);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("connecting!! " + lowerOrder.MODEL_ORDER + " " + higherOrder.MODEL_ORDER);
 		connectStates(lowerOrder.startState, higherOrder.startState);
 	}
 	
 	public static void connectStates(State lowerOrder, State higherOrder)
 	{
-		//System.err.println("connect: " + lowerOrder + "/" + lowerOrder.getEnclosingHistory() + " -- " + 
+		//nl.openconvert.log.ConverterLog.defaultLog.println("connect: " + lowerOrder + "/" + lowerOrder.getEnclosingHistory() + " -- " + 
 		//		                                                 higherOrder +  "/" + higherOrder.getEnclosingHistory());
 				
 		lowerOrder.uplink = higherOrder.index;
@@ -796,17 +796,17 @@ public class History implements Iterable<History.State>,
 
 		for (State s: h.allStates)
 		{
-			System.err.println("State: " + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("State: " + s);
 			for (Transition t: s.getStateTransitions())
 			{
-				System.err.println("state transition: "+ t.symbol +  " -> " + t.target);
+				nl.openconvert.log.ConverterLog.defaultLog.println("state transition: "+ t.symbol +  " -> " + t.target);
 			}
 			for (int i=1; i <= 20; i++)
 			{
 				State n = s.advance(i);
 				if (n != null)
 				{
-					System.err.println("\tadvance on: "+ i +  " -> " + n);
+					nl.openconvert.log.ConverterLog.defaultLog.println("\tadvance on: "+ i +  " -> " + n);
 				}
 			}
 		}

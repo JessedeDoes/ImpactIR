@@ -28,7 +28,7 @@ public class SimpleNormalizer implements EntityNormalizer
 		n = n.replaceAll("'S$", "");
 		if (n.endsWith("'S")) 
 		{
-			System.err.println("CRASH BOEM " + n);
+			nl.openconvert.log.ConverterLog.defaultLog.println("CRASH BOEM " + n);
 			//System.exit(1);
 		}
 		return n;

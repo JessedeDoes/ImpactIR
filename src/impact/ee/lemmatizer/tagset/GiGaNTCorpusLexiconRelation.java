@@ -28,7 +28,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 	{
 		Set<Type> intersection = new HashSet<Type>(V1);
 		intersection.retainAll(V2);
-		//System.err.println(V1 + " intersect" + V2 +   "  " + intersection);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(V1 + " intersect" + V2 +   "  " + intersection);
 		return intersection;
 	}
 	
@@ -138,7 +138,7 @@ public class GiGaNTCorpusLexiconRelation implements TagRelation
 		while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 		{
 			String[] p = s.split("\\s+");
-			System.err.println(r.corpusTagCompatibleWithLexiconTag(p[0],p[1], true));
+			nl.openconvert.log.ConverterLog.defaultLog.println(r.corpusTagCompatibleWithLexiconTag(p[0],p[1], true));
 		}
 	}
 }

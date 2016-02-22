@@ -109,7 +109,7 @@ public class Ligatures
 			e1.printStackTrace();
 		}
 		String arrow = "\u2192";
-		System.err.println("hihi");
+		nl.openconvert.log.ConverterLog.defaultLog.println("hihi");
 		for (String[] ss: replacementList)
 		{
 			//System.out.println(ss[0] + "=" + ss[1] + "=" + replaceLigatures(ss[0]));

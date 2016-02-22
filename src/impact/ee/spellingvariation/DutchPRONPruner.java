@@ -38,7 +38,7 @@ public class DutchPRONPruner implements MultigramPruner
     		 || m.rhs.equals("eau") ||  m.rhs.equals("ieu")  || 
     		 m.rhs.equals("eeu")   || m.rhs.equals("ill") ;
      
-     System.err.println(x + ": " + m);
+     nl.openconvert.log.ConverterLog.defaultLog.println(x + ": " + m);
      
      return x;
   }

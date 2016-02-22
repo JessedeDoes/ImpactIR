@@ -49,14 +49,14 @@ public class WordTableConverter implements DoSomethingWithFile
 				{
 					Cell cell = new Cell();
 					cell.text = ce.getTextContent().trim().replaceAll("\\s+", " ");
-					// System.err.println("<"  + cell.text + ">");
+					// nl.openconvert.log.ConverterLog.defaultLog.println("<"  + cell.text + ">");
 					row.cells.add(cell);
 				}
 				for (Element ce : XML.getElementsByTagname(re,"td", false))
 				{
 					Cell cell = new Cell();
 					cell.text = ce.getTextContent().trim().replaceAll("\\s+", " ");
-					// System.err.println("<"  + cell.text + ">");
+					// nl.openconvert.log.ConverterLog.defaultLog.println("<"  + cell.text + ">");
 					row.cells.add(cell);
 				}
 			}
@@ -104,7 +104,7 @@ public class WordTableConverter implements DoSomethingWithFile
 	public void handleFile(String fileName)
 	{
 		// TODO Auto-generated method stub
-		System.err.println(fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println(fileName);
 		if (!fileName.endsWith(".doc"))
 			return;
 		try

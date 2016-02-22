@@ -229,7 +229,7 @@ public abstract class StemChange
 	{
 		StemChange r = changeMap.get(type);
 		if (r == null)
-			System.err.println("Type " + type + " not known!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Type " + type + " not known!");
 		return changeMap.get(type);
 	}
 	

@@ -48,7 +48,7 @@ public class AbstractMultigram extends JointMultigram
 	{
 		super(set);
 		init(set);
-		System.err.println("created abstract multigram: " + this + " with id " + this.id + " class:  " +  
+		nl.openconvert.log.ConverterLog.defaultLog.println("created abstract multigram: " + this + " with id " + this.id + " class:  " +  
 				this.getClass() + " set " + set + " nitems in set " + set.size());
 	}
 

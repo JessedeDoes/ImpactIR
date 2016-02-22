@@ -48,7 +48,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 		{
 			if (Character.getType(s.charAt(i)) == Character.OTHER_SYMBOL)
 			{
-				System.err.printf("dangerous character in %s\n", s);
+				nl.openconvert.log.ConverterLog.defaultLog.printf("dangerous character in %s\n", s);
 				return false;
 			}
 		}
@@ -120,7 +120,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
         		nThreads = Integer.parseInt(options.getOption("nThreads"));
         	} catch (Exception e)
         	{
-        		System.err.println("Error in threads option");
+        		nl.openconvert.log.ConverterLog.defaultLog.println("Error in threads option");
         	}
         }
 		Tagger taggerLemmatizer = 
@@ -129,7 +129,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 				new ImpactTaggerLemmatizerClient(taggerLemmatizer);
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,nThreads);
-		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Start tagging from " + args[2] + " to " + args[3]);
 		DirectoryHandling.traverseDirectory(m, args[2], args[3], null);
 		m.shutdown();
 	}

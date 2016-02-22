@@ -180,7 +180,7 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 			}
 		} catch (Exception e) 
 		{
-			System.err.println("Warning: nesting error in punctuation handling");			
+			nl.openconvert.log.ConverterLog.defaultLog.println("Warning: nesting error in punctuation handling");			
 		}
 	}
 
@@ -207,14 +207,14 @@ public class PunctuationTagger  implements SimpleInputOutputProcess
 				TEITokenizer tok = new TEITokenizer();
 				d = tok.getTokenizedDocument(in, true);
 				new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
-				System.err.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
+				nl.openconvert.log.ConverterLog.defaultLog.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
 			} catch (Exception e)
 			{
 				e.printStackTrace();
 			}
 		} else
 		{
-			System.err.println("NOT tokenizing " + in);
+			nl.openconvert.log.ConverterLog.defaultLog.println("NOT tokenizing " + in);
 			try 
 			{
 				d = XML.parse(in);

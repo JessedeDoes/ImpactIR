@@ -33,7 +33,7 @@ public class MolechaserMetadataFixer implements SimpleInputOutputProcess
 		if (idno == null || idno.equals(""))
 		{
 			String newIdno = MolechaserMetadataFixer.createIdno(m, d, fileName);
-			System.err.println("Attempt to assign idno: " + newIdno);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Attempt to assign idno: " + newIdno);
 			idno = newIdno;
 			setIdno(d,idno);
 		}

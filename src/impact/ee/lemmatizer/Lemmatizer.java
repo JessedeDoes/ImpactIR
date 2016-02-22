@@ -83,19 +83,19 @@ public class Lemmatizer
 			case MAPDB: loadLexicaMapDB(modernLexiconFilename, historicalLexiconFilename); break;
 		}
 
-		System.err.println("finished reading lexicon text files");
+		nl.openconvert.log.ConverterLog.defaultLog.println("finished reading lexicon text files");
 		this.matcher = new DatrieMatcher(patternFilename);
 		// this.lexiconTrie =modernLexicon.createTrie(matcher.addWordBoundaries);
 		try 
   		{
 			this.lexiconTrie = DoubleArrayTrie.loadTrie(trieFilename);
-			System.err.println("Loaded lexicon from " + trieFilename);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Loaded lexicon from " + trieFilename);
 		} catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.err.println("created trie from modern lexicon content");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("created trie from modern lexicon content");
 		//this.matcher ..
 	}
 
@@ -173,7 +173,7 @@ public class Lemmatizer
 			Set<WordForm> extraCandidates = (modernLexicon==null)? new HashSet<WordForm>(): modernLexicon.findLemmata(matchedWord);
 			if (extraCandidates == null)
 			{
-				System.err.println("Huh? cannot find matched word in lexicon: " + matchedWord);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Huh? cannot find matched word in lexicon: " + matchedWord);
 			} else
 			{
 				for (WordForm w: extraCandidates)
@@ -259,11 +259,11 @@ public class Lemmatizer
 			matches.add(x);
 		}
 		
-		//System.err.println("for:  " + w0 + ", found before matching: " + matches.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("for:  " + w0 + ", found before matching: " + matches.size());
 		
 		if (isUseMatcher() && !(believeExactMatches && matches.size() > 0))
 		{	
-			// System.err.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
+			// nl.openconvert.log.ConverterLog.defaultLog.println(" use matcher for  " + w0 + " found before matching: " + matches.size());
 			matcher.setCallback(new candidateCollector(matches));
 			matcher.matchWordToLexicon(lexiconTrie, w.toLowerCase());
 		}
@@ -301,7 +301,7 @@ public class Lemmatizer
 		try 
 		{
 			Class c = l.getClass();
-			System.err.println("CLASS: "  + c);
+			nl.openconvert.log.ConverterLog.defaultLog.println("CLASS: "  + c);
 			Method m = l.getClass().getDeclaredMethod("destroy");
 			if (m != null)
 				m.invoke(l,null);

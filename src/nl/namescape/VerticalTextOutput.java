@@ -195,7 +195,7 @@ public class VerticalTextOutput implements nl.openconvert.filehandling.SimpleInp
 		v.useCTAG = options.getOptionBoolean("ctag", false);
 		if (args.length > 2)
 		{
-			System.err.println("Using xpath query!: " + args[0]);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Using xpath query!: " + args[0]);
 			v.xpathQuery = args[0];
 			nl.openconvert.filehandling.DirectoryHandling.tagAllFilesInDirectory(v, args[1], 
 					args[2]);

@@ -63,7 +63,7 @@ public class LexiconConstrainedModel implements StateModel<StatePlus>
 	{
 		// TODO Auto-generated method stub
 		String s = multigramSet.getLHS(c);
-		//System.err.println(state.baseState + " " + s);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(state.baseState + " " + s);
 		TrieNode lexNext = state.lexicalNode.findNode(s);
 		if (lexNext == null)
 			return 0;
@@ -115,7 +115,7 @@ public class LexiconConstrainedModel implements StateModel<StatePlus>
 				lmodel);
 		m.stateMap = new HashStateMap();
 
-		System.err.println("start testing..");
+		nl.openconvert.log.ConverterLog.defaultLog.println("start testing..");
 		String s = null;
 		try
 		{

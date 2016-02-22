@@ -41,7 +41,7 @@ public class Database
 	{
 		this.mysqldbname = databaseName;
 		mysqlurl = "jdbc:mysql://" + mysqlhost + ":" + mysqlport + "/" + mysqldbname;
-		System.err.println(mysqlurl);
+		nl.openconvert.log.ConverterLog.defaultLog.println(mysqlurl);
 		init();
 	}
 
@@ -52,11 +52,11 @@ public class Database
 
 	public void init()
 	{
-		System.err.println("connecting.....");
+		nl.openconvert.log.ConverterLog.defaultLog.println("connecting.....");
 		try 
 		{
 			this.connection = (new ConnectorSimple()).connect(mysqlurl, mysqluser, mysqlpasswd);
-			System.err.println("Connected: "  + this.connection);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Connected: "  + this.connection);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -102,7 +102,7 @@ public class Database
 	    	 if (name.equalsIgnoreCase(tablename))
 	    		 found = true;
 	    	 /*
-	         System.err.println(
+	         nl.openconvert.log.ConverterLog.defaultLog.println(
 	            "   "+res.getString("TABLE_CAT") 
 	           + ", "+res.getString("TABLE_SCHEM")
 	           + ", "+res.getString("TABLE_NAME")
@@ -148,7 +148,7 @@ public class Database
 		{
 			stmt.setBytes(i+1, values.get(i).getBytes("UTF-8"));
 		}
-		System.err.println(stmt);
+		nl.openconvert.log.ConverterLog.defaultLog.println(stmt);
 		ResultSet rs = stmt.executeQuery();
 		Vector<Vector<String>> types = new Vector<Vector<String>>();
 		int nofcolumns = rs.getMetaData().getColumnCount();
@@ -209,7 +209,7 @@ public class Database
 			}
 		} catch (Exception e)
 		{
-			System.err.println(query);
+			nl.openconvert.log.ConverterLog.defaultLog.println(query);
 			e.printStackTrace();
 		}
 		return types;
@@ -237,7 +237,7 @@ public class Database
 		public void init(ResultSet rs)
 		{
 			this.rs=rs;
-			//System.err.println(rs);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(rs);
 			try
 			{
 				nofcolumns = rs.getMetaData().getColumnCount();
@@ -327,7 +327,7 @@ public class Database
 		{
 			stmt.setBytes(i+1, values.get(i).getBytes("UTF-8"));
 		}
-		System.err.println(stmt);
+		nl.openconvert.log.ConverterLog.defaultLog.println(stmt);
 		ResultSet rs = stmt.executeQuery();
 		Vector<Vector<String>> types = new Vector<Vector<String>>();
 		int nofcolumns = rs.getMetaData().getColumnCount();
@@ -370,7 +370,7 @@ public class Database
 				"select * from " +  table_name + " limit " + lb + "," + ub,
 				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
-		System.err.println(stmt);
+		nl.openconvert.log.ConverterLog.defaultLog.println(stmt);
 		ResultSet rs = stmt.executeQuery();
 		Vector<Vector<String>> types = new Vector<Vector<String>>();
 		int nofcolumns = rs.getMetaData().getColumnCount();
@@ -423,9 +423,9 @@ public class Database
 			stmt = this.connection.prepareStatement(q);
 			stmt.setBytes(1, field_value.getBytes("UTF-8"));
 			stmt.setBytes(2, key_fieldvalue.getBytes("UTF-8"));
-			System.err.println(stmt);
+			nl.openconvert.log.ConverterLog.defaultLog.println(stmt);
 			int u = stmt.executeUpdate();
-			System.err.println("hihi " + u);
+			nl.openconvert.log.ConverterLog.defaultLog.println("hihi " + u);
 			stmt.close();
 		} catch (Exception e)
 		{
@@ -440,9 +440,9 @@ public class Database
 		{
 			PreparedStatement stmt = null;
 			stmt = this.connection.prepareStatement(sql);
-			//System.err.println(stmt);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(stmt);
 			boolean u = stmt.execute();
-			//System.err.println("run query " + u);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("run query " + u);
 			stmt.close();
 		} catch (Exception e)
 		{
@@ -503,14 +503,14 @@ public class Database
 			catch (ClassNotFoundException e)
 			{
 				//logger.error("Database driver niet gevonden", e);
-				System.err.println("ramp (DRIVER) !!!!!!!!!!!!!!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("ramp (DRIVER) !!!!!!!!!!!!!!");
 				return null;
 			}
 			catch (SQLException e)
 			{
 				//logger.error("Kan geen verbinding met database maken", e);
 				e.printStackTrace();
-				System.err.println("ramp!!!!!!!!!!!!!!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("ramp!!!!!!!!!!!!!!");
 				return null;
 			}
 		}
@@ -535,14 +535,14 @@ public class Database
 			catch (ClassNotFoundException e)
 			{
 				//logger.error("Database driver niet gevonden", e);
-				System.err.println("ramp (DRIVER) !!!!!!!!!!!!!!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("ramp (DRIVER) !!!!!!!!!!!!!!");
 				return null;
 			}
 			catch (SQLException e)
 			{
 				//logger.error("Kan geen verbinding met database maken", e);
 				e.printStackTrace();
-				System.err.println("ramp!!!!!!!!!!!!!!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("ramp!!!!!!!!!!!!!!");
 				return null;
 			}
 		}

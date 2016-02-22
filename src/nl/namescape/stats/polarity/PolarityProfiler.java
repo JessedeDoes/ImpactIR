@@ -73,7 +73,7 @@ public class PolarityProfiler implements nl.openconvert.filehandling.DoSomething
 		if (PLUS > 0) dPlus = tokLog + Math.log(PLUS) -  logF  - logPos;
 		
 		if (MINUS > 0) dMin = tokLog + Math.log(MINUS) -  logF  - logNeg;
-		// System.err.println(lemma  + " + " + PLUS +  " - " + MINUS);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(lemma  + " + " + PLUS +  " - " + MINUS);
 		return dPlus - dMin;
 	}
 	
@@ -86,7 +86,7 @@ public class PolarityProfiler implements nl.openconvert.filehandling.DoSomething
 			String wYearTo = m.getValue("witnessYear_from");
 			try
 			{
-				System.err.println(wYearFrom + "--" + wYearTo);
+				nl.openconvert.log.ConverterLog.defaultLog.println(wYearFrom + "--" + wYearTo);
 				int yf = Integer.parseInt(wYearFrom);
 				int yt = Integer.parseInt(wYearTo);
 				return (yt >= yearFrom && yf <= yearTo);
@@ -108,12 +108,12 @@ public class PolarityProfiler implements nl.openconvert.filehandling.DoSomething
 				return;
 			} else
 			{
-				if (yearFrom != null) System.err.println("filter accepts " + fileName);
+				if (yearFrom != null) nl.openconvert.log.ConverterLog.defaultLog.println("filter accepts " + fileName);
 			}
 			List<Element> sentences = nl.namescape.tei.TEITagClasses.getSentenceElements(d.getDocumentElement());
 			if (sentences.size() == 0)
 			{
-				System.err.println("no sentences, just using element text!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("no sentences, just using element text!");
 				sentences = XML.getElementsByTagname(d.getDocumentElement(), "text", false);
 			}
 			for (Element s: sentences)
@@ -137,7 +137,7 @@ public class PolarityProfiler implements nl.openconvert.filehandling.DoSomething
 					if (tag == null || tag.isEmpty())
 						tag = w.getAttribute("ctag");
 				
-					//System.err.println(wordform + " " + lemma + " " + tag);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(wordform + " " + lemma + " " + tag);
 					SentimentLexicon.Polarity p;
 					if ((p = lexicon.getPolarity(lemma)) != null)
 					{
@@ -196,7 +196,7 @@ public class PolarityProfiler implements nl.openconvert.filehandling.DoSomething
 		
 		public PolarityComparator(Map<String,Integer> _base) 
 		{
-			//System.err.println(_base);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(_base);
 			this.base = _base;
 		}
 		

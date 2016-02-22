@@ -26,7 +26,7 @@ class SentenceInitialFeature extends Feature
 			
 				String previous = ((Context) o).getAttributeAt("word", k-1);
 				boolean b1 =  previous.matches(".*[!?\\.].*");
-				//System.err.println(previous + " " + b1);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(previous + " " + b1);
 				return new Boolean(b1).toString();
 			
 		}

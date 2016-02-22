@@ -53,7 +53,7 @@ public class LimitedContextPruner implements MultigramPruner
         String rightContext = commonSuffix(s,t);
         int ls = s.length() - leftContext.length() - rightContext.length();
         int lt = t.length() - leftContext.length() - rightContext.length();
-        //System.err.println("left: " + leftContext + " right: " + rightContext + " in (" + s + ", " + t + ")");
+        //nl.openconvert.log.ConverterLog.defaultLog.println("left: " + leftContext + " right: " + rightContext + " in (" + s + ", " + t + ")");
         if ((ls==0 || lt==0) && leftContext.length() <= 1 && rightContext.length() <=1)
           return true;
      }
@@ -94,7 +94,7 @@ public class LimitedContextPruner implements MultigramPruner
     boolean x =  m.isSingleton(); // || lengthOneOrTwo(m.lhs,m.rhs);
     boolean y = isContextPattern(m.lhs,m.rhs);
     boolean z = isSimpleInsertionOrDeletionWithContext(m.lhs,m.rhs);
-    //System.err.println("x=" + x + ", y=" + y + ", m= " + m);
+    //nl.openconvert.log.ConverterLog.defaultLog.println("x=" + x + ", y=" + y + ", m= " + m);
     return x || !y || z;
   }
 

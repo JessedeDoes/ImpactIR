@@ -85,7 +85,7 @@ public class LetterCounter extends DefaultHandler implements DoSomethingWithFile
 		// TODO Auto-generated method stub
 		incrementFileCount();
 		if (nFiles % 1000 == 0)
-			System.err.println(nFiles + " "+ fileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println(nFiles + " "+ fileName);
 		try 
 		{
 			//SAXParser saxParser = factory.newSAXParser();
@@ -119,10 +119,10 @@ public class LetterCounter extends DefaultHandler implements DoSomethingWithFile
 		for (char c='a'; c <= 'z'; c++)
 			System.out.println(c + "\t" + x.letterCounts[c]);
 		
-		System.err.println(x.filesWithParseError.size() + " parse errors");
+		nl.openconvert.log.ConverterLog.defaultLog.println(x.filesWithParseError.size() + " parse errors");
 		for (String s: x.filesWithParseError)
 		{
-			System.err.println("\t" + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("\t" + s);
 		}
 	}
 }

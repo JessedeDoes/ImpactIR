@@ -34,8 +34,8 @@ public class EnumerationWithContext<T> implements Iterator<T>// T is the token-w
 	
 	void readInitialWindow() // read in the first window and ensure right context is present
 	{
-		//System.err.println("element class:" + elementClass);
-		//System.err.println("default:" + defaultT);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("element class:" + elementClass);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("default:" + defaultT);
 		
 		
 		for (int i=0; i < focus; i++)

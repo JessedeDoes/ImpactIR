@@ -66,14 +66,14 @@ public class DutchPatternFinder implements PatternFinder
 				{
 					String stemA = a.substring(0, a.length() - suffixa.length());
 					String stemB = b.substring(0, b.length() - suffixb.length());
-					//System.err.println(stemA + " " + stemB);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(stemA + " " + stemB);
 					for (String infix: infixes)
 					{
 						for (String stripped: StringUtils.removeInfix(stemA, infix))
 						{
 							for (StemChange change: stemChanges)
 							{
-								//System.err.println(stemA + " " + stemB + "?"+ change);
+								//nl.openconvert.log.ConverterLog.defaultLog.println(stemA + " " + stemB + "?"+ change);
 								if (!change.appliesToPoS(PoS))
 									continue;
 								String x = change.transform(stripped);
@@ -83,8 +83,8 @@ public class DutchPatternFinder implements PatternFinder
 									DutchPattern p = new DutchPattern(suffixa, suffixb, change.type);
 									p.infix = stripped.equals(stemA)?"":infix;
 									P.add(p);
-									//System.err.println(p);
-									//System.err.println(stripped + "-" + suffixa + " -->" + stemB + "-"  + suffixb + " : " + change.type);
+									//nl.openconvert.log.ConverterLog.defaultLog.println(p);
+									//nl.openconvert.log.ConverterLog.defaultLog.println(stripped + "-" + suffixa + " -->" + stemB + "-"  + suffixb + " : " + change.type);
 								}
 							}
 						}
@@ -97,7 +97,7 @@ public class DutchPatternFinder implements PatternFinder
 		{
 			if (this.useFallback)
 				foundPattern = this.fallbackFinder.findPattern(a, b);
-			//System.err.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("Fallback to default for " + a + "~" + b +   " : " + foundPattern);
 			//foundPattern = null; // OeHoeps..
 		} else
 		{
@@ -107,10 +107,10 @@ public class DutchPatternFinder implements PatternFinder
 	    if (false && P.size() > 1)
 	    {
 	    	int k=0;
-	    	System.err.println("multiple for " + a + "~" + b);
+	    	nl.openconvert.log.ConverterLog.defaultLog.println("multiple for " + a + "~" + b);
 	    	for (DutchPattern p: P)
 	    	{
-	    		System.err.println(k++ + ":" + p);
+	    		nl.openconvert.log.ConverterLog.defaultLog.println(k++ + ":" + p);
 	    	}
 	    }
 		return foundPattern;
@@ -142,7 +142,7 @@ public class DutchPatternFinder implements PatternFinder
 				if ((pat=p.findPattern(w.wordform, w.lemma, w.lemmaPoS)) == null)
 				{
 					unexplained++;
-					//System.err.println(w);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(w);
 				} else
 				{
 					if (!pat.getClass().getName().contains("Dutch"))
@@ -152,13 +152,13 @@ public class DutchPatternFinder implements PatternFinder
 					{
 						DutchPattern d = (DutchPattern) pat;
 						if (d.stemChange.equals(RegularStemChange.IRREGULAR_STEM_CHANGE))
-							System.err.println(d);
+							nl.openconvert.log.ConverterLog.defaultLog.println(d);
 						explained++;
 					}
 				}
 			}
 
 		}
-		System.err.println("Explained: " + explained  + " unexplained: " + unexplained);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Explained: " + explained  + " unexplained: " + unexplained);
 	}
 }

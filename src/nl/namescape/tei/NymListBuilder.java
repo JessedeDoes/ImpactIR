@@ -146,13 +146,13 @@ public class NymListBuilder
 		if (normalizer != null)
 		{
 			Collection<Entity> entitySet = entityMap.values();
-			System.err.println("Start normalizing....");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Start normalizing....");
 			normalizer.findNormalizedForms(entitySet);
 			
 			matcher = new nl.namescape.SimpleMatcher();
 			if (matcher != null)
 			{
-				System.err.println("Start  matching....");
+				nl.openconvert.log.ConverterLog.defaultLog.println("Start  matching....");
 				Set<Nym> nymSet = nymalize?matcher.findNyms(entityMap.values()):null;
 				for (Element e: namedEntityElements)
 				{
@@ -289,7 +289,7 @@ public class NymListBuilder
 			}
 		} else
 		{
-			System.err.println("Whoops! no names in document!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Whoops! no names in document!");
 		}
 	}
 

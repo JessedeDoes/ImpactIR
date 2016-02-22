@@ -27,7 +27,7 @@ public class MolechaserMetadataPrinter implements DoSomethingWithFile
 	public void handleFile(String fileName) 
 	{
 		// TODO Auto-generated method stub
-		// System.err.println(N + ": "+ fileName);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(N + ": "+ fileName);
 		try
 		{
 			Document d = XML.parse(fileName,false);
@@ -57,7 +57,7 @@ public class MolechaserMetadataPrinter implements DoSomethingWithFile
 		String author=authorLevel1.equals("")?authorLevel2:authorLevel1;
 		String title=authorLevel1.equals("")?titleLevel2:titleLevel1;
 
-		System.err.println(idno + "\t" +  corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
+		nl.openconvert.log.ConverterLog.defaultLog.println(idno + "\t" +  corpusProvenance+ "\t" +  fileName + "\t" + languageVariant + "\t" 
 				+ author + "\t" + title + "\t" + 
 				witnessYear_from + "\t"+ witnessYear_to + "\t" + 
 				authorLevel1 + "\t" +  authorLevel2 + "\t" 

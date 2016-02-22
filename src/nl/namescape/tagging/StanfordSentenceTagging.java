@@ -60,10 +60,10 @@ public class StanfordSentenceTagging
 	{
 		String intermediate = input;
 		intermediate = intermediate.replaceAll("\\s+", "\n");
-		//System.err.println("tagSentence (toplevel) Input:" + input);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("tagSentence (toplevel) Input:" + input);
 		for (AbstractSequenceClassifier a: list)
 		{
-			//System.err.println("intermediate now: " +  intermediate);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("intermediate now: " +  intermediate);
 			intermediate = tagSentence(intermediate,a);
 		}
 		return intermediate;
@@ -88,7 +88,7 @@ public class StanfordSentenceTagging
 	{
 		String line="";
 		int k=0;
-		//System.err.println("tagSentence (step) Input:" + input);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("tagSentence (step) Input:" + input);
 		String[] inputTokens = input.split("[ \n\r]+");
 		boolean stage2 = input.contains("\t");
 		if (stage2 && (!input.contains("-person"))) // optimaliserend hackje: geen stage 2 als er geen persoon in zit
@@ -143,14 +143,14 @@ public class StanfordSentenceTagging
 			// if (false) printFieldsInCoreLabel(x);
 			if (!(x.word().equals(inputTokens[k])))
 			{
-				// System.err.println("CHECK FAILED: " + inputTokens[k] + " != " + x.word());
+				// nl.openconvert.log.ConverterLog.defaultLog.println("CHECK FAILED: " + inputTokens[k] + " != " + x.word());
 			}
 			if (printTags)
 				line += x.word() + "\t" + x.tag() + "\t" + answer + "\n";
 			else
 				line += x.word() + "\t" + answer + "\n";
 			k++;
-			//System.err.println(line);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(line);
 		}
 		return line;
 	}
@@ -160,12 +160,12 @@ public class StanfordSentenceTagging
 		List<CoreLabel> tokens = new ArrayList<CoreLabel>();
 		for (String s: sentence.split("[ \r\n]+"))
 		{
-			//System.err.println("token: <" + s + ">");
+			//nl.openconvert.log.ConverterLog.defaultLog.println("token: <" + s + ">");
 			if (s.contains("\t"))
 			{
 				String[] parts = s.split("\t");
 				CoreLabel t = makeCoreLabel(parts[0], parts[1]);
-				//System.err.println("TAG:"  + t.tag());
+				//nl.openconvert.log.ConverterLog.defaultLog.println("TAG:"  + t.tag());
 				tokens.add(t);
 			} else
 				tokens.add(makeCoreLabel(s));
@@ -200,19 +200,19 @@ public class StanfordSentenceTagging
 	
 	private  static  void printFieldsInCoreLabel(CoreLabel x) 
 	{
-		//System.err.println("x.NER:" + x.ner());
-		System.err.println("position: " + x.beginPosition() + " ---> "  + x.endPosition());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("x.NER:" + x.ner());
+		nl.openconvert.log.ConverterLog.defaultLog.println("position: " + x.beginPosition() + " ---> "  + x.endPosition());
 		for (Class s: x.keySet())
 		{
-			//System.err.println(s.getClass() + "<"  + s);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(s.getClass() + "<"  + s);
 			try
 			{
 				String v = x.getString(s);
 	
-				System.err.println(s + " --> " + v);
+				nl.openconvert.log.ConverterLog.defaultLog.println(s + " --> " + v);
 			} catch (Exception e)
 			{
-				System.err.println("cannot get: " + s);
+				nl.openconvert.log.ConverterLog.defaultLog.println("cannot get: " + s);
 			}
 		}
 	}

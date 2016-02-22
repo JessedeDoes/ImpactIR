@@ -85,7 +85,7 @@ public class ObjectRelationalMapping
 			{
 				String columnName = rs.getString("COLUMN_NAME");
 				list.add(columnName);
-				System.err.println("getPrimaryKeys(): columnName=" + columnName);
+				nl.openconvert.log.ConverterLog.defaultLog.println("getPrimaryKeys(): columnName=" + columnName);
 			}
 			rs.close();
 		} catch (Exception e)
@@ -126,7 +126,7 @@ public class ObjectRelationalMapping
 			this.primaryKeyField = f;
 		} catch (Exception e)
 		{
-			System.err.println(javaClass.getName() + " does not have a field "  + fieldName);
+			nl.openconvert.log.ConverterLog.defaultLog.println(javaClass.getName() + " does not have a field "  + fieldName);
 			e.printStackTrace();
 		}
 	}
@@ -154,7 +154,7 @@ public class ObjectRelationalMapping
 			query += ((i>0)?", ":"") + "?";
 		}
 		query += ")";
-		System.err.println(query);
+		nl.openconvert.log.ConverterLog.defaultLog.println(query);
 		try
 		{
 			PreparedStatement pStmnt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -226,7 +226,7 @@ public class ObjectRelationalMapping
 
 		for (int j=0; j < objects.size(); j++)
 		{
-			//System.err.print(".");
+			//nl.openconvert.log.ConverterLog.defaultLog.print(".");
 			query.append("(");
 			for (int i=0; i < fieldList.size(); i++)
 			{
@@ -237,8 +237,8 @@ public class ObjectRelationalMapping
 				query.append( ", ");
 		}
 
-		//System.err.println(".");
-		//System.err.println(query);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(".");
+		//nl.openconvert.log.ConverterLog.defaultLog.println(query);
 
 		try
 		{
@@ -315,11 +315,11 @@ public class ObjectRelationalMapping
 			if (rs.next())
 			{
 				Object o = javaClass.newInstance();
-				//System.err.println("meta = " + rs.getMetaData().getColumnCount());
+				//nl.openconvert.log.ConverterLog.defaultLog.println("meta = " + rs.getMetaData().getColumnCount());
 				for (int i=1; i < rs.getMetaData().getColumnCount(); i++)
 				{
 					String dbFieldName = rs.getMetaData().getColumnName(i);
-					//System.err.println(i);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(i);
 					Field javaField = db2objectMap.get(dbFieldName);
 					if (javaField != null)
 					{

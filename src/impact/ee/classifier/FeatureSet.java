@@ -99,7 +99,7 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 		{
 			i.stochasticValues.add(f.getValue(s));
 		}
-		// System.err.println(i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(i);
 		return i;
 	}
 
@@ -110,7 +110,7 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 			Feature f = features.get(i);
 			if (f == this.classFeature)
 			{
-				System.err.println("NOPE");
+				nl.openconvert.log.ConverterLog.defaultLog.println("NOPE");
 				System.exit(1);
 			}
 			String v = instance.values.get(i);
@@ -118,10 +118,10 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 			if ((c = f.valueCounts.get(v)) == null || c < f.THRESHOLD)
 			{
 				instance.values.set(i,Feature.Unknown);
-				//System.err.println(this.itemToString(instance));
+				//nl.openconvert.log.ConverterLog.defaultLog.println(this.itemToString(instance));
 			} else
 			{
-				// System.err.println("Ok, dit is genoeg: " + c);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("Ok, dit is genoeg: " + c);
 			}
 		}
 	}
@@ -199,7 +199,7 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 	public Instance makeTestInstance(Object s)
 	{
 		Instance instance = new Instance();
-		//System.err.println("fs: " + features.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("fs: " + features.size());
 		for (int i=0; i < features.size(); i++)
 		{
 			instance.addValue(features.get(i).getValue(s));
@@ -208,7 +208,7 @@ public class FeatureSet implements Iterable<Feature>, Serializable
 		{
 			instance.stochasticValues.add(f.getValue(s));
 		}
-		//System.err.println(item);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(item);
 		return instance;
 	}
 	/**

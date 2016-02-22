@@ -13,7 +13,7 @@ public class NELemma
 	
 	public boolean equals(NELemma other)
 	{
-		//System.err.println("BLOEP!");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("BLOEP!");
 		return DatabaseMapping.equal(this.lemma,other.lemma) 
 				&& DatabaseMapping.equal(this.lemmaPoS, other.lemmaPoS)
 				&& DatabaseMapping.equal(this.neLabel, other.neLabel);
@@ -21,7 +21,7 @@ public class NELemma
 	
 	public boolean equals(Object other)
 	{
-		//System.err.println("BLOEP!");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("BLOEP!");
 		try
 		{
 			NELemma o = (NELemma) other;

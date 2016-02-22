@@ -23,7 +23,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 		cost = (int) (-MemorylessMatcher.costScale * Math.log(probability)); // log is ln in java
 		if (cost < 0)
 		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  probability,lhs,rhs);
+			nl.openconvert.log.ConverterLog.defaultLog.printf("Fatal: negative cost (%e) for %s/%s!\n",  probability,lhs,rhs);
 			System.exit(1);
 		}
 		if (cost == 0) 
@@ -42,7 +42,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 		cost = (int) (-MemorylessMatcher.costScale * Math.log( p_cond_rhs));
 		if (cost < 0)
 		{
-			System.err.printf("Fatal: negative cost (%e) for %s/%s!\n",  p_cond_rhs,lhs,rhs);
+			nl.openconvert.log.ConverterLog.defaultLog.printf("Fatal: negative cost (%e) for %s/%s!\n",  p_cond_rhs,lhs,rhs);
 			System.exit(1);
 		}
 		if (cost == 0) cost = 1;
@@ -94,7 +94,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 				} catch (Exception e)
 				{
 					e.printStackTrace();
-					System.err.println(tokens[0]);
+					nl.openconvert.log.ConverterLog.defaultLog.println(tokens[0]);
 				}
 			}
 		} catch (Exception e)
@@ -102,7 +102,7 @@ class RuleInfo // this is silly, just echos jointmultigram
 			e.printStackTrace();
 			return rules;
 		}
-		// System.err.printf( "XXX %d\n", ruletrie.root.nofTransitions());
+		// nl.openconvert.log.ConverterLog.defaultLog.printf( "XXX %d\n", ruletrie.root.nofTransitions());
 		return rules;
 	}
 }

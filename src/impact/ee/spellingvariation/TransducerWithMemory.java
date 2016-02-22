@@ -138,7 +138,7 @@ public class TransducerWithMemory implements java.io.Serializable
 		Vector<Alignment.Position> forwardVector =  g.getForwardVector();
 		Vector<Vector<ScoredState>> stateLists = new Vector<Vector<ScoredState>>();
 
-		//System.err.println("bloep");
+		//nl.openconvert.log.ConverterLog.defaultLog.println("bloep");
 		@SuppressWarnings("unused")
 		int graphSize = 0;
 		// make next variable global
@@ -170,11 +170,11 @@ public class TransducerWithMemory implements java.io.Serializable
 				{
 					History.State previousState = sNs.state;
 					History.State nextState = previousState.advance(t.multigramId);
-					//System.err.println(previousState +  "->" + nextState + " (" + t.multigramId + ")");
+					//nl.openconvert.log.ConverterLog.defaultLog.println(previousState +  "->" + nextState + " (" + t.multigramId + ")");
 					if (nextState != null)
 					{
 						double w = conditionalP(previousState, t.multigramId);
-						//System.err.println("forward(" + i + "): " + previousState +  "->" + nextState + " (" + t.multigramId + "," + w + ")");
+						//nl.openconvert.log.ConverterLog.defaultLog.println("forward(" + i + "): " + previousState +  "->" + nextState + " (" + t.multigramId + "," + w + ")");
 						double deltaP = 0;
 						if ( (deltaP = w * sNs.score) > 0)
 						{
@@ -185,7 +185,7 @@ public class TransducerWithMemory implements java.io.Serializable
 								nextScoredState.isFinal = wordFinal;
 								scoredStateMap[nextState.index] = nextScoredState;
 								graphSize++;
-								//System.err.println("add state at " + i + ": " + nextState);
+								//nl.openconvert.log.ConverterLog.defaultLog.println("add state at " + i + ": " + nextState);
 								stateList.add(nextScoredState);
 							} else
 							{
@@ -195,7 +195,7 @@ public class TransducerWithMemory implements java.io.Serializable
 							nextScoredState.score += deltaP;
 						} else
 						{
-							//System.err.println("no fun for " + sNs.state + ": " + sNs.score);
+							//nl.openconvert.log.ConverterLog.defaultLog.println("no fun for " + sNs.state + ": " + sNs.score);
 						}
 					}
 				}
@@ -205,7 +205,7 @@ public class TransducerWithMemory implements java.io.Serializable
 				scoredStateMap[sNs.state.index] = null;
 			}
 		}
-		//System.err.println("graph size="  + graphSize);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("graph size="  + graphSize);
 		return stateLists;
 	}
 
@@ -227,7 +227,7 @@ public class TransducerWithMemory implements java.io.Serializable
 
 		// ToDo initialization..
 		// history class should take care of starting up histories initially etc.
-		// System.err.println(forwardVector.size());
+		// nl.openconvert.log.ConverterLog.defaultLog.println(forwardVector.size());
 		
 		for (int i = forwardVector.size()-1; i >= 0; i--)
 		{
@@ -251,7 +251,7 @@ public class TransducerWithMemory implements java.io.Serializable
 			for (AlignmentSegmenter.Transition t: g.outgoingEdgesOf(p))
 			{
 				Position nextNode = g.getEdgeTarget(t);
-				//System.err.println(i + "->" + nextNode.index); // of course...
+				//nl.openconvert.log.ConverterLog.defaultLog.println(i + "->" + nextNode.index); // of course...
 				Vector<ScoredState> nextStates = stateLists.get(nextNode.index);
 				
 				for (ScoredState sNs: nextStates)
@@ -268,7 +268,7 @@ public class TransducerWithMemory implements java.io.Serializable
 						if (nextScoredState != null)
 						{
 							double w = conditionalP(sNs.state, t.multigramId);
-							//System.err.println("backward:(" + i + ") "+ 
+							//nl.openconvert.log.ConverterLog.defaultLog.println("backward:(" + i + ") "+ 
 									//sNs.state +  "->" + nextState + " (" + t.multigramId + "," + w + ")");
 							double deltaP = w *  nextScoredState.score;
 							if (deltaP > 0)
@@ -331,10 +331,10 @@ public class TransducerWithMemory implements java.io.Serializable
 					l.next = scoredStateMap[l.next.state.index];
 					if (l.next != null)
 					{
-						//System.err.println("beep...");
+						//nl.openconvert.log.ConverterLog.defaultLog.println("beep...");
 					} else
 					{
-						System.err.println("more or less killing state "  + s.state);
+						nl.openconvert.log.ConverterLog.defaultLog.println("more or less killing state "  + s.state);
 					}
 				}
 			}
@@ -406,7 +406,7 @@ public class TransducerWithMemory implements java.io.Serializable
 				System.out.println("");
 			} else
 			{
-				System.err.println("Could not compute shortest path!");
+				nl.openconvert.log.ConverterLog.defaultLog.println("Could not compute shortest path!");
 			}
 		} catch (Exception e)
 		{
@@ -417,11 +417,11 @@ public class TransducerWithMemory implements java.io.Serializable
 	private void addToEvidence(History.State state, int multigramId, double e)
 	{
 		// this could be faster with other data representation
-		//System.err.println("there is evidence "  + e + "  at " + state + "  for " + 
+		//nl.openconvert.log.ConverterLog.defaultLog.println("there is evidence "  + e + "  at " + state + "  for " + 
 	  	 //this.memorylessTransducer.multigramSet.getMultigramById(multigramId));
 		if (Double.isNaN(e) || Double.isInfinite(e) || e == 0)
 		{
-			// System.err.println("Bah in addToEvidence" + e  + " state:" +  state);
+			// nl.openconvert.log.ConverterLog.defaultLog.println("Bah in addToEvidence" + e  + " state:" +  state);
 		}
 		state.addEvidence(multigramId, e);
 	}
@@ -433,13 +433,13 @@ public class TransducerWithMemory implements java.io.Serializable
 		histories = new History();
 		histories.codeInterpreter = this.getMultigramSet();
 		histories.MODEL_ORDER = this.MODEL_ORDER;
-		System.err.println("Start building history transition diagram .. ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Start building history transition diagram .. ");
 		histories.insertHistoriesFromGraphs(dataset.getGraphIterator());
 		scoredStateMap = new ScoredState[histories.size()];
 		scoredStateMap1 = new ScoredState[histories.size()];
 		// initialize conditional probabilities from memoryless model
 		// ok this does not work!
-		System.err.println("Initialize parameters from memoryless model ..");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Initialize parameters from memoryless model ..");
 		
 		for (History.State s: histories) // this should include the start state!
 		{
@@ -453,14 +453,14 @@ public class TransducerWithMemory implements java.io.Serializable
 			for (History.Transition t: s.getStateTransitions())
 			{
 				t.p =  this.memorylessTransducer.delta[t.symbol] / denominator;
-			  // System.err.println(s +  "->" + t.target + " (" + t.symbol + "="  + t.p + ")");
+			  // nl.openconvert.log.ConverterLog.defaultLog.println(s +  "->" + t.target + " (" + t.symbol + "="  + t.p + ")");
 			}
 		}
 		
-		System.err.println("Start expectation mazimization .. ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Start expectation mazimization .. ");
 		for (int i=0; i < MAX_ITERATIONS; i++)
 		{
-			System.err.println(this.getClass().getName() + ": iteration " + i);
+			nl.openconvert.log.ConverterLog.defaultLog.println(this.getClass().getName() + ": iteration " + i);
 			expectationMaximization();
 		}
 	}
@@ -481,11 +481,11 @@ public class TransducerWithMemory implements java.io.Serializable
 		for (Dataitem item: dataset)
 		{
 			if (k % 500 == 0)
-				System.err.println(this.getClass().getName() + ": Start expectation steps for items from " + k);
+				nl.openconvert.log.ConverterLog.defaultLog.println(this.getClass().getName() + ": Start expectation steps for items from " + k);
 			for (Candidate c: item.candidates) expectationStep(c.segmentationGraph, c.lambda);
 			if (k == (9 * dataset.size()) / 10)
 			{
-				System.err.println("start collecting partial evidence " + k);
+				nl.openconvert.log.ConverterLog.defaultLog.println("start collecting partial evidence " + k);
 				collectPartialEvidence();
 			}
 			k++;
@@ -505,11 +505,11 @@ public class TransducerWithMemory implements java.io.Serializable
 				denominator += t.evidence;
 				if  (t.partialEvidence == 0)
 				{
-					//System.err.println("never seen before:" + s + this.getMultigramSet().getMultigramById(t.symbol));
+					//nl.openconvert.log.ConverterLog.defaultLog.println("never seen before:" + s + this.getMultigramSet().getMultigramById(t.symbol));
 					unseenEvidence += t.evidence;
 				} else
 				{
-					//System.err.println("Yep seen before:" + s + this.getMultigramSet().getMultigramById(t.symbol));
+					//nl.openconvert.log.ConverterLog.defaultLog.println("Yep seen before:" + s + this.getMultigramSet().getMultigramById(t.symbol));
 				}
 				totalHeldoutEvidence += t.evidence - t.partialEvidence;
 				t.partialEvidence=0; // reset  for next time.
@@ -517,13 +517,13 @@ public class TransducerWithMemory implements java.io.Serializable
 	
 			if (Double.isNaN(denominator) || Double.isInfinite(denominator) || denominator == 0)
 			{
-				// System.err.println("Bah in maximization step: denominator = " + denominator + " in state " + s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println("Bah in maximization step: denominator = " + denominator + " in state " + s);
 				continue;
 			}
 			
 			for (History.Transition t: s.getStateTransitions())
 				t.p = t.evidence / denominator;
-				// System.err.println("set probability: " + s +  "->" + t.target + " (" + t.symbol + "="  + t.p + ")");
+				// nl.openconvert.log.ConverterLog.defaultLog.println("set probability: " + s +  "->" + t.target + " (" + t.symbol + "="  + t.p + ")");
 			s.evidence = denominator;
 		
 			// TODO: recompute the lambda's!!
@@ -533,7 +533,7 @@ public class TransducerWithMemory implements java.io.Serializable
 		@SuppressWarnings("unused")
 		double heldoutLogLikelihood = 0;
 		
-		System.err.println("Smoothing info: % unseen evidence: " + (unseenEvidence / totalHeldoutEvidence) + " .. " + totalHeldoutEvidence );
+		nl.openconvert.log.ConverterLog.defaultLog.println("Smoothing info: % unseen evidence: " + (unseenEvidence / totalHeldoutEvidence) + " .. " + totalHeldoutEvidence );
 		
 		// Set the lambdas and pick best matches..
 		
@@ -548,9 +548,9 @@ public class TransducerWithMemory implements java.io.Serializable
 				if (dataset.has_frequency)
 					cand.lambda = cand.lambda * cand.frequency;
 				norm += cand.lambda;			
-				//System.err.println("lambda = " + cand.lambda);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("lambda = " + cand.lambda);
 			}
-			//System.err.println("norm = " + norm);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("norm = " + norm);
 			if (item.heldOut)
 				heldoutLogLikelihood += Math.log(norm);
 			else 
@@ -569,10 +569,10 @@ public class TransducerWithMemory implements java.io.Serializable
 			}
 			if (!pickedBestMatch)
 			{
-				System.err.println("no best match picked for:" + item.target);
+				nl.openconvert.log.ConverterLog.defaultLog.println("no best match picked for:" + item.target);
 			}
 		}
-		System.err.println(this.getClass().getName() + ": Log likelihood now:" + logLikelihood);
+		nl.openconvert.log.ConverterLog.defaultLog.println(this.getClass().getName() + ": Log likelihood now:" + logLikelihood);
 	}
 
 	public void saveToFile(String filename)
@@ -621,7 +621,7 @@ public class TransducerWithMemory implements java.io.Serializable
 		d.addWordBoundaries = true;
 		d.read_from_file(args[0]);
 
-		System.err.println("Transducer with Memory: data read: " + d.size() + " items");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Transducer with Memory: data read: " + d.size() + " items");
 
 		MultigramTransducer t = new MultigramTransducer();
 		t.MAX_ITERATIONS = 3;

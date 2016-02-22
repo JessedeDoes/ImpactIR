@@ -121,7 +121,7 @@ public class WekaClassifier implements Classifier
 	public weka.core.Instance makeWekaInstance(Instance i)
 	{
 		weka.core.Instance instance = new weka.core.Instance(features.size());
-		// System.err.println("make instance for " + i);
+		// nl.openconvert.log.ConverterLog.defaultLog.println("make instance for " + i);
 		for (int j=0; j < features.size(); j++)
 		{
 			if (i.values.size() > j)
@@ -146,10 +146,10 @@ public class WekaClassifier implements Classifier
 
 		for (Feature fi: features)
 		{
-			System.err.println(fi + " " + fi.values);
+			nl.openconvert.log.ConverterLog.defaultLog.println(fi + " " + fi.values);
 			if (fi == features.classFeature && fi.values.size() ==1) // er moet meer dan een mogelijke waarde voor class zijn!
 			{
-				System.err.println("Voeg dummy waarde toe voor " + name);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Voeg dummy waarde toe voor " + name);
 				fi.values.addElement("DUMMY_DUMMY");
 			}
 			Attribute a = new Attribute(fi.name,fi.values);
@@ -164,7 +164,7 @@ public class WekaClassifier implements Classifier
 			wekaInstances.add(z);
 		}
 		wekaInstances.setClassIndex(wekaInstances.numAttributes()-1);
-		//System.err.println(instances);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(instances);
 	}
 
 	public void save(String fileName) throws java.io.IOException

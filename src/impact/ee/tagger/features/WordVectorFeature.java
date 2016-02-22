@@ -37,7 +37,7 @@ public class WordVectorFeature extends impact.ee.classifier.StochasticFeature im
 	{
 		if (WordVectorFeature.vectors == null)
 		{
-			System.err.println("reading vectors from " + vectorFileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println("reading vectors from " + vectorFileName);
 			vectors = ConvertVectors.readVectors(vectorFileName);
 		}
 	}

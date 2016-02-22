@@ -77,7 +77,7 @@ public class MultigramTransducer implements java.io.Serializable
 		// 2: set initial multigram scores from the singleton transducer
 		// also produces pruned alignment graphs for all candidate pairs
 		multigramSet.order = MODEL_ORDER; 
-		// System.err.println("order=" + multigramSet.order);
+		// nl.openconvert.log.ConverterLog.defaultLog.println("order=" + multigramSet.order);
 	
 		
 		this.initializeFromSingletonTransducer(this.baseTransducer, dataset);
@@ -100,7 +100,7 @@ public class MultigramTransducer implements java.io.Serializable
 			{
 				// hm: getSegmentation is rather SLOW (slightly better now)
 				cand.segmentationGraph = segmenter.getSegmentation(cand.alignmentGraph);
-				//System.err.println("Item " + i + ": " + cand.wordform + ": segmentation graph has  " 	+ cand.segmentationGraph.edgeSet().size() +  " egdes");
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Item " + i + ": " + cand.wordform + ": segmentation graph has  " 	+ cand.segmentationGraph.edgeSet().size() +  " egdes");
 			}
 		}
 
@@ -111,7 +111,7 @@ public class MultigramTransducer implements java.io.Serializable
 		// set held out part of data
 		
 		int heldOutFrom = (int) ((1.0 - this.HELDOUT_PART) * dataset.size()); 
-		//System.err.println("Held out from " + heldOutFrom);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("Held out from " + heldOutFrom);
 		for (int i = heldOutFrom; i < dataset.size(); i++)
 		{
 			dataset.get(i).heldOut = true;
@@ -137,9 +137,9 @@ public class MultigramTransducer implements java.io.Serializable
 		this.gamma = new double[this.nMultigrams()];
 		for (int i=0; i < MAX_ITERATIONS; i++)
 		{
-			System.err.println("Iteration " + i);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Iteration " + i);
 			double ll = this.expectationMaximization(this.dataset);
-			System.err.println("Log likelihood now: " + ll);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Log likelihood now: " + ll);
 			//pruneMultigrams(3000 - 10*i); // HM .. dit gaat niet werken....
 		}
 		// mop up
@@ -170,13 +170,13 @@ public class MultigramTransducer implements java.io.Serializable
 				if (m.groupId >= 0)
 				{
 					// JointMultigram a = multigramSet.getMultigramById(m.groupId);
-					// System.err.println("abstracting away: " + m + " for " + a + " :  " + a.id);
+					// nl.openconvert.log.ConverterLog.defaultLog.println("abstracting away: " + m + " for " + a + " :  " + a.id);
 					t.multigramId = m.groupId;
 					m.active = false;
 					
 					multigramSet.setScore(t.multigramId, multigramSet.getScore(t.multigramId)+ multigramSet.getScore(m.id));
 					multigramSet.setScore(m.id, 0.0);
-					// System.err.println(multigramSet.getScore(a.id));
+					// nl.openconvert.log.ConverterLog.defaultLog.println(multigramSet.getScore(a.id));
 				}
 			};
 		}
@@ -190,7 +190,7 @@ public class MultigramTransducer implements java.io.Serializable
 	@Deprecated
 	private void printMultigramsOld(java.io.PrintStream f)
 	{
-		// System.err.println("Printing multigrams:");
+		// nl.openconvert.log.ConverterLog.defaultLog.println("Printing multigrams:");
 		computeConditionalProbabilities();
 		Iterator<JointMultigram> i = multigramSet.sort();
 	  while (i.hasNext())
@@ -266,7 +266,7 @@ public class MultigramTransducer implements java.io.Serializable
 				//JointMultigram m = multigramSet.getMultigramById(t.multigramId);
 				// double d = Math.exp(m.lhs.length() + m.rhs.length());
 				double d = weightOf(t.multigramId);
-				//System.err.println("weight for "  + m +  " = " + d);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("weight for "  + m +  " = " + d);
 				g.setEdgeWeight(t,d); // weightOf(t.multigramId)); // what about infinity
 			}
 			List<AlignmentSegmenter.Transition> bestPath = AlignmentSegmenter.getShortestPath(g);
@@ -299,7 +299,7 @@ public class MultigramTransducer implements java.io.Serializable
 				// JointMultigram m = multigramSet.getMultigramById(t.multigramId);
 				// double d = Math.exp(m.lhs.length() + m.rhs.length());
 				double d = weightOf(t.multigramId);
-				//System.err.println("weight for "  + m +  " = " + d);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("weight for "  + m +  " = " + d);
 				g.setEdgeWeight(t,d);  // weightOf(t.multigramId)); // what about infinity
 			}
 			List<AlignmentSegmenter.Transition> bestPath = AlignmentSegmenter.getShortestPath(g);
@@ -362,7 +362,7 @@ public class MultigramTransducer implements java.io.Serializable
 				Alignment w = new Alignment(this.baseTransducer, 
 						c.coded_wordform, item.coded_target, MAX_ALIGNMENTS );
 				c.alignmentGraph = w.restrictedGraph;
-				// System.err.println("Item " + i + ": " + c.wordform + ": alignment graph has  " 	+ c.alignmentGraph.edgeSet().size() +  " egdes");
+				// nl.openconvert.log.ConverterLog.defaultLog.println("Item " + i + ": " + c.wordform + ": alignment graph has  " 	+ c.alignmentGraph.edgeSet().size() +  " egdes");
 				this.getInitialMultigramCounts(c.coded_wordform, item.coded_target, 
 						c.alignmentGraph, c.lambda);
 			}		
@@ -431,7 +431,7 @@ public class MultigramTransducer implements java.io.Serializable
 			{
 				double w=0;
 				// MultigramSet<Double>.Node n = multigramCounter.startNode.insert(symbolHistory, 0, p+1);
-				//System.err.println("at Position " + to + "; at node: " + n);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("at Position " + to + "; at node: " + n);
 				for (int i=0; i <= p; i++) 
 					w += g.getEdgeWeight(history[i]);
 
@@ -440,10 +440,10 @@ public class MultigramTransducer implements java.io.Serializable
 				double alphaEnd = current_alpha[g.endPosition.lpos][g.endPosition.rpos];
 				double delt = Math.exp(-1 *w);
 
-				//System.err.printf("alpha=%e beta=%e alphaEnd=%e delt=%e\n", alpha,beta,alphaEnd,delt);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("alpha=%e beta=%e alphaEnd=%e delt=%e\n", alpha,beta,alphaEnd,delt);
 				w = alpha * beta  * delt;
 				w = lambda * w / alphaEnd;
-				//System.err.println("total added weight: " + w + "\n");
+				//nl.openconvert.log.ConverterLog.defaultLog.println("total added weight: " + w + "\n");
 				if (!Double.isNaN(w)) // wrong: leaves unscored multigrams
 				{
 					MultigramSet.Node n = 
@@ -505,12 +505,12 @@ public class MultigramTransducer implements java.io.Serializable
 		double alphaEnd = alpha[gxy.endPosition.index];
 		if (Double.isNaN(alphaEnd))
 		{
-			System.err.println("Fatal error: Joint probabilty undefined!");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Fatal error: Joint probabilty undefined!");
 			System.exit(1);
 		}
 		if (alphaEnd < 0)
 		{
-			System.err.println("Warning: Joint probability < 0");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Warning: Joint probability < 0");
 		}
 		return alphaEnd;
 	}
@@ -519,7 +519,7 @@ public class MultigramTransducer implements java.io.Serializable
 	{
 		this.dataset = d;
 		int m = d.size();
-		//System.err.println("beep " + m);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("beep " + m);
 		if (useConditionalProbabilities)
 			this.computeConditionalProbabilities();
 		
@@ -529,7 +529,7 @@ public class MultigramTransducer implements java.io.Serializable
 		double Γ_stop = 0.0;
 		double scale = 1.0;
 		
-		System.err.println("Expectation steps...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Expectation steps...");
 
 		for (int i=0; i < m; i++)
 		{
@@ -564,9 +564,9 @@ public class MultigramTransducer implements java.io.Serializable
 				if (dataset.has_frequency)
 					cand.lambda = cand.lambda * cand.frequency;
 				norm += cand.lambda;			
-				//System.err.println("lambda = " + cand.lambda);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("lambda = " + cand.lambda);
 			}
-			//System.err.println("norm = " + norm);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("norm = " + norm);
 			if (item.heldOut)
 				heldoutLogLikelihood += Math.log(norm);
 			else 
@@ -585,10 +585,10 @@ public class MultigramTransducer implements java.io.Serializable
 			}
 			if (!pickedBestMatch)
 			{
-				System.err.println("no best match picked for:" + item.target);
+				nl.openconvert.log.ConverterLog.defaultLog.println("no best match picked for:" + item.target);
 			}
 		}
-		//System.err.println("Held out likelihood " + heldoutLogLikelihood);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("Held out likelihood " + heldoutLogLikelihood);
 		return logLikelihood;
 	}
 
@@ -616,7 +616,7 @@ public class MultigramTransducer implements java.io.Serializable
 
 		if (alphaEnd == 0.0 || Double.isInfinite(1/alphaEnd))
 		{
-			System.err.println("alpha ends on zero after forward evaluation !! " + alphaEnd);
+			nl.openconvert.log.ConverterLog.defaultLog.println("alpha ends on zero after forward evaluation !! " + alphaEnd);
 			return Γ_stop;
 		}
 
@@ -633,7 +633,7 @@ public class MultigramTransducer implements java.io.Serializable
 				Γ[t.multigramId] += alpha[prevNode.index] * delta[t.multigramId] * norm;
 				if (Double.isNaN(Γ[t.multigramId]))
 				{
-					//System.err.println("whoopsie");
+					//nl.openconvert.log.ConverterLog.defaultLog.println("whoopsie");
 				}
 			}
 		}
@@ -672,19 +672,19 @@ public class MultigramTransducer implements java.io.Serializable
 	
 	private void maximizationStep(double[] Γ, double Γ_stop) // stop_d was reference
 	{
-		System.err.println("Maximization step");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Maximization step");
 		double N =  Γ_stop;
 
 		for (int i=0; i < nMultigrams(); i++)
 		{
 			if (delta[i] == 0 && ! (Γ[i] == 0))
 			{
-				System.err.println("this cannot be happening " + i  + " " +multigramSet.getMultigramById(i) );
+				nl.openconvert.log.ConverterLog.defaultLog.println("this cannot be happening " + i  + " " +multigramSet.getMultigramById(i) );
 				System.exit(1);
 			}
 			if (Double.isNaN(Γ[i]) || Double.isInfinite(Γ[i]))
 			{
-				System.err.println("Oh nee ..." + Γ[i] +  " in " + multigramSet.getMultigramById(i));
+				nl.openconvert.log.ConverterLog.defaultLog.println("Oh nee ..." + Γ[i] +  " in " + multigramSet.getMultigramById(i));
 			}
 			N += Γ[i];
 		}
@@ -699,13 +699,13 @@ public class MultigramTransducer implements java.io.Serializable
 			double deltaNew = Γ[i] / N;
 			if (delta[i] == 0 && ! (deltaNew == 0))
 			{
-				System.err.println("this cannot be happening " + i  + " " +multigramSet.getMultigramById(i) );
+				nl.openconvert.log.ConverterLog.defaultLog.println("this cannot be happening " + i  + " " +multigramSet.getMultigramById(i) );
 				System.exit(1);
 			}
 			delta[i]= Γ[i] / N; // wat te doen als beiden nul (dan hele ding op nul zetten?)
 			if (Double.isNaN(delta[i]))
 			{
-				System.err.println("Fatal: cannot set delta[" + i + "]: N = " + N + " Γ = " + Γ[i]);
+				nl.openconvert.log.ConverterLog.defaultLog.println("Fatal: cannot set delta[" + i + "]: N = " + N + " Γ = " + Γ[i]);
 				System.exit(1);
 			}
 		}
@@ -820,7 +820,7 @@ public class MultigramTransducer implements java.io.Serializable
 		d.addWordBoundaries = Options.getOptionBoolean("addWordBoundaries", true);
 		d.read_from_file(Options.getOption("trainFile"));
 
-		System.err.println("MultigramTransducer --  data read: " + d.size() + " items");
+		nl.openconvert.log.ConverterLog.defaultLog.println("MultigramTransducer --  data read: " + d.size() + " items");
 
 		MultigramTransducer t = new MultigramTransducer();
 	  t.doJob(d);

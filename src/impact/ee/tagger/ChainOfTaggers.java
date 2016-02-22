@@ -11,7 +11,7 @@ public class ChainOfTaggers implements Tagger
 	{
 		// TODO Auto-generated method stub
 		// this should not be invoked....
-		System.err.println("Never invoke apply on a chain of taggers....");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Never invoke apply on a chain of taggers....");
 		System.exit(1);
 		return null;
 	}

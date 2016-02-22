@@ -46,7 +46,7 @@ public class CaseProfileFeature extends impact.ee.classifier.StochasticFeature i
 		}
 		if (initialized)
 			return;
-		System.err.println("Initializing case profile -- are you training or serialization did not quite work??");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Initializing case profile -- are you training or serialization did not quite work??");
 		try
 		{
 			//throw new Exception();

@@ -72,7 +72,7 @@ public class ALTO2TEI implements SimpleInputOutputProcess
 			InputStream is = new FileInputStream(docFile);
 			InputStream noBom = checkForUtf8BOMAndDiscardIfAny(is);
 			Document htmlDocument = XML.parseStream(noBom, true); 
-			//System.err.println(XML.documentToString(htmlDocument));
+			//nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(htmlDocument));
 			Document teiDocument  = transformer.transformDocument(htmlDocument);
 			TEISentenceSplitter tsp = new TEISentenceSplitter(new JVKSentenceSplitter());
 			PunctuationTagger pt =  new PunctuationTagger();
@@ -84,7 +84,7 @@ public class ALTO2TEI implements SimpleInputOutputProcess
 		   noBom.close();
 		} catch (Exception e) 
 		{
-			System.err.println("Error handling " + docFile);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Error handling " + docFile);
 			e.printStackTrace();
 			System.exit(1);
 		}	

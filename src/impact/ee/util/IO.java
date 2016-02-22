@@ -8,7 +8,7 @@ public class IO
       
 	        // Get the temporary directory and print it.
 	      String tempDir = System.getProperty(property);
-	      System.err.println("OS current temporary directory is " + tempDir);
+	      nl.openconvert.log.ConverterLog.defaultLog.println("OS current temporary directory is " + tempDir);
 	      return tempDir;
 	}
 	

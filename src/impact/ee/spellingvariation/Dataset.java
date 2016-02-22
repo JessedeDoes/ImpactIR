@@ -80,7 +80,7 @@ public class Dataset implements Iterable<Dataitem>
 				String[] t1 = s.split("\t");
 				if (t1.length < 3)
 				{
-					System.err.println("DATA ERROR: " + s);
+					nl.openconvert.log.ConverterLog.defaultLog.println("DATA ERROR: " + s);
 					continue;
 				}
 				Dataitem item  = new Dataitem();
@@ -132,8 +132,8 @@ public class Dataset implements Iterable<Dataitem>
 		} catch (Exception e)
 		{
 			String currentDirectory = System.getProperty("user.dir");
-			System.err.println("Unable to read file " + filename);
-			System.err.println("Current directory: " + currentDirectory);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Unable to read file " + filename);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Current directory: " + currentDirectory);
 			e.printStackTrace();
 			return 1;
 		}
@@ -173,7 +173,7 @@ public class Dataset implements Iterable<Dataitem>
 
 		public void remove()
 		{
-			System.err.println("remove for this class not implemented");
+			nl.openconvert.log.ConverterLog.defaultLog.println("remove for this class not implemented");
 			// does nothing!
 		}
 	}

@@ -83,7 +83,7 @@ public class IRLexiconEvaluation
 	{
 		for (MatchType m: typeHash.keySet())
 		{
-			System.err.println(m + ": " + typeHash.get(m));
+			nl.openconvert.log.ConverterLog.defaultLog.println(m + ": " + typeHash.get(m));
 		}
 	}
 
@@ -149,8 +149,8 @@ public class IRLexiconEvaluation
 			Collections.sort(l, new ItemComparator(lemma));
 		}
 		
-		System.err.println("Total distinct TRUE lemmata " + lemmaFrequency.keySet().size());
-		System.err.println("Total distinct assigned lemmata " + lemma2item.keySet().size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Total distinct TRUE lemmata " + lemmaFrequency.keySet().size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Total distinct assigned lemmata " + lemma2item.keySet().size());
 		precisionComputationPrepared = true;
 	}
 	/*
@@ -212,7 +212,7 @@ public class IRLexiconEvaluation
 			}
 			k++;
 		}
-		System.err.println("precision for " + lemmaQuery + ": " + d);
+		nl.openconvert.log.ConverterLog.defaultLog.println("precision for " + lemmaQuery + ": " + d);
 		return d;
 	}
 
@@ -288,7 +288,7 @@ public class IRLexiconEvaluation
 		
 		if (this.recall < this.modernLexiconLemmaCoverage * this.recallOnItemsWithLemmaInModernLexicon)
 		{
-			System.err.println("RAMP.... KLOPT NIET.....");
+			nl.openconvert.log.ConverterLog.defaultLog.println("RAMP.... KLOPT NIET.....");
 		}
 	}
 

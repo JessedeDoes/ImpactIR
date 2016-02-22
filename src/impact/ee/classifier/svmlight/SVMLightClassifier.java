@@ -252,7 +252,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 					//name = name.split("\\.")[0];
 					Double d = Double.parseDouble(name);
 					String className = inverseLabelMap.get(d);
-					System.err.println("class label = " + d  + ", class name = " + className + " file = " + mf.getCanonicalPath());
+					nl.openconvert.log.ConverterLog.defaultLog.println("class label = " + d  + ", class name = " + className + " file = " + mf.getCanonicalPath());
 					if (useMultiClassifier)
 					{
 						this.multiClassifier.addModel(model, className);
@@ -300,7 +300,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 	{
 		for (int j=0; j < p.problemData.length; j++)
 			p.problemData[j].setLabel(p.classLabels[j] == targetClass?1:-1);
-		System.err.println("Training SVM-light model for " + targetLabel + " " + otherLabel);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Training SVM-light model for " + targetLabel + " " + otherLabel);
 		model = trainer.trainModel(p.problemData, tp);
 		/*
 		 * As it appears, JNI_SVMLight keeps a copy of the training docs 
@@ -317,7 +317,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 		for (int j=0; j < p.problemData.length; j++)
 			p.problemData[j].setLabel(p.classLabels[j]);
 		validateModel(model, p, targetClass); // validate on the training data
-		System.err.println("Training done.....");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Training done.....");
 	}
 
 	public void validateModel(SVMLightModel model, Problem p, double target)
@@ -332,8 +332,8 @@ public class SVMLightClassifier implements Classifier, Serializable
 				errors++;
 			}
 		}
-		System.err.println("errors for " + inverseLabelMap.get(target) + " = " + errors);
-		System.err.println("fitting: "  + (p.size() - errors) / (double) p.size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("errors for " + inverseLabelMap.get(target) + " = " + errors);
+		nl.openconvert.log.ConverterLog.defaultLog.println("fitting: "  + (p.size() - errors) / (double) p.size());
 	}
 	
 	public void trainAllVsAll(SVMLightInterface trainer, Problem p,
@@ -360,7 +360,7 @@ public class SVMLightClassifier implements Classifier, Serializable
 					for (int i=0; i < p1.size(); i++)
 						p1.classLabels[i] = p1.problemData[i].getLabel();
 
-					System.err.println("problem size " + p1.size());
+					nl.openconvert.log.ConverterLog.defaultLog.println("problem size " + p1.size());
 					trainOne(trainer,p1,tp,l1,l2,d1); // problem: higher features than seen in restricted set may be found at training time
 					for (int i=0; i < p1.size(); i++)
 						p1.problemData[i].setLabel(p1.classLabels[i]);

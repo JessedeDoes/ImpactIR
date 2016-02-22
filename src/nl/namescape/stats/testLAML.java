@@ -182,7 +182,7 @@ public class testLAML
 				float[] vec1 = v1.getVector(i);
 				if (v2.hasTerm(w)) try
 				{
-					// System.err.println("selected " + w);
+					// nl.openconvert.log.ConverterLog.defaultLog.println("selected " + w);
 					float[] vec2 = v2.getVector(w);
 					if (vec2 != null)
 					{
@@ -201,7 +201,7 @@ public class testLAML
 		double[][] X  = new double[vectors1.size()][];
 		double[][] Y  = new double[vectors1.size()][];
 		
-		System.err.println("Selected + " + vectors1.size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Selected + " + vectors1.size());
 		
 		for (int i=0; i < vectors1.size(); i++)
 		{
@@ -227,7 +227,7 @@ public class testLAML
 		lasso.train();
 		//Printer.display(lasso.W);a
 		long f = System.currentTimeMillis();	
-		System.err.println("Computed linear mapping in " +(f-s) + " milliseconds ");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Computed linear mapping in " +(f-s) + " milliseconds ");
 		return lasso.W;
 	}
 

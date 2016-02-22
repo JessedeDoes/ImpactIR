@@ -57,7 +57,7 @@ public class Analyzer implements java.io.Serializable
 			}
 			if (w1.toString().equals(w.toString()))
 			{
-				System.err.println("VERHIP: " + w1);
+				nl.openconvert.log.ConverterLog.defaultLog.println("VERHIP: " + w1);
 			}
 			System.out.print(w1.toString().equals(w.toString())? "+ ": "- ");
 			System.out.println(w1.toString() + " truth: "  + w.toString());

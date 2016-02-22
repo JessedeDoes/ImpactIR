@@ -32,7 +32,7 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 
 	public void readFromFile(String fileName)
 	{
-		System.err.println("reading lexicon from: " + fileName);
+		nl.openconvert.log.ConverterLog.defaultLog.println("reading lexicon from: " + fileName);
 		if (fileName.startsWith("database:"))
 		{
 			String dbName = fileName.substring("database:".length());
@@ -51,7 +51,7 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 			
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
-				// System.err.println(s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				WordForm w = LexiconUtils.getWordformFromLine(s);
 				if (w == null || w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
 					continue;
@@ -59,7 +59,7 @@ public class InMemoryLexicon implements Iterable<WordForm>, ILexicon, Serializab
 			}
 		} catch (Exception e)
 		{
-			System.err.println("s = " + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("s = " + s);
 			e.printStackTrace();
 		}
 	}

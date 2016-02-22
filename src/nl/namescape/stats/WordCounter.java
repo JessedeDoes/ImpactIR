@@ -74,7 +74,7 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		// TODO Auto-generated method stub
 		incrementFileCount();
 		if (nFiles % 1000 == 0)
-			System.err.println(nFiles + " "+ fileName);
+			nl.openconvert.log.ConverterLog.defaultLog.println(nFiles + " "+ fileName);
 		try 
 		{
 			SAXParser saxParser = factory.newSAXParser();
@@ -94,10 +94,10 @@ public class WordCounter extends DefaultHandler implements DoSomethingWithFile
 		DirectoryHandling.traverseDirectory(m, args[0]);
 		m.shutdown();
 		System.out.println(x.nWords + " words in "  + x.nFiles + " files");
-		System.err.println(x.filesWithParseError.size() + " parse errors");
+		nl.openconvert.log.ConverterLog.defaultLog.println(x.filesWithParseError.size() + " parse errors");
 		for (String s: x.filesWithParseError)
 		{
-			System.err.println("\t" + s);
+			nl.openconvert.log.ConverterLog.defaultLog.println("\t" + s);
 		}
 	}
 }

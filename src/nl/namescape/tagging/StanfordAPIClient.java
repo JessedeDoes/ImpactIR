@@ -83,14 +83,14 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger,
 			String[] parts = line.split("\\s+");
 			w.setAttribute("neLabel", parts[1]);
 			//if (!"O".equalsIgnoreCase(parts[1]))
-			//	System.err.println(parts[0] + " " + parts[1]);
+			//	nl.openconvert.log.ConverterLog.defaultLog.println(parts[0] + " " + parts[1]);
 			if (parts.length > 2)
 			{
 				w.setAttribute("nePartLabel", parts[2]);
 			}
 		} catch (Exception e)
 		{
-			System.err.println(line);
+			nl.openconvert.log.ConverterLog.defaultLog.println(line);
 			e.printStackTrace();
 		}
 	}
@@ -114,7 +114,7 @@ public class StanfordAPIClient extends DocumentTagger implements SentenceTagger,
 						neLabel = "O";
 					if (!neLabel.equalsIgnoreCase("O"))
 					{
-						System.err.println(neLabel);
+						nl.openconvert.log.ConverterLog.defaultLog.println(neLabel);
 						if (previousLabel.equals(neLabel))
 						{
 							t.setAttribute("neLabel", "I-" + neLabel);

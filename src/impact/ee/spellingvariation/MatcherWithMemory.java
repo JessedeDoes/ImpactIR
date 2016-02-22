@@ -166,7 +166,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 				for (JointMultigram m: segment.multigrams)
 				{
 					History.State next = (History.State) model.delta(this.state,m.id);
-					//System.err.println(position + " " + this.state + "->" + next + " " + m);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(position + " " + this.state + "->" + next + " " + m);
 					if (next != null)
 					{
 						double p = model.conditionalProbability(this.state,m.id);
@@ -242,7 +242,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 		{
 			if (rhsNode.isFinal)
 			{
-				// System.err.println("segment:"
+				// nl.openconvert.log.ConverterLog.defaultLog.println("segment:"
 				// +s.substring(startPosition,endPosition));
 		
 					addSegment(startPosition, endPosition, matcher.multigramSet
@@ -447,12 +447,12 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 							newStates.add(ss);
 						}
 					}
-					System.err.println("loop states at " + i + " : " + (newStates.size() - nonLoop));
+					nl.openconvert.log.ConverterLog.defaultLog.println("loop states at " + i + " : " + (newStates.size() - nonLoop));
 				}
 			}
 			for (ScoredState<State> ss : newStates)
 			{
-				//System.err.println(i +  ": " + ((History.State) (ss.state)).toString(multigramSet));
+				//nl.openconvert.log.ConverterLog.defaultLog.println(i +  ": " + ((History.State) (ss.state)).toString(multigramSet));
 				stateMap.clearState(ss.state);
 			}
 			if (i == s.length())
@@ -492,7 +492,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 	{
 		TransducerWithMemory t = TransducerWithMemory.readFromFile(modelFile);
 		
-		System.err.println("model read...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("model read...");
 		
 		testModel( t.getHistory(), t.getMultigramSet(), inFile);	
 	}
@@ -501,7 +501,7 @@ public class MatcherWithMemory<State> extends MemorylessMatcher
 	{
 		AbsoluteDiscountModel  t = AbsoluteDiscountModel.readFromFile(modelFile);
 		
-		System.err.println("model read...");
+		nl.openconvert.log.ConverterLog.defaultLog.println("model read...");
 		
 		testModel( t, t.getMultigramSet(), inFile);	
 	}

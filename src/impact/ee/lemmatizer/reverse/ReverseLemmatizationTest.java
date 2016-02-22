@@ -42,16 +42,16 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 				return;
 			if (referenceLexicon.containsLemmaWordform(lemma,w.wordform))
 			{
-				System.err.println("+: " + wf + ": " + lemma  + ":" + tag + ":"  + r);
+				nl.openconvert.log.ConverterLog.defaultLog.println("+: " + wf + ": " + lemma  + ":" + tag + ":"  + r);
 				correctProposals++;
 			} else
 			{
 				incorrectProposals++;
-				System.err.println("-: " + wf + ": " + lemma + ":" + tag + ":" + r	);
+				nl.openconvert.log.ConverterLog.defaultLog.println("-: " + wf + ": " + lemma + ":" + tag + ":" + r	);
 			}
 		} else 
 		{
-			System.err.println("Could not apply to " + lemma + ": "  + r);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Could not apply to " + lemma + ": "  + r);
 		}
 	}
 	
@@ -78,10 +78,10 @@ public class ReverseLemmatizationTest implements FoundFormHandler
 		r.setCallback(this);
 		InMemoryLexicon all = referenceLexicon;
 		Set<WordForm> heldOut = createHeldoutSet(all, 0.1);
-		System.err.println("Created held-out set of size " + heldOut.size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Created held-out set of size " + heldOut.size());
 		r.findInflectionPatterns(all, heldOut);
 		for (WordForm wf: heldOut) r.expandWordForm(wf);
-		System.err.println("Total tested: " +  itemsTested + 
+		nl.openconvert.log.ConverterLog.defaultLog.println("Total tested: " +  itemsTested + 
 				" correct: " + correctProposals/itemsTested + " total wrong: " + incorrectProposals);
 	}
 	

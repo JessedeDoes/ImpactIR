@@ -155,7 +155,7 @@ public class AlpinoTreebank implements DoSomethingWithFile
 				{
 					sentences.add(new Sentence(d));
 					nTokens += l;
-					//System.err.println(l + "  " + nTokens);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(l + "  " + nTokens);
 				}
 			} catch (Exception e)
 			{
@@ -167,10 +167,10 @@ public class AlpinoTreebank implements DoSomethingWithFile
 	{
 		AlpinoTreebank atb = new AlpinoTreebank(args[0]);
 	
-		System.err.println("K=" + atb.K());
-		System.err.println("Number of sentences: " + atb.sentences.size());
-		System.err.println("Average sentence length: " + atb.nTokens / (double) atb.sentences.size());
-		System.err.println("Number of productions:"  + atb.totalProductions);
+		nl.openconvert.log.ConverterLog.defaultLog.println("K=" + atb.K());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Number of sentences: " + atb.sentences.size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Average sentence length: " + atb.nTokens / (double) atb.sentences.size());
+		nl.openconvert.log.ConverterLog.defaultLog.println("Number of productions:"  + atb.totalProductions);
 		
 		Counter<String> c = atb.getProductionVocabulary();
 		List<String> l = c.keyList();

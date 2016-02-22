@@ -52,7 +52,7 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 	public void attachToElement(Element e, Map<String,String> m)
 	{
 		// e.setAttribute("type", tag);
-		// System.err.println(m);
+		// nl.openconvert.log.ConverterLog.defaultLog.println(m);
 		String tag = m.get("tag");
 
 		if (tag != null)
@@ -90,11 +90,11 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 	
 	public static void main(String[] args)
 	{
-		System.err.println(args[0]);
+		nl.openconvert.log.ConverterLog.defaultLog.println(args[0]);
 		impact.ee.util.Options options = new impact.ee.util.Options(args);
 		options.list();
 		args = options.commandLine.getArgs();
-		System.err.println(Options.getOption("patternInput"));
+		nl.openconvert.log.ConverterLog.defaultLog.println(Options.getOption("patternInput"));
 		impact.ee.lemmatizer.Lemmatizer lemmatizer = new Lemmatizer(
 				Options.getOption("patternInput"),
 				Options.getOption("modernLexicon"), 
@@ -106,7 +106,7 @@ public class LookupLemmatizerClient extends ImpactTaggingClient
 
 		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,3);
 
-		System.err.println("Start tagging from " + args[0] + " to " + args[1]);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Start tagging from " + args[0] + " to " + args[1]);
 		DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 		//m.shutdown();
 	}

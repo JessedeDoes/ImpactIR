@@ -112,7 +112,7 @@ public class CooccurrenceGraph
 			Element node = d.createElement("node");
 			node.setAttribute("xml:id", "node." + id);
 			Element nym = XML.getElementsByTagnameAndAttribute(e,"nym", "xml:id", id, false).get(0);
-			// System.err.println(nym);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(nym);
 			Element label = d.createElement("label");
 			Element form = XML.getElementByTagname(nym, "form");
 			label.setTextContent(form.getTextContent());

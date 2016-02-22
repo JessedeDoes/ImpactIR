@@ -202,7 +202,7 @@ public class MemorylessMatcher
 			e.printStackTrace();
 			return false;
 		}
-		//System.err.printf( "XXX %d\n", ruletrie.root.nofTransitions());
+		//nl.openconvert.log.ConverterLog.defaultLog.printf( "XXX %d\n", ruletrie.root.nofTransitions());
 		return true;
 	}
 
@@ -244,7 +244,7 @@ public class MemorylessMatcher
 				} catch (Exception e)
 				{
 					e.printStackTrace();
-					System.err.println(tokens[0]);
+					nl.openconvert.log.ConverterLog.defaultLog.println(tokens[0]);
 				}
 			}
 		} catch (Exception e)
@@ -252,7 +252,7 @@ public class MemorylessMatcher
 			e.printStackTrace();
 			return false;
 		}
-		// System.err.printf( "XXX %d\n", ruletrie.root.nofTransitions());
+		// nl.openconvert.log.ConverterLog.defaultLog.printf( "XXX %d\n", ruletrie.root.nofTransitions());
 		return true;
 	}
 
@@ -339,7 +339,7 @@ public class MemorylessMatcher
 		{	
 			if (newCost < nextitem.cost)
 			{
-				//System.err.printf("decrease cost of item at pos %d from %d to %d\n", pos, nextitem.cost, newCost);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("decrease cost of item at pos %d from %d to %d\n", pos, nextitem.cost, newCost);
 
 				queue.remove(nextitem); nextitem.cost = newCost; queue.offer(nextitem);
 
@@ -351,10 +351,10 @@ public class MemorylessMatcher
 		{
 			if (rule != null)
 			{
-				//System.err.printf("new item at pos %d, cost %d (%d), rule %s.%s !!!\n", pos, newCost, item.cost, rule.lhs, rule.rhs);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("new item at pos %d, cost %d (%d), rule %s.%s !!!\n", pos, newCost, item.cost, rule.lhs, rule.rhs);
 			} else
 			{
-				//System.err.printf("new item at pos %d, cost %d (%d), character '%c' !!!\n", pos, newCost, item.cost, targetWord[pos-1]);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("new item at pos %d, cost %d (%d), character '%c' !!!\n", pos, newCost, item.cost, targetWord[pos-1]);
 			}
 			nextitem = new MatchState(lexnode, pos);
 			nextitem.cost = newCost;
@@ -375,7 +375,7 @@ public class MemorylessMatcher
 		{
 			RuleInfo  rule = (RuleInfo) lhsNode.data;
 			int newCost = incrementCost(rule, cost);
-			// System.err.printf("found rule at %d: '%s'->'%s' (%d->%d)\n", pos, rule.lhs, rule.rhs, rule.cost, newCost);
+			// nl.openconvert.log.ConverterLog.defaultLog.printf("found rule at %d: '%s'->'%s' (%d->%d)\n", pos, rule.lhs, rule.rhs, rule.cost, newCost);
 			if (rule != null)
 			{
 				//if (newCost <= MAX_PENALTY)
@@ -383,7 +383,7 @@ public class MemorylessMatcher
 			}
 			else
 			{
-				System.err.println("Fatal error:  final node in rule trie without rule information");	
+				nl.openconvert.log.ConverterLog.defaultLog.println("Fatal error:  final node in rule trie without rule information");	
 				System.exit(1);
 				//tryNewItem(item, lexnode, pos + 1, newCost, rule); // TODO why this?? can this happen?
 			}
@@ -419,7 +419,7 @@ public class MemorylessMatcher
 			if (lhstrie != null && rhsNode.isFinal) // right hand side of some rule is triggered
 			{
 				TrieNode lhsNode = lhstrie.root;
-				//System.err.printf("recognized right hand side of some rule at %d-%d\n", item.pos, pos);
+				//nl.openconvert.log.ConverterLog.defaultLog.printf("recognized right hand side of some rule at %d-%d\n", item.pos, pos);
 				lhsRecursion(item, lhsNode, item.lexnode, item.position, item.cost); // pos die je door moet geven??
 			}
 			if (positionInWord >= targetWord.length()) break;
@@ -511,8 +511,8 @@ public class MemorylessMatcher
 			MatchState item = queue.poll();
 			if (item == null) break;
 
-			//System.err.printf("######\nextracted item has pos %d of %d, cost %d\n", item.pos, L, item.cost);
-			//if (item == startitem) { System.err.printf("Hola: weer startitem, DIT KAN NIET\n"); }
+			//nl.openconvert.log.ConverterLog.defaultLog.printf("######\nextracted item has pos %d of %d, cost %d\n", item.pos, L, item.cost);
+			//if (item == startitem) { nl.openconvert.log.ConverterLog.defaultLog.printf("Hola: weer startitem, DIT KAN NIET\n"); }
 			int penaltyIncrement = 0;
 			if (found)
 				penaltyIncrement = item.cost - bestCost;
@@ -544,12 +544,12 @@ public class MemorylessMatcher
 		//fh_deleteheap(queue);
 		queue.clear();
 		return found;
-		//System.err.printf("took %u msec\n", (endUsecs - startUsecs)/1000);
+		//nl.openconvert.log.ConverterLog.defaultLog.printf("took %u msec\n", (endUsecs - startUsecs)/1000);
 	}
 
 	public static void usage()
 	{
-		System.err.println("Usage: java spellingvariation.MemorylessMatcher <pattern file> <word list> [<input file>]");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Usage: java spellingvariation.MemorylessMatcher <pattern file> <word list> [<input file>]");
 	}
 
 	class Match
@@ -617,7 +617,7 @@ public class MemorylessMatcher
 				correctMatches++;
 			} else
 			{
-				//System.err.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
+				//nl.openconvert.log.ConverterLog.defaultLog.println("!!Wrong  match: " +targetWord + "  =~ " +  matchedWord + " (reference = " + reference + ")");
 			}
 			//System.out.printf("%s -> %s %s %e %d\n" ,targetWord, matchedWord, matchInfo, p, cost);
 		}
@@ -700,10 +700,10 @@ public class MemorylessMatcher
 			{
 				
 			}
-			System.err.println("Items tested: " + cb.itemsTested + "; correct matches:  " + cb.correctMatches + "; no match at all: " + cb.noMatch);
-			System.err.println("Coverage of modern lexicon on modern equivalents: "  + modernLexiconCoverage);
-			System.err.println("Overall recall: " + recallOverall);
-			System.err.println("Recall of words in modern lexicon: " + recallInVocabulary);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Items tested: " + cb.itemsTested + "; correct matches:  " + cb.correctMatches + "; no match at all: " + cb.noMatch);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Coverage of modern lexicon on modern equivalents: "  + modernLexiconCoverage);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Overall recall: " + recallOverall);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Recall of words in modern lexicon: " + recallInVocabulary);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -755,7 +755,7 @@ public class MemorylessMatcher
 		String cmd = Options.getOption("command");
 		if (cmd != null && cmd.equals("test"))
 		{
-			System.err.println("testing on labeled input");
+			nl.openconvert.log.ConverterLog.defaultLog.println("testing on labeled input");
 			matcher.test(lexicon, stdin);
 			System.exit(0);
 		}

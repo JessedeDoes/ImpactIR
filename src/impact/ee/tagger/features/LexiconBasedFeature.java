@@ -40,7 +40,7 @@ public class LexiconBasedFeature extends StochasticFeature
 			lexicon = lexiconMap.get(fileName);
 		else
 		{
-			System.err.println("Reading lexicon...");
+			nl.openconvert.log.ConverterLog.defaultLog.println("Reading lexicon...");
 			InMemoryLexicon iml = new InMemoryLexicon();
 			iml.readFromFile(fileName);
 			lexiconMap.put(fileName, iml);

@@ -108,7 +108,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 		{
 			// TODO Auto-generated method stub
 			//if (tag.matches("part.*past"))
-			//	System.err.println(r + " for " + lemma + ":" + tag);
+			//	nl.openconvert.log.ConverterLog.defaultLog.println(r + " for " + lemma + ":" + tag);
 			currentBag.add(new ScoredRule(r,p,rank));
 		}
 
@@ -139,7 +139,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 				pat.leftSuffix  = (((SimplePattern) finalTop.rule.pattern).leftSuffix);
 				pat.rightSuffix  = (((SimplePattern) finalTop.rule.pattern).rightSuffix);
 				r.id = (1000000 * initialTop.rule.id) + finalTop.rule.id;
-				//System.err.println("Concocted: " + r);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Concocted: " + r);
 				ScoredRule concocted = new ScoredRule(r,initialTop.p * finalTop.p, 0);
 
 				return concocted;
@@ -218,7 +218,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 
 	public void expandWordForm(WordForm w)
 	{
-		//System.err.println("start expanding: " + w);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("start expanding: " + w);
 		knutselaar.initialBag.clear();
 		knutselaar.finalBag.clear();
 
@@ -229,13 +229,13 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 		knutselaar.currentBag = knutselaar.finalBag;
 		finalExpander.expandWordForm(w);
 		ScoredRule r = knutselaar.knutsel();
-		//System.err.println(r);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(r);
 		if (r !=  null)
 		{
 			callback.foundForm(w.lemma, w.tag, w.lemmaPoS, r.rule, r.p, r.rank);
 		} else
 		{
-			System.err.println("Could not expand: " + w);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Could not expand: " + w);
 		}
 	}
 
@@ -288,7 +288,7 @@ public class PrefixSuffixGuesser implements ParadigmExpander, FoundFormHandler, 
 					lemma,tag,lemmaPoS, p, rank, r.id, r.toString()));
 		} else
 		{
-			System.err.println("Unable to apply " + r.pattern + " to " + lemma);
+			nl.openconvert.log.ConverterLog.defaultLog.println("Unable to apply " + r.pattern + " to " + lemma);
 		}
 	}	
 	

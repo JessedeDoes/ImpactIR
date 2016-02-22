@@ -79,7 +79,7 @@ public class SimpleTokenizer
 				t.content = postPunctuation;
 				tokens.add(t);
 			}
-			// System.err.println(w + ": " + s + " -- " + e);
+			// nl.openconvert.log.ConverterLog.defaultLog.println(w + ": " + s + " -- " + e);
 		}
 		return tokens;
 	}

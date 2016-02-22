@@ -9,6 +9,7 @@ import impact.ee.lexicon.QuotationCorpus.inTraining;
 import impact.ee.tagger.features.HasPoSFeature;
 import impact.ee.tagger.features.TaggerFeatures;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class LexiconBasedTagger extends BasicTagger
 			tag = tag.replaceAll(" ", "_");
 			c.setAttributeAt("tag", tag, 0);
 			//String check = c.getAttributeAt("tag", 0);
-			//System.err.println(tag + " " + check);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(tag + " " + check);
 			return (tag.equals("ADJ_ADJ") || tag.equals("ADJ_ADV"));
 		} else
 		return true;
@@ -78,7 +79,14 @@ public class LexiconBasedTagger extends BasicTagger
 			Corpus trainingCorpus = 
 					ee35.getQuotationCorpus(inTraining.inTrainingSet, inSample.selectAll);
 			testje.train(trainingCorpus);
-			testje.saveModel("Models/lexicalTagger");
+			try
+			{
+				testje.saveModel("Models/lexicalTagger");
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else
 		{
 			// OK dat werkt niet, want de features zijn zo allemaal onbekend...

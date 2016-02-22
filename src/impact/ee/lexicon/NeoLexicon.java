@@ -48,7 +48,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 
 	public void close()
 	{
-		System.err.println("Yes!!! finalize is called. Great!");
+		nl.openconvert.log.ConverterLog.defaultLog.println("Yes!!! finalize is called. Great!");
 		this.graphDb.shutdown(); // this might help??
 	}
 	
@@ -66,7 +66,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 
 	public void destroy()
 	{
-		System.err.println("Shutting down " + DB_PATH);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Shutting down " + DB_PATH);
 		this.graphDb.shutdown();
 	}
 	
@@ -134,7 +134,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			String s;
 			while ( (s = b.readLine()) != null) // volgorde: type lemma pos lemma_pos /// why no ID's? it is better to keep them
 			{
-				// System.err.println(s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				WordForm w = LexiconUtils.getWordformFromLine(s);
 				if (w.wordform.indexOf(" ") >= 0 || w.lemma.indexOf(" ") >= 0) // temporary hack: no spaces
 					continue;
@@ -142,7 +142,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				nItems++;
 				if (nItems % 50000 == 0)
 				{
-					System.err.println("new transaction... " + nItems);
+					nl.openconvert.log.ConverterLog.defaultLog.println("new transaction... " + nItems);
 					tx.success();
 					tx.finish();
 					tx =  graphDb.beginTx();
@@ -151,7 +151,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			tx.success();
 		} catch (Exception e)
 		{
-			//System.err.println("s = " + s);
+			//nl.openconvert.log.ConverterLog.defaultLog.println("s = " + s);
 			e.printStackTrace();
 		}
 		tx.finish();
@@ -167,12 +167,12 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			l.useSimpleWordformsOnly = true;
 			for (WordForm w:l)
 			{
-				System.err.println(nItems + ": " + w);
+				nl.openconvert.log.ConverterLog.defaultLog.println(nItems + ": " + w);
 				addWordform(w);
 				nItems++;
 				if (nItems % 50000 == 0)
 				{
-					System.err.println("new transaction...");
+					nl.openconvert.log.ConverterLog.defaultLog.println("new transaction...");
 					tx.success();
 					tx.finish();
 					
@@ -185,7 +185,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 			tx.finish();
 		}
-		System.err.println("items added: "  + nItems);
+		nl.openconvert.log.ConverterLog.defaultLog.println("items added: "  + nItems);
 		//graphDb.shutdown();
 	}
 
@@ -197,7 +197,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			try
 			{
 				String wf = (String) getProperty(n, "wordform");
-				// System.err.println(wf);
+				// nl.openconvert.log.ConverterLog.defaultLog.println(wf);
 				if (wf != null)
 				{
 					impact.ee.lexicon.WordForm w = getWordFormFromNode(n);
@@ -278,7 +278,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 
 	private Set<Node> findWordFormNodesByLemma(String lemmaQuery)
 	{
-		//System.err.println("start query for:" + lemmaQuery);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("start query for:" + lemmaQuery);
 		Set<Node> nodes = new HashSet<Node>();
 		
 		IndexHits<Node> hits = nodeIndex.get("lemmaLowercase", lemmaQuery.toLowerCase());
@@ -290,11 +290,11 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			{
 				Node wordformNode = r.getOtherNode(n);
 				// String wordform = (String) wordformNode.getProperty("wordform");
-				//System.err.println(wordform + "\t" + lemma);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(wordform + "\t" + lemma);
 				nodes.add(wordformNode);
 			}
 		}
-		//System.err.println("found items: "  + nodes.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("found items: "  + nodes.size());
 		return nodes;
 	}
 	
@@ -341,7 +341,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 
 		}
-		//System.err.println("found items: "  + wordforms.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("found items: "  + wordforms.size());
 		return wordforms;
 	}
 	
@@ -383,7 +383,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 		{
 
 		}
-		//System.err.println("found items: "  + wordforms.size());
+		//nl.openconvert.log.ConverterLog.defaultLog.println("found items: "  + wordforms.size());
 		return wordforms;
 	}
 
@@ -412,7 +412,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			while ((s = input.readLine()) != null)
 			{
 				s = s.split("\\s+")[0];
-				// System.err.println(s);
+				// nl.openconvert.log.ConverterLog.defaultLog.println(s);
 				Set<WordForm> ws = findLemmata(s);
 				for (WordForm w: ws)
 					System.out.println(w);
@@ -452,7 +452,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				return w;
 			} else
 			{
-				//System.err.println("Boe! Non wordform node retrieved by wordform query?? : " + 
+				//nl.openconvert.log.ConverterLog.defaultLog.println("Boe! Non wordform node retrieved by wordform query?? : " + 
 				//			(String) x.getProperty("wordform"));
 				return null;
 			}
@@ -485,7 +485,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 				if (nodeIterator.hasNext())
 				{
 					currentNode = nodeIterator.next();
-					//System.err.println(currentNode);
+					//nl.openconvert.log.ConverterLog.defaultLog.println(currentNode);
 					nextWord = getWordFormFromNode(currentNode);
 					if (nextWord != null)
 						return true;
@@ -564,7 +564,7 @@ public class NeoLexicon implements ILexicon,   Iterable<WordForm>
 			int k=0;
 			for (WordForm w: l)
 			{
-				System.err.println(k++ + "= " + w);
+				nl.openconvert.log.ConverterLog.defaultLog.println(k++ + "= " + w);
 			}
 		} else
 		{

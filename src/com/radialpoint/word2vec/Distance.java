@@ -86,7 +86,7 @@ public class Distance
 		return result;
 	}
 
-	static float[] getAverageVector(Vectors vectors, String[] tokens, float alpha)
+	public static float[] getAverageVector(Vectors vectors, String[] tokens, float alpha)
 	{
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
@@ -149,7 +149,7 @@ public class Distance
 		float[] vec = new float[size]; // average vector of input tokens
 		float[][]allVec = vectors.getVectors();
 		long startTime = System.currentTimeMillis();
-		// System.err.println("1:" + startTime);
+		// nl.openconvert.log.ConverterLog.defaultLog.println("1:" + startTime);
 		Set<Integer> wordIdx = new TreeSet<Integer>();
 
 		int tokenCount = tokens.length;
@@ -183,7 +183,7 @@ public class Distance
 			bestWords[i] = "";
 		}
 
-		//System.err.println("2:" +  ( System.currentTimeMillis() - startTime));
+		//nl.openconvert.log.ConverterLog.defaultLog.println("2:" +  ( System.currentTimeMillis() - startTime));
 		int wc = vectors.wordCount();
 		
 		for (int c = 0; c < wc; c++) 
@@ -212,8 +212,8 @@ public class Distance
 				}
 			}
 		}
-		//System.err.println("best:" + bestDistance[0]);
-		//System.err.println("3:" +  ( System.currentTimeMillis() - startTime));
+		//nl.openconvert.log.ConverterLog.defaultLog.println("best:" + bestDistance[0]);
+		//nl.openconvert.log.ConverterLog.defaultLog.println("3:" +  ( System.currentTimeMillis() - startTime));
 		List<ScoredTerm> result = new ArrayList<ScoredTerm>(wordsToReturn);
 		for (int i = 0; i < wordsToReturn; i++)
 			result.add(new ScoredTerm(bestWords[i], bestDistance[i]));

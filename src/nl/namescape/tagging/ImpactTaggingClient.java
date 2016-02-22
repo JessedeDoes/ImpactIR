@@ -12,6 +12,7 @@ import nl.namescape.util.XML;
 import org.w3c.dom.*;
 
 import nl.namescape.tei.TEITagClasses;
+import nl.openconvert.filehandling.ConversionException;
 import nl.openconvert.filehandling.DirectoryHandling;
 import nl.openconvert.filehandling.SimpleInputOutputProcess;
 
@@ -64,7 +65,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 			{
 				boolean eek = TEITagClasses.fixIds(d);
 				if (eek)
-					System.err.println("eek!!!");
+					nl.openconvert.log.ConverterLog.defaultLog.println("eek!!!");
 			}
 			TEITokenStream inputCorpus = new TEITokenStreamWithSentenceBounds(d);
 			Corpus out = tagger.tag(inputCorpus);
@@ -91,9 +92,9 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 			long interval = endTime - startTime;
 			double secs = interval / 1000.0;
 			double wps = nWords / secs;
-			System.err.println("tokens " + nWords);
-			System.err.println("seconds " + secs);
-			System.err.println("tokens per second " + wps);
+			nl.openconvert.log.ConverterLog.defaultLog.println("tokens " + nWords);
+			nl.openconvert.log.ConverterLog.defaultLog.println("seconds " + secs);
+			nl.openconvert.log.ConverterLog.defaultLog.println("tokens per second " + wps);
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
@@ -102,7 +103,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 	}
 	
 	@Override
-	public void handleFile(String in, String out) 
+	public void handleFile(String in, String out) throws ConversionException
 	{
 		Document d = null;
 		if (tokenize)
@@ -112,23 +113,23 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 				TEITokenizer tok = new TEITokenizer();
 				d = tok.getTokenizedDocument(in, true);
 				new TEISentenceSplitter(new JVKSentenceSplitter()).splitSentences(d);
-				System.err.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
+				nl.openconvert.log.ConverterLog.defaultLog.println("document has " + TEITagClasses.getNumberOfWords(d) + " words ");
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				throw new ConversionException(e);
 			}
 		} else
 		{
-			System.err.println("NOT tokenizing " + in);
+			nl.openconvert.log.ConverterLog.defaultLog.println("NOT tokenizing " + in);
 			try 
 			{
 				d = XML.parse(in);
 			} catch (Exception e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ConversionException(e);
 			} 
 		}
+		
 		try 
 		{
 			PrintStream pout = new PrintStream(new FileOutputStream(out));
@@ -138,7 +139,8 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 			pout.close();
 		} catch (Exception e) 
 		{
-			e.printStackTrace();
+			throw new ConversionException(e);
+			//e.printStackTrace();
 		}
 	}
 	

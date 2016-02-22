@@ -60,12 +60,12 @@ public class SVMLightExec
 						while ((line = brCleanUp.readLine()) != null) 
 						{
 							if (verbose)
-								System.err.println("[Stdout] " + line);
+								nl.openconvert.log.ConverterLog.defaultLog.println("[Stdout] " + line);
 							// als regel "examples read " bevat, kan
 							// je de trainingFile weggooien...
 							if (line.contains("examples read"))
 							{
-								System.err.println("deleting combined training file...");
+								nl.openconvert.log.ConverterLog.defaultLog.println("deleting combined training file...");
 								tf.delete();
 							}
 						}

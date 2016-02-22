@@ -80,7 +80,7 @@ public class SentencePerLineOutput implements nl.openconvert.filehandling.Simple
 				nSkippedLines++;
 			nLines++;
 		}
-		System.err.println("skipped " + nSkippedLines + " of " + nLines);
+		nl.openconvert.log.ConverterLog.defaultLog.println("skipped " + nSkippedLines + " of " + nLines);
 		
 	}
 	

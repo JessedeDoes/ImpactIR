@@ -38,7 +38,7 @@ public class CliticFinder
 		
 		while (t.getLine() != null)
 		{
-			// System.err.println(t.getField("word"));
+			// nl.openconvert.log.ConverterLog.defaultLog.println(t.getField("word"));
 			d.addInstance(t.getField("word"), t.getField("classLabel"));
 			explanations.put( t.getField("classLabel"),  
 					t.getField("classDescription"));
@@ -67,7 +67,7 @@ public class CliticFinder
 			}
 			nItems++;
 		}
-		System.err.println("foutpercentage: " + (nErrors / (double) nItems));
+		nl.openconvert.log.ConverterLog.defaultLog.println("foutpercentage: " + (nErrors / (double) nItems));
 		//train(d);
 	}
 	
@@ -75,7 +75,7 @@ public class CliticFinder
 	{
 		CliticFinder c = new CliticFinder();
 		c.train(args[0]);
-		System.err.println("done training......");
+		nl.openconvert.log.ConverterLog.defaultLog.println("done training......");
 		c.test(args[1]);
 	}
 }

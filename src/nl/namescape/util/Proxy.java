@@ -28,11 +28,11 @@ public class Proxy
 			String canonicalhost  = java.net.InetAddress.getLocalHost().getCanonicalHostName();
 			if (!canonicalhost.endsWith("inl.loc"))
 			{
-				System.err.println("use inl proxy only inside inl.loc: " + canonicalhost);
+				nl.openconvert.log.ConverterLog.defaultLog.println("use inl proxy only inside inl.loc: " + canonicalhost);
 				return;
 			} else
 			{
-				System.err.println("use inl proxy, we are inside inl.loc: " + canonicalhost);
+				nl.openconvert.log.ConverterLog.defaultLog.println("use inl proxy, we are inside inl.loc: " + canonicalhost);
 			}
 		} catch (Exception e)
 		{

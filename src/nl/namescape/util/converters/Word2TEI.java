@@ -36,7 +36,7 @@ public class Word2TEI implements SimpleInputOutputProcess
 	public void dinges(String docFile)
 	{
 		Document htmlDocument = WordConverter.Word2HtmlDocument(docFile);
-		System.err.println(XML.documentToString(htmlDocument));
+		nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(htmlDocument));
 		Document teiDocument  = transformer.transformDocument(htmlDocument);
 		System.out.println(XML.documentToString(teiDocument));
 	}
@@ -49,7 +49,7 @@ public class Word2TEI implements SimpleInputOutputProcess
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		Document htmlDocument = WordConverter.Word2HtmlDocument(docFile);
-		//System.err.println(XML.documentToString(htmlDocument));
+		//nl.openconvert.log.ConverterLog.defaultLog.println(XML.documentToString(htmlDocument));
 		Document teiDocument  = transformer.transformDocument(htmlDocument);
 		
 		
@@ -78,7 +78,7 @@ public class Word2TEI implements SimpleInputOutputProcess
 		
 		//DirectoryHandling.tagAllFilesInDirectory(x, args[0], args[1]);
 		//MultiThreadedFileHandler m = new MultiThreadedFileHandler(x,nThreads);
-		System.err.println("Start tagging from " + args[2] + " to " + args[3]);
+		nl.openconvert.log.ConverterLog.defaultLog.println("Start tagging from " + args[2] + " to " + args[3]);
 		
 		DirectoryHandling.traverseDirectory(x, new File(args[0]), new File(args[1]), null);
 		//x.dinges("/mnt/Projecten/Taalbank/Werkfolder_Redactie/Jesse/Projecten/Papiamento/Mosaiko 5 HV Kap 1 vershon 2012 10 28.doc");

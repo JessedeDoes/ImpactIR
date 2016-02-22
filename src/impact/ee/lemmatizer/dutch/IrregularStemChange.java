@@ -41,7 +41,7 @@ public class IrregularStemChange extends StemChange
 		for (String s:  baseForms.keySet())
 		{
 			String rev = new StringBuffer(s).reverse().toString();
-			//System.err.println(rev + "-->"  + baseForms.get(s));
+			//nl.openconvert.log.ConverterLog.defaultLog.println(rev + "-->"  + baseForms.get(s));
 			suffixTrie.root.putWord(rev, baseForms.get(s));
 		}
 	}
@@ -54,7 +54,7 @@ public class IrregularStemChange extends StemChange
 			for (int i=1; i < line.length; i++)
 			{
 				String test = this.transform(line[i]);
-				System.err.println(line[i] + "->" + test +  " truth:  "+ line[0]);
+				nl.openconvert.log.ConverterLog.defaultLog.println(line[i] + "->" + test +  " truth:  "+ line[0]);
 			}
 		}
 	}
@@ -91,10 +91,10 @@ public class IrregularStemChange extends StemChange
 				deepestNode = node;
 				finalNodes.add(deepestNode);
 			}
-			//System.err.println(i + ":" + deepestNode);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(i + ":" + deepestNode);
 			node = node.delta(s.charAt(s.length()-i-1));
 		}
-		//System.err.println(s + ":" + suffixLength);
+		//nl.openconvert.log.ConverterLog.defaultLog.println(s + ":" + suffixLength);
 		if (node != null && node.isFinal)
 		{
 			deepestNode = node;
@@ -109,17 +109,17 @@ public class IrregularStemChange extends StemChange
 		}
 		if (deepestNode != null)
 		{
-			//System.err.println(i +  " " + s + deepestNode.data);
+			//nl.openconvert.log.ConverterLog.defaultLog.println(i +  " " + s + deepestNode.data);
 			String suffix = s.substring(s.length()-suffixLength);
 			Set<String> candidates = (Set<String>) deepestNode.data;
 			if (candidates != null)
 			{
 				String replacement = candidates.iterator().next();
-				//System.err.println(s + " suffix:"  + suffix);
+				//nl.openconvert.log.ConverterLog.defaultLog.println(s + " suffix:"  + suffix);
 				return s.replaceAll(suffix + "$", replacement);
 			} else
 			{
-				//System.err.println("DIT KAN DUS NIET" + s);
+				//nl.openconvert.log.ConverterLog.defaultLog.println("DIT KAN DUS NIET" + s);
 			}
 		}
 		return null;
