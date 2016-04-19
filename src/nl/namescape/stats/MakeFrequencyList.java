@@ -39,6 +39,17 @@ public class MakeFrequencyList implements nl.openconvert.filehandling.DoSomethin
 	enum Type {word, lemma, lwt};
 	Type type = Type.word;
 
+	public static WordList makeList(Element e)
+	{
+		MakeFrequencyList mfl = new MakeFrequencyList();
+		List<Element> tokens = nl.namescape.tei.TEITagClasses.getWordElements(e);
+		for (Element t: tokens)
+		{
+			mfl.handleToken(t);
+		}
+		return mfl.tf;
+	}
+	
 	public void handleFile(String fileName) 
 	{
 		try

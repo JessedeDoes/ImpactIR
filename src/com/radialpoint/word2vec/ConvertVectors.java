@@ -101,7 +101,8 @@ public class ConvertVectors {
 				}
 				ch = (char) fis.read();
 				String st = sb.toString();
-
+				byte[] b0 = st.getBytes("iso-8859-1");
+			        st = new String(b0, "utf-8");
 				vocabVects[w] = st;
 				float[] m = new float[size];
 				for (int i = 0; i < size; i++) {

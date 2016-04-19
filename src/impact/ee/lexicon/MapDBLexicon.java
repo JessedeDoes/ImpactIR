@@ -24,6 +24,17 @@ public class MapDBLexicon implements ILexicon
 		 form2lemmata = db.getTreeMap("form2lemma");
 	}
 	
+	public Set<WordForm> getAllWords()
+	{
+		Set<WordForm> S = new HashSet<WordForm>();
+		   ConcurrentNavigableMap<String,  Set<WordForm>> map = db.getTreeMap("lemma2forms");
+		  
+		for (Set<WordForm> V: map.values())
+		{
+			S.addAll(V);
+		}
+		return S;
+	}
 	public void someStuff(String dbName)
 	{
 	    db = DBMaker.newFileDB(new File("testdb"))
@@ -188,6 +199,7 @@ public class MapDBLexicon implements ILexicon
 	public Iterator<WordForm> iterator() 
 	{
 		// TODO Auto-generated method stub
+	 
 		return null;
 	}
 	
