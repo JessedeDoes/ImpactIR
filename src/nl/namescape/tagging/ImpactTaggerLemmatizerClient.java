@@ -130,6 +130,7 @@ public class ImpactTaggerLemmatizerClient extends ImpactTaggingClient
 		xmlLemmatizer.tokenize = options.getOptionBoolean("tokenize", true);
 		MultiThreadedFileHandler m = new MultiThreadedFileHandler(xmlLemmatizer,nThreads);
 		nl.openconvert.log.ConverterLog.defaultLog.println("Start tagging from " + args[2] + " to " + args[3]);
+		DirectoryHandling.usePathHandler = false;
 		DirectoryHandling.traverseDirectory(m, args[2], args[3], null);
 		m.shutdown();
 	}

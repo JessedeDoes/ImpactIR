@@ -162,6 +162,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 		b.loadModel(args[0]);
 		ImpactTaggingClient xmlTagger = new ImpactTaggingClient(b);
 		xmlTagger.tokenize = options.getOptionBoolean("tokenize", true);
+		DirectoryHandling.usePathHandler = false;
 		DirectoryHandling.tagAllFilesInDirectory(xmlTagger, args[1], args[2]);
 	}
 

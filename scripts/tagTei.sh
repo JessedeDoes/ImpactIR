@@ -1,7 +1,9 @@
-source setClassPath.sh
+#source setClassPath.sh
 MODEL=Models/sonarGigant
-MODEL=Models/withMoreVectorrs
+MODEL=Models/withMoreVectorrs.nextAttempt
 LEXICON=BLA
 LEXICON=resources/exampledata/molexDump.txt
-JAVA=/usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
-$JAVA -Djava.library.path=./lib -Xmx10g 'nl.namescape.tagging.ImpactTaggerLemmatizerClient' --tokenize=false $MODEL $LEXICON $1 $2
+JAVA=/opt/jdk8/jdk1.8.0_40/bin/java
+JAR=/datalokaal/Corpus/Tagger/Last/DutchTaggerLemmatizer.jar
+JAR=dist/DutchTaggerLemmatizer.jar
+$JAVA -cp $JAR -Djava.library.path=./lib -Xmx10g 'nl.namescape.tagging.ImpactTaggerLemmatizerClient' --tokenize=true $MODEL $LEXICON $1 $2

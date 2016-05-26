@@ -329,6 +329,7 @@ public class BasicTagger implements Serializable, Tagger
 				public void defineOptions()
 				{
 					this.options.addOption("l", "lexicon", true, "lexicon");
+                                        this.options.addOption("w", "word2vecFile", true, "word2vecFile");
 				}
 			};
 			args = o.commandLine.getArgs(); // need to do this in more places!
@@ -336,7 +337,7 @@ public class BasicTagger implements Serializable, Tagger
 			{
 				TaggerFeatures.setLexiconFileName(o.getOption("lexicon"));
 			}
-			BasicTagger t = new BasicTagger(true);
+			BasicTagger t = new BasicTagger(o.properties, true);
 			SimpleCorpus statsCorpus = new SimpleCorpus(args[0], t.attributeNames);
 			t.examine(statsCorpus);
 			SimpleCorpus trainingCorpus = new SimpleCorpus(args[0], t.attributeNames);
@@ -356,7 +357,22 @@ public class BasicTagger implements Serializable, Tagger
 	{
 		public static void main(String[] args)
 		{
-			BasicTagger t = new BasicTagger(false);
+
+                        Options o = new Options(args)
+                        {
+                                public void defineOptions()
+                                {
+                                        this.options.addOption("l", "lexicon", true, "lexicon");
+                                        this.options.addOption("w", "word2vecFile", true, "word2vecFile");
+                                }
+                        };
+
+                         args = o.commandLine.getArgs(); // need to do this in more places!
+                        if (o.getOption("lexicon") != null)
+                        {
+                                TaggerFeatures.setLexiconFileName(o.getOption("lexicon"));
+                        }
+                        BasicTagger t = new BasicTagger(o.properties, true); 
 			SimpleCorpus testCorpus = new SimpleCorpus(args[1], t.attributeNames);
 			t.loadModel(args[0]);
 			t.test(testCorpus);

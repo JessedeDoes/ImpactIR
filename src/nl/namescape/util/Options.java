@@ -25,7 +25,7 @@ public class Options
 		options.addOption("T", "tokenize", true, "tokenize or not");
 		options.addOption("s", "sentences", true, "add sentence splitting to already tokenized file");
 		options.addOption("c", "ctag", true, "use ctag attribute for PoS");
-		options.addOption("w", "word2vecFile", true, "name of word embedding file (in wor2vec format)");
+		options.addOption("w", "word2vecFile", true, "name of word embedding file (in word2vec format)");
 	}
 
 	public void parseCommandLine(String[] arguments)
