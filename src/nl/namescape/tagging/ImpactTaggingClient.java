@@ -132,7 +132,7 @@ public class ImpactTaggingClient implements SimpleInputOutputProcess, TaggerWith
 		
 		try 
 		{
-			PrintStream pout = new PrintStream(new FileOutputStream(out));
+			PrintStream pout = new PrintStream(new FileOutputStream(out), true, "UTF-8");
 			tagDocument(d);
 			postProcess(d);
 			pout.print(XML.documentToString(d));
