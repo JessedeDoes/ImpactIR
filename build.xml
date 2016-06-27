@@ -27,6 +27,10 @@
         <pathelement path="lib/nert-3.01.jar"/>
         <pathelement path="lib/mapdb-1.0.7.jar"/>
         <pathelement path="lib/LAML-1.5.jar"/>
+	<pathelement path="lib/LBJ2.jar"/>
+	<pathelement path="lib/LBJ2Library.jar"/>
+	<pathelement path="lib/LbjNerTagger.jar"/>
+	<pathelement path="lib/commons-collections-3.2.1.jar"/>
 	</path>
 	
      <target name="init">  
