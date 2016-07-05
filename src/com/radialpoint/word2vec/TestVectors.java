@@ -2,7 +2,7 @@ package com.radialpoint.word2vec;
 
 import java.util.List;
 
-import scala.actors.threadpool.Arrays;
+
 
 public class TestVectors
 {

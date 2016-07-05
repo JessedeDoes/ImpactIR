@@ -20,7 +20,6 @@ public class ExampleBasedExpander
 			BufferedReader b = new BufferedReader(new FileReader(toExpand));
 			String line;
 
-		
 			while (( line= b.readLine())!=null)
 			{
 				String[] fields = line.split("\t");
